@@ -1153,7 +1153,7 @@ public class DockingEventCommands {
 	 * </table>
 	 * <br>
 	 */
-	public static class Session {
+	public static final class Session {
 
 		public static final String kDNewton = "newt";
 
