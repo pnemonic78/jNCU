@@ -120,7 +120,6 @@ public class NCUCommTalk extends Thread implements SerialPortEventListener {
 	 * 
 	 * @see gnu.io.SerialPortEventListener#serialEvent(gnu.io.SerialPortEvent)
 	 */
-	@Override
 	public void serialEvent(SerialPortEvent e) {
 		String msg = null;
 
