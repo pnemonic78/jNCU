@@ -352,7 +352,7 @@ package net.sf.jncu.protocol.v1_0;
  * </tr>
  * </table>
  */
-public class DockingEvenCommands {
+public class DockingEventCommands {
 
 	public static final class DesktopToNewton {
 		/**
