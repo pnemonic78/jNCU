@@ -20,6 +20,337 @@ package net.sf.jncu.protocol.v1_0;
  * length   // the length of the following command
  * data     // data, if any
  * </pre>
+ * <p>
+ * 
+ * Examples
+ * 
+ * Every session starts like this:
+ * <table>
+ * <tr>
+ * <th>Desktop</th>
+ * <th><-></th>
+ * <th>Newton</th>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDRequestToDock</td>
+ * </tr>
+ * <tr>
+ * <td>kDInitiateDocking</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDNewtonName</td>
+ * </tr>
+ * <tr>
+ * <td>kDSetTimeout</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDResult</td>
+ * </tr>
+ * </table>
+ * No matter what the intent of the desktop or the Newton, these commands must
+ * always start a session (the desktop can substitute a kDResult for the
+ * kDSetTimeout if it doesn't want to set the timeout).
+ * <p>
+ * A typical synchronize session might continue like this:
+ * 
+ * <table>
+ * <tr>
+ * <th>Desktop</th>
+ * <th><-></th>
+ * <th>Newton</th>
+ * </tr>
+ * <tr>
+ * <td>kDGetStoreNames</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDStoreNames</td>
+ * </tr>
+ * <tr>
+ * <td>kDLastSyncTime</td>
+ * <td>-></td>
+ * <td>// This ones fake just to get the Newton time</td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDCurrentTime</td>
+ * </tr>
+ * <tr>
+ * <td>kDSetCurrentStore</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDResult</td>
+ * </tr>
+ * <tr>
+ * <td>kDLastSyncTIme</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDCurrentTime</td>
+ * </tr>
+ * <tr>
+ * <td>kDGetPatches</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDPatches</td>
+ * </tr>
+ * <tr>
+ * <td>kDGetPackageIDs</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDPackageIDList</td>
+ * </tr>
+ * <tr>
+ * <td>kDBackupPackages</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDPackage</td>
+ * </tr>
+ * <tr>
+ * <td>kDBackupPackages</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDPackage</td>
+ * </tr>
+ * <tr>
+ * <td>kDBackupPackages</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDResult</td>
+ * </tr>
+ * <tr>
+ * <td>kDGetSoupNames</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDSoupNames</td>
+ * </tr>
+ * <tr>
+ * <td>kDGetInheritance</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDInheritance</td>
+ * </tr>
+ * <tr>
+ * <td>kDSetCurrentSoup</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDResult</td>
+ * </tr>
+ * <tr>
+ * <td>kDGetSoupInfo</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDSoupInfo</td>
+ * </tr>
+ * <tr>
+ * <td>kDGetSoupIDs</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDSoupIDs</td>
+ * </tr>
+ * <tr>
+ * <td>kdGetChangedIDs</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDChangedIDs</td>
+ * </tr>
+ * <tr>
+ * <td>kDDeleteEntries</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDResult</td>
+ * </tr>
+ * <tr>
+ * <td>kDAddEntry</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDAddedID</td>
+ * </tr>
+ * <tr>
+ * <td>kDReturnEntry</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDEntry</td>
+ * </tr>
+ * <tr>
+ * <td>kDDisconnect</td>
+ * <td>-></td>
+ * </tr>
+ * </table>
+ * <p>
+ * A restore session would look like this:
+ * <table>
+ * <tr>
+ * <th>Desktop</th>
+ * <th><-></th>
+ * <th>Newton</th>
+ * </tr>
+ * <tr>
+ * <td>kDGetStoreNames</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDStoreNames</td>
+ * </tr>
+ * <tr>
+ * <td>kDSetCurrentStore</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDResult</td>
+ * </tr>
+ * <tr>
+ * <td>kDDeleteAllPackages</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDResult</td>
+ * </tr>
+ * <tr>
+ * <td>kDGetSoupNames</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDSoupNames</td>
+ * </tr>
+ * <tr>
+ * <td>kDSetCurrentSoup</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDResult</td>
+ * </tr>
+ * <tr>
+ * <td>kDEmptySoup</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDResult</td>
+ * </tr>
+ * <tr>
+ * <td>kDAddEntry</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDResult</td>
+ * </tr>
+ * <tr>
+ * <td>kDDeletePkgDir</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDResult</td>
+ * </tr>
+ * <tr>
+ * <td>kDLoadPackage</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDResult</td>
+ * </tr>
+ * <tr>
+ * <td>kDDisconnect</td>
+ * <td>-></td>
+ * </tr>
+ * </table>
+ * <p>
+ * A load package session would look like this:
+ * <table>
+ * <tr>
+ * <th>Desktop</th>
+ * <th><-></th>
+ * <th>Newton</th>
+ * </tr>
+ * <tr>
+ * <td>kDLoadPackage</td>
+ * <td>-></td>
+ * </tr>
+ * <tr>
+ * <td></td>
+ * <td><-
+ * <td>kDResult</td>
+ * </tr>
+ * <tr>
+ * <td>kDDisconnect</td>
+ * <td>-></td>
+ * </tr>
+ * </table>
  */
 public class DockingEvenCommands {
 
@@ -157,9 +488,15 @@ public class DockingEvenCommands {
 		 */
 		public static final String kDGetInheritance = "ginh";
 		/**
-		 * data = # of seconds
+		 * This command sets the timeout for the connection (the time the Newton
+		 * will wait to receive data for it disconnects). This time is usually
+		 * set to 30 seconds.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'stim' 
+		 * length
+		 * timeout in seconds
+		 * </pre>
 		 */
 		public static final String kDSetTimeout = "stim";
 		/**
@@ -184,15 +521,32 @@ public class DockingEvenCommands {
 
 	public static final class NewtonToDesktop {
 		/**
-		 * Ask PC to start docking process.
+		 * Ask PC to start docking process.<br>
+		 * This command is sent to a docker that the junior wishes to connect
+		 * with (on the network, serial, etc.). The Newt expects a
+		 * kDInitiateDocking command in response. The protocol version is the
+		 * version of the messaging protocol that's being used.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'rtdk'
+		 * length
+		 * protocol version
+		 * </pre>
 		 */
 		public static final String kDRequestToDock = "rtdk";
 		/**
-		 * The name of the Newton.
+		 * The name of the Newton.<br>
+		 * This command is sent in response to a correct kDInitiateDocking
+		 * command from the docker. The Newton's name is used to locate the
+		 * proper synchronize file. The version info includes things like
+		 * machine type (e.g. J1), ROM version, etc.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'name'
+		 * length
+		 * version info
+		 * name
+		 * </pre>
 		 */
 		public static final String kDNewtonName = "name";
 		/**
@@ -202,63 +556,153 @@ public class DockingEvenCommands {
 		 */
 		public static final String kDCurrentTime = "time";
 		/**
-		 * data = array of store names & signatures
+		 * This command is sent in response to a kDGetStoreNames command. It
+		 * returns information about all the stores on the Newton. Each array
+		 * slot contains the following information about a store:<br>
+		 * <code>
+{<br>
+&nbsp;&nbsp;name: "",<br>
+&nbsp;&nbsp;signature: 1234,<br>
+&nbsp;&nbsp;totalsize: 1234,<br>
+&nbsp;&nbsp;usedsize: 1234,<br>
+&nbsp;&nbsp;kind: "",<br>
+&nbsp;&nbsp;info: {store info frame},<br>
+&nbsp;&nbsp;readOnly: true,<br>
+&nbsp;&nbsp;defaultStore: true,		// only for the default store<br>
+&nbsp;&nbsp;storePassword: password  // only if a store password has been set<br>
+}
+</code>
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'stor'
+		 * length
+		 * array of frames
+		 * </pre>
 		 */
 		public static final String kDStoreNames = "stor";
 		/**
-		 * data = array of soup names & signatures
+		 * This command is sent in response to a kDGetSoupNames command. It
+		 * returns the names and signatures of all the soups in the current
+		 * store.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'soup'
+		 * length
+		 * array of string names
+		 * array of corresponding soup signatures
+		 * </pre>
 		 */
 		public static final String kDSoupNames = "soup";
 		/**
-		 * data = array of ids for the soup
+		 * This command is sent in response to a kDGetSoupIDs command. It
+		 * returns all the IDs from the current soup.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'sids'
+		 * length
+		 * count
+		 * array of ids for the soup
+		 * </pre>
 		 */
 		public static final String kDSoupIDs = "sids";
 		/**
-		 * data = array of ids
+		 * This command is sent in response to a kDGetChangedIDs command. It
+		 * returns all the ids with mod time > the last sync time. If the last
+		 * sync time is 0, no changed entries are returned (this would happen on
+		 * the first sync).
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'cids'
+		 * length
+		 * count
+		 * array of ids for the soup
+		 * </pre>
 		 */
 		public static final String kDChangedIDs = "cids";
 		/**
-		 * data = command & result (error)
+		 * This command is sent in response to any of the commands from the PC
+		 * that don't request data. It lets the PC know that things are still
+		 * proceeding OK.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'dres'
+		 * length
+		 * error code
+		 * </pre>
 		 */
 		public static final String kDResult = "dres";
 		/**
-		 * data = the id of the added entry
+		 * This command is sent in response to a kDAddEntry command from the PC.
+		 * It returns the ID that the entry was given when it was added to the
+		 * current soup.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'adid'
+		 * length
+		 * id
+		 * </pre>
 		 */
 		public static final String kDAddedID = "adid";
 		/**
-		 * data = entry being returned
+		 * This command is sent in response to a KDReturnEntry command. The
+		 * entry in the current soup specified by the ID in the KDReturnEntry
+		 * command is returned.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'entr'
+		 * length
+		 * entry  // binary data
+		 * </pre>
 		 */
 		public static final String kDEntry = "entr";
 		/**
-		 * data = list of package ids
+		 * This command sends a list of package frames to the desktop. For each
+		 * package the information sent is this:
+		 * <ol>
+		 * <li>ULong packageSize;
+		 * <li>ULong packageId;
+		 * <li>ULong packageVersion;
+		 * <li>ULong format;
+		 * <li>ULong deviceKind;
+		 * <li>ULong deviceNumber;
+		 * <li>ULong deviceId;
+		 * <li>ULong modifyDate;
+		 * <li>ULong isCopyProtected;
+		 * <li>ULong length;
+		 * <li>Character name; (length bytes of Unicode string)
+		 * </ol>
+		 * Note that this is not sent as an array! It's sent as binary data.
+		 * Note that this finds packages only in the current store.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'pids'
+		 * length
+		 * count
+		 * package info
+		 * </pre>
 		 */
 		public static final String kDPackageIDList = "pids";
 		/**
-		 * data = package
+		 * This command sends a package to the pc. It's issued repeatedly in
+		 * response to a kDBackupPackages message.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'apkg'
+		 * length
+		 * package id
+		 * package data
+		 * </pre>
 		 */
 		public static final String kDPackage = "apkg";
 		/**
-		 * data = index description array
+		 * This command specifies the indexes that should be created for the
+		 * current soup.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'didx'
+		 * length
+		 * indexes
+		 * </pre>
 		 */
 		public static final String kDIndexDescription = "indx";
 		/**

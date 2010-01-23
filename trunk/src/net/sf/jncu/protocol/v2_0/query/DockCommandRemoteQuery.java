@@ -3,6 +3,8 @@ package net.sf.jncu.protocol.v2_0.query;
 import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 
 /**
+ * Remote query
+ * <p>
  * All of the commands in this section are based on the NewtonScript query
  * functions. Please see the Newton Programmer's Guide for details about the
  * functions performed by the commands. The query command returns a long
@@ -64,9 +66,9 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 		 */
 		public static final String kDCursorEntry = "crsr";
 		/**
-		 * Moves the cursor forward count entries from its current position and
-		 * returns that entry. Returns nil if the cursor is moved past the last
-		 * entry.
+		 * Moves the cursor forward <tt>count</tt> entries from its current
+		 * position and returns that entry. Returns nil if the cursor is moved
+		 * past the last entry.
 		 * 
 		 * <pre>
 		 * 'move'
@@ -172,5 +174,12 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 		 */
 		public static final String kDRefResult = "ref ";
 	}
+
+	/** Cursor is at unknown position. */
+	public static final int eCursorWhichEndUnknown = 0;
+	/** Cursor is at start position. */
+	public static final int eCursorWhichEndStart = 1;
+	/** Cursor is at end position. */
+	public static final int eCursorWhichEndEnd = 2;
 
 }
