@@ -2,8 +2,12 @@ package net.sf.jncu.protocol.v2_0.app;
 
 import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 
+/**
+ * Application commands.
+ */
 public class DockCommandApplication extends DockingEventCommands {
 
+	/** Desktop to Newton. */
 	public static final class DesktopToNewton {
 		/**
 		 * This command tells the Newton to delete a package. It can be used
@@ -18,10 +22,10 @@ public class DockCommandApplication extends DockingEventCommands {
 		public static final String kDRemovePackage = "rmvp";
 		/**
 		 * The package info for the specified package is returned. See the
-		 * kDPackageInfo command described below Note that multiple packages
-		 * could be returned because there may be multiple packages with the
-		 * same title but different package ids. Note that this finds packages
-		 * only in the current store.
+		 * <tt>kDPackageInfo</tt> command described below Note that multiple
+		 * packages could be returned because there may be multiple packages
+		 * with the same title but different package ids. Note that this finds
+		 * packages only in the current store.
 		 * 
 		 * <pre>
 		 * 'gpin'
@@ -34,7 +38,7 @@ public class DockCommandApplication extends DockingEventCommands {
 		 * This command asks the Newton to call the specified function and
 		 * return it's result. This function must be a global function. The
 		 * return value from the function is sent to the desktop with a
-		 * kDCallResult command.
+		 * <tt>kDCallResult</tt> command.
 		 * 
 		 * <pre>
 		 * 'cgfn'
@@ -47,7 +51,7 @@ public class DockCommandApplication extends DockingEventCommands {
 		/**
 		 * This command asks the Newton to call the specified root method. The
 		 * return value from the method is sent to the desktop with a
-		 * kDCallResult command.
+		 * <tt>kDCallResult</tt> command.
 		 * 
 		 * <pre>
 		 * 'crmd'
@@ -63,8 +67,8 @@ public class DockCommandApplication extends DockingEventCommands {
 		 * words, you have to install the extension every time you connect). The
 		 * function is a Newton script closure that would have to be compiled on
 		 * the desktop. See the Dante Connection (ROM) API IU document for
-		 * details. A kDResult with value 0 (or the error value if an error
-		 * occurred) is sent to the desktop in response.
+		 * details. A <tt>kDResult</tt> with value 0 (or the error value if an
+		 * error occurred) is sent to the desktop in response.
 		 * 
 		 * <pre>
 		 * 'pext'
@@ -87,8 +91,8 @@ public class DockCommandApplication extends DockingEventCommands {
 		/**
 		 * Reports a desktop error to the Newton. The string is included since
 		 * the Newton doesn't know how to decode all the desktop errors
-		 * (especially since the Mac and Windows errors are different).
-		 * ErrorString is a ref.
+		 * (especially since the Macintosh and Windows errors are different).
+		 * <tt>ErrorString</tt> is a ref.
 		 * 
 		 * <pre>
 		 * 'ress'
@@ -116,9 +120,9 @@ public class DockCommandApplication extends DockingEventCommands {
 		public static final String kDSetVBOCompression = "cvbo";
 		/**
 		 * This command is used to restore the patch backed up with
-		 * kDGetPatches. The Newton returns a kDResult of 0 (or an error if
-		 * appropriate) if the patch wasn't installed. If the patch was
-		 * installed the Newton restarts.
+		 * <tt>kDGetPatches</tt>. The Newton returns a <tt>kDResult</tt> of 0
+		 * (or an error if appropriate) if the patch wasn't installed. If the
+		 * patch was installed the Newton restarts.
 		 * 
 		 * <pre>
 		 * 'rpat'
@@ -129,8 +133,8 @@ public class DockCommandApplication extends DockingEventCommands {
 		public static final String kDRestorePatch = "rpat";
 		/**
 		 * This command asks the Newton to send information about the
-		 * applications installed on the Newton. See the kDAppNames description
-		 * above for details of the information returned. The
+		 * applications installed on the Newton. See the <tt>kDAppNames</tt>
+		 * description above for details of the information returned. The
 		 * <tt>return what</tt> parameter determines what information is
 		 * returned. Here are the choices:
 		 * <ul>
@@ -162,6 +166,7 @@ public class DockCommandApplication extends DockingEventCommands {
 		public static final int eCompressedVBOs = 2;
 	}
 
+	/** Newton to Desktop. */
 	public static final class NewtonToDesktop {
 		/**
 		 * This command returns the names of the applications present on the
@@ -178,7 +183,7 @@ public class DockCommandApplication extends DockingEventCommands {
 		 * out) there's an "Other information" entry.
 		 * <p>
 		 * The soup names are optionally returned depending on the value
-		 * received with kDGetAppNames.
+		 * received with <tt>kDGetAppNames</tt>.
 		 * 
 		 * <pre>
 		 * 'appn'
@@ -188,10 +193,11 @@ public class DockCommandApplication extends DockingEventCommands {
 		 */
 		public static final String kDAppNames = "appn";
 		/**
-		 * This command is sent in response to a kDGetPackageInfo command. An
-		 * array is returned that contains a frame for each package with the
-		 * specified name (there may be more than one package with the same name
-		 * but different package id). The returned frame looks like this:<br>
+		 * This command is sent in response to a <tt>kDGetPackageInfo</tt>
+		 * command. An array is returned that contains a frame for each package
+		 * with the specified name (there may be more than one package with the
+		 * same name but different package id). The returned frame looks like
+		 * this:<br>
 		 * <code>
 		 * {<br>
 		 * &nbsp;&nbsp;name: "The name passed in",<br>
@@ -216,9 +222,9 @@ public class DockCommandApplication extends DockingEventCommands {
 		 */
 		public static final String kDPackageInfo = "pinf";
 		/**
-		 * This command is sent in response to a kDCallGlobalfunction or
-		 * kDCallRootMethod command. The ref is the return value from the
-		 * function or method called.
+		 * This command is sent in response to a <tt>kDCallGlobalfunction</tt>
+		 * or <tt>kDCallRootMethod</tt> command. The ref is the return value
+		 * from the function or method called.
 		 * 
 		 * <pre>
 		 * 'cres'
@@ -230,7 +236,7 @@ public class DockCommandApplication extends DockingEventCommands {
 	}
 
 	/**
-	 * This command is sent in response to a kDOperationCanceled.
+	 * This command is sent in response to a <tt>kDOperationCanceled</tt>.
 	 * 
 	 * <pre>
 	 * 'ocaa'

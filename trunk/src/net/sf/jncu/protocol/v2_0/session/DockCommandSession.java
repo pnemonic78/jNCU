@@ -3,6 +3,8 @@ package net.sf.jncu.protocol.v2_0.session;
 import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 
 /**
+ * Session commands.
+ * <p>
  * <h2>Examples</h2> When a 2.0 ROM Newton is communicating with a 3.0
  * Connection the session would start like this:
  * <table>
@@ -169,6 +171,7 @@ import net.sf.jncu.protocol.v2_0.DockingEventCommands;
  */
 public class DockCommandSession extends DockingEventCommands {
 
+	/** Desktop to Newton. */
 	public static final class DesktopToNewton {
 		/**
 		 * Ask Newton to start docking process. <br>
@@ -184,8 +187,8 @@ public class DockCommandSession extends DockingEventCommands {
 		public static final String kDInitiateDocking = "dock";
 		/**
 		 * This command is used to customise the set of icons shown on the
-		 * Newton. The iconMask is a long that indicates which icons should be
-		 * shown. For example, to show all icons you would use this:
+		 * Newton. The <tt>iconMask</tt> is a long that indicates which icons
+		 * should be shown. For example, to show all icons you would use this:
 		 * 
 		 * <code>kBackupIcon + kSyncIcon + kInstallIcon + kRestoreIcon + kImportIcon + kKeyboardIcon</code>
 		 * Where:
@@ -208,9 +211,9 @@ public class DockCommandSession extends DockingEventCommands {
 		/**
 		 * This command is sent to the desktop after the connection is
 		 * established using AppleTalk, serial, etc. (when the user taps the
-		 * connect button). The protocol version is the version of the messaging
-		 * protocol that's being used and should always be set to the number 9
-		 * for the version of the protocol defined here.
+		 * "connect" button). The protocol version is the version of the
+		 * messaging protocol that's being used and should always be set to the
+		 * number 9 for the version of the protocol defined here.
 		 * 
 		 * <pre>
 		 * 'rtdk'
@@ -221,15 +224,16 @@ public class DockCommandSession extends DockingEventCommands {
 		public static final String kDRequestToDock = "rtdk";
 		/**
 		 * The following is a possible example of what would be displayed on the
-		 * Newton following the kDImportParametersSlip command:
+		 * Newton following the <tt>kDImportParametersSlip</tt> command:
 		 * <p>
 		 * The slip will, at minimum, display 2 text string fields corresponding
 		 * to the slip title and a filename. Up to 5 additional fields, plus the
-		 * CloseBox, could be displayed. While the slip is displayed, "helos"
-		 * are sent to the desktop. When the user taps on the "Import" button or
-		 * the CloseBox, a kDImportParameterSlipResult is sent to the desktop.
-		 * Each of the other 5 fields is shown if the slot defining it exists in
-		 * the frame parameter.
+		 * <tt>CloseBox</tt>, could be displayed. While the slip is displayed,
+		 * "helos" are sent to the desktop. When the user taps on the "Import"
+		 * button or the <tt>CloseBox</tt>, a
+		 * <tt>kDImportParameterSlipResult</tt> is sent to the desktop. Each of
+		 * the other 5 fields is shown if the slot defining it exists in the
+		 * frame parameter.
 		 * <p>
 		 * The frame contains the following slots used to configure the display
 		 * of the slip:<br>
@@ -267,7 +271,7 @@ public class DockCommandSession extends DockingEventCommands {
 		/**
 		 * This command displays the password slip to let the user enter a
 		 * password. The string is displayed as the title of the slip. A
-		 * kDPassword command is returned.
+		 * <tt>kDPassword</tt> command is returned.
 		 * 
 		 * <pre>
 		 * 'gpwd'
@@ -278,28 +282,28 @@ public class DockCommandSession extends DockingEventCommands {
 		public static final String kDGetPassword = "gpwd";
 		/**
 		 * This command is used to negotiate the real protocol version. The
-		 * protocol version sent with the kDRequestToDock command is now fixed
-		 * at version 9 (the version used by the 1.0 ROMs) so we can support
-		 * package loading with NPI 1.0, Connection 2.0 and NTK 1.0. Connection
-		 * 3.0 will send this command with the real protocol version it wants to
-		 * use to talk to the Newton. The Newton will respond with a number
-		 * equal to or lower than the number sent to it by the desktop. The
-		 * desktop can then decide whether it can talk the specified protocol or
-		 * not.
+		 * protocol version sent with the <tt>kDRequestToDock</tt> command is
+		 * now fixed at version 9 (the version used by the 1.0 ROMs) so we can
+		 * support package loading with NPI 1.0, Connection 2.0 and NTK 1.0.
+		 * Connection 3.0 will send this command with the real protocol version
+		 * it wants to use to talk to the Newton. The Newton will respond with a
+		 * number equal to or lower than the number sent to it by the desktop.
+		 * The desktop can then decide whether it can talk the specified
+		 * protocol or not.
 		 * <p>
-		 * The desktop type is a long that identifies the sender‚0 for the Mac
-		 * and 1 for Windows. The password key is used as part of the password
-		 * verification.
+		 * The desktop type is a long that identifies the sender‚ 0 for the
+		 * Macintosh and 1 for Windows. The password key is used as part of the
+		 * password verification.
 		 * <p>
 		 * Session type will be the real session type and should override what
-		 * was sent in kDInitiateDocking. In fact, it will either be the same as
-		 * was sent in kDInitiateDocking or "settingUp" to indicate that
-		 * although the desktop has accepted a connection, the user has not yet
-		 * specified an operation.
+		 * was sent in <tt>kDInitiateDocking</tt>. In fact, it will either be
+		 * the same as was sent in <tt>kDInitiateDocking</tt> or "settingUp" to
+		 * indicate that although the desktop has accepted a connection, the
+		 * user has not yet specified an operation.
 		 * <p>
-		 * AllowSelectiveSync is a boolean. The desktop should say no when the
-		 * user hasn't yet done a full sync and, therefore, can't do a selective
-		 * sync.
+		 * <tt>AllowSelectiveSync</tt> is a boolean. The desktop should say no
+		 * when the user hasn't yet done a full sync and, therefore, can't do a
+		 * selective sync.
 		 * <p>
 		 * <tt>desktopApps</tt> is an array of frames that describes who the
 		 * Newton is talking with. Each frame in the array looks like this:
@@ -341,10 +345,11 @@ public class DockCommandSession extends DockingEventCommands {
 		public static final int kKeyboardIcon = 32;
 	}
 
+	/** Newton to Desktop. */
 	public static final class NewtonToDesktop {
 		/**
-		 * This command returns the key received in the initiateDocking message
-		 * encrypted using the password.
+		 * This command returns the key received in the
+		 * <tt>kDInitiateDocking</tt> message encrypted using the password.
 		 * 
 		 * <pre>
 		 * 'pass'
@@ -354,11 +359,12 @@ public class DockCommandSession extends DockingEventCommands {
 		 */
 		public static final String kDPassword = "pass";
 		/**
-		 * This command is sent in response to a correct kDInitiateDocking
-		 * command from the docker. The Newton's name is used to locate the
-		 * proper synchronise file. The version info includes things like
-		 * machine type (e.g. J1), ROM version, etc. Here's the full list of
-		 * what the version info includes (all are <code>long</code>s):
+		 * This command is sent in response to a correct
+		 * <tt>kDInitiateDocking</tt> command from the docker. The Newton's name
+		 * is used to locate the proper synchronise file. The version info
+		 * includes things like machine type (e.g. J1), ROM version, etc. Here's
+		 * the full list of what the version info includes (all are
+		 * <code>long</code>s):
 		 * <ol>
 		 * <li>length of version info in bytes
 		 * <li>NewtonUniqueID - a number uniquely identifying the Newton
@@ -392,8 +398,8 @@ public class DockCommandSession extends DockingEventCommands {
 		public static final String kDNewtonName = "name";
 		/**
 		 * This command is used to negotiate the real protocol version. See
-		 * kDDesktopInfo below for more info. The password key is used as part
-		 * of the password verification.
+		 * <tt>kDDesktopInfo</tt> below for more info. The password key is used
+		 * as part of the password verification.
 		 * 
 		 * <pre>
 		 * 'ninf'

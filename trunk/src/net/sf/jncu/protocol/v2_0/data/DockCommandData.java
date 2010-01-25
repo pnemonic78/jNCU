@@ -2,8 +2,12 @@ package net.sf.jncu.protocol.v2_0.data;
 
 import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 
+/**
+ * Data commands.
+ */
 public class DockCommandData {
 
+	/** Desktop to Newton. */
 	public static final class DesktopToNewton extends DockingEventCommands {
 		/**
 		 * Tells the Newton the version that the subsequent data is from. For
@@ -12,12 +16,12 @@ public class DockCommandData {
 		 * NTF file. Otherwise, it should indicate that 2.x data is coming. When
 		 * the connection is first started the version defaults to 2.x. This
 		 * information is necessary for the Newton to know whether or not it
-		 * should run the conversion scripts. A kDRes command with value 0 is
-		 * sent by the Newton in response to this command. This commands affects
-		 * only data added to the Newton with kDAddEntry and
-		 * kDAddEntryWithUniqueID commands. In particular, note that data
-		 * returned by kDReturnEntry isn't converted if it's a different version
-		 * than was set by this command.
+		 * should run the conversion scripts. A <tt>kDRes</tt> command with
+		 * value 0 is sent by the Newton in response to this command. This
+		 * commands affects only data added to the Newton with
+		 * <tt>kDAddEntry</tt> and <tt>kDAddEntryWithUniqueID</tt> commands. In
+		 * particular, note that data returned by <tt>kDReturnEntry</tt> isn't
+		 * converted if it's a different version than was set by this command.
 		 * <p>
 		 * <tt>manufacturer</tt> and <tt>machinetype</tt> tell the Newton the
 		 * type of Newton that's the source of the data being restored. These
@@ -34,9 +38,9 @@ public class DockCommandData {
 		 */
 		public static final String kDSourceVersion = "sver";
 		/**
-		 * This command is sent when the PC wants to add an entry to the current
-		 * soup. The entry is added with the ID specified in the data frame. If
-		 * the id already exists an error is returned.
+		 * This command is sent when the desktop wants to add an entry to the
+		 * current soup. The entry is added with the ID specified in the data
+		 * frame. If the id already exists an error is returned.
 		 * <p>
 		 * <em>Warning! This function should only be used during a restore operation. In other situations there's no way of knowing whether the entrie's id is unique. If an entry is added with this command and the entry isn't unique an error is returned.</em>
 		 * 
@@ -49,9 +53,9 @@ public class DockCommandData {
 		public static final String kDAddEntryWithUniqueID = "auni";
 		/**
 		 * This command returns info about the default store. This info is the
-		 * same as the info returned by the kDGetStoreNames command (see
-		 * kDStoreNames for details). The default store is the one used by
-		 * LoadPackage.
+		 * same as the info returned by the <tt>kDGetStoreNames</tt> command
+		 * (see <tt>kDStoreNames</tt> for details). The default store is the one
+		 * used by LoadPackage.
 		 * 
 		 * <pre>
 		 * 'gdfs'
@@ -61,9 +65,10 @@ public class DockCommandData {
 		public static final String kDGetDefaultStore = "gdfs";
 		/**
 		 * This command creates a soup on the current store. It uses a
-		 * registered soupdef to create the soup meaning that the indexes, etc.
-		 * are determined by the ROM. If no soupdef exists for the specified
-		 * soup an error is returned. A kDResult is returned.
+		 * registered <tt>soupdef</tt> to create the soup meaning that the
+		 * indexes, etc. are determined by the ROM. If no <tt>soupdef</tt>
+		 * exists for the specified soup an error is returned. A kDResult is
+		 * returned.
 		 * 
 		 * <pre>
 		 * 'cdsp'
@@ -74,8 +79,8 @@ public class DockCommandData {
 		public static final String kDCreateDefaultSoup = "cdsp";
 		/**
 		 * This commands sets the signature of the current store to the
-		 * specified value. A kDResult with value 0 (or the error value if an
-		 * error occurred) is sent to the desktop in response.
+		 * specified value. A <tt>kDResult</tt> with value 0 (or the error value
+		 * if an error occurred) is sent to the desktop in response.
 		 * 
 		 * <pre>
 		 * 'ssig'
@@ -86,8 +91,8 @@ public class DockCommandData {
 		public static final String kDSetStoreSignature = "ssig";
 		/**
 		 * This commands sets the signature of the current soup to the specified
-		 * value. A kDResult with value 0 (or the error value if an error
-		 * occurred) is sent to the desktop in response.
+		 * value. A <tt>kDResult</tt> with value 0 (or the error value if an
+		 * error occurred) is sent to the desktop in response.
 		 * 
 		 * <pre>
 		 * 'ssos'
@@ -98,14 +103,15 @@ public class DockCommandData {
 		public static final String kDSetSoupSignature = "ssos";
 		/**
 		 * This command requests that all of the entries in a soup be returned
-		 * to the desktop. The Newton responds with a series of kDEntry commands
-		 * for all the entries in the current soup followed by a
-		 * kDBackupSoupDone command. All of the entries are sent without any
-		 * request from the desktop (in other words, a series of commands is
-		 * sent). The process can be interrupted by the desktop by sending a
-		 * kDOperationCanceled command. The cancel will be detected between
-		 * entries. The kDEntry commands are sent exactly as if they had been
-		 * requested by a kDReturnEntry command (they are long padded).
+		 * to the desktop. The Newton responds with a series of <tt>kDEntry</tt>
+		 * commands for all the entries in the current soup followed by a
+		 * <tt>kDBackupSoupDone</tt> command. All of the entries are sent
+		 * without any request from the desktop (in other words, a series of
+		 * commands is sent). The process can be interrupted by the desktop by
+		 * sending a <tt>kDOperationCanceled</tt> command. The cancel will be
+		 * detected between entries. The <tt>kDEntry</tt> commands are sent
+		 * exactly as if they had been requested by a <tt>kDReturnEntry</tt>
+		 * command (they are long padded).
 		 * 
 		 * <pre>
 		 * 'snds'
@@ -119,14 +125,15 @@ public class DockCommandData {
 		 * (set by a previous command), all entries with a unique ID greater
 		 * than the one specified, and the unique ids of all other entries to be
 		 * used to determine if any entries were deleted. The changed entries
-		 * are sent with kDEntry commands. The unique ids are sent with a
-		 * kDBackupIDs command. A kDBackupSoupDone command finishes the
-		 * sequence. If there are any IDs > 0x7FFF there could also be a
-		 * kDSetBaseID command. The changed entries and unique ids are sent in
-		 * unique id sequence. The Newton checks for kDOperationCanceled
-		 * commands occasionally. If the soup hasn't been changed since the last
-		 * backup a kDSoupNotDirty command is sent instead of the ids. A typical
-		 * sequence could look like this:
+		 * are sent with <tt>kDEntry</tt> commands. The unique ids are sent with
+		 * a <tt>kDBackupIDs</tt> command. A <tt>kDBackupSoupDone</tt> command
+		 * finishes the sequence. If there are any IDs > <tt>0x7FFF</tt> there
+		 * could also be a <tt>kDSetBaseID</tt> command. The changed entries and
+		 * unique ids are sent in unique id sequence. The Newton checks for
+		 * <tt>kDOperationCanceled</tt> commands occasionally. If the soup
+		 * hasn't been changed since the last backup a <tt>kDSoupNotDirty</tt>
+		 * command is sent instead of the ids. A typical sequence could look
+		 * like this:
 		 * <table>
 		 * <tr>
 		 * <th>Desktop</th>
@@ -237,12 +244,14 @@ public class DockCommandData {
 		public static final String kDRequestToInstall = "rins";
 	}
 
+	/** Newton to Desktop. */
 	public static final class NewtonToDesktop {
 		/**
 		 * This command returns a store info frame describing the default store.
 		 * This frame contains the same info returned for all stores by the
-		 * kDStoreNames command except that it doesn't include the store info.
-		 * It contains the name, signature, total size, used size and kind.
+		 * <tt>kDStoreNames</tt> command except that it doesn't include the
+		 * store info. It contains the name, signature, total size, used size
+		 * and kind.
 		 * 
 		 * <pre>
 		 * 'dfst'
@@ -253,7 +262,7 @@ public class DockCommandData {
 		public static final String kDDefaultStore = "dfst";
 		/**
 		 * This command is sent after the user closes the slip displayed by
-		 * kDImportParametersSlip. The result is a frame containing the
+		 * <tt>kDImportParametersSlip</tt>. The result is a frame containing the
 		 * following three slots:
 		 * 
 		 * <pre>
@@ -278,9 +287,9 @@ public class DockCommandData {
 		public static final String kDImportParameterSlipResult = "islr";
 		/**
 		 * This command sets a new base id for the ids sent with subsequent
-		 * kDBackupIDs commands. The new base is a long which should be added to
-		 * every id in all kDBackupIDs commands until a kDBackupSoupDone command
-		 * is received.
+		 * <tt>kDBackupIDs</tt> commands. The new base is a long which should be
+		 * added to every id in all kDBackupIDs commands until a
+		 * <tt>kDBackupSoupDone</tt> command is received.
 		 * 
 		 * <pre>
 		 * 'base'
@@ -290,16 +299,17 @@ public class DockCommandData {
 		 */
 		public static final String kDSetBaseID = "base";
 		/**
-		 * This command is sent in response to a kDBackupSoup command--see that
-		 * command for command sequence details. The length for this command is
-		 * always set to -1 indicating that the length is unknown. The ids are
-		 * specified as a compressed array of 16 bit numbers. Each id should be
-		 * offset by any value specified by a previous kDSetBaseID command (this
-		 * is how we can specify a 32 bit value in 15 bits). Each id is a number
-		 * between 0 and 0x7FFF (32767). Negative numbers specify a count of the
+		 * This command is sent in response to a <tt>kDBackupSoup</tt> command
+		 * (see that command for command sequence details). The length for this
+		 * command is always set to <tt>-1</tt> indicating that the length is
+		 * unknown. The ids are specified as a compressed array of 16 bit
+		 * numbers. Each id should be offset by any value specified by a
+		 * previous <tt>kDSetBaseID</tt> command (this is how we can specify a
+		 * 32 bit value in 15 bits). Each id is a number between <tt>0</tt> and
+		 * <tt>0x7FFF (32767)</tt>. Negative numbers specify a count of the
 		 * number of entries above the previous number before the next break
-		 * (non-contiguous id). The sequence is ended by a 0x8000 word. So, if
-		 * the Newton contains ids
+		 * (non-contiguous id). The sequence is ended by a <tt>0x8000</tt> word.
+		 * So, if the Newton contains ids
 		 * <tt>0, 1, 2, 3, 4, 10, 20, 21, 30, 31, 32</tt> the array would look
 		 * like <tt>0, -4, 10, 20, -1, 30, -2, 0x8000</tt><br>
 		 * Thus we send 8 words instead of 11 longs. Is it worth it? If there
@@ -314,7 +324,7 @@ public class DockCommandData {
 		public static final String kDBackupIDs = "bids";
 		/**
 		 * This command terminates the sequence of commands sent in response to
-		 * a kDBackupSoup command.
+		 * a <tt>kDBackupSoup</tt> command.
 		 * 
 		 * <pre>
 		 * 'bsdn'
@@ -323,8 +333,8 @@ public class DockCommandData {
 		 */
 		public static final String kDBackupSoupDone = "bsdn";
 		/**
-		 * This command is sent in response to a kDBackupSoup command if the
-		 * soup is unchanged from the last backup.
+		 * This command is sent in response to a <tt>kDBackupSoup</tt> command
+		 * if the soup is unchanged from the last backup.
 		 * 
 		 * <pre>
 		 * 'ndir'
@@ -334,7 +344,7 @@ public class DockCommandData {
 		public static final String kDSoupNotDirty = "ndir";
 		/**
 		 * This command is sent to the desktop when the user taps the
-		 * Synchronize button on the Newton.
+		 * <tt>Synchronize<tt> button on the Newton.
 		 * 
 		 * <pre>
 		 * 'sync'
