@@ -1,7 +1,8 @@
 package net.sf.jncu.protocol.v1_0;
 
 /**
- * Newton Docking Protocol event commands for 1.0 Newton ROM Extensions.<br>
+ * <h2>Newton Docking Protocol</h2> Newton Docking Protocol event commands for
+ * 1.0 Newton ROM Extensions.<br>
  * Newton communicates with the desktop by exchanging Newton event commands.
  * <p>
  * In the commands below, all data is padded with nulls to 4 byte boundaries.
@@ -21,10 +22,7 @@ package net.sf.jncu.protocol.v1_0;
  * data     // data, if any
  * </pre>
  * <p>
- * 
- * Examples
- * 
- * Every session starts like this:
+ * <h2>Examples</h2> Every session starts like this:
  * <table>
  * <tr>
  * <th>Desktop</th>
@@ -60,7 +58,6 @@ package net.sf.jncu.protocol.v1_0;
  * kDSetTimeout if it doesn't want to set the timeout).
  * <p>
  * A typical synchronize session might continue like this:
- * 
  * <table>
  * <tr>
  * <th>Desktop</th>
@@ -356,135 +353,242 @@ public class DockingEventCommands {
 
 	public static final class DesktopToNewton {
 		/**
-		 * data = session type
+		 * This command is sent to the newt in response to a kDRequestToDock
+		 * command. Session type can be one of
+		 * <tt>{none, settingUp, synchronize, restore, loadPackage, testComm, loadPatch, updatingStores}</tt>
+		 * .
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'dock'
+		 * length
+		 * session type
+		 * </pre>
 		 */
 		public static final String kDInitiateDocking = "dock";
 		/**
-		 * The time of the last sync
+		 * The time of the last sync.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'stme'
+		 * </pre>
 		 */
 		public static final String kDLastSyncTIme = "stme";
 		/**
-		 * no data
+		 * This command is sent when a list of store names is needed.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'gsto'
+		 * length = 0
+		 * </pre>
 		 */
 		public static final String kDGetStoreNames = "gsto";
 		/**
-		 * no data
+		 * This command is sent when a list of soup names is needed. It expects
+		 * to receive a kDSoupNames command in response.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'gets'
+		 * length = 0
+		 * </pre>
 		 */
 		public static final String kDGetSoupNames = "gets";
 		/**
-		 * data = store frane
+		 * This command sets the current store on the Newton. A store frame is
+		 * sent to uniquely identify the store to be set: <br>
+		 * <code>
+		 * {<br>&nbsp;&nbsp;name: "foo",<br>
+		 * &nbsp;&nbsp;kind: "bar",<br>
+		 * &nbsp;&nbsp;signature: 1234,<br>
+		 * &nbsp;&nbsp;info: {<info frame>}		// This one is optional<br>
+		 * }</code>
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'ssto'
+		 * length
+		 * store frame
+		 * </pre>
 		 */
 		public static final String kDSetCurrentStore = "ssto";
 		/**
-		 * data = soup name
+		 * This command sets the current soup. Most of the other commands
+		 * pertain to this soup so this command must precede any command that
+		 * uses the current soup. If the soup doesn't exist a kDSoupNotFound
+		 * error is returned but the connection is left alive so the desktop can
+		 * create the soup if necessary. Soup names must be < 25 characters.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'ssou'
+		 * length
+		 * soup name
+		 * </pre>
 		 */
 		public static final String kDSetCurrentSoup = "ssou";
 		/**
-		 * no data
+		 * This command is sent to request a list of entry IDs for the current
+		 * soup. It expects to receive a kDSoupIDs command in response.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'gids'
+		 * length = 0
+		 * </pre>
 		 */
 		public static final String kDGetSoupIDs = "gids";
 		/**
-		 * no data
+		 * This command is sent to request a list of changed IDs for the current
+		 * soup. It expects to receive a kDChangedIDs command in response.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'gids'
+		 * length = 0
+		 * </pre>
 		 */
 		public static final String kdGetChangedIDs = "gcid";
 		/**
-		 * data = list of IDs
+		 * This command is sent to delete one or more entries from the current
+		 * soup.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'dele'
+		 * length
+		 * count
+		 * array of ids
+		 * </pre>
 		 */
 		public static final String kDDeleteEntries = "dele";
 		/**
-		 * data = flattened entry
+		 * This command is sent when the PC wants to add an entry to the current
+		 * soup.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'adde'
+		 * length
+		 * entry ref
+		 * </pre>
 		 */
 		public static final String kDAddEntry = "adde";
 		/**
-		 * data = ID to return
+		 * This command is sent when the PC wants to retrieve an entry from the
+		 * current soup.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'rete'
+		 * length
+		 * id
+		 * </pre>
 		 */
 		public static final String kDReturnEntry = "rete";
 		/**
-		 * data = ID to return
+		 * This command is sent when the PC wants to retrieve a changed entry
+		 * from the current soup.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'rcen'
+		 * length
+		 * id
+		 * </pre>
 		 */
 		public static final String kDReturnChangedEntry = "rcen";
 		/**
-		 * no data
+		 * This command is used by restore to remove all entries from a soup
+		 * before the soup data is restored.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'dsou'
+		 * length
+		 * soup name
+		 * </pre>
 		 */
 		public static final String kDEmptySoup = "esou";
 		/**
-		 * no data
+		 * This command is used by restore to delete a soup if it exists on the
+		 * Newton but not on the PC.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'dsou'
+		 * length
+		 * soup name
+		 * </pre>
 		 */
 		public static final String kDDeleteSoup = "dsou";
 		/**
-		 * data = package
+		 * This command will load a package into the Newton's RAM. The package
+		 * data should be padded to an even multiple of 4 by adding zero bytes
+		 * to the end of the package data.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'lpkg'
+		 * length
+		 * package data
+		 * </pre>
 		 */
 		public static final String kDLoadPackage = "lpkg";
 		/**
-		 * no data
+		 * This command is sent to request a list of package ids. This list is
+		 * used to remove any packages from the PC that have been deleted on the
+		 * Newt.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'gpid'
+		 * length = 0
+		 * </pre>
 		 */
 		public static final String kDGetPackageIDs = "gpid";
 		/**
-		 * no data
+		 * This command is sent to backup any packages that are installed on the
+		 * Newton. It expects a kDPackage command or a kDResponse with an error
+		 * of 0 (to indicate that there are no more packages) in response.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'bpkg'
+		 * length = 0
+		 * </pre>
 		 */
 		public static final String kDBackupPackages = "bpkg";
 		/**
-		 * no data
+		 * This command is sent to the Newton when the docking operation is
+		 * complete.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'disc'
+		 * length = 0
+		 * </pre>
 		 */
 		public static final String kDDisconnect = "disc";
 		/**
-		 * no data
+		 * Delete all packages.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'dpkg'
+		 * </pre>
 		 */
 		public static final String kDDeleteAllPackages = "dpkg";
 		/**
-		 * no data
+		 * This command requests the definition of the indexes that should be
+		 * created for the current soup.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'gidx'
+		 * length = 0
+		 * </pre>
 		 */
 		public static final String kDGetIndexDescription = "gind";
 		/**
-		 * data = name + index description
+		 * Create a soup.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'csop'
+		 * length
+		 * soup name
+		 * index description
+		 * </pre>
 		 */
 		public static final String kDCreateSoup = "csop";
 		/**
-		 * no data
+		 * Get inheritance.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'ginh'
+		 * </pre>
 		 */
 		public static final String kDGetInheritance = "ginh";
 		/**
@@ -500,21 +604,30 @@ public class DockingEventCommands {
 		 */
 		public static final String kDSetTimeout = "stim";
 		/**
-		 * no data
+		 * Get patches.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'gpat'
+		 * length = 0
+		 * </pre>
 		 */
 		public static final String kDGetPatches = "gpat";
 		/**
-		 * no data
+		 * Delete package dir.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'dpkd'
+		 * length = 0
+		 * </pre>
 		 */
 		public static final String kDDeletePkgDir = "dpkd";
 		/**
-		 * no data
+		 * Get soup information.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'gsin'
+		 * length = 0
+		 * </pre>
 		 */
 		public static final String kDGetSoupInfo = "gsin";
 	}
@@ -552,7 +665,10 @@ public class DockingEventCommands {
 		/**
 		 * The current time on the Newton.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'time'
+		 * length = 0
+		 * </pre>
 		 */
 		public static final String kDCurrentTime = "time";
 		/**
@@ -706,41 +822,66 @@ public class DockingEventCommands {
 		 */
 		public static final String kDIndexDescription = "indx";
 		/**
-		 * data = array of class, supperclass pairs
+		 * Inheritance.
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'dinh'
+		 * length
+		 * array of class, supperclass pairs
+		 * </pre>
 		 */
 		public static final String kDInheritance = "dinh";
 		/**
-		 * no data
+		 * Patches
 		 * 
-		 * <pre></pre>
+		 * <pre>
+		 * 'patc'
+		 * length = 0
+		 * </pre>
 		 */
 		public static final String kDPatches = "patc";
 	}
 
 	/**
-	 * data = entry being returned
+	 * This command is sent by the newton in response to a KDReturnChangedEntry
+	 * command from the desktop. It can also be sent by the desktop.
 	 * 
-	 * <pre></pre>
+	 * <pre>
+	 * 'cent'
+	 * length
+	 * entry
+	 * </pre>
 	 */
 	public static final String kDChangedEntry = "cent";
 	/**
-	 * variable length data
+	 * Test.
 	 * 
-	 * <pre></pre>
+	 * <pre>
+	 * 'test'
+	 * length
+	 * data
+	 * </pre>
 	 */
 	public static final String kDTest = "test";
 	/**
-	 * no data
+	 * This command is sent during long operations to let the newton or desktop
+	 * know that the connection hasn't been dropped.
 	 * 
-	 * <pre></pre>
+	 * <pre>
+	 * 'helo'
+	 * length = 0
+	 * </pre>
 	 */
 	public static final String kDHello = "helo";
 	/**
-	 * data = soup info frame
+	 * This command is used to send a soup info frame. When received the info
+	 * for the current soup is set to the specified frame.
 	 * 
-	 * <pre></pre>
+	 * <pre>
+	 * 'sinf'
+	 * length = 0
+	 * soup info frame
+	 * </pre>
 	 */
 	public static final String kDSoupInfo = "sinf";
 
