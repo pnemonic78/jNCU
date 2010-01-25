@@ -11,7 +11,7 @@ package net.sf.jncu.protocol.v1_0;
  * specified.
  * <p>
  * All commands begin with the sequence -- '<tt>newt</tt>', '<tt>dock</tt>'. <br>
- * Newton communicates with the desktop by exchanging newton event commands. The
+ * Newton communicates with the desktop by exchanging Newton event commands. The
  * general command structure looks like this:
  * 
  * <pre>
@@ -843,7 +843,7 @@ public class DockingEventCommands {
 	}
 
 	/**
-	 * This command is sent by the newton in response to a KDReturnChangedEntry
+	 * This command is sent by the Newton in response to a KDReturnChangedEntry
 	 * command from the desktop. It can also be sent by the desktop.
 	 * 
 	 * <pre>
@@ -864,7 +864,7 @@ public class DockingEventCommands {
 	 */
 	public static final String kDTest = "test";
 	/**
-	 * This command is sent during long operations to let the newton or desktop
+	 * This command is sent during long operations to let the Newton or desktop
 	 * know that the connection hasn't been dropped.
 	 * 
 	 * <pre>
