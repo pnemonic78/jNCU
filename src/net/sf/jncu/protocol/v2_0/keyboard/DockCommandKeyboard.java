@@ -3,7 +3,9 @@ package net.sf.jncu.protocol.v2_0.keyboard;
 import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 
 /**
- * Desktop initiated keyboard passthrough would look like this:
+ * Keyboard commands.
+ * <p>
+ * Desktop initiated keyboard pass-through would look like this:
  * <table>
  * <tr>
  * <th>Desktop</th>
@@ -40,7 +42,7 @@ import net.sf.jncu.protocol.v2_0.DockingEventCommands;
  * </tr>
  * </table>
  * <br>
- * Newton initiated keyboard passthrough would look like this:
+ * Newton initiated keyboard pass-through would look like this:
  * <table>
  * <tr>
  * <th>Desktop</th>
@@ -76,10 +78,11 @@ import net.sf.jncu.protocol.v2_0.DockingEventCommands;
  */
 public class DockCommandKeyboard extends DockingEventCommands {
 
+	/** Desktop to Newton. */
 	public static final class DesktopToNewton {
 		/**
 		 * This command sends 1 character to the Newton for processing. The char
-		 * is a 2 byte unicode character + a 2 byte state. The state is defined
+		 * is a 2 byte Unicode character + a 2 byte state. The state is defined
 		 * as follows:
 		 * <ol>
 		 * <li>Bit 1 = command key down
@@ -95,7 +98,7 @@ public class DockCommandKeyboard extends DockingEventCommands {
 		public static final String kDKeyboardChar = "kbdc";
 		/**
 		 * This command sends a string of characters to the Newton for
-		 * processing. The characters are 2 byte unicode characters. If there
+		 * processing. The characters are 2 byte Unicode characters. If there
 		 * are an odd number of characters the command should be padded, as
 		 * usual.
 		 * 
@@ -109,9 +112,9 @@ public class DockCommandKeyboard extends DockingEventCommands {
 	}
 
 	/**
-	 * This command is sent to enter keyboard passthrough mode. It can be
-	 * followed by kDKeyboardChar, kDKeyboardString, kDHello and
-	 * kDOperationComplete commands.
+	 * This command is sent to enter keyboard pass-through mode. It can be
+	 * followed by <tt>kDKeyboardChar</tt>, <tt>kDKeyboardString</tt>,
+	 * <tt>kDHello</tt> and <tt>kDOperationComplete</tt> commands.
 	 * 
 	 * <pre>
 	 * 'kybd'

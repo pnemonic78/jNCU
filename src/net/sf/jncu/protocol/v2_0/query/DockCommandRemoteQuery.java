@@ -3,7 +3,7 @@ package net.sf.jncu.protocol.v2_0.query;
 import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 
 /**
- * Remote query
+ * Remote query commands.
  * <p>
  * All of the commands in this section are based on the NewtonScript query
  * functions. Please see the Newton Programmer's Guide for details about the
@@ -13,15 +13,17 @@ import net.sf.jncu.protocol.v2_0.DockingEventCommands;
  */
 public class DockCommandRemoteQuery extends DockingEventCommands {
 
+	/** Desktop to Newton. */
 	public static final class DesktopToNewton {
 		/**
-		 * The parameter frame must contain a queryspec slot and may contain a
-		 * soupname slot. Performs the specified query on the current store. The
-		 * query spec is a full query spec including valid test, etc. functions.
-		 * Soup name is a string that's used to find a soup in the current store
-		 * to query. If the soup name is an empty string or a NILREF the query
-		 * is done on the current soup. A kDLongData is returned with a cursor
-		 * ID that should be used with the rest of the remote query commands.
+		 * The parameter frame must contain a <tt>queryspec</tt> slot and may
+		 * contain a <tt>soupname</tt> slot. Performs the specified query on the
+		 * current store. The <tt>queryspec</tt> is a full <tt>queryspec</tt>
+		 * including valid test, etc. functions. Soup name is a string that's
+		 * used to find a soup in the current store to query. If the soup name
+		 * is an empty string or a <tt>NILREF</tt> the query is done on the
+		 * current soup. A <tt>kDLongData</tt> is returned with a cursor ID that
+		 * should be used with the rest of the remote query commands.
 		 * 
 		 * <pre>
 		 * 'qury'
@@ -31,8 +33,8 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 		 */
 		public static final String kDQuery = "qury";
 		/**
-		 * The entry at the specified key location is returned. Nil is returned
-		 * if there is no entry with the specified key.
+		 * The entry at the specified key location is returned. <tt>Nil</tt> is
+		 * returned if there is no entry with the specified key.
 		 * 
 		 * <pre>
 		 * 'goto'
@@ -44,8 +46,8 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 		public static final String kDCursorGotoKey = "goto";
 		/**
 		 * Applies the specified function to each of the cursor's entries in
-		 * turn and returns an array of the results. A kDRefResult is returned.
-		 * See MapCursor in NPG.
+		 * turn and returns an array of the results. A <tt>kDRefResult</tt> is
+		 * returned. See MapCursor in NPG.
 		 * 
 		 * <pre>
 		 * 'cmap'
@@ -91,7 +93,7 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 		 */
 		public static final String kDCursorNext = "next";
 		/**
-		 * Moves the cursor to the previous entry in te set of entries
+		 * Moves the cursor to the previous entry in the set of entries
 		 * referenced by the cursor and returns the entry. If the cursor is
 		 * moved before the first entry nil is returned.
 		 * 
@@ -103,7 +105,8 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 		 */
 		public static final String kDCursorPrev = "prev";
 		/**
-		 * Resets the cursor to its initial state. A kDRes of 0 is returned.
+		 * Resets the cursor to its initial state. A <tt>kDRes</tt> of 0 is
+		 * returned.
 		 * 
 		 * <pre>
 		 * 'rset'
@@ -113,8 +116,8 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 		 */
 		public static final String kDCursorReset = "rset";
 		/**
-		 * Resets the cursor to the rightmost entry in the valid subset. A kDRes
-		 * of 0 is returned.
+		 * Resets the cursor to the rightmost entry in the valid subset. A
+		 * <tt>kDRes</tt> of 0 is returned.
 		 * 
 		 * <pre>
 		 * 'rend'
@@ -125,7 +128,7 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 		public static final String kDCursorResetToEnd = "rend";
 		/**
 		 * Returns the count of the entries matching the query specification. A
-		 * kDLongData is returned.
+		 * <tt>kDLongData</tt> is returned.
 		 * 
 		 * <pre>
 		 * 'cnt '
@@ -135,7 +138,8 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 		 */
 		public static final String kDCursorCountEntries = "cnt ";
 		/**
-		 * Returns kDLongData with a 0 for unknown, 1 for start and 2 for end.
+		 * Returns <tt>kDLongData</tt> with a 0 for unknown, 1 for start and 2
+		 * for end.
 		 * 
 		 * <pre>
 		 * 'whch'
@@ -145,7 +149,7 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 		 */
 		public static final String kDCursorWhichEnd = "whch";
 		/**
-		 * Disposes the cursor and returns a kDRes with a 0 or error.
+		 * Disposes the cursor and returns a <tt>kDRes</tt> with a 0 or error.
 		 * 
 		 * <pre>
 		 * 'cfre'
@@ -156,6 +160,7 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 		public static final String kDCursorFree = "cfre";
 	}
 
+	/** Newton to Desktop. */
 	public static final class NewtonToDesktop {
 		/**
 		 * Newton returns a long value. The interpretation of the data depends
@@ -169,7 +174,10 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 		 */
 		public static final String kDLongData = "ldta";
 		/**
+		 * Reference result.
+		 * 
 		 * <pre>
+		 * 'ref '
 		 * </pre>
 		 */
 		public static final String kDRefResult = "ref ";

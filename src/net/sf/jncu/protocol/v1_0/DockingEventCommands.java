@@ -57,7 +57,7 @@ package net.sf.jncu.protocol.v1_0;
  * always start a session (the desktop can substitute a kDResult for the
  * kDSetTimeout if it doesn't want to set the timeout).
  * <p>
- * A typical synchronize session might continue like this:
+ * A typical synchronise session might continue like this:
  * <table>
  * <tr>
  * <th>Desktop</th>
@@ -353,8 +353,9 @@ public class DockingEventCommands {
 
 	public static final class DesktopToNewton {
 		/**
-		 * This command is sent to the newt in response to a kDRequestToDock
-		 * command. Session type can be one of
+		 * This command is sent to the newt in response to a
+		 * <tt>kDRequestToDock</tt> command. Session type can be one of
+		 * 
 		 * <tt>{none, settingUp, synchronize, restore, loadPackage, testComm, loadPatch, updatingStores}</tt>
 		 * .
 		 * 
@@ -384,7 +385,7 @@ public class DockingEventCommands {
 		public static final String kDGetStoreNames = "gsto";
 		/**
 		 * This command is sent when a list of soup names is needed. It expects
-		 * to receive a kDSoupNames command in response.
+		 * to receive a <tt>kDSoupNames</tt> command in response.
 		 * 
 		 * <pre>
 		 * 'gets'
@@ -412,9 +413,10 @@ public class DockingEventCommands {
 		/**
 		 * This command sets the current soup. Most of the other commands
 		 * pertain to this soup so this command must precede any command that
-		 * uses the current soup. If the soup doesn't exist a kDSoupNotFound
-		 * error is returned but the connection is left alive so the desktop can
-		 * create the soup if necessary. Soup names must be < 25 characters.
+		 * uses the current soup. If the soup doesn't exist a
+		 * <tt>kDSoupNotFound</tt> error is returned but the connection is left
+		 * alive so the desktop can create the soup if necessary. Soup names
+		 * must be < 25 characters.
 		 * 
 		 * <pre>
 		 * 'ssou'
@@ -425,7 +427,7 @@ public class DockingEventCommands {
 		public static final String kDSetCurrentSoup = "ssou";
 		/**
 		 * This command is sent to request a list of entry IDs for the current
-		 * soup. It expects to receive a kDSoupIDs command in response.
+		 * soup. It expects to receive a <tt>kDSoupIDs</tt> command in response.
 		 * 
 		 * <pre>
 		 * 'gids'
@@ -435,7 +437,8 @@ public class DockingEventCommands {
 		public static final String kDGetSoupIDs = "gids";
 		/**
 		 * This command is sent to request a list of changed IDs for the current
-		 * soup. It expects to receive a kDChangedIDs command in response.
+		 * soup. It expects to receive a <tt>kDChangedIDs</tt> command in
+		 * response.
 		 * 
 		 * <pre>
 		 * 'gids'
@@ -456,8 +459,8 @@ public class DockingEventCommands {
 		 */
 		public static final String kDDeleteEntries = "dele";
 		/**
-		 * This command is sent when the PC wants to add an entry to the current
-		 * soup.
+		 * This command is sent when the desktop wants to add an entry to the
+		 * current soup.
 		 * 
 		 * <pre>
 		 * 'adde'
@@ -467,8 +470,8 @@ public class DockingEventCommands {
 		 */
 		public static final String kDAddEntry = "adde";
 		/**
-		 * This command is sent when the PC wants to retrieve an entry from the
-		 * current soup.
+		 * This command is sent when the desktop wants to retrieve an entry from
+		 * the current soup.
 		 * 
 		 * <pre>
 		 * 'rete'
@@ -478,8 +481,8 @@ public class DockingEventCommands {
 		 */
 		public static final String kDReturnEntry = "rete";
 		/**
-		 * This command is sent when the PC wants to retrieve a changed entry
-		 * from the current soup.
+		 * This command is sent when the desktop wants to retrieve a changed
+		 * entry from the current soup.
 		 * 
 		 * <pre>
 		 * 'rcen'
@@ -501,7 +504,7 @@ public class DockingEventCommands {
 		public static final String kDEmptySoup = "esou";
 		/**
 		 * This command is used by restore to delete a soup if it exists on the
-		 * Newton but not on the PC.
+		 * Newton but not on the desktop.
 		 * 
 		 * <pre>
 		 * 'dsou'
@@ -524,8 +527,8 @@ public class DockingEventCommands {
 		public static final String kDLoadPackage = "lpkg";
 		/**
 		 * This command is sent to request a list of package ids. This list is
-		 * used to remove any packages from the PC that have been deleted on the
-		 * Newt.
+		 * used to remove any packages from the desktop that have been deleted
+		 * on the Newt.
 		 * 
 		 * <pre>
 		 * 'gpid'
@@ -535,8 +538,9 @@ public class DockingEventCommands {
 		public static final String kDGetPackageIDs = "gpid";
 		/**
 		 * This command is sent to backup any packages that are installed on the
-		 * Newton. It expects a kDPackage command or a kDResponse with an error
-		 * of 0 (to indicate that there are no more packages) in response.
+		 * Newton. It expects a <tt>kDPackage</tt> command or a kDResponse with
+		 * an error of 0 (to indicate that there are no more packages) in
+		 * response.
 		 * 
 		 * <pre>
 		 * 'bpkg'
@@ -634,11 +638,11 @@ public class DockingEventCommands {
 
 	public static final class NewtonToDesktop {
 		/**
-		 * Ask PC to start docking process.<br>
+		 * Ask desktop to start docking process.<br>
 		 * This command is sent to a docker that the junior wishes to connect
 		 * with (on the network, serial, etc.). The Newt expects a
-		 * kDInitiateDocking command in response. The protocol version is the
-		 * version of the messaging protocol that's being used.
+		 * <tt>kDInitiateDocking</tt> command in response. The protocol version
+		 * is the version of the messaging protocol that's being used.
 		 * 
 		 * <pre>
 		 * 'rtdk'
@@ -651,7 +655,7 @@ public class DockingEventCommands {
 		 * The name of the Newton.<br>
 		 * This command is sent in response to a correct kDInitiateDocking
 		 * command from the docker. The Newton's name is used to locate the
-		 * proper synchronize file. The version info includes things like
+		 * proper synchronise file. The version info includes things like
 		 * machine type (e.g. J1), ROM version, etc.
 		 * 
 		 * <pre>
@@ -672,9 +676,9 @@ public class DockingEventCommands {
 		 */
 		public static final String kDCurrentTime = "time";
 		/**
-		 * This command is sent in response to a kDGetStoreNames command. It
-		 * returns information about all the stores on the Newton. Each array
-		 * slot contains the following information about a store:<br>
+		 * This command is sent in response to a <tt>kDGetStoreNames</tt>
+		 * command. It returns information about all the stores on the Newton.
+		 * Each array slot contains the following information about a store:<br>
 		 * <code>
 {<br>
 &nbsp;&nbsp;name: "",<br>
@@ -686,8 +690,7 @@ public class DockingEventCommands {
 &nbsp;&nbsp;readOnly: true,<br>
 &nbsp;&nbsp;defaultStore: true,		// only for the default store<br>
 &nbsp;&nbsp;storePassword: password  // only if a store password has been set<br>
-}
-</code>
+}</code>
 		 * 
 		 * <pre>
 		 * 'stor'
@@ -697,9 +700,9 @@ public class DockingEventCommands {
 		 */
 		public static final String kDStoreNames = "stor";
 		/**
-		 * This command is sent in response to a kDGetSoupNames command. It
-		 * returns the names and signatures of all the soups in the current
-		 * store.
+		 * This command is sent in response to a <tt>kDGetSoupNames</tt>
+		 * command. It returns the names and signatures of all the soups in the
+		 * current store.
 		 * 
 		 * <pre>
 		 * 'soup'
@@ -710,8 +713,8 @@ public class DockingEventCommands {
 		 */
 		public static final String kDSoupNames = "soup";
 		/**
-		 * This command is sent in response to a kDGetSoupIDs command. It
-		 * returns all the IDs from the current soup.
+		 * This command is sent in response to a <tt>kDGetSoupIDs</tt> command.
+		 * It returns all the IDs from the current soup.
 		 * 
 		 * <pre>
 		 * 'sids'
@@ -722,10 +725,10 @@ public class DockingEventCommands {
 		 */
 		public static final String kDSoupIDs = "sids";
 		/**
-		 * This command is sent in response to a kDGetChangedIDs command. It
-		 * returns all the ids with mod time > the last sync time. If the last
-		 * sync time is 0, no changed entries are returned (this would happen on
-		 * the first sync).
+		 * This command is sent in response to a <tt>kDGetChangedIDs</tt>
+		 * command. It returns all the ids with <tt>mod</tt> time > the last
+		 * sync time. If the last sync time is 0, no changed entries are
+		 * returned (this would happen on the first sync).
 		 * 
 		 * <pre>
 		 * 'cids'
@@ -736,9 +739,9 @@ public class DockingEventCommands {
 		 */
 		public static final String kDChangedIDs = "cids";
 		/**
-		 * This command is sent in response to any of the commands from the PC
-		 * that don't request data. It lets the PC know that things are still
-		 * proceeding OK.
+		 * This command is sent in response to any of the commands from the
+		 * desktop that don't request data. It lets the desktop know that things
+		 * are still proceeding OK.
 		 * 
 		 * <pre>
 		 * 'dres'
@@ -748,9 +751,9 @@ public class DockingEventCommands {
 		 */
 		public static final String kDResult = "dres";
 		/**
-		 * This command is sent in response to a kDAddEntry command from the PC.
-		 * It returns the ID that the entry was given when it was added to the
-		 * current soup.
+		 * This command is sent in response to a <tt>kDAddEntry</tt> command
+		 * from the desktop. It returns the ID that the entry was given when it
+		 * was added to the current soup.
 		 * 
 		 * <pre>
 		 * 'adid'
@@ -760,9 +763,9 @@ public class DockingEventCommands {
 		 */
 		public static final String kDAddedID = "adid";
 		/**
-		 * This command is sent in response to a KDReturnEntry command. The
-		 * entry in the current soup specified by the ID in the KDReturnEntry
-		 * command is returned.
+		 * This command is sent in response to a <tt>kDReturnEntry</tt> command.
+		 * The entry in the current soup specified by the ID in the
+		 * <tt>kDReturnEntry</tt> command is returned.
 		 * 
 		 * <pre>
 		 * 'entr'
@@ -799,8 +802,8 @@ public class DockingEventCommands {
 		 */
 		public static final String kDPackageIDList = "pids";
 		/**
-		 * This command sends a package to the pc. It's issued repeatedly in
-		 * response to a kDBackupPackages message.
+		 * This command sends a package to the desktop. It's issued repeatedly
+		 * in response to a <tt>kDBackupPackages</tt> message.
 		 * 
 		 * <pre>
 		 * 'apkg'
@@ -827,7 +830,7 @@ public class DockingEventCommands {
 		 * <pre>
 		 * 'dinh'
 		 * length
-		 * array of class, supperclass pairs
+		 * array of class, superclass pairs
 		 * </pre>
 		 */
 		public static final String kDInheritance = "dinh";
@@ -843,8 +846,9 @@ public class DockingEventCommands {
 	}
 
 	/**
-	 * This command is sent by the Newton in response to a KDReturnChangedEntry
-	 * command from the desktop. It can also be sent by the desktop.
+	 * This command is sent by the Newton in response to a
+	 * <tt>kDReturnChangedEntry</tt> command from the desktop. It can also be
+	 * sent by the desktop.
 	 * 
 	 * <pre>
 	 * 'cent'
