@@ -6,7 +6,7 @@ public class DockCommandApplication extends DockingEventCommands {
 
 	public static final class DesktopToNewton {
 		/**
-		 * This command tells the newton to delete a package. It can be used
+		 * This command tells the Newton to delete a package. It can be used
 		 * during selective restore or any other time.
 		 * 
 		 * <pre>
@@ -31,7 +31,7 @@ public class DockCommandApplication extends DockingEventCommands {
 		 */
 		public static final String kDGetPackageInfo = "gpin";
 		/**
-		 * This command asks the newton to call the specified function and
+		 * This command asks the Newton to call the specified function and
 		 * return it's result. This function must be a global function. The
 		 * return value from the function is sent to the desktop with a
 		 * kDCallResult command.
@@ -45,7 +45,7 @@ public class DockCommandApplication extends DockingEventCommands {
 		 */
 		public static final String kDCallGlobalFunction = "cgfn";
 		/**
-		 * This command asks the newton to call the specified root method. The
+		 * This command asks the Newton to call the specified root method. The
 		 * return value from the method is sent to the desktop with a
 		 * kDCallResult command.
 		 * 
@@ -58,10 +58,10 @@ public class DockCommandApplication extends DockingEventCommands {
 		 */
 		public static final String kDCallRootMethod = "crmd";
 		/**
-		 * This command installs a protocol extension into the newton. The
+		 * This command installs a protocol extension into the Newton. The
 		 * extension lasts for the length of the current connection (in other
 		 * words, you have to install the extension every time you connect). The
-		 * function is a newton script closure that would have to be compiled on
+		 * function is a Newton script closure that would have to be compiled on
 		 * the desktop. See the Dante Connection (ROM) API IU document for
 		 * details. A kDResult with value 0 (or the error value if an error
 		 * occurred) is sent to the desktop in response.
@@ -84,12 +84,88 @@ public class DockCommandApplication extends DockingEventCommands {
 		 * </pre>
 		 */
 		public static final String kDRemoveProtocolExtension = "rpex";
+		/**
+		 * Reports a desktop error to the Newton. The string is included since
+		 * the Newton doesn't know how to decode all the desktop errors
+		 * (especially since the Mac and Windows errors are different).
+		 * ErrorString is a ref.
+		 * 
+		 * <pre>
+		 * 'ress'
+		 * length
+		 * errorNumber
+		 * errorStringRef
+		 * </pre>
+		 */
+		public static final String kDResultString = "ress";
+		/**
+		 * This command controls which VBOs are sent compressed to the desktop.
+		 * VBO can always be sent compressed, never compressed or only package
+		 * VBOs sent compressed.
+		 * 
+		 * <pre>
+		 * 'cvbo'
+		 * length
+		 * what
+		 * </pre>
+		 * 
+		 * @see eUncompressedVBOs
+		 * @see eCompressedPackagesOnly
+		 * @see eCompressedVBOs
+		 */
+		public static final String kDSetVBOCompression = "cvbo";
+		/**
+		 * This command is used to restore the patch backed up with
+		 * kDGetPatches. The Newton returns a kDResult of 0 (or an error if
+		 * appropriate) if the patch wasn't installed. If the patch was
+		 * installed the Newton restarts.
+		 * 
+		 * <pre>
+		 * 'rpat'
+		 * length
+		 * patch
+		 * </pre>
+		 */
+		public static final String kDRestorePatch = "rpat";
+		/**
+		 * This command asks the Newton to send information about the
+		 * applications installed on the Newton. See the kDAppNames description
+		 * above for details of the information returned. The
+		 * <tt>return what</tt> parameter determines what information is
+		 * returned. Here are the choices:
+		 * <ul>
+		 * <li>0: return names and soups for all stores
+		 * <li>1: return names and soups for current store
+		 * <li>2: return just names for all stores
+		 * <li>3: return just names for current store
+		 * </ul>
+		 * 
+		 * <pre>
+		 * 'gapp'
+		 * length
+		 * return what
+		 * </pre>
+		 */
+		public static final String kDGetAppNames = "gapp";
+
+		/**
+		 * VBO sent uncompressed.
+		 */
+		public static final int eUncompressedVBOs = 0;
+		/**
+		 * Only package VBOs sent compressed.
+		 */
+		public static final int eCompressedPackagesOnly = 1;
+		/**
+		 * VBO sent compressed.
+		 */
+		public static final int eCompressedVBOs = 2;
 	}
 
 	public static final class NewtonToDesktop {
 		/**
 		 * This command returns the names of the applications present on the
-		 * newton. It also, optionally, returns the names of the soups
+		 * Newton. It also, optionally, returns the names of the soups
 		 * associated with each application. The array looks like this:
 		 * <code>[{name: "app name", soups: ["soup1", "soup2"]},<br/>
 		 * &nbsp;{name: "another app name", ...}, ...]</code>
@@ -152,5 +228,70 @@ public class DockCommandApplication extends DockingEventCommands {
 		 */
 		public static final String kDCallResult = "cres";
 	}
+
+	/**
+	 * This command is sent in response to a kDOperationCanceled.
+	 * 
+	 * <pre>
+	 * 'ocaa'
+	 * length = 0
+	 * </pre>
+	 */
+	public static final String kDOpCanceledAck = "ocaa";
+	/**
+	 * This command is sent when the user cancels an operation. Usually no
+	 * action is required on the receivers part except to return to the "ready"
+	 * state.
+	 * 
+	 * <pre>
+	 * 'opcn'
+	 * length = 0
+	 * </pre>
+	 */
+	public static final String kDOperationCanceled = "opcn";
+	/**
+	 * This command is sent when an operation is completed. It's only sent in
+	 * situations where there might be some ambiguity. Currently, there are two
+	 * situations where this is sent. When the desktop finishes a restore it
+	 * sends this command. When a sync is finished and there are no sync results
+	 * (conflicts) to send to the Newton the desktop sends this command.
+	 * 
+	 * <pre>
+	 * 'opdn'
+	 * length = 0
+	 * </pre>
+	 */
+	public static final String kDOperationDone = "opdn";
+	/**
+	 * This command is first sent from the desktop to the Newton. The Newton
+	 * immediately echos the object back to the desktop. The object can be any
+	 * NewtonScript object (anything that can be sent through the object
+	 * read/write).
+	 * <p>
+	 * This command can also be sent with no ref attached. If the length is 0
+	 * the command is echoed back to the desktop with no ref included.
+	 * 
+	 * <pre>
+	 * 'rtst'
+	 * length
+	 * object
+	 * </pre>
+	 */
+	public static final String kDRefTest = "rtst";
+	/**
+	 * This command is sent when a message is received that is unknown. When the
+	 * desktop receives this command it can either install a protocol extension
+	 * and try again or return an error to the Newton. If the built-in Newton
+	 * code receives this command it always signals an error. The bad command
+	 * parameter is the 4 char command that wasn't recognised. The data is not
+	 * returned.
+	 * 
+	 * <pre>
+	 * 'unkn'
+	 * length
+	 * bad command
+	 * </pre>
+	 */
+	public static final String kDUnknownCommand = "unkn";
 
 }

@@ -94,7 +94,7 @@ public class DockCommandKeyboard extends DockingEventCommands {
 		 */
 		public static final String kDKeyboardChar = "kbdc";
 		/**
-		 * This command sends a string of characters to the newton for
+		 * This command sends a string of characters to the Newton for
 		 * processing. The characters are 2 byte unicode characters. If there
 		 * are an odd number of characters the command should be padded, as
 		 * usual.

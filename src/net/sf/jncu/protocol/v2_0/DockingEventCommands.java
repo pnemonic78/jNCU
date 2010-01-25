@@ -11,7 +11,7 @@ package net.sf.jncu.protocol.v2_0;
  * specified.
  * <p>
  * All commands begin with the sequence -- '<tt>newt</tt>', '<tt>dock</tt>'. <br>
- * Newton communicates with the desktop by exchanging newton event commands. The
+ * Newton communicates with the desktop by exchanging Newton event commands. The
  * general command structure looks like this:
  * 
  * <pre>
@@ -26,8 +26,12 @@ package net.sf.jncu.protocol.v2_0;
  * the 1.0 protocol. However, the protocol version has been incremented so old
  * versions of Newton Connection will no longer work with this version. The
  * reason for this is that, although the protocol itself is upwardly compatible,
- * the data structures in other parts of the 2.0 newton have changed to such a
+ * the data structures in other parts of the 2.0 Newton have changed to such a
  * degree that old versions of Newton Connection will no longer work.
+ * <h2>Desktop Initiated Functions while connected</h2> With the advent of the
+ * new protocol, the Newton and the desktop can be connected, but with no
+ * command specified. A command can be requested by the user on either the
+ * Newton or the Desktop.
  * 
  * @author moshew
  */
