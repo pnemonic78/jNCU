@@ -5,10 +5,10 @@ import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 /**
  * Data commands.
  */
-public class DockCommandData {
+public class DockCommandData extends DockingEventCommands {
 
 	/** Desktop to Newton. */
-	public static final class DesktopToNewton extends DockingEventCommands {
+	public static final class DesktopToNewton {
 		/**
 		 * Tells the Newton the version that the subsequent data is from. For
 		 * example, if a 1.x data file is being restored the desktop would tell
