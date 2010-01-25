@@ -400,7 +400,7 @@ public class DockingEventCommands {
 		 * {<br>&nbsp;&nbsp;name: "foo",<br>
 		 * &nbsp;&nbsp;kind: "bar",<br>
 		 * &nbsp;&nbsp;signature: 1234,<br>
-		 * &nbsp;&nbsp;info: {<info frame>}		// This one is optional<br>
+		 * &nbsp;&nbsp;info: {&lt;info frame&gt;}		// This one is optional<br>
 		 * }</code>
 		 * 
 		 * <pre>
