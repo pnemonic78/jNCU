@@ -1,8 +1,9 @@
 package net.sf.jncu.protocol.v1_0;
 
 /**
- * <h2>Newton Docking Protocol</h2> Newton Docking Protocol event commands for
- * 1.0 Newton ROM Extensions.<br>
+ * <h2>Newton Docking Protocol</h2>
+ * <p>
+ * Newton Docking Protocol event commands for 1.0 Newton ROM Extensions.<br>
  * Newton communicates with the desktop by exchanging Newton event commands.
  * <p>
  * In the commands below, all data is padded with nulls to 4 byte boundaries.
@@ -22,7 +23,9 @@ package net.sf.jncu.protocol.v1_0;
  * data     // data, if any
  * </pre>
  * <p>
- * <h2>Examples</h2> Every session starts like this:
+ * <h2>Examples</h2>
+ * <p>
+ * Every session starts like this:
  * <table>
  * <tr>
  * <th>Desktop</th>

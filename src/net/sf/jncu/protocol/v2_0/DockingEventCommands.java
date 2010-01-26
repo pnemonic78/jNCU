@@ -1,8 +1,9 @@
 package net.sf.jncu.protocol.v2_0;
 
 /**
- * <h2>Newton Docking Protocol</h2> Newton Docking Protocol event commands for
- * 2.0 Newton ROM Extensions.<br>
+ * <h2>Newton Docking Protocol</h2>
+ * <p>
+ * Newton Docking Protocol event commands for 2.0 Newton ROM Extensions.<br>
  * Newton communicates with the desktop by exchanging Newton event commands.
  * <p>
  * In the commands below, all data is padded with nulls to 4 byte boundaries.
@@ -22,16 +23,19 @@ package net.sf.jncu.protocol.v2_0;
  * data     // data, if any
  * </pre>
  * 
- * <h2>Compatibility</h2> The protocol described above for 2.0 is a superset of
- * the 1.0 protocol. However, the protocol version has been incremented so old
- * versions of Newton Connection will no longer work with this version. The
- * reason for this is that, although the protocol itself is upwardly compatible,
- * the data structures in other parts of the 2.0 Newton have changed to such a
- * degree that old versions of Newton Connection will no longer work.
- * <h2>Desktop Initiated Functions while connected</h2> With the advent of the
- * new protocol, the Newton and the desktop can be connected, but with no
- * command specified. A command can be requested by the user on either the
- * Newton or the Desktop.
+ * <h2>Compatibility</h2>
+ * <p>
+ * The protocol described above for 2.0 is a superset of the 1.0 protocol.
+ * However, the protocol version has been incremented so old versions of Newton
+ * Connection will no longer work with this version. The reason for this is
+ * that, although the protocol itself is upwardly compatible, the data
+ * structures in other parts of the 2.0 Newton have changed to such a degree
+ * that old versions of Newton Connection will no longer work.
+ * <h2>Desktop Initiated Functions while connected</h2>
+ * <p>
+ * With the advent of the new protocol, the Newton and the desktop can be
+ * connected, but with no command specified. A command can be requested by the
+ * user on either the Newton or the Desktop.
  * 
  * @author moshew
  */

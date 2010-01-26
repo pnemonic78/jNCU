@@ -6,7 +6,9 @@ package net.sf.jncu.protocol.v2_0.file;
  * Package loading uses the file browsing interface described above. After the
  * user taps the load package button, the following commands are used.
  * 
- <h2>Examples</h2> After the load package button is tapped:
+ <h2>Examples</h2>
+ * <p>
+ * After the load package button is tapped:
  * <table>
  * <tr>
  * <th>Desktop</th>

@@ -5,7 +5,9 @@ package net.sf.jncu.protocol.v2_0.file;
  * <p>
  * Restore uses the file browsing interface described above. After the user taps
  * the restore button, the following commands are used.
- * <h2>Examples</h2> After the restore button is tapped:
+ * <h2>Examples</h2>
+ * <p>
+ * After the restore button is tapped:
  * <table>
  * <tr>
  * <th>Desktop</th>

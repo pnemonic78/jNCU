@@ -3,22 +3,25 @@ package net.sf.jncu.protocol.v2_0.session;
 import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 
 /**
- * Session commands. <h2>Starting a session</h2> 2.0 Newton supports a new set
- * of protocols to enhance the connection capabilities. However, since it's
- * desirable to also support package downloading from NPI, NTK 1.0 and
- * Connection 2.0 the ROMs will also support the old protocol for downloading
- * packages. To make this work the 2.0 ROMs will pretend that they are talking
- * the old protocol when they send the <tt>kDRequestToDock</tt> message. If a
- * new connection (or other application) is on the other end the protocol will
- * be negotiated up to the current version. Only package loading is supported
- * with the old protocol.
+ * Session commands. <h2>Starting a session</h2>
+ * <p>
+ * 2.0 Newton supports a new set of protocols to enhance the connection
+ * capabilities. However, since it's desirable to also support package
+ * downloading from NPI, NTK 1.0 and Connection 2.0 the ROMs will also support
+ * the old protocol for downloading packages. To make this work the 2.0 ROMs
+ * will pretend that they are talking the old protocol when they send the
+ * <tt>kDRequestToDock</tt> message. If a new connection (or other application)
+ * is on the other end the protocol will be negotiated up to the current
+ * version. Only package loading is supported with the old protocol.
  * <p>
  * No matter what the intent of the desktop or the Newton, these commands must
  * always start a session (the desktop can substitute a <tt>kDResult</tt> for
  * the <tt>kDSetTimeout</tt> if it doesn't want to set the timeout).
  * <p>
- * <h2>Examples</h2> When a 2.0 ROM Newton is communicating with a 3.0
- * Connection the session would start like this:
+ * <h2>Examples</h2>
+ * <p>
+ * When a 2.0 ROM Newton is communicating with a 3.0 Connection the session
+ * would start like this:
  * <table>
  * <tr>
  * <th>Desktop</th>
