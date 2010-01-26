@@ -1,39 +1,12 @@
-package net.sf.jncu.protocol.v2_0.app;
-
-import net.sf.jncu.protocol.v2_0.DockingEventCommands;
+package net.sf.jncu.protocol.v2_0.session;
 
 /**
  * <h1>Application commands</h1>
  */
-public class DockCommandApplication extends DockingEventCommands {
+public class DockCommandApplication extends DockCommandSession {
 
 	/** Desktop to Newton. */
-	public static class DesktopToNewton extends DockingEventCommands.DesktopToNewton {
-		/**
-		 * This command tells the Newton to delete a package. It can be used
-		 * during selective restore or any other time.
-		 * 
-		 * <pre>
-		 * 'rmvp'
-		 * length
-		 * name ref
-		 * </pre>
-		 */
-		public static final String kDRemovePackage = "rmvp";
-		/**
-		 * The package info for the specified package is returned. See the
-		 * <tt>kDPackageInfo</tt> command described below Note that multiple
-		 * packages could be returned because there may be multiple packages
-		 * with the same title but different package ids. Note that this finds
-		 * packages only in the current store.
-		 * 
-		 * <pre>
-		 * 'gpin'
-		 * length
-		 * title ref
-		 * </pre>
-		 */
-		public static final String kDGetPackageInfo = "gpin";
+	public static class DesktopToNewton extends DockCommandSession.DesktopToNewton {
 		/**
 		 * This command asks the Newton to call the specified function and
 		 * return it's result. This function must be a global function. The
@@ -67,8 +40,8 @@ public class DockCommandApplication extends DockingEventCommands {
 		 * words, you have to install the extension every time you connect). The
 		 * function is a Newton script closure that would have to be compiled on
 		 * the desktop. See the Dante Connection (ROM) API IU document for
-		 * details. A <tt>kDResult</tt> with value 0 (or the error value if an
-		 * error occurred) is sent to the desktop in response.
+		 * details. A <tt>kDResult</tt> with value <tt>0</tt> (or the error
+		 * value if an error occurred) is sent to the desktop in response.
 		 * 
 		 * <pre>
 		 * 'pext'
@@ -118,39 +91,6 @@ public class DockCommandApplication extends DockingEventCommands {
 		 * @see eCompressedVBOs
 		 */
 		public static final String kDSetVBOCompression = "cvbo";
-		/**
-		 * This command is used to restore the patch backed up with
-		 * <tt>kDGetPatches</tt>. The Newton returns a <tt>kDResult</tt> of 0
-		 * (or an error if appropriate) if the patch wasn't installed. If the
-		 * patch was installed the Newton restarts.
-		 * 
-		 * <pre>
-		 * 'rpat'
-		 * length
-		 * patch
-		 * </pre>
-		 */
-		public static final String kDRestorePatch = "rpat";
-		/**
-		 * This command asks the Newton to send information about the
-		 * applications installed on the Newton. See the <tt>kDAppNames</tt>
-		 * description above for details of the information returned. The
-		 * <tt>return what</tt> parameter determines what information is
-		 * returned. Here are the choices:
-		 * <ul>
-		 * <li>0: return names and soups for all stores
-		 * <li>1: return names and soups for current store
-		 * <li>2: return just names for all stores
-		 * <li>3: return just names for current store
-		 * </ul>
-		 * 
-		 * <pre>
-		 * 'gapp'
-		 * length
-		 * return what
-		 * </pre>
-		 */
-		public static final String kDGetAppNames = "gapp";
 
 		/**
 		 * VBO sent uncompressed.
@@ -167,60 +107,7 @@ public class DockCommandApplication extends DockingEventCommands {
 	}
 
 	/** Newton to Desktop. */
-	public static class NewtonToDesktop extends DockingEventCommands.NewtonToDesktop {
-		/**
-		 * This command returns the names of the applications present on the
-		 * Newton. It also, optionally, returns the names of the soups
-		 * associated with each application. The array looks like this:
-		 * <code>[{name: "app name", soups: ["soup1", "soup2"]},<br/>
-		 * &nbsp;{name: "another app name", ...}, ...]</code>
-		 * <p>
-		 * Some built-in names are included. "System information" includes the
-		 * system and directory soups. If there are packages installed, a
-		 * "Packages" item is listed. If a card is present and has a backup
-		 * there will be a "Card backup" item. If there are soups that don't
-		 * have an associated application (or whose application I can't figure
-		 * out) there's an "Other information" entry.
-		 * <p>
-		 * The soup names are optionally returned depending on the value
-		 * received with <tt>kDGetAppNames</tt>.
-		 * 
-		 * <pre>
-		 * 'appn'
-		 * length
-		 * result frame
-		 * </pre>
-		 */
-		public static final String kDAppNames = "appn";
-		/**
-		 * This command is sent in response to a <tt>kDGetPackageInfo</tt>
-		 * command. An array is returned that contains a frame for each package
-		 * with the specified name (there may be more than one package with the
-		 * same name but different package id). The returned frame looks like
-		 * this:<br>
-		 * <code>
-		 * {<br>
-		 * &nbsp;&nbsp;name: "The name passed in",<br>
-		 * &nbsp;&nbsp;packagesize: 123,<br>
-		 * &nbsp;&nbsp;packageid: 123,<br>
-		 * &nbsp;&nbsp;packageversion: 1,<br>
-		 * &nbsp;&nbsp;format: 1,<br>
-		 * &nbsp;&nbsp;devicekind: 1,<br>
-		 * &nbsp;&nbsp;devicenumber: 1,<br>
-		 * &nbsp;&nbsp;deviceid: 1,<br>
-		 * &nbsp;&nbsp;modtime: 123213213,<br>
-		 * &nbsp;&nbsp;iscopyprotected: true,<br>
-		 * &nbsp;&nbsp;length: 123,<br>
-		 * &nbsp;&nbsp;safetoremove: true<br>
-		 * }</code>
-		 * 
-		 * <pre>
-		 * 'pinf'
-		 * length
-		 * info ref
-		 * </pre>
-		 */
-		public static final String kDPackageInfo = "pinf";
+	public static class NewtonToDesktop extends DockCommandSession.NewtonToDesktop {
 		/**
 		 * This command is sent in response to a <tt>kDCallGlobalfunction</tt>
 		 * or <tt>kDCallRootMethod</tt> command. The ref is the return value

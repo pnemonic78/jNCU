@@ -308,9 +308,9 @@ public class DockCommandSession extends DockingEventCommands {
 		 * The desktop can then decide whether it can talk the specified
 		 * protocol or not.
 		 * <p>
-		 * The desktop type is a long that identifies the sender‚ 0 for the
-		 * Macintosh and 1 for Windows. The password key is used as part of the
-		 * password verification.
+		 * The desktop type is a long that identifies the sender‚ <tt>0</tt> for
+		 * the Macintosh and <tt>1</tt> for Windows. The password key is used as
+		 * part of the password verification.
 		 * <p>
 		 * Session type will be the real session type and should override what
 		 * was sent in <tt>kDInitiateDocking</tt>. In fact, it will either be
@@ -345,6 +345,11 @@ public class DockCommandSession extends DockingEventCommands {
 		 * allowSelectiveSync // 0 = no, 1 = yes
 		 * desktopApps ref
 		 * </pre>
+		 * 
+		 * @see #kNBU
+		 * @see #kNCU
+		 * @see #kMacintosh
+		 * @see #kWindows
 		 */
 		public static final String kDDesktopInfo = "dinf";
 
@@ -360,10 +365,22 @@ public class DockCommandSession extends DockingEventCommands {
 		public static final int kSyncIcon = 16;
 		/** "Keyboard" icon. */
 		public static final int kKeyboardIcon = 32;
+
+		/** Newton Backup Utility. */
+		public static final int kNBU = 1;
+		/** Newton Connection Utilities. */
+		public static final int kNCU = 2;
+
+		/** Apple Macintosh desktop type. */
+		public static final int kMacintosh = 0;
+		/** Microsoft Windows desktop type. */
+		public static final int kWindows = 1;
 	}
 
 	/** Newton to Desktop. */
 	public static class NewtonToDesktop extends DockingEventCommands.NewtonToDesktop {
+		/** Newton. */
+		public static final String kDNewton = "newt";
 		/**
 		 * This command returns the key received in the
 		 * <tt>kDInitiateDocking</tt> message encrypted using the password.
@@ -427,7 +444,5 @@ public class DockCommandSession extends DockingEventCommands {
 		 */
 		public static final String kDNewtonInfo = "ninf";
 	}
-
-	public static final String kDNewton = "newt";
 
 }
