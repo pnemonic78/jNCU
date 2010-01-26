@@ -1,4 +1,6 @@
-package net.sf.jncu.protocol.v2_0.file;
+package net.sf.jncu.protocol.v2_0.app;
+
+import net.sf.jncu.protocol.v2_0.io.DockCommandImport;
 
 /**
  * <h1>Package loading</h1>
