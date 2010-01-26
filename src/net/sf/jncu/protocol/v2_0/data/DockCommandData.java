@@ -199,7 +199,7 @@ import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 public class DockCommandData extends DockingEventCommands {
 
 	/** Desktop to Newton. */
-	public static final class DesktopToNewton {
+	public static class DesktopToNewton extends DockingEventCommands.DesktopToNewton {
 		/**
 		 * Tells the Newton the version that the subsequent data is from. For
 		 * example, if a 1.x data file is being restored the desktop would tell
@@ -474,7 +474,7 @@ public class DockCommandData extends DockingEventCommands {
 	}
 
 	/** Newton to Desktop. */
-	public static final class NewtonToDesktop {
+	public static final class NewtonToDesktop extends DockingEventCommands.NewtonToDesktop {
 		/**
 		 * This command is sent after the user closes the slip displayed by
 		 * <tt>kDImportParametersSlip</tt>. The result is a frame containing the

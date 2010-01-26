@@ -37,4 +37,11 @@ package net.sf.jncu.protocol.v2_0;
  */
 public class DockingEventCommands {
 
+	/** Desktop to Newton. */
+	public static class DesktopToNewton {
+	}
+
+	/** Newton to Desktop. */
+	public static class NewtonToDesktop {
+	}
 }
