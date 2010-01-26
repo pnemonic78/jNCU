@@ -243,18 +243,6 @@ public class DockCommandData extends DockingEventCommands {
 		 */
 		public static final String kDAddEntryWithUniqueID = "auni";
 		/**
-		 * This command returns info about the default store. This info is the
-		 * same as the info returned by the <tt>kDGetStoreNames</tt> command
-		 * (see <tt>kDStoreNames</tt> for details). The default store is the one
-		 * used by LoadPackage.
-		 * 
-		 * <pre>
-		 * 'gdfs'
-		 * length = 0
-		 * </pre>
-		 */
-		public static final String kDGetDefaultStore = "gdfs";
-		/**
 		 * This command creates a soup on the current store. It uses a
 		 * registered <tt>soupdef</tt> to create the soup meaning that the
 		 * indexes, etc. are determined by the ROM. If no <tt>soupdef</tt>
@@ -268,18 +256,6 @@ public class DockCommandData extends DockingEventCommands {
 		 * </pre>
 		 */
 		public static final String kDCreateDefaultSoup = "cdsp";
-		/**
-		 * This commands sets the signature of the current store to the
-		 * specified value. A <tt>kDResult</tt> with value 0 (or the error value
-		 * if an error occurred) is sent to the desktop in response.
-		 * 
-		 * <pre>
-		 * 'ssig'
-		 * length
-		 * new signature
-		 * </pre>
-		 */
-		public static final String kDSetStoreSignature = "ssig";
 		/**
 		 * This commands sets the signature of the current soup to the specified
 		 * value. A <tt>kDResult</tt> with value 0 (or the error value if an
@@ -384,17 +360,6 @@ public class DockCommandData extends DockingEventCommands {
 		 * </pre>
 		 */
 		public static final String kDBackupSoup = "bksp";
-		/**
-		 * This command requests that the name of the current store be set to
-		 * the specified name.
-		 * 
-		 * <pre>
-		 * 'ssna'
-		 * length
-		 * name ref
-		 * </pre>
-		 */
-		public static final String kDSetStoreName = "ssna";
 
 		/** Source versions. */
 		public enum eSourceVersion {
@@ -470,28 +435,6 @@ public class DockCommandData extends DockingEventCommands {
 		 */
 		public static final String kDSyncResults = "sres";
 		/**
-		 * This command is the same as <tt>kDSetCurrentStore</tt> except that it
-		 * returns the names of the soups on the stores as if you'd send a
-		 * <tt>kDGetSoupNames</tt> command. It sets the current store on the
-		 * Newton. A store frame is sent to uniquely identify the store to be
-		 * set: <br>
-		 * <code>{<br>
-		 * &nbsp;&nbsp;name: "foo",<br>
-		 * &nbsp;&nbsp;kind: "bar",<br>
-		 * &nbsp;&nbsp;signature: 1234,<br>
-		 * &nbsp;&nbsp;info: {&lt;info frame&gt;}		// This one is optional<br>
-		 * }</code>
-		 * <br>
-		 * A <tt>kDSoupNames</tt> is sent by the Newton in response.
-		 * 
-		 * <pre>
-		 * 'ssgn'
-		 * length
-		 * store frame
-		 * </pre>
-		 */
-		public static final String kDSetStoreGetNames = "ssgn";
-		/**
 		 * This command is like a combination of <tt>kDSetCurrentSoup</tt> and
 		 * <tt>kDGetChangedInfo</tt>. It sets the current soup -- see
 		 * <tt>kDSetCurrentSoup</tt> for details. A <tt>kDSoupInfo</tt> or
@@ -532,20 +475,6 @@ public class DockCommandData extends DockingEventCommands {
 
 	/** Newton to Desktop. */
 	public static final class NewtonToDesktop {
-		/**
-		 * This command returns a store info frame describing the default store.
-		 * This frame contains the same info returned for all stores by the
-		 * <tt>kDStoreNames</tt> command except that it doesn't include the
-		 * store info. It contains the name, signature, total size, used size
-		 * and kind.
-		 * 
-		 * <pre>
-		 * 'dfst'
-		 * length
-		 * store frame
-		 * </pre>
-		 */
-		public static final String kDDefaultStore = "dfst";
 		/**
 		 * This command is sent after the user closes the slip displayed by
 		 * <tt>kDImportParametersSlip</tt>. The result is a frame containing the

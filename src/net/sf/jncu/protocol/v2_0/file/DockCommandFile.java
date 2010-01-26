@@ -333,17 +333,6 @@ public class DockCommandFile extends DockingEventCommands {
 		 */
 		public static final String kDFileInfo = "finf";
 		/**
-		 * This command requests the Newton to return info about the internal
-		 * store. The result is described with the <tt>KDInternalStore</tt>
-		 * command.
-		 * 
-		 * <pre>
-		 * 'gist'
-		 * length = 0
-		 * </pre>
-		 */
-		public static final String kDGetInternalStore = "gist";
-		/**
 		 * This command is sent by the desktop in response to the
 		 * <tt>kDResolveAlias</tt> command. If the value is 0, the alias can't
 		 * be resolved. If the data is <tt>1</tt> (or non-zero) the alias can be
@@ -356,6 +345,91 @@ public class DockCommandFile extends DockingEventCommands {
 		 * </pre>
 		 */
 		public static final String kDAliasResolved = "alir";
+		/**
+		 * This command returns info about the default store. This info is the
+		 * same as the info returned by the <tt>kDGetStoreNames</tt> command
+		 * (see <tt>kDStoreNames</tt> for details). The default store is the one
+		 * used by LoadPackage.
+		 * 
+		 * <pre>
+		 * 'gdfs'
+		 * length = 0
+		 * </pre>
+		 */
+		public static final String kDGetDefaultStore = "gdfs";
+		/**
+		 * This command requests the Newton to return info about the internal
+		 * store. The result is described with the <tt>KDInternalStore</tt>
+		 * command.
+		 * 
+		 * <pre>
+		 * 'gist'
+		 * length = 0
+		 * </pre>
+		 */
+		public static final String kDGetInternalStore = "gist";
+		/**
+		 * This command is the same as <tt>kDSetCurrentStore</tt> except that it
+		 * returns the names of the soups on the stores as if you'd send a
+		 * <tt>kDGetSoupNames</tt> command. It sets the current store on the
+		 * Newton. A store frame is sent to uniquely identify the store to be
+		 * set: <br>
+		 * <code>{<br>
+		 * &nbsp;&nbsp;name: "foo",<br>
+		 * &nbsp;&nbsp;kind: "bar",<br>
+		 * &nbsp;&nbsp;signature: 1234,<br>
+		 * &nbsp;&nbsp;info: {&lt;info frame&gt;}		// This one is optional<br>
+		 * }</code>
+		 * <br>
+		 * A <tt>kDSoupNames</tt> is sent by the Newton in response.
+		 * 
+		 * <pre>
+		 * 'ssgn'
+		 * length
+		 * store frame
+		 * </pre>
+		 */
+		public static final String kDSetStoreGetNames = "ssgn";
+		/**
+		 * This command requests that the name of the current store be set to
+		 * the specified name.
+		 * 
+		 * <pre>
+		 * 'ssna'
+		 * length
+		 * name ref
+		 * </pre>
+		 */
+		public static final String kDSetStoreName = "ssna";
+		/**
+		 * This commands sets the signature of the current store to the
+		 * specified value. A <tt>kDResult</tt> with value 0 (or the error value
+		 * if an error occurred) is sent to the desktop in response.
+		 * 
+		 * <pre>
+		 * 'ssig'
+		 * length
+		 * new signature
+		 * </pre>
+		 */
+		public static final String kDSetStoreSignature = "ssig";
+		/**
+		 * This command sets the current store on the Newton. A store frame is
+		 * sent to uniquely identify the store to be set: <br>
+		 * <code>
+		 * {<br>&nbsp;&nbsp;name: "foo",<br>
+		 * &nbsp;&nbsp;kind: "bar",<br>
+		 * &nbsp;&nbsp;signature: 1234,<br>
+		 * &nbsp;&nbsp;info: {&lt;info frame&gt;}		// This one is optional<br>
+		 * }</code>
+		 * 
+		 * <pre>
+		 * 'ssto'
+		 * length
+		 * store frame
+		 * </pre>
+		 */
+		public static final String kDSetCurrentStore = "ssto";
 
 		/** Floppy disk device. */
 		public static final int eFloppyDevice = 0;
@@ -532,5 +606,19 @@ public class DockCommandFile extends DockingEventCommands {
 		 * </pre>
 		 */
 		public static final String kDSetDrive = "sdrv";
+		/**
+		 * This command returns a store info frame describing the default store.
+		 * This frame contains the same info returned for all stores by the
+		 * <tt>kDStoreNames</tt> command except that it doesn't include the
+		 * store info. It contains the name, signature, total size, used size
+		 * and kind.
+		 * 
+		 * <pre>
+		 * 'dfst'
+		 * length
+		 * store frame
+		 * </pre>
+		 */
+		public static final String kDDefaultStore = "dfst";
 	}
 }
