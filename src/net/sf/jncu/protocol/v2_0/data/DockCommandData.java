@@ -474,7 +474,7 @@ public class DockCommandData extends DockingEventCommands {
 	}
 
 	/** Newton to Desktop. */
-	public static final class NewtonToDesktop extends DockingEventCommands.NewtonToDesktop {
+	public static class NewtonToDesktop extends DockingEventCommands.NewtonToDesktop {
 		/**
 		 * This command is sent after the user closes the slip displayed by
 		 * <tt>kDImportParametersSlip</tt>. The result is a frame containing the

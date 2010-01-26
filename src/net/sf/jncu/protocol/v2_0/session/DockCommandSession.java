@@ -358,7 +358,7 @@ public class DockCommandSession extends DockingEventCommands {
 	}
 
 	/** Newton to Desktop. */
-	public static final class NewtonToDesktop extends DockingEventCommands.NewtonToDesktop {
+	public static class NewtonToDesktop extends DockingEventCommands.NewtonToDesktop {
 		/**
 		 * This command returns the key received in the
 		 * <tt>kDInitiateDocking</tt> message encrypted using the password.

@@ -351,7 +351,7 @@ package net.sf.jncu.protocol.v1_0;
  */
 public class DockingEventCommands {
 
-	public static final class DesktopToNewton {
+	public static class DesktopToNewton {
 		/**
 		 * This command is sent to the newt in response to a
 		 * <tt>kDRequestToDock</tt> command. Session type can be one of
@@ -636,7 +636,7 @@ public class DockingEventCommands {
 		public static final String kDGetSoupInfo = "gsin";
 	}
 
-	public static final class NewtonToDesktop {
+	public static class NewtonToDesktop {
 		/**
 		 * Ask desktop to start docking process.<br>
 		 * This command is sent to a docker that the junior wishes to connect

@@ -167,7 +167,7 @@ public class DockCommandApplication extends DockingEventCommands {
 	}
 
 	/** Newton to Desktop. */
-	public static final class NewtonToDesktop extends DockingEventCommands.NewtonToDesktop {
+	public static class NewtonToDesktop extends DockingEventCommands.NewtonToDesktop {
 		/**
 		 * This command returns the names of the applications present on the
 		 * Newton. It also, optionally, returns the names of the soups
