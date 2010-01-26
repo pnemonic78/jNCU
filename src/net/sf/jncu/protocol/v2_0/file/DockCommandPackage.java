@@ -29,14 +29,10 @@ package net.sf.jncu.protocol.v2_0.file;
  * </tr>
  * </table>
  */
-public class DockCommandPackage extends DockCommandFile {
-
-	/** Desktop to Newton. */
-	public static class DesktopToNewton extends DockCommandFile.DesktopToNewton {
-	}
+public class DockCommandPackage extends DockCommandImport {
 
 	/** Newton to Desktop. */
-	public static class NewtonToDesktop extends DockCommandFile.NewtonToDesktop {
+	public static class NewtonToDesktop extends DockCommandImport.NewtonToDesktop {
 		/**
 		 * This command asks the desktop to load the package specified by the
 		 * last path command and the filename string. If the selected item is at
