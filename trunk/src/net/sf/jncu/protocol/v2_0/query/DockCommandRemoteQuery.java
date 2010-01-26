@@ -14,7 +14,7 @@ import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 public class DockCommandRemoteQuery extends DockingEventCommands {
 
 	/** Desktop to Newton. */
-	public static final class DesktopToNewton {
+	public static class DesktopToNewton extends DockingEventCommands.DesktopToNewton {
 		/**
 		 * The parameter frame must contain a <tt>queryspec</tt> slot and may
 		 * contain a <tt>soupname</tt> slot. Performs the specified query on the
@@ -161,7 +161,7 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 	}
 
 	/** Newton to Desktop. */
-	public static final class NewtonToDesktop {
+	public static final class NewtonToDesktop extends DockingEventCommands.NewtonToDesktop {
 		/**
 		 * Newton returns a long value. The interpretation of the data depends
 		 * on the command which prompted the return of the long value.

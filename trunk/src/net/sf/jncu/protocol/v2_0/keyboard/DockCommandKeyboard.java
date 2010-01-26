@@ -79,7 +79,7 @@ import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 public class DockCommandKeyboard extends DockingEventCommands {
 
 	/** Desktop to Newton. */
-	public static final class DesktopToNewton {
+	public static class DesktopToNewton extends DockingEventCommands.DesktopToNewton {
 		/**
 		 * This command sends 1 character to the Newton for processing. The char
 		 * is a 2 byte Unicode character + a 2 byte state. The state is defined

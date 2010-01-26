@@ -196,7 +196,7 @@ import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 public class DockCommandFile extends DockingEventCommands {
 
 	/** Desktop to Newton. */
-	public static final class DesktopToNewton {
+	public static class DesktopToNewton extends DockingEventCommands.DesktopToNewton {
 		/**
 		 * This command returns an array of frames describing devices. These are
 		 * the devices which will appear in the devices pop-up in the Windows
@@ -451,7 +451,7 @@ public class DockCommandFile extends DockingEventCommands {
 	}
 
 	/** Newton to Desktop. */
-	public static final class NewtonToDesktop {
+	public static final class NewtonToDesktop extends DockingEventCommands.NewtonToDesktop {
 		/**
 		 * This command is sent to a desktop that the Newton wishes to browse
 		 * files on. File types can be 'import, 'packages, 'syncFiles' or an

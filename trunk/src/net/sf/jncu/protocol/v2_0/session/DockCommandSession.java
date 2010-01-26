@@ -184,7 +184,7 @@ import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 public class DockCommandSession extends DockingEventCommands {
 
 	/** Desktop to Newton. */
-	public static final class DesktopToNewton {
+	public static class DesktopToNewton extends DockingEventCommands.DesktopToNewton {
 		/**
 		 * Ask Newton to start docking process. <br>
 		 * This command should be sent to the Newton in response to a
@@ -358,7 +358,7 @@ public class DockCommandSession extends DockingEventCommands {
 	}
 
 	/** Newton to Desktop. */
-	public static final class NewtonToDesktop {
+	public static final class NewtonToDesktop extends DockingEventCommands.NewtonToDesktop {
 		/**
 		 * This command returns the key received in the
 		 * <tt>kDInitiateDocking</tt> message encrypted using the password.

@@ -8,7 +8,7 @@ import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 public class DockCommandApplication extends DockingEventCommands {
 
 	/** Desktop to Newton. */
-	public static final class DesktopToNewton {
+	public static class DesktopToNewton extends DockingEventCommands.DesktopToNewton {
 		/**
 		 * This command tells the Newton to delete a package. It can be used
 		 * during selective restore or any other time.
@@ -167,7 +167,7 @@ public class DockCommandApplication extends DockingEventCommands {
 	}
 
 	/** Newton to Desktop. */
-	public static final class NewtonToDesktop {
+	public static final class NewtonToDesktop extends DockingEventCommands.NewtonToDesktop {
 		/**
 		 * This command returns the names of the applications present on the
 		 * Newton. It also, optionally, returns the names of the soups
