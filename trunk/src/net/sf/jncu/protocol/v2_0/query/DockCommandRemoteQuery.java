@@ -161,7 +161,7 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 	}
 
 	/** Newton to Desktop. */
-	public static final class NewtonToDesktop extends DockingEventCommands.NewtonToDesktop {
+	public static class NewtonToDesktop extends DockingEventCommands.NewtonToDesktop {
 		/**
 		 * Newton returns a long value. The interpretation of the data depends
 		 * on the command which prompted the return of the long value.
