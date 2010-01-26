@@ -1,4 +1,5 @@
-package net.sf.jncu.protocol.v2_0.file;
+package net.sf.jncu.protocol.v2_0.data;
+
 
 /**
  * <h1>Restore originated on Newton</h1>
@@ -98,10 +99,51 @@ package net.sf.jncu.protocol.v2_0.file;
  * </tr>
  * </table>
  */
-public class DockCommandRestore extends DockCommandFile {
+public class DockCommandRestore extends DockCommandData {
+
+	/** Desktop to Newton. */
+	public static class DesktopToNewton extends DockCommandData.DesktopToNewton {
+		/**
+		 * This command is sent when the desktop wants to add an entry to the
+		 * current soup. The entry is added with the ID specified in the data
+		 * frame. If the id already exists an error is returned.
+		 * <p>
+		 * <em>Warning! This function should only be used during a restore operation. In other situations there's no way of knowing whether the entrie's id is unique. If an entry is added with this command and the entry isn't unique an error is returned.</em>
+		 * 
+		 * <pre>
+		 * 'auni'
+		 * length
+		 * data ref
+		 * </pre>
+		 */
+		public static final String kDAddEntryWithUniqueID = "auni";
+		/**
+		 * This commands sets the signature of the current soup to the specified
+		 * value. A <tt>kDResult</tt> with value 0 (or the error value if an
+		 * error occurred) is sent to the desktop in response.
+		 * 
+		 * <pre>
+		 * 'ssos'
+		 * length
+		 * new signature
+		 * </pre>
+		 */
+		public static final String kDSetSoupSignature = "ssos";
+		/**
+		 * This command is sent from the desktop when the desktop wants to start
+		 * a restore operation, when both the Newton and the desktop were
+		 * waiting for the user to specify an operation.
+		 * 
+		 * <pre>
+		 * 'rrst'
+		 * length = 0
+		 * </pre>
+		 */
+		public static final String kDRequestToRestore = "rrst";
+	}
 
 	/** Newton to Desktop. */
-	public static class NewtonToDesktop extends DockCommandFile.NewtonToDesktop {
+	public static class NewtonToDesktop extends DockCommandData.NewtonToDesktop {
 		/**
 		 * This command asks the desktop to restore the file specified by the
 		 * last path command and the filename. If the selected item is at the

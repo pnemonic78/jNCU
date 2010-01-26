@@ -6,10 +6,10 @@ import net.sf.jncu.protocol.v2_0.DockingEventCommands;
  * <h1>Remote query commands</h1>
  * <p>
  * All of the commands in this section are based on the NewtonScript query
- * functions. Please see the Newton Programmer's Guide for details about the
- * functions performed by the commands. The query command returns a long
- * representing the queries cursor. Each of the other commands take this cursor
- * as a parameter. Entries are returned with the kDEntry command.
+ * functions. Please see the Newton Programmer's Guide (NPG) for details about
+ * the functions performed by the commands. The query command returns a long
+ * representing the queries' cursor. Each of the other commands take this cursor
+ * as a parameter. Entries are returned with the <tt>kDEntry</tt> command.
  */
 public class DockCommandRemoteQuery extends DockingEventCommands {
 

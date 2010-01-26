@@ -1,4 +1,4 @@
-package net.sf.jncu.protocol.v2_0.keyboard;
+package net.sf.jncu.protocol.v2_0.io;
 
 import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 

@@ -1,4 +1,4 @@
-package net.sf.jncu.protocol.v2_0.file;
+package net.sf.jncu.protocol.v2_0.io;
 
 /**
  * <h1>File importing</h1>
