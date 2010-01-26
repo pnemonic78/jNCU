@@ -3,7 +3,7 @@ package net.sf.jncu.protocol.v2_0.data;
 import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 
 /**
- * Data commands.
+ * <h1>Data commands</h1>
  * <p>
  * <h2>Sync and Selective Sync</h2>
  * <h3>Examples</h3> After the session is started (see above) these commands

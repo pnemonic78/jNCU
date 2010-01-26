@@ -3,7 +3,7 @@ package net.sf.jncu.protocol.v2_0.query;
 import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 
 /**
- * Remote query commands.
+ * <h1>Remote query commands</h1>
  * <p>
  * All of the commands in this section are based on the NewtonScript query
  * functions. Please see the Newton Programmer's Guide for details about the

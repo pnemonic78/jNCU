@@ -3,7 +3,7 @@ package net.sf.jncu.protocol.v2_0.app;
 import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 
 /**
- * Application commands.
+ * <h1>Application commands</h1>
  */
 public class DockCommandApplication extends DockingEventCommands {
 
