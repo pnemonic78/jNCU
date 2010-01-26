@@ -243,7 +243,7 @@ public class DockCommandSync extends DockCommandData {
 		 * This command is like <tt>kDGetIndexDescription</tt> except that it
 		 * only returns the index description if it has been changed since the
 		 * time set by the <tt>kDLastSyncTime</tt> command. If the index hasn't
-		 * changed a <tt>kDRes</tt> with 0 is returned.
+		 * changed a <tt>kDRes</tt> with <tt>0</tt> is returned.
 		 * 
 		 * <pre>
 		 * 'cidx'
@@ -255,7 +255,7 @@ public class DockCommandSync extends DockCommandData {
 		 * This command is like <tt>kDGetSoupInfo</tt> except that it only
 		 * returns the soup info if it has been changed since the time set by
 		 * the <tt>kDLastSyncTime</tt> command. If the info hasn't changed a
-		 * <tt>kDRes</tt> with 0 is returned.
+		 * <tt>kDRes</tt> with <tt>0</tt> is returned.
 		 * 
 		 * <pre>
 		 * 'cinf'

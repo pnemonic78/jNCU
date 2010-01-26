@@ -199,38 +199,6 @@ public class DockCommandFile extends DockingEventCommands {
 	/** Desktop to Newton. */
 	public static class DesktopToNewton extends DockingEventCommands.DesktopToNewton {
 		/**
-		 * This command returns an array of frames describing devices. These are
-		 * the devices which will appear in the devices pop-up in the Windows
-		 * file browsing dialog. Each frame in the array should look like this:<br>
-		 * <code>{<br>
-		 * &nbsp;&nbsp;name: "c:mydisk",<br>
-		 * &nbsp;&nbsp;disktype: 1<br>
-		 * }</code><br>
-		 * where (floppy = 0, hardDrive = 1, cdRom = 2, netDrive = 3). The icon
-		 * is displayed in the pop-up. This may not be possible in which case
-		 * this slot will be optional.
-		 * 
-		 * <pre>
-		 * 'devs'
-		 * length
-		 * array
-		 * </pre>
-		 */
-		public static final String kDDevices = "devs";
-		/**
-		 * This command returns an array of filters to the Newton. It's sent in
-		 * response to a <tt>kDGetFilters</tt> command. The filter should be an
-		 * array of strings which are displayed in the filter pop-up. If the
-		 * filter array is nil no pop-up is displayed. Windows only.
-		 * 
-		 * <pre>
-		 * 'filt'
-		 * length
-		 * filter array
-		 * </pre>
-		 */
-		public static final String kDFilters = "filt";
-		/**
 		 * This command returns the initial strings for the folder pop-up in the
 		 * Macintosh version of the window and for the directories list in the
 		 * Windows version. It is also returned after the user taps on a folder
@@ -248,8 +216,8 @@ public class DockCommandFile extends DockingEventCommands {
 		 * <tt>disktype</tt> with the values (floppy = 0, hardDrive = 1, cdRom =
 		 * 2, netDrive = 3). Finally, for the second frame in the array i.e. the
 		 * one after Desktop, there will be an additional slot <tt>whichvol</tt>
-		 * , which will be a 0 if the item is disk or a <tt>volRefNum</tt> if
-		 * the item is a folder on the desktop.
+		 * , which will be a <tt>0</tt> if the item is disk or a
+		 * <tt>volRefNum</tt> if the item is a folder on the desktop.
 		 * <p>
 		 * For example, the Macintosh might send:<br>
 		 * <code>[{name: "desktop", type: desktop}, {name: "my hard disk", type: disk, disktype: harddrive, whichvol: 0}, {name: "business", type: folder}]</code>
@@ -292,18 +260,29 @@ public class DockCommandFile extends DockingEventCommands {
 		 * <tt>disktype</tt> with the values (floppy = 0, hardDrive = 1, cdRom =
 		 * 2, netDrive = 3). Also, if the current location is the desktop, there
 		 * is an additional slot <tt>whichvol</tt> to indicate the location of
-		 * the individual files, folders and disks with the values 0 for disks
-		 * and a negative number for the <tt>volRefNum</tt> for files and
-		 * folders on the desktop.
+		 * the individual files, folders and disks with the values <tt>0</tt>
+		 * for disks and a negative number for the <tt>volRefNum</tt> for files
+		 * and folders on the desktop.
 		 * <p>
 		 * If the item is an alias there is an <tt>alias</tt> slot. The
-		 * existence of this slot indicates that the item is an alias.
+		 * existence of this slot indicates that the item is an alias. <br>
+		 * A Windows alias could be a "shortcut", or a "NTFS symbolic link". A
+		 * Unix/Linux/Posix alias is a link (as created by the "ln" command).
 		 * 
 		 * <pre>
 		 * 'file'
 		 * length
 		 * file/folder array
 		 * </pre>
+		 * 
+		 * @see #kCdRomDisk
+		 * @see #kDesktop
+		 * @see #kDisk
+		 * @see #kFile
+		 * @see #kFloppyDisk
+		 * @see #kFolder
+		 * @see #kHardDisk
+		 * @see #kNetDrive
 		 */
 		public static final String kDFilesAndFolders = "file";
 		/**
@@ -404,8 +383,8 @@ public class DockCommandFile extends DockingEventCommands {
 		public static final String kDSetStoreName = "ssna";
 		/**
 		 * This commands sets the signature of the current store to the
-		 * specified value. A <tt>kDResult</tt> with value 0 (or the error value
-		 * if an error occurred) is sent to the desktop in response.
+		 * specified value. A <tt>kDResult</tt> with value <tt>0</tt> (or the
+		 * error value if an error occurred) is sent to the desktop in response.
 		 * 
 		 * <pre>
 		 * 'ssig'
@@ -432,23 +411,23 @@ public class DockCommandFile extends DockingEventCommands {
 		 */
 		public static final String kDSetCurrentStore = "ssto";
 
-		/** Floppy disk device. */
-		public static final int eFloppyDevice = 0;
-		/** Hard disk drive device. */
-		public static final int eHardDriveDevice = 1;
-		/** CD-ROM disc device. */
-		public static final int eCdRomDevice = 2;
-		/** Network drive device. */
-		public static final int eNetDriveDevice = 3;
-
 		/** Desktop path type. */
-		public static final int eDesktopPath = 0;
+		public static final int kDesktop = 0;
 		/** File path type type. */
-		public static final int eFilePath = 1;
+		public static final int kFile = 1;
 		/** Folder path type. */
-		public static final int eFolderPath = 2;
+		public static final int kFolder = 2;
 		/** Disk path type. */
-		public static final int eDiskPath = 3;
+		public static final int kDisk = 3;
+
+		/** Floppy disk device. */
+		public static final int kFloppyDisk = 0;
+		/** Hard disk drive device. */
+		public static final int kHardDisk = 1;
+		/** CD-ROM disc device. */
+		public static final int kCdRomDisk = 2;
+		/** Network drive device. */
+		public static final int kNetDrive = 3;
 	}
 
 	/** Newton to Desktop. */
@@ -465,16 +444,6 @@ public class DockCommandFile extends DockingEventCommands {
 		 * </pre>
 		 */
 		public static final String kDRequestToBrowse = "rtbr";
-		/**
-		 * This command asks the desktop system to return an array of device
-		 * names. This is only used for the Windows platform.
-		 * 
-		 * <pre>
-		 * 'gdev'
-		 * length = 0
-		 * </pre>
-		 */
-		public static final String kDGetDevices = "gdev";
 		/**
 		 * This commands requests the desktop system to return the default path.
 		 * This is the list that goes in the folder pop-up for the Macintosh and
@@ -570,44 +539,6 @@ public class DockCommandFile extends DockingEventCommands {
 		 */
 		public static final String kDResolveAlias = "rali";
 		/**
-		 * This command asks the desktop to send a list of filters to display in
-		 * the Windows file browser. A <tt>kDFilters</tt> command is expected in
-		 * response.
-		 * 
-		 * <pre>
-		 * 'gflt'
-		 * length = 0
-		 * </pre>
-		 */
-		public static final String kDGetFilters = "gflt";
-		/**
-		 * This command changes the current filter being used. A
-		 * <tt>kDFilesAndFolders</tt> command is expected in return. The index
-		 * is a long indicating which item in the filters array sent from the
-		 * desktop should be used as the current filter. Index is 0-based.
-		 * Windows only.
-		 * 
-		 * <pre>
-		 * 'sflt'
-		 * length
-		 * index
-		 * </pre>
-		 */
-		public static final String kDSetFilter = "sflt";
-		/**
-		 * This command asks the desktop to change the drive on the desktop and
-		 * set the directory to the current directory for that drive. The string
-		 * contains the drive letter followed by a colon e.g. "<tt>C:</tt>".
-		 * Windows only.
-		 * 
-		 * <pre>
-		 * 'sdrv'
-		 * length
-		 * drive string
-		 * </pre>
-		 */
-		public static final String kDSetDrive = "sdrv";
-		/**
 		 * This command returns a store info frame describing the default store.
 		 * This frame contains the same info returned for all stores by the
 		 * <tt>kDStoreNames</tt> command except that it doesn't include the
@@ -622,4 +553,5 @@ public class DockCommandFile extends DockingEventCommands {
 		 */
 		public static final String kDDefaultStore = "dfst";
 	}
+
 }

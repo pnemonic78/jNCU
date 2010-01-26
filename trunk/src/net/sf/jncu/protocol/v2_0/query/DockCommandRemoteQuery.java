@@ -105,8 +105,8 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 		 */
 		public static final String kDCursorPrev = "prev";
 		/**
-		 * Resets the cursor to its initial state. A <tt>kDRes</tt> of 0 is
-		 * returned.
+		 * Resets the cursor to its initial state. A <tt>kDRes</tt> of
+		 * <tt>0</tt> is returned.
 		 * 
 		 * <pre>
 		 * 'rset'
@@ -117,7 +117,7 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 		public static final String kDCursorReset = "rset";
 		/**
 		 * Resets the cursor to the rightmost entry in the valid subset. A
-		 * <tt>kDRes</tt> of 0 is returned.
+		 * <tt>kDRes</tt> of <tt>0</tt> is returned.
 		 * 
 		 * <pre>
 		 * 'rend'
@@ -138,8 +138,8 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 		 */
 		public static final String kDCursorCountEntries = "cnt ";
 		/**
-		 * Returns <tt>kDLongData</tt> with a 0 for unknown, 1 for start and 2
-		 * for end.
+		 * Returns <tt>kDLongData</tt> with a <tt>0</tt> for unknown, <tt>1</tt>
+		 * for start and <tt>2</tt> for end.
 		 * 
 		 * <pre>
 		 * 'whch'
@@ -149,7 +149,7 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 		 */
 		public static final String kDCursorWhichEnd = "whch";
 		/**
-		 * Disposes the cursor and returns a <tt>kDRes</tt> with a 0 or error.
+		 * Disposes the cursor and returns a <tt>kDRes</tt> with a <tt>0</tt> or error.
 		 * 
 		 * <pre>
 		 * 'cfre'

@@ -119,7 +119,7 @@ public class DockCommandRestore extends DockCommandData {
 		public static final String kDAddEntryWithUniqueID = "auni";
 		/**
 		 * This commands sets the signature of the current soup to the specified
-		 * value. A <tt>kDResult</tt> with value 0 (or the error value if an
+		 * value. A <tt>kDResult</tt> with value <tt>0</tt> (or the error value if an
 		 * error occurred) is sent to the desktop in response.
 		 * 
 		 * <pre>
@@ -140,6 +140,19 @@ public class DockCommandRestore extends DockCommandData {
 		 * </pre>
 		 */
 		public static final String kDRequestToRestore = "rrst";
+		/**
+		 * This command is used to restore the patch backed up with
+		 * <tt>kDGetPatches</tt>. The Newton returns a <tt>kDResult</tt> of 0
+		 * (or an error if appropriate) if the patch wasn't installed. If the
+		 * patch was installed the Newton restarts.
+		 * 
+		 * <pre>
+		 * 'rpat'
+		 * length
+		 * patch
+		 * </pre>
+		 */
+		public static final String kDRestorePatch = "rpat";
 	}
 
 	/** Newton to Desktop. */

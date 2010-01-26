@@ -542,8 +542,8 @@ public class DockingEventCommands {
 		/**
 		 * This command is sent to backup any packages that are installed on the
 		 * Newton. It expects a <tt>kDPackage</tt> command or a kDResponse with
-		 * an error of 0 (to indicate that there are no more packages) in
-		 * response.
+		 * an error of <tt>0</tt> (to indicate that there are no more packages)
+		 * in response.
 		 * 
 		 * <pre>
 		 * 'bpkg'
