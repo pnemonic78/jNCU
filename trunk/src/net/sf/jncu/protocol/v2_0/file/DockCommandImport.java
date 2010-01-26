@@ -1,9 +1,11 @@
 package net.sf.jncu.protocol.v2_0.file;
 
 /**
- * <h1>File importing</h1> File importing uses the file browsing interface
- * described above. After the user taps the import button, the following
- * commands are used. <h2>Examples</h2> When the user taps the import button:
+ * <h1>File importing</h1>
+ * <p>
+ * File importing uses the file browsing interface described above. After the
+ * user taps the import button, the following commands are used.
+ * <h2>Examples</h2> When the user taps the import button:
  * <table>
  * <tr>
  * <th>Desktop</th>
