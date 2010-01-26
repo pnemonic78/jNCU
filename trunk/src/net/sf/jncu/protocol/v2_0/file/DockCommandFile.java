@@ -11,8 +11,9 @@ import net.sf.jncu.protocol.v2_0.DockingEventCommands;
  * Newton.
  * <p>
  * 
- <h2>Examples</h2> After the session has started (see above) these commands
- * would be sent:
+ <h2>Examples</h2>
+ * <p>
+ * After the session has started (see above) these commands would be sent:
  * <table>
  * <tr>
  * <th>Desktop</th>
