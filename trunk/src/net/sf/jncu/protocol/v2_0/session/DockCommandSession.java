@@ -3,7 +3,9 @@ package net.sf.jncu.protocol.v2_0.session;
 import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 
 /**
- * Session commands. <h2>Starting a session</h2>
+ * <h1>Session commands</h1>
+ * <p>
+ * <h2>Starting a session</h2>
  * <p>
  * 2.0 Newton supports a new set of protocols to enhance the connection
  * capabilities. However, since it's desirable to also support package

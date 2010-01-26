@@ -3,7 +3,7 @@ package net.sf.jncu.protocol.v2_0.keyboard;
 import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 
 /**
- * Keyboard commands.
+ * <h1>Keyboard commands</h1>
  * <p>
  * Desktop initiated keyboard pass-through would look like this:
  * <table>
