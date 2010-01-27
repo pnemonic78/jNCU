@@ -1,6 +1,5 @@
 package net.sf.jncu.protocol.v2_0.data;
 
-
 /**
  * <h1>Restore originated on Newton</h1>
  * <p>
@@ -117,18 +116,6 @@ public class DockCommandRestore extends DockCommandData {
 		 * </pre>
 		 */
 		public static final String kDAddEntryWithUniqueID = "auni";
-		/**
-		 * This commands sets the signature of the current soup to the specified
-		 * value. A <tt>kDResult</tt> with value <tt>0</tt> (or the error value if an
-		 * error occurred) is sent to the desktop in response.
-		 * 
-		 * <pre>
-		 * 'ssos'
-		 * length
-		 * new signature
-		 * </pre>
-		 */
-		public static final String kDSetSoupSignature = "ssos";
 		/**
 		 * This command is sent from the desktop when the desktop wants to start
 		 * a restore operation, when both the Newton and the desktop were

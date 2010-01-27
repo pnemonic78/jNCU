@@ -82,6 +82,17 @@ public class DockCommandPackage extends DockingEventCommands {
 		 * </pre>
 		 */
 		public static final String kDGetAppNames = "gapp";
+		/**
+		 * This command is sent from the desktop when the desktop wants to start
+		 * a load package operation, when both the Newton and the desktop were
+		 * waiting for the user to specify an operation.
+		 * 
+		 * <pre>
+		 * 'rins'
+		 * length = 0
+		 * </pre>
+		 */
+		public static final String kDRequestToInstall = "rins";
 	}
 
 	/** Newton to Desktop. */
