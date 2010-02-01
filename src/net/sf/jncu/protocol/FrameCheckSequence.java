@@ -7,7 +7,7 @@ import java.util.zip.Checksum;
  */
 public class FrameCheckSequence implements Checksum {
 
-	/** 16 bit value. */ 
+	/** 16 bit value. */
 	private int fcsWord;
 
 	/** Creates a new FCS. */
@@ -52,12 +52,12 @@ public class FrameCheckSequence implements Checksum {
 	public void update(int b) {
 		int pow = 1;
 		for (int i = 0; i < 8; i++) {
-			if ((((fcsWord % 256) & 0x01) == 0x01) ^ ((b & pow) == pow)) {
-				fcsWord = (fcsWord / 2) ^ 0xa001;
+			if ((((fcsWord & 0xFF) & 0x01) == 0x01) ^ ((b & pow) == pow)) {
+				fcsWord = (fcsWord >>> 1) ^ 0xa001;
 			} else {
-				fcsWord /= 2;
+				fcsWord >>>= 1;
 			}
-			pow *= 2;
+			pow <<= 1;
 		}
 	}
 }
