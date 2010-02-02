@@ -19,10 +19,10 @@ import net.sf.lang.ControlCharacter;
  */
 public class DockingFrame {
 
-	/** Frame escape delimiter. */
+	/** Frame escape character. */
 	public static final byte DELIMITER_ESCAPE = ControlCharacter.DLE;
 	/** Frame-starting delimiter. */
-	public static final byte[] DELIMITER_PREAMBLE = { ControlCharacter.SYN, ControlCharacter.DLE, ControlCharacter.STX };
+	public static final byte[] DELIMITER_PREAMBLE = { ControlCharacter.SYN, DELIMITER_ESCAPE, ControlCharacter.STX };
 	/** Frame-ending delimiter. */
 	public static final byte[] DELIMITER_TAIL = { DELIMITER_ESCAPE, ControlCharacter.ETX };
 
@@ -56,17 +56,12 @@ public class DockingFrame {
 		int delimiterLength = DELIMITER_PREAMBLE.length;
 		int state = 0;
 		int b;
-		FrameCheckSequence fcs = new FrameCheckSequence();
-		ByteBuffer frame = ByteBuffer.allocate(MAX_DATA_LENGTH);
 
 		/* Read header. */
 		while (state < delimiterLength) {
 			b = in.read();
 			if (b < 0) {
 				throw new EOFException(ERROR_RECEIVE);
-			}
-			if (b == DELIMITER_ESCAPE) {
-
 			}
 			if (b == DELIMITER_PREAMBLE[state]) {
 				state++;
@@ -76,6 +71,9 @@ public class DockingFrame {
 		}
 
 		/* Read up to tail. */
+		boolean isEscape = false;
+		FrameCheckSequence fcs = new FrameCheckSequence();
+		ByteBuffer frame = ByteBuffer.allocate(MAX_DATA_LENGTH);
 		delimiterLength = DELIMITER_TAIL.length;
 		state = 0;
 		while (state < delimiterLength) {
@@ -83,17 +81,22 @@ public class DockingFrame {
 			if (b < 0) {
 				throw new EOFException(ERROR_RECEIVE);
 			}
-			if (b == DELIMITER_TAIL[state]) {
-				state++;
-			} else {
-				// Did we receive some data that just looks like the tail?
-				if (state > 0) {
-					frame.put(DELIMITER_TAIL, 0, state);
-					fcs.update(DELIMITER_TAIL, 0, state);
+			if (b == DELIMITER_ESCAPE) {
+				if (isEscape) {
+					frame.put((byte) b);
+					fcs.update(b);
 					state = 0;
+				} else if (b == DELIMITER_TAIL[state]) {
+					state++;
 				}
+				isEscape = !isEscape;
+			} else if (b == DELIMITER_TAIL[state]) {
+				state++;
+			} else if (state == 0) {
 				frame.put((byte) b);
 				fcs.update(b);
+			} else {
+				throw new ProtocolException(ERROR_RECEIVE);
 			}
 		}
 		fcs.update(DELIMITER_TAIL, 1, DELIMITER_TAIL.length - 1);
@@ -127,7 +130,14 @@ public class DockingFrame {
 	 *             if an I/O error occurs.
 	 */
 	public void send(OutputStream out, ByteBuffer frame) throws IOException {
-		send(out, frame.array(), 0, frame.limit());
+		if (frame.hasArray()) {
+			send(out, frame.array(), 0, frame.limit());
+		} else {
+			byte[] dst = new byte[frame.limit()];
+			frame.rewind();
+			frame.get(dst);
+			send(out, dst);
+		}
 	}
 
 	/**
