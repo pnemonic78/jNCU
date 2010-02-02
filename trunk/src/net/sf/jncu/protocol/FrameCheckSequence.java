@@ -39,8 +39,8 @@ public class FrameCheckSequence implements Checksum {
 	 */
 	@Override
 	public void update(byte[] b, int off, int len) {
-		for (int i = off; i < len; i++) {
-			update(b[i] & 0xFF);
+		for (int i = 0, o = off; i < len; i++, o++) {
+			update(b[o] & 0xFF);
 		}
 	}
 
