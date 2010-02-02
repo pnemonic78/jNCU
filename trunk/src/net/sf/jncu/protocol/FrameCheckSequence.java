@@ -40,7 +40,7 @@ public class FrameCheckSequence implements Checksum {
 	@Override
 	public void update(byte[] b, int off, int len) {
 		for (int i = off; i < len; i++) {
-			update(b[i]);
+			update(b[i] & 0xFF);
 		}
 	}
 
@@ -50,14 +50,12 @@ public class FrameCheckSequence implements Checksum {
 	 */
 	@Override
 	public void update(int b) {
-		int pow = 1;
-		for (int i = 0; i < 8; i++) {
-			if ((((fcsWord & 0xFF) & 0x01) == 0x01) ^ ((b & pow) == pow)) {
-				fcsWord = (fcsWord >>> 1) ^ 0xa001;
+		for (int i = 0, bit = 1; i < 8; i++, bit <<= 1) {
+			if (((fcsWord & 1) == 1) != ((b & bit) == bit)) {
+				fcsWord = (fcsWord >>> 1) ^ 0xA001;
 			} else {
 				fcsWord >>>= 1;
 			}
-			pow <<= 1;
 		}
 	}
 }
