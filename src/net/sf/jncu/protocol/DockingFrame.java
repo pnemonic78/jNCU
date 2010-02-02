@@ -3,6 +3,7 @@ package net.sf.jncu.protocol;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.ProtocolException;
 import java.nio.ByteBuffer;
 
 import net.sf.lang.ControlCharacter;
@@ -73,9 +74,31 @@ public class DockingFrame {
 			if (b == DELIMITER_TAIL[state]) {
 				state++;
 			} else {
+				// Did we receive some data that just looks like the tail?
+				if (state > 0) {
+					frame.put(DELIMITER_TAIL, 0, state);
+					fcs.update(DELIMITER_TAIL, 0, state);
+					state = 0;
+				}
 				frame.put((byte) b);
 				fcs.update(b);
 			}
+		}
+		fcs.update(DELIMITER_TAIL, 1, delimiterLength - 1);
+
+		/* Read the FCS. */
+		b = in.read();
+		if (b < 0) {
+			throw new EOFException(ERROR_RECEIVE);
+		}
+		int fcsWord = b;
+		b = in.read();
+		if (b < 0) {
+			throw new EOFException(ERROR_RECEIVE);
+		}
+		fcsWord = (b << 8) | fcsWord;
+		if (fcsWord != fcs.getValue()) {
+			throw new ProtocolException(ERROR_RECEIVE);
 		}
 	}
 }
