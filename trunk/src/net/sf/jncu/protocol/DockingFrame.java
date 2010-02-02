@@ -36,19 +36,20 @@ public class DockingFrame {
 	}
 
 	/**
-	 * Receive a frame. Ignores garbage data.
+	 * Receive a frame. Ignores the header and tail.
 	 * 
 	 * @param in
 	 *            the input.
 	 * @throws IOException
 	 *             if an I/O error occurs.
+	 * @return the frame data.
 	 */
-	public void receive(InputStream in) throws IOException {
+	public ByteBuffer receive(InputStream in) throws IOException {
 		int delimiterLength = DELIMITER_PREAMBLE.length;
 		int state = 0;
 		int b;
 		FrameCheckSequence fcs = new FrameCheckSequence();
-		ByteBuffer frame = ByteBuffer.allocate(MAX_HEADER_LENGTH + MAX_DATA_LENGTH);
+		ByteBuffer frame = ByteBuffer.allocate(MAX_DATA_LENGTH);
 
 		/* Read header. */
 		while (state < delimiterLength) {
@@ -100,5 +101,7 @@ public class DockingFrame {
 		if (fcsWord != fcs.getValue()) {
 			throw new ProtocolException(ERROR_RECEIVE);
 		}
+
+		return frame;
 	}
 }

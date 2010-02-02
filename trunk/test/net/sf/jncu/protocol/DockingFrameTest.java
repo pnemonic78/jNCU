@@ -3,6 +3,7 @@ package net.sf.jncu.protocol;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 import junit.framework.TestCase;
 
@@ -23,6 +24,8 @@ public class DockingFrameTest extends TestCase {
 
 		InputStream in = new ByteArrayInputStream(frame);
 		DockingFrame df = new DockingFrame();
-		df.receive(in);
+		ByteBuffer buf = df.receive(in);
+		assertNotNull(buf);
+		assertEquals(dataLength, buf.position());
 	}
 }

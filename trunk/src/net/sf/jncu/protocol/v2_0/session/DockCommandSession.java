@@ -399,4 +399,7 @@ public class DockCommandSession extends DockingEventCommands {
 		public static final String kDNewtonInfo = "ninf";
 	}
 
+	/** Command prefix. */
+	public static final String kDNewtonDock = "newtdock";
+
 }
