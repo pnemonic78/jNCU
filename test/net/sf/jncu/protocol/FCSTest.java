@@ -1,8 +1,8 @@
 package net.sf.jncu.protocol;
 
-import junit.framework.TestCase;
+import net.sf.junit.SFTestCase;
 
-public class FCSTest extends TestCase {
+public class FCSTest extends SFTestCase {
 
 	/**
 	 * Test the FCS of Newton's "attempt to connect."
