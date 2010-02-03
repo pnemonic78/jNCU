@@ -37,7 +37,7 @@ public class NCUComm {
 	public static final int BAUD_38400 = 38400;
 	public static final int BAUD_57600 = 57600;
 
-	private NCUCommTalk talk;
+	private NCUCommPorter talk;
 
 	/**
 	 * Constructs a new communications helper.
@@ -63,7 +63,7 @@ public class NCUComm {
 
 	public void startListenForNewton(CommPortIdentifier portId, int baud) {
 		if (talk == null) {
-			talk = new NCUCommTalk(this, portId, baud);
+			talk = new NCUCommPorter(this, portId, baud);
 			talk.start();
 		}
 	}

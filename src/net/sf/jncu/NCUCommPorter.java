@@ -18,7 +18,7 @@ import java.util.TooManyListenersException;
  * 
  * @author moshew
  */
-public class NCUCommTalk extends Thread implements SerialPortEventListener {
+public class NCUCommPorter extends Thread implements SerialPortEventListener {
 
 	public static enum Status {
 		CLOSED, OPEN, DISCONNECTED, CONNECTED;
@@ -38,7 +38,7 @@ public class NCUCommTalk extends Thread implements SerialPortEventListener {
 	private OutputStream out;
 	private Status status = Status.CLOSED;
 
-	public NCUCommTalk(NCUComm owner, CommPortIdentifier portId, int baud) {
+	public NCUCommPorter(NCUComm owner, CommPortIdentifier portId, int baud) {
 		super();
 		this.owner = owner;
 		this.portId = portId;
@@ -190,6 +190,7 @@ public class NCUCommTalk extends Thread implements SerialPortEventListener {
 			if (owner == null) {
 				System.err.println(msg);
 			} else {
+				System.out.println(msg);
 				// JOptionPane.showMessageDialog(owner, msg, owner.getTitle(),
 				// JOptionPane.ERROR_MESSAGE);
 			}
