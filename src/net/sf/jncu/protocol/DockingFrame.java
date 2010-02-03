@@ -36,6 +36,29 @@ public class DockingFrame {
 	/** Maximum length of data. */
 	private static final int MAX_DATA_LENGTH = 256;
 
+	/** Frame type - LR. */
+	public static final byte FRAME_TYPE_LR = 0x01;
+	/** Frame type - LD. */
+	public static final byte FRAME_TYPE_LD = 0x02;
+	/** Frame type - . */
+	public static final byte FRAME_TYPE_3 = 0x03;
+	/** Frame type - LT. */
+	public static final byte FRAME_TYPE_LT = 0x04;
+	/** Frame type - LA. */
+	public static final byte FRAME_TYPE_LA = 0x05;
+
+	/** LR frame response. */
+	public static final byte[] FRAME_LR = { 0x17, /* Length of header */
+	FRAME_TYPE_LR, /* Type indication LR frame */
+	0x02, /* Constant parameter 1 */
+	0x01, 0x06, 0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0xff,
+	/* Constant parameter 2 */
+	0x02, 0x01, 0x02, /* Octet-oriented framing mode */
+	0x03, 0x01, 0x01, /* k = 1 */
+	0x04, 0x02, 64, 0x00, /* N401 = 64 */
+	0x08, 0x01, 0x03 /* N401 = 256 & fixed LT, LA frames */
+	};
+
 	/**
 	 * Constructs a new docking frame.
 	 */
