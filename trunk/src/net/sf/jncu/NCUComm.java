@@ -1,11 +1,11 @@
 package net.sf.jncu;
 
 import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
+import java.util.List;
+
+import net.sf.jncu.comm.CommPorts;
+import net.sf.jncu.comm.NCUSerialPortEngine;
 
 /**
  * Communications helper.
@@ -37,7 +37,7 @@ public class NCUComm {
 	public static final int BAUD_38400 = 38400;
 	public static final int BAUD_57600 = 57600;
 
-	private NCUCommPorter talk;
+	private NCUSerialPortEngine talk;
 
 	/**
 	 * Constructs a new communications helper.
@@ -46,24 +46,9 @@ public class NCUComm {
 		super();
 	}
 
-	@SuppressWarnings("unchecked")
-	public Collection<CommPortIdentifier> getPorts(int portType) {
-		Collection<CommPortIdentifier> ports = new ArrayList<CommPortIdentifier>();
-
-		Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
-		while (portEnum.hasMoreElements()) {
-			CommPortIdentifier portIdentifier = portEnum.nextElement();
-			if (portIdentifier.getPortType() == portType) {
-				ports.add(portIdentifier);
-			}
-		}
-
-		return ports;
-	}
-
 	public void startListenForNewton(CommPortIdentifier portId, int baud) {
 		if (talk == null) {
-			talk = new NCUCommPorter(this, portId, baud);
+			talk = new NCUSerialPortEngine(this, portId, baud);
 			talk.start();
 		}
 	}
@@ -77,12 +62,10 @@ public class NCUComm {
 
 	public static void main(String[] args) {
 		NCUComm comm = new NCUComm();
+		CommPorts commPorts = new CommPorts();
 		try {
-			Collection<CommPortIdentifier> ports = comm.getPorts(CommPortIdentifier.PORT_SERIAL);
-			if (ports.size() == 0) {
-				throw new NoSuchPortException();
-			}
-			CommPortIdentifier portId = ports.iterator().next();
+			List<CommPortIdentifier> ports = commPorts.getPortIdentifiers(CommPortIdentifier.PORT_SERIAL);
+			CommPortIdentifier portId = ports.get(0);
 			comm.startListenForNewton(portId, BAUD_38400);
 			// Thread.sleep(5000);
 			// comm.stopListenForNewton();
