@@ -1,24 +1,23 @@
-package net.sf.jncu;
+package net.sf.jncu.comm;
 
 import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
-import gnu.io.SerialPortEvent;
-import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
 
-import java.io.BufferedInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.TooManyListenersException;
 
+import net.sf.jncu.NCUComm;
+
 /**
- * NCU
+ * NCU serial port engine.
  * 
  * @author moshew
  */
-public class NCUCommPorter extends Thread implements SerialPortEventListener {
+public class NCUSerialPortEngine extends Thread {
 
 	public static enum Status {
 		CLOSED, OPEN, DISCONNECTED, CONNECTED;
@@ -29,16 +28,18 @@ public class NCUCommPorter extends Thread implements SerialPortEventListener {
 	private static final String ERROR_TOO_MANY_LISTENERS = "Too many listeners";
 	private static final String ERROR_PORT_CLOSED = "Port closed";
 	private static final String ERROR_PORT_DISCONNECTED = "Port disconnected";
+	private static final String ERROR_EOF = "No more data";
 
 	private final NCUComm owner;
 	private final CommPortIdentifier portId;
 	private final int baud;
 	private SerialPort port;
-	private InputStream in;
-	private OutputStream out;
+	private NCUSerialPortReader reader;
+	private NCUSerialPortWriter writer;
+
 	private Status status = Status.CLOSED;
 
-	public NCUCommPorter(NCUComm owner, CommPortIdentifier portId, int baud) {
+	public NCUSerialPortEngine(NCUComm owner, CommPortIdentifier portId, int baud) {
 		super();
 		this.owner = owner;
 		this.portId = portId;
@@ -47,21 +48,11 @@ public class NCUCommPorter extends Thread implements SerialPortEventListener {
 
 	@Override
 	public void run() {
+		System.out.println("@@@ run enter");
 		try {
 			initPort();
-			openStream();
 			while (status == Status.OPEN) {
 				read();
-				if (status == Status.OPEN) {
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException ie) {
-						// ignore
-					}
-				} else if (status == Status.DISCONNECTED) {
-					// Stream was rudely disconnected, so keep polling.
-					openStream();
-				}
 			}
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
@@ -73,6 +64,7 @@ public class NCUCommPorter extends Thread implements SerialPortEventListener {
 		} finally {
 			close();
 		}
+		System.out.println("@@@ run leave");
 	}
 
 	/**
@@ -91,15 +83,14 @@ public class NCUCommPorter extends Thread implements SerialPortEventListener {
 	protected void initPort() throws IOException {
 		try {
 			port = (SerialPort) portId.open(getClass().getName(), 30000);
-			port.notifyOnBreakInterrupt(true);
-			port.notifyOnFramingError(true);
-			port.notifyOnOutputEmpty(true);
-			port.notifyOnOverrunError(true);
-			port.notifyOnParityError(true);
-			port.addEventListener(this);
 			if (baud != port.getBaudRate()) {
 				port.setSerialPortParams(baud, port.getDataBits(), port.getStopBits(), port.getParity());
 			}
+			this.reader = new NCUSerialPortReader(port);
+			reader.start();
+			this.writer = new NCUSerialPortWriter(port);
+			writer.start();
+			status = Status.OPEN;
 		} catch (PortInUseException piue) {
 			throw new IOException(ERROR_PORT_USED, piue);
 		} catch (UnsupportedCommOperationException ucoe) {
@@ -113,88 +104,30 @@ public class NCUCommPorter extends Thread implements SerialPortEventListener {
 	 * Close the port.
 	 */
 	protected void closePort() {
+		System.out.println("@@@ closePort enter");
 		if (port != null) {
 			closeStream();
 			port.removeEventListener();
 			port.close();
+			try {
+				reader.close();
+				writer.close();
+			} catch (IOException ioe) {
+				// ignore
+			}
+			reader = null;
+			writer = null;
 			status = Status.CLOSED;
 			port = null;
 		}
+		System.out.println("@@@ closePort leave");
 	}
 
 	/**
 	 * Close the port data stream.
 	 */
 	protected void closeStream() {
-		if (in != null) {
-			try {
-				in.close();
-			} catch (Exception e) {
-				// ignore
-			}
-			in = null;
-		}
-		if (out != null) {
-			try {
-				out.close();
-			} catch (Exception e) {
-				// ignore
-			}
-			out = null;
-		}
 		status = Status.DISCONNECTED;
-	}
-
-	/**
-	 * Get the port data stream.
-	 * 
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
-	protected void openStream() throws IOException {
-		in = new BufferedInputStream(port.getInputStream());
-		status = Status.OPEN;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see gnu.io.SerialPortEventListener#serialEvent(gnu.io.SerialPortEvent)
-	 */
-	public void serialEvent(SerialPortEvent e) {
-		String msg = null;
-
-		switch (e.getEventType()) {
-		case SerialPortEvent.BI:
-			msg = "Break interrupt";
-			break;
-		// case SerialPortEvent.CD:msg="Break interrupt";break;
-		// case SerialPortEvent.CTS:msg="Clear to send";break;
-		// case SerialPortEvent.DSR:
-		// msg = "Data set ready";
-		// break;
-		case SerialPortEvent.FE:
-			msg = "Framing error";
-			break;
-		case SerialPortEvent.OE:
-			msg = "Overrun error";
-			break;
-		case SerialPortEvent.OUTPUT_BUFFER_EMPTY:
-			msg = "Output buffer empty";
-			break;
-		case SerialPortEvent.PE:
-			msg = "Parity error";
-			break;
-		// case SerialPortEvent.RI:msg="Ring indicator";break;
-		}
-		if (msg != null) {
-			if (owner == null) {
-				System.err.println(msg);
-			} else {
-				System.out.println(msg);
-				// JOptionPane.showMessageDialog(owner, msg, owner.getTitle(),
-				// JOptionPane.ERROR_MESSAGE);
-			}
-		}
 	}
 
 	/**
@@ -206,35 +139,41 @@ public class NCUCommPorter extends Thread implements SerialPortEventListener {
 		return status;
 	}
 
+	public void write(byte[] b) {
+
+	}
+
 	/**
-	 * Read bytes.
+	 * Read bytes and populates the queue.
 	 * 
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
 	protected void read() throws IOException {
+		System.out.println("@@@ read enter");
 		if (status == Status.CLOSED) {
 			throw new IllegalStateException(ERROR_PORT_CLOSED);
 		}
 		if (status == Status.DISCONNECTED) {
 			throw new IllegalStateException(ERROR_PORT_DISCONNECTED);
 		}
-		int b = in.read();
-		if (b != -1) {
-			status = Status.CONNECTED;
-			int i = 0;
-			while (b != -1) {
-				if ((i & 15) == 0) {
-					System.out.println();
-				} else {
-					System.out.print(' ');
-				}
-				System.out.print("0x" + (b < 0x10 ? "0" : "") + Integer.toHexString(b));
-				b = in.read();
-				i++;
+		InputStream in = reader.getInputStream();
+		status = Status.CONNECTED;
+		int i = 0;
+		int b;
+		do {
+			b = in.read();
+			if (b == -1) {
+				throw new EOFException(ERROR_EOF);
 			}
-			closeStream();
-		}
+			if ((i & 15) == 0) {
+				System.out.println();
+			} else {
+				System.out.print(' ');
+			}
+			System.out.print("0x" + (b < 0x10 ? "0" : "") + Integer.toHexString(b));
+			i++;
+		} while ((status == Status.CONNECTED) && (reader != null));
+		System.out.println("@@@ read leave");
 	}
-
 }

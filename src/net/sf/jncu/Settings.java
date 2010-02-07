@@ -1,10 +1,13 @@
 package net.sf.jncu;
 
 import gnu.io.CommPortIdentifier;
+import gnu.io.NoSuchPortException;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import net.sf.jncu.comm.CommPorts;
 
 /**
  * Settings.
@@ -34,8 +37,12 @@ public class Settings {
 	public void rescanPorts() {
 		portIds.clear();
 
-		NCUComm discoverer = new NCUComm();
-		portIds.addAll(discoverer.getPorts(CommPortIdentifier.PORT_SERIAL));
+		CommPorts discoverer = new CommPorts();
+		try {
+			portIds.addAll(discoverer.getPortIdentifiers(CommPortIdentifier.PORT_SERIAL));
+		} catch (NoSuchPortException nspe) {
+			nspe.printStackTrace();
+		}
 	}
 
 	/**
