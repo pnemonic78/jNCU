@@ -9,7 +9,6 @@ import java.io.OutputStream;
 public class NCUSerialPortWriter extends Thread implements Closeable {
 
 	private final SerialPort port;
-	private OutputStream out;
 
 	public NCUSerialPortWriter(SerialPort port) {
 		super();
@@ -21,14 +20,6 @@ public class NCUSerialPortWriter extends Thread implements Closeable {
 	}
 
 	public void close() throws IOException {
-		if (out != null) {
-			try {
-				out.close();
-			} catch (Exception e) {
-				// ignore
-			}
-			out = null;
-		}
 	}
 
 	/**
@@ -52,8 +43,7 @@ public class NCUSerialPortWriter extends Thread implements Closeable {
 	 *             if an I/O error occurs.
 	 */
 	public void write(int b) throws IOException {
-		out = port.getOutputStream();
-		out.write(b & 0xFF);
+		getOutputStream().write(b & 0xFF);
 	}
 
 	/**
@@ -65,8 +55,7 @@ public class NCUSerialPortWriter extends Thread implements Closeable {
 	 *             if an I/O error occurs.
 	 */
 	public void write(byte[] b) throws IOException {
-		out = port.getOutputStream();
-		out.write(b);
+		getOutputStream().write(b);
 	}
 
 	/**
@@ -82,7 +71,17 @@ public class NCUSerialPortWriter extends Thread implements Closeable {
 	 *             if an I/O error occurs.
 	 */
 	public void write(byte[] b, int offset, int length) throws IOException {
-		out = port.getOutputStream();
-		out.write(b, offset, length);
+		getOutputStream().write(b, offset, length);
+	}
+
+	/**
+	 * Get the port output stream.
+	 * 
+	 * @return the stream.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	public OutputStream getOutputStream() throws IOException {
+		return port.getOutputStream();
 	}
 }
