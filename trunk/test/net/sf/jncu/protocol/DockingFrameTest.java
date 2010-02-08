@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 
 import net.sf.junit.SFTestCase;
 
@@ -25,9 +24,9 @@ public class DockingFrameTest extends SFTestCase {
 
 		InputStream in = new ByteArrayInputStream(frame);
 		DockingFrame df = new DockingFrame();
-		ByteBuffer buf = df.receive(in);
+		byte[] buf = df.receive(in);
 		assertNotNull(buf);
-		assertEquals(dataLength, buf.position());
+		assertEquals(dataLength, buf.length);
 	}
 
 	/**

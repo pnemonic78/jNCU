@@ -1,5 +1,6 @@
 package net.sf.jncu.protocol;
 
+import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +37,11 @@ public class DockingFrame {
 	/** Maximum length of data. */
 	private static final int MAX_DATA_LENGTH = 256;
 
+	/** Index of the frame length. */
+	public static int INDEX_LENGTH = 0;
+	/** Index of the frame type. */
+	public static int INDEX_TYPE = 1;
+
 	/** Frame type - LR. */
 	public static final byte FRAME_TYPE_LR = 0x01;
 	/** Frame type - LD. */
@@ -49,8 +55,7 @@ public class DockingFrame {
 
 	/** Desktop to Newton handshake response #1. */
 	public static final byte[] FRAME_DTN_HANDSHAKE_1 = { 0x1D, 0x01, 0x02, 0x01, 0x06, 0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0xFF, 0x02, 0x01, 0x02, 0x03, 0x01,
-			0x08, 0x04, 0x02, 0x40, 0x00, 0x08, 0x01, 0x03, 0x0E, 0x04, 0x03, 0x04, 0x00, (byte) 0xFA, 0x10, 0x03, (byte) 0x8A, 0x2E, 0x16, 0x10, 0x02, 0x03,
-			0x05, 0x00, 0x08 };
+			0x08, 0x04, 0x02, 0x40, 0x00, 0x08, 0x01, 0x03, 0x0E, 0x04, 0x03, 0x04, 0x00, (byte) 0xFA };
 
 	/** LR frame response. */
 	public static final byte[] FRAME_LR = { 0x17, /* Length of header */
@@ -80,7 +85,7 @@ public class DockingFrame {
 	 *             if an I/O error occurs.
 	 * @return the frame data.
 	 */
-	public ByteBuffer receive(InputStream in) throws IOException {
+	public byte[] receive(InputStream in) throws IOException {
 		int delimiterLength = DELIMITER_PREAMBLE.length;
 		int state = 0;
 		int b;
@@ -101,7 +106,7 @@ public class DockingFrame {
 		/* Read up to tail. */
 		boolean isEscape = false;
 		FrameCheckSequence fcs = new FrameCheckSequence();
-		ByteBuffer frame = ByteBuffer.allocate(MAX_DATA_LENGTH);
+		ByteArrayOutputStream buf = new ByteArrayOutputStream(MAX_DATA_LENGTH);
 		delimiterLength = DELIMITER_TAIL.length;
 		state = 0;
 		while (state < delimiterLength) {
@@ -111,7 +116,7 @@ public class DockingFrame {
 			}
 			if (b == DELIMITER_ESCAPE) {
 				if (isEscape) {
-					frame.put((byte) b);
+					buf.write(b);
 					fcs.update(b);
 					state = 0;
 				} else if (b == DELIMITER_TAIL[state]) {
@@ -121,11 +126,16 @@ public class DockingFrame {
 			} else if (b == DELIMITER_TAIL[state]) {
 				state++;
 			} else if (state == 0) {
-				frame.put((byte) b);
+				buf.write(b);
 				fcs.update(b);
 			} else {
 				throw new ProtocolException(ERROR_RECEIVE);
 			}
+		}
+		buf.close();
+		byte[] frame = buf.toByteArray();
+		if (frame.length < frame[INDEX_LENGTH]) {
+			throw new ProtocolException("expected frame length: " + frame[INDEX_LENGTH] + " but was: " + frame.length);
 		}
 		fcs.update(DELIMITER_TAIL, 1, DELIMITER_TAIL.length - 1);
 

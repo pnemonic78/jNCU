@@ -8,9 +8,11 @@ import gnu.io.UnsupportedCommOperationException;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.TooManyListenersException;
 
 import net.sf.jncu.NCUComm;
+import net.sf.jncu.protocol.DockingFrame;
 
 /**
  * NCU serial port engine.
@@ -33,9 +35,7 @@ public class NCUSerialPortEngine extends Thread {
 	private final NCUComm owner;
 	private final CommPortIdentifier portId;
 	private final int baud;
-	private SerialPort port;
-	private NCUSerialPortReader reader;
-	private NCUSerialPortWriter writer;
+	private NCUSerialPort port;
 
 	private Status status = Status.CLOSED;
 
@@ -51,9 +51,7 @@ public class NCUSerialPortEngine extends Thread {
 		System.out.println("@@@ run enter");
 		try {
 			initPort();
-			while (status == Status.OPEN) {
-				read();
-			}
+			connectToNewton();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 			if (owner != null) {
@@ -82,14 +80,11 @@ public class NCUSerialPortEngine extends Thread {
 	 */
 	protected void initPort() throws IOException {
 		try {
-			port = (SerialPort) portId.open(getClass().getName(), 30000);
-			if (baud != port.getBaudRate()) {
-				port.setSerialPortParams(baud, port.getDataBits(), port.getStopBits(), port.getParity());
+			SerialPort serialPort = (SerialPort) portId.open(getClass().getName(), 30000);
+			if (baud != serialPort.getBaudRate()) {
+				serialPort.setSerialPortParams(baud, serialPort.getDataBits(), serialPort.getStopBits(), serialPort.getParity());
 			}
-			this.reader = new NCUSerialPortReader(port);
-			reader.start();
-			this.writer = new NCUSerialPortWriter(port);
-			writer.start();
+			this.port = new NCUSerialPort(serialPort);
 			status = Status.OPEN;
 		} catch (PortInUseException piue) {
 			throw new IOException(ERROR_PORT_USED, piue);
@@ -107,18 +102,9 @@ public class NCUSerialPortEngine extends Thread {
 		System.out.println("@@@ closePort enter");
 		if (port != null) {
 			closeStream();
-			port.removeEventListener();
 			port.close();
-			try {
-				reader.close();
-				writer.close();
-			} catch (IOException ioe) {
-				// ignore
-			}
-			reader = null;
-			writer = null;
-			status = Status.CLOSED;
 			port = null;
+			status = Status.CLOSED;
 		}
 		System.out.println("@@@ closePort leave");
 	}
@@ -149,7 +135,7 @@ public class NCUSerialPortEngine extends Thread {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected void read() throws IOException {
+	protected void poll() throws IOException {
 		System.out.println("@@@ read enter");
 		if (status == Status.CLOSED) {
 			throw new IllegalStateException(ERROR_PORT_CLOSED);
@@ -157,7 +143,7 @@ public class NCUSerialPortEngine extends Thread {
 		if (status == Status.DISCONNECTED) {
 			throw new IllegalStateException(ERROR_PORT_DISCONNECTED);
 		}
-		InputStream in = reader.getInputStream();
+		InputStream in = port.getInputStream();
 		status = Status.CONNECTED;
 		int i = 0;
 		int b;
@@ -173,7 +159,34 @@ public class NCUSerialPortEngine extends Thread {
 			}
 			System.out.print("0x" + (b < 0x10 ? "0" : "") + Integer.toHexString(b));
 			i++;
-		} while ((status == Status.CONNECTED) && (reader != null));
+		} while ((status == Status.CONNECTED) && (port != null));
 		System.out.println("@@@ read leave");
 	}
+
+	protected void connectToNewton() throws IOException {
+		System.out.println("@@@ connectToNewton enter");
+		if (status == Status.CLOSED) {
+			throw new IllegalStateException(ERROR_PORT_CLOSED);
+		}
+		if (status == Status.DISCONNECTED) {
+			throw new IllegalStateException(ERROR_PORT_DISCONNECTED);
+		}
+		DockingFrame docking = new DockingFrame();
+		InputStream in = port.getInputStream();
+		OutputStream out = port.getOutputStream();
+		byte[] frame;
+		status = Status.CONNECTED;
+		System.out.println("@@@ waiting to connect...");
+		do {
+			do {
+				frame = docking.receive(in);
+			} while (frame[DockingFrame.INDEX_TYPE] != DockingFrame.FRAME_TYPE_LR);
+			System.out.println("@@@ Connected.");
+			docking.send(out, DockingFrame.FRAME_DTN_HANDSHAKE_1);
+			System.out.println("@@@ Handshaking...");
+			poll();
+		} while ((status == Status.CONNECTED) && (port != null));
+		System.out.println("@@@ connectToNewton leave");
+	}
+
 }
