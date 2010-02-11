@@ -31,6 +31,8 @@ public class DockingFrame {
 	private static final String ERROR_RECEIVE = "Error in reading from Newton device!";
 	/** Send error message. */
 	private static final String ERROR_SEND = "Error in writing to Newton device!";
+	/** Not a command error message. */
+	private static final String ERROR_NOT_COMMAND = "Expected a command";
 
 	/** Maximum length of header. */
 	private static final int MAX_HEADER_LENGTH = 256;
@@ -41,6 +43,10 @@ public class DockingFrame {
 	public static int INDEX_LENGTH = 0;
 	/** Index of the frame type. */
 	public static int INDEX_TYPE = 1;
+	/** Index of the frame sequence. */
+	public static int INDEX_SEQUENCE = 2;
+	/** Index of the start of a command. */
+	public static int INDEX_COMMAND = 3;
 
 	/** Frame type - LR. */
 	public static final byte FRAME_TYPE_LR = 0x01;
@@ -57,17 +63,11 @@ public class DockingFrame {
 	public static final byte[] FRAME_DTN_HANDSHAKE_1 = { 0x1D, 0x01, 0x02, 0x01, 0x06, 0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0xFF, 0x02, 0x01, 0x02, 0x03, 0x01,
 			0x08, 0x04, 0x02, 0x40, 0x00, 0x08, 0x01, 0x03, 0x0E, 0x04, 0x03, 0x04, 0x00, (byte) 0xFA };
 
-	/** LR frame response. */
-	public static final byte[] FRAME_LR = { 0x17, /* Length of header */
-	FRAME_TYPE_LR, /* Type indication LR frame */
-	0x02, /* Constant parameter 1 */
-	0x01, 0x06, 0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0xff,
-	/* Constant parameter 2 */
-	0x02, 0x01, 0x02, /* Octet-oriented framing mode */
-	0x03, 0x01, 0x01, /* k = 1 */
-	0x04, 0x02, 0x40, 0x00, /* N401 = 64 */
-	0x08, 0x01, 0x03 /* N401 = 256 & fixed LT, LA frames */
-	};
+	/** Desktop to Newton handshake response #2. */
+	public static final byte[] FRAME_DTN_LA = { 0x03, /* Length of header */
+	FRAME_TYPE_LA, /* Type indication LA frame */
+	0x00, /* Sequence number */
+	0x01 };
 
 	/**
 	 * Constructs a new docking frame.
@@ -230,6 +230,63 @@ public class DockingFrame {
 		b = (int) (fcs.getValue() & 0xFFFF);
 		out.write(b & 0xFF);
 		out.write(b >> 8);
+	}
+
+	/**
+	 * Wait for a frame type.
+	 * 
+	 * @param in
+	 *            the input.
+	 * @param type
+	 *            the frame type.
+	 * @return the frame data.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	public byte[] waitForType(InputStream in, byte type) throws IOException {
+		byte[] data;
+		do {
+			data = receive(in);
+		} while (data[DockingFrame.INDEX_TYPE] != type);
+		return data;
+	}
+
+	/**
+	 * Send a command to the Newton.
+	 * 
+	 * @param out
+	 *            the output.
+	 * @param cmd
+	 *            the command.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	public void sendCommand(OutputStream out, DockCommandToNewton cmd) throws IOException {
+		send(out, cmd.getFrame());
+	}
+
+	/**
+	 * Receive a docking command.
+	 * 
+	 * @param in
+	 *            the input.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 * @throws ProtocolException
+	 *             if the expected frame is not a command.
+	 * @return the command - <tt>null</tt> otherwise.
+	 */
+	public DockCommandFromNewton receiveCommand(InputStream in) throws IOException, ProtocolException {
+		byte[] frame = waitForType(in, FRAME_TYPE_LT);
+		if (!DockCommandFromNewton.isCommand(frame)) {
+			throw new ProtocolException(ERROR_NOT_COMMAND);
+		}
+		DockCommandFromNewton cmd = DockCommandFromNewton.deserialize(frame);
+		if (cmd == null) {
+			throw new ProtocolException(ERROR_NOT_COMMAND);
+		}
+		// TODO send FRAME_DTN_LA;
+		return cmd;
 	}
 
 }

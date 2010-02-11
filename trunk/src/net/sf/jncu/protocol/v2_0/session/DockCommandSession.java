@@ -226,20 +226,6 @@ public class DockCommandSession extends DockingEventCommands {
 		 */
 		public static final String kDWhichIcons = "wicn";
 		/**
-		 * This command is sent to the desktop after the connection is
-		 * established using AppleTalk, serial, etc. (when the user taps the
-		 * "connect" button). The protocol version is the version of the
-		 * messaging protocol that's being used and should always be set to the
-		 * number 9 for the version of the protocol defined here.
-		 * 
-		 * <pre>
-		 * 'rtdk'
-		 * length = 4
-		 * protocol version = 9
-		 * </pre>
-		 */
-		public static final String kDRequestToDock = "rtdk";
-		/**
 		 * This command displays the password slip to let the user enter a
 		 * password. The string is displayed as the title of the slip. A
 		 * <tt>kDPassword</tt> command is returned.
@@ -329,6 +315,9 @@ public class DockCommandSession extends DockingEventCommands {
 		public static final int kMacintosh = 0;
 		/** Microsoft Windows desktop type. */
 		public static final int kWindows = 1;
+
+		/** The protocol version. */
+		public static final int kProtocolVersion = 9;
 	}
 
 	/** Newton to Desktop. */
@@ -397,6 +386,20 @@ public class DockCommandSession extends DockingEventCommands {
 		 * </pre>
 		 */
 		public static final String kDNewtonInfo = "ninf";
+		/**
+		 * This command is sent to the desktop after the connection is
+		 * established using AppleTalk, serial, etc. (when the user taps the
+		 * "connect" button). The protocol version is the version of the
+		 * messaging protocol that's being used and should always be set to the
+		 * number 9 for the version of the protocol defined here.
+		 * 
+		 * <pre>
+		 * 'rtdk'
+		 * length = 4
+		 * protocol version = 9
+		 * </pre>
+		 */
+		public static final String kDRequestToDock = "rtdk";
 	}
 
 	/** Command prefix. */

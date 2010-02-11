@@ -12,7 +12,9 @@ import java.io.OutputStream;
 import java.util.TooManyListenersException;
 
 import net.sf.jncu.NCUComm;
+import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockingFrame;
+import net.sf.jncu.protocol.v2_0.session.DockCommandSession;
 
 /**
  * NCU serial port engine.
@@ -101,19 +103,12 @@ public class NCUSerialPortEngine extends Thread {
 	protected void closePort() {
 		System.out.println("@@@ closePort enter");
 		if (port != null) {
-			closeStream();
+			status = Status.DISCONNECTED;
 			port.close();
 			port = null;
 			status = Status.CLOSED;
 		}
 		System.out.println("@@@ closePort leave");
-	}
-
-	/**
-	 * Close the port data stream.
-	 */
-	protected void closeStream() {
-		status = Status.DISCONNECTED;
 	}
 
 	/**
@@ -163,6 +158,7 @@ public class NCUSerialPortEngine extends Thread {
 		System.out.println("@@@ read leave");
 	}
 
+	// TODO move this method to a class in package net.sf.jncu.protocol
 	protected void connectToNewton() throws IOException {
 		System.out.println("@@@ connectToNewton enter");
 		if (status == Status.CLOSED) {
@@ -174,19 +170,25 @@ public class NCUSerialPortEngine extends Thread {
 		DockingFrame docking = new DockingFrame();
 		InputStream in = port.getInputStream();
 		OutputStream out = port.getOutputStream();
-		byte[] frame;
+		DockCommandFromNewton cmdFromNewton;
 		status = Status.CONNECTED;
 		System.out.println("@@@ waiting to connect...");
 		do {
-			do {
-				frame = docking.receive(in);
-			} while (frame[DockingFrame.INDEX_TYPE] != DockingFrame.FRAME_TYPE_LR);
-			System.out.println("@@@ Connected.");
+			docking.waitForType(in, DockingFrame.FRAME_TYPE_LR);
+			System.out.println("@@@ connected.");
 			docking.send(out, DockingFrame.FRAME_DTN_HANDSHAKE_1);
-			System.out.println("@@@ Handshaking...");
+			System.out.println("@@@ handshaking...");
+			do {
+				cmdFromNewton = docking.receiveCommand(in);
+			} while (!DockCommandSession.NewtonToDesktop.kDRequestToDock.equals(cmdFromNewton.getCommand()));
+			docking.send(out, DockingFrame.FRAME_DTN_LA);
+			System.out.println("@@@ polling...");
 			poll();
 		} while ((status == Status.CONNECTED) && (port != null));
 		System.out.println("@@@ connectToNewton leave");
 	}
 
+	protected void commandReceived(DockCommandFromNewton cmd) {
+
+	}
 }
