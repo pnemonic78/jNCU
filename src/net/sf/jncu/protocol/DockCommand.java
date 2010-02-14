@@ -1,5 +1,7 @@
 package net.sf.jncu.protocol;
 
+import net.sf.jncu.protocol.v2_0.session.DockCommandSession;
+
 /**
  * Docking Command.
  * 
@@ -12,9 +14,13 @@ public abstract class DockCommand {
 	/** Number of command characters. */
 	protected static final int COMMAND_LENGTH = LENGTH_WORD;
 
+	protected static final byte[] kDNewtonDockBytes = DockCommandSession.kDNewtonDock.getBytes();
+	protected static final int kDNewtonDockLength = kDNewtonDockBytes.length;
+
 	protected final DockingFrame frame = new DockingFrame();
 	protected final String cmd;
 	protected final byte[] cmdBytes;
+	private int length;
 
 	/**
 	 * Creates a new docking command.
@@ -61,7 +67,17 @@ public abstract class DockCommand {
 	 * @return the length. Default value is <tt>0</tt>.
 	 */
 	public int getLength() {
-		return 0;
+		return length;
+	}
+
+	/**
+	 * Set the length.
+	 * 
+	 * @param length
+	 *            the length.
+	 */
+	protected void setLength(int length) {
+		this.length = length;
 	}
 
 }

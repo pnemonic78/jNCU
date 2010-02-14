@@ -198,7 +198,7 @@ public class DockCommandSession extends DockingEventCommands {
 		 * <pre>
 		 * 'dock'
 		 * length = 4
-		 * session type = 4
+		 * session type
 		 * </pre>
 		 */
 		public static final String kDInitiateDocking = "dock";
