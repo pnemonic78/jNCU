@@ -14,6 +14,8 @@ import java.util.TooManyListenersException;
 import net.sf.jncu.NCUComm;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockingFrame;
+import net.sf.jncu.protocol.v2_0.DockCommandFactory;
+import net.sf.jncu.protocol.v2_0.session.DInitiateDocking;
 import net.sf.jncu.protocol.v2_0.session.DockCommandSession;
 
 /**
@@ -171,6 +173,8 @@ public class NCUSerialPortEngine extends Thread {
 		InputStream in = port.getInputStream();
 		OutputStream out = port.getOutputStream();
 		DockCommandFromNewton cmdFromNewton;
+		DInitiateDocking cmdInitiateDocking;
+		DockCommandFactory factory = DockCommandFactory.getInstance();
 		status = Status.CONNECTED;
 		System.out.println("@@@ waiting to connect...");
 		do {
@@ -182,6 +186,10 @@ public class NCUSerialPortEngine extends Thread {
 				cmdFromNewton = docking.receiveCommand(in);
 			} while (!DockCommandSession.NewtonToDesktop.kDRequestToDock.equals(cmdFromNewton.getCommand()));
 			docking.send(out, DockingFrame.FRAME_DTN_LA);
+			cmdInitiateDocking = (DInitiateDocking) factory.create(DockCommandSession.DesktopToNewton.kDInitiateDocking);
+			cmdInitiateDocking.setSession(0);
+			docking.sendCommand(out, cmdInitiateDocking);
+			docking.waitForType(in, DockingFrame.FRAME_TYPE_LA);
 			System.out.println("@@@ polling...");
 			poll();
 		} while ((status == Status.CONNECTED) && (port != null));

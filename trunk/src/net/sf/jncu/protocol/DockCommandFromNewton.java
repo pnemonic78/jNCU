@@ -2,7 +2,7 @@ package net.sf.jncu.protocol;
 
 import java.net.ProtocolException;
 
-import net.sf.jncu.protocol.v2_0.session.DockCommandSession;
+import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 
 /**
  * Docking command from Newton to desktop.
@@ -10,10 +10,6 @@ import net.sf.jncu.protocol.v2_0.session.DockCommandSession;
  * @author moshew
  */
 public abstract class DockCommandFromNewton extends DockCommand {
-
-	private static final byte[] kDNewtonDockBytes = DockCommandSession.kDNewtonDock.getBytes();
-	private static final int kDNewtonDockLength = kDNewtonDockBytes.length;
-	private int length;
 
 	/**
 	 * Creates a new docking command from Newton.
@@ -35,21 +31,6 @@ public abstract class DockCommandFromNewton extends DockCommand {
 		super(cmd);
 	}
 
-	@Override
-	public int getLength() {
-		return length;
-	}
-
-	/**
-	 * Set the length.
-	 * 
-	 * @param length
-	 *            the length.
-	 */
-	protected void setLength(int length) {
-		this.length = length;
-	}
-
 	/**
 	 * Is the frame a command frame?
 	 * 
@@ -59,9 +40,9 @@ public abstract class DockCommandFromNewton extends DockCommand {
 	 *         otherwise.
 	 */
 	public static boolean isCommand(byte[] frame) {
-		if (frame[DockingFrame.INDEX_LENGTH] < DockingFrame.INDEX_COMMAND + kDNewtonDockLength + COMMAND_LENGTH) {
-			return false;
-		}
+//		if (frame[DockingFrame.INDEX_LENGTH] < DockingFrame.INDEX_COMMAND + kDNewtonDockLength + COMMAND_LENGTH) {
+//			return false;
+//		}
 		int o = DockingFrame.INDEX_COMMAND;
 		for (int i = 0; i < kDNewtonDockLength; i++, o++) {
 			if (kDNewtonDockBytes[i] != frame[o]) {
@@ -89,7 +70,7 @@ public abstract class DockCommandFromNewton extends DockCommand {
 		System.arraycopy(frame, DockingFrame.INDEX_COMMAND + kDNewtonDockLength, cmdName, 0, COMMAND_LENGTH);
 		DockCommandFactory factory = DockCommandFactory.getInstance();
 		DockCommandFromNewton cmd = (DockCommandFromNewton) factory.create(cmdName);
-		cmd.decode(frame, DockingFrame.INDEX_COMMAND + kDNewtonDockLength + COMMAND_LENGTH + 1);
+		cmd.decode(frame, DockingFrame.INDEX_COMMAND + kDNewtonDockLength + COMMAND_LENGTH);
 		return cmd;
 	}
 
