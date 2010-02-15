@@ -23,6 +23,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 
+import net.sf.jncu.comm.NCUSerialPort;
+
 /**
  * NCU settings.
  * 
@@ -66,8 +68,7 @@ public class NCUSettings extends JDialog {
 	 * @return void
 	 */
 	private void initialize() {
-		int buttonMinimumWidth = UIManager
-				.getInt("OptionPane.buttonMinimumWidth");
+		int buttonMinimumWidth = UIManager.getInt("OptionPane.buttonMinimumWidth");
 		buttonMinimumSize = new Dimension(buttonMinimumWidth, 24);
 		this.setSize(400, 260);
 		this.setTitle("jNewton Connection Utility");
@@ -76,9 +77,7 @@ public class NCUSettings extends JDialog {
 		Container parent = getParent();
 		Point locParent = parent.getLocation();
 		Dimension sizeParent = parent.getSize();
-		this.setLocation(locParent.x
-				+ ((sizeParent.width - this.getWidth()) >> 1), locParent.y
-				+ ((sizeParent.height - this.getHeight()) >> 1));
+		this.setLocation(locParent.x + ((sizeParent.width - this.getWidth()) >> 1), locParent.y + ((sizeParent.height - this.getHeight()) >> 1));
 	}
 
 	/**
@@ -348,11 +347,11 @@ public class NCUSettings extends JDialog {
 	private JComboBox getListSpeed() {
 		if (listSpeed == null) {
 			listSpeed = new JComboBox();
-			listSpeed.addItem(NCUComm.BAUD_2400);
-			listSpeed.addItem(NCUComm.BAUD_4800);
-			listSpeed.addItem(NCUComm.BAUD_9600);
-			listSpeed.addItem(NCUComm.BAUD_38400);
-			listSpeed.addItem(NCUComm.BAUD_57600);
+			listSpeed.addItem(NCUSerialPort.BAUD_2400);
+			listSpeed.addItem(NCUSerialPort.BAUD_4800);
+			listSpeed.addItem(NCUSerialPort.BAUD_9600);
+			listSpeed.addItem(NCUSerialPort.BAUD_38400);
+			listSpeed.addItem(NCUSerialPort.BAUD_57600);
 		}
 		return listSpeed;
 	}
@@ -384,8 +383,7 @@ public class NCUSettings extends JDialog {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					int ret = getBrowser().showOpenDialog(getButtonBrowse());
 					if (ret == JFileChooser.APPROVE_OPTION) {
-						labelFolderPath.setText(getBrowser().getSelectedFile()
-								.getPath());
+						labelFolderPath.setText(getBrowser().getSelectedFile().getPath());
 					}
 				}
 			});

@@ -6,6 +6,7 @@ import gnu.io.SerialPortEventListener;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -16,7 +17,8 @@ import java.util.concurrent.BlockingQueue;
 public class NCUSerialPortEventListener implements SerialPortEventListener {
 
 	private final SerialPort port;
-	private BlockingQueue<Byte> q;
+	private final BlockingQueue<Byte> q;
+	private final OutputStream out;
 
 	/**
 	 * Creates a new port event listener.
@@ -29,7 +31,23 @@ public class NCUSerialPortEventListener implements SerialPortEventListener {
 	public NCUSerialPortEventListener(SerialPort port, BlockingQueue<Byte> queue) {
 		super();
 		this.port = port;
+		this.out = null;
 		this.q = queue;
+	}
+
+	/**
+	 * Creates a new port event listener.
+	 * 
+	 * @param port
+	 *            the port.
+	 * @param out
+	 *            the queue for populating data.
+	 */
+	public NCUSerialPortEventListener(SerialPort port, OutputStream out) {
+		super();
+		this.port = port;
+		this.out = out;
+		this.q = null;
 	}
 
 	/*
@@ -139,7 +157,11 @@ public class NCUSerialPortEventListener implements SerialPortEventListener {
 			in = port.getInputStream();
 			b = in.read();
 			while (b != -1) {
-				q.put((byte) b);
+				if (out == null) {
+					q.put((byte) b);
+				} else {
+					out.write(b);
+				}
 				b = in.read();
 			}
 		} catch (IOException ioe) {
@@ -180,8 +202,15 @@ public class NCUSerialPortEventListener implements SerialPortEventListener {
 	 * Listener has been removed and needs to free resources.
 	 */
 	public void close() {
-		synchronized (q) {
-			q.notifyAll();
+		if (out != null) {
+			try {
+				out.close();
+			} catch (Exception e) {
+				// ignore
+			}
+		}
+		if (q != null) {
+			q.clear();
 		}
 	}
 

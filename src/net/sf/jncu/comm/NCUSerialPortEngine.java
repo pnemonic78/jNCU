@@ -133,7 +133,7 @@ public class NCUSerialPortEngine extends Thread {
 	 *             if an I/O error occurs.
 	 */
 	protected void poll() throws IOException {
-		System.out.println("@@@ read enter");
+		System.out.println("@@@ poll enter");
 		if (status == Status.CLOSED) {
 			throw new IllegalStateException(ERROR_PORT_CLOSED);
 		}
@@ -157,7 +157,7 @@ public class NCUSerialPortEngine extends Thread {
 			System.out.print("0x" + (b < 0x10 ? "0" : "") + Integer.toHexString(b));
 			i++;
 		} while ((status == Status.CONNECTED) && (port != null));
-		System.out.println("@@@ read leave");
+		System.out.println("@@@ poll leave");
 	}
 
 	// TODO move this method to a class in package net.sf.jncu.protocol

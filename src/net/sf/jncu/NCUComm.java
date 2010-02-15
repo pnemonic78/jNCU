@@ -5,6 +5,7 @@ import gnu.io.CommPortIdentifier;
 import java.util.List;
 
 import net.sf.jncu.comm.CommPorts;
+import net.sf.jncu.comm.NCUSerialPort;
 import net.sf.jncu.comm.NCUSerialPortEngine;
 
 /**
@@ -30,12 +31,6 @@ import net.sf.jncu.comm.NCUSerialPortEngine;
  * @author moshew
  */
 public class NCUComm {
-
-	public static final int BAUD_2400 = 2400;
-	public static final int BAUD_4800 = 4800;
-	public static final int BAUD_9600 = 9600;
-	public static final int BAUD_38400 = 38400;
-	public static final int BAUD_57600 = 57600;
 
 	private NCUSerialPortEngine talk;
 
@@ -66,7 +61,7 @@ public class NCUComm {
 		try {
 			List<CommPortIdentifier> ports = commPorts.getPortIdentifiers(CommPortIdentifier.PORT_SERIAL);
 			CommPortIdentifier portId = ports.get(0);
-			comm.startListenForNewton(portId, BAUD_38400);
+			comm.startListenForNewton(portId, NCUSerialPort.BAUD_38400);
 			// Thread.sleep(5000);
 			// comm.stopListenForNewton();
 		} catch (Throwable t) {
