@@ -14,6 +14,14 @@ import java.util.TooManyListenersException;
  */
 public class NCUSerialPort {
 
+	public static final int BAUD_2400 = 2400;
+	public static final int BAUD_4800 = BAUD_2400 << 1;
+	public static final int BAUD_9600 = BAUD_4800 << 1;
+	public static final int BAUD_19200 = BAUD_9600 << 1;
+	public static final int BAUD_38400 = BAUD_19200 << 1;
+	public static final int BAUD_57600 = 57600;
+	public static final int BAUD_115200 = BAUD_57600 << 1;
+
 	private final SerialPort port;
 	private NCUSerialPortReader reader;
 	private NCUSerialPortWriter writer;
@@ -24,8 +32,11 @@ public class NCUSerialPort {
 	 * @param port
 	 *            the serial port.
 	 * @throws TooManyListenersException
+	 *             if too many listeners.
+	 * @throws IOException
+	 *             if an I/O error occurs.
 	 */
-	public NCUSerialPort(SerialPort port) throws TooManyListenersException {
+	public NCUSerialPort(SerialPort port) throws TooManyListenersException, IOException {
 		super();
 		this.port = port;
 		this.reader = new NCUSerialPortReader(port);

@@ -48,4 +48,15 @@ public class QueuedInputSteam extends InputStream {
 		}
 		return b.intValue() & 0xFF;
 	}
+
+	@Override
+	public int available() throws IOException {
+		return q.size();
+	}
+
+	@Override
+	public void close() throws IOException {
+		super.close();
+		q.clear();
+	}
 }
