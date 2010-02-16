@@ -147,24 +147,26 @@ public class NullModem {
 	private void logRead(int b) {
 		if (((r & 15) == 0) || (w > 0)) {
 			System.out.println();
+			System.out.print('<');
 			r = 0;
 			w = 0;
 		} else {
 			System.out.print(',');
 		}
-		System.out.print("<0x" + (b < 0x10 ? "0" : "") + Integer.toHexString(b));
+		System.out.print("0x" + (b < 0x10 ? "0" : "") + Integer.toHexString(b));
 		r++;
 	}
 
 	private void logWrite(int b) {
 		if (((w & 15) == 0) || (r > 0)) {
 			System.out.println();
+			System.out.print('>');
 			r = 0;
 			w = 0;
 		} else {
 			System.out.print(',');
 		}
-		System.out.print(">0x" + (b < 0x10 ? "0" : "") + Integer.toHexString(b));
+		System.out.print("0x" + (b < 0x10 ? "0" : "") + Integer.toHexString(b));
 		w++;
 	}
 }

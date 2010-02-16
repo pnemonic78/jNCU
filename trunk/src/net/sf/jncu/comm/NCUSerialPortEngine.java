@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.util.TooManyListenersException;
 
 import net.sf.jncu.NCUComm;
+import net.sf.jncu.cdil.mnp.MNPPacketFactory;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockingFrame;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
@@ -178,7 +179,7 @@ public class NCUSerialPortEngine extends Thread {
 		status = Status.CONNECTED;
 		System.out.println("@@@ waiting to connect...");
 		do {
-			docking.waitForType(in, DockingFrame.PAYLOAD_TYPE_LR);
+			docking.waitForType(in, MNPPacketFactory.PACKET_TYPE_LR);
 			System.out.println("@@@ connected.");
 			docking.send(out, DockingFrame.PAYLOAD_DTN_HANDSHAKE_1);
 			System.out.println("@@@ handshaking...");
@@ -189,7 +190,7 @@ public class NCUSerialPortEngine extends Thread {
 			cmdInitiateDocking = (DInitiateDocking) factory.create(DockCommandSession.DesktopToNewton.kDInitiateDocking);
 			cmdInitiateDocking.setSession(0);
 			docking.sendCommand(out, cmdInitiateDocking);
-			docking.waitForType(in, DockingFrame.PAYLOAD_TYPE_LA);
+			docking.waitForType(in, MNPPacketFactory.PACKET_TYPE_LA);
 			System.out.println("@@@ polling...");
 			poll();
 		} while ((status == Status.CONNECTED) && (port != null));
