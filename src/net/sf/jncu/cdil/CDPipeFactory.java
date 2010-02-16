@@ -74,47 +74,63 @@ public class CDPipeFactory {
 	}
 
 	/**
-	 * Test to see if the AppleTalk service is available.
+	 * Determines whether the ADSP service is available.
 	 * 
-	 * @return true if the respective pipe creation function will succeed, but
-	 *         you cannot determine if the connection attempt will succeed until
-	 *         you try.
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
+	 * @throws ServiceNotSupportedException
+	 *             if the service is not supported.
 	 */
-	public static boolean checkADSP() {
-		return false;
+	@SuppressWarnings("unused")
+	public static void checkADSP() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
+		throw new ServiceNotSupportedException();
 	}
 
 	/**
-	 * Test to see if the MNP Serial service is available.
+	 * Determines whether the MNP service is available.
 	 * 
-	 * @return true if the respective pipe creation function will succeed, but
-	 *         you cannot determine if the connection attempt will succeed until
-	 *         you try.
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
+	 * @throws ServiceNotSupportedException
+	 *             if the service is not supported.
 	 */
-	public static boolean checkMNPSerial() {
-		return true;
+	@SuppressWarnings("unused")
+	public static void checkMNPSerial() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 	}
 
 	/**
-	 * Test to see if the appropriate service is available.
+	 * Determines whether the TCP service is available.
 	 * 
-	 * @return true if the respective pipe creation function will succeed, but
-	 *         you cannot determine if the connection attempt will succeed until
-	 *         you try.
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
+	 * @throws ServiceNotSupportedException
+	 *             if the service is not supported.
 	 */
-	public static boolean checkTCP() {
-		return true;
+	@SuppressWarnings("unused")
+	public static void checkTCP() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 	}
 
 	/**
-	 * Test to see if the Macintosh Communication Too service is available.
+	 * Determines whether the CTB service is available.
 	 * 
-	 * @return true if the respective pipe creation function will succeed, but
-	 *         you cannot determine if the connection attempt will succeed until
-	 *         you try.
+	 * @param toolName
+	 *            the name of the tool.
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
+	 * @throws ServiceNotSupportedException
+	 *             if the service is not supported.
 	 */
-	public static boolean checkCTB() {
-		return false;
+	@SuppressWarnings("unused")
+	public static void checkCTB(String toolName) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
+		throw new ServiceNotSupportedException();
 	}
 
 }
