@@ -1,6 +1,7 @@
 package net.sf.jncu.protocol;
 
 import net.sf.junit.SFTestCase;
+import net.sf.util.zip.CRC16;
 
 public class FCSTest extends SFTestCase {
 
@@ -16,7 +17,7 @@ public class FCSTest extends SFTestCase {
 		int fcsLength = 2;
 		assertEquals(DockingFrame.DELIMITER_PREAMBLE.length + dataLength + DockingFrame.DELIMITER_TAIL.length + fcsLength, frame.length);
 
-		FrameCheckSequence fcs = new FrameCheckSequence();
+		CRC16 fcs = new CRC16();
 		fcs.update(frame, DockingFrame.DELIMITER_PREAMBLE.length, dataLength);
 		fcs.update(DockingFrame.DELIMITER_TAIL[1]);
 		assertEquals(fcsWord, fcs.getValue());
