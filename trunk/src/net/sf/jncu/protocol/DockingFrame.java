@@ -9,6 +9,7 @@ import java.net.ProtocolException;
 import java.nio.ByteBuffer;
 
 import net.sf.lang.ControlCharacter;
+import net.sf.util.zip.CRC16;
 
 /**
  * Docking frame.
@@ -105,7 +106,7 @@ public class DockingFrame {
 
 		/* Read up to tail. */
 		boolean isEscape = false;
-		FrameCheckSequence fcs = new FrameCheckSequence();
+		CRC16 fcs = new CRC16();
 		ByteArrayOutputStream buf = new ByteArrayOutputStream(MAX_DATA_LENGTH);
 		delimiterLength = DELIMITER_TAIL.length;
 		state = 0;
@@ -208,7 +209,7 @@ public class DockingFrame {
 	 */
 	public void send(OutputStream out, byte[] payload, int offset, int length) throws IOException {
 		int b;
-		FrameCheckSequence fcs = new FrameCheckSequence();
+		CRC16 fcs = new CRC16();
 
 		/* Write header. */
 		out.write(DELIMITER_PREAMBLE);
