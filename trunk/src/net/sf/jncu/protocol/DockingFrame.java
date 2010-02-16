@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import java.net.ProtocolException;
 import java.nio.ByteBuffer;
 
-import net.sf.jncu.cdil.mnp.MNPPacketFactory;
+import net.sf.jncu.cdil.mnp.MNPPacket;
 import net.sf.lang.ControlCharacter;
 import net.sf.util.zip.CRC16;
 
@@ -56,7 +56,7 @@ public class DockingFrame {
 
 	/** Desktop to Newton handshake response #2. */
 	public static final byte[] PAYLOAD_DTN_LA = { 0x03, /* Length of header */
-	MNPPacketFactory.PACKET_TYPE_LA, /* Type indication LA frame */
+	MNPPacket.LA, /* Type indication LA frame */
 	0x00, /* Sequence number */
 	0x01 };
 
@@ -268,7 +268,7 @@ public class DockingFrame {
 	 * @return the command - <tt>null</tt> otherwise.
 	 */
 	public DockCommandFromNewton receiveCommand(InputStream in) throws IOException, ProtocolException {
-		byte[] frame = waitForType(in, MNPPacketFactory.PACKET_TYPE_LT);
+		byte[] frame = waitForType(in, MNPPacket.LT);
 		if (!DockCommandFromNewton.isCommand(frame)) {
 			throw new ProtocolException(ERROR_NOT_COMMAND);
 		}

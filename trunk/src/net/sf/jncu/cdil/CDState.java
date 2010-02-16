@@ -5,27 +5,27 @@ package net.sf.jncu.cdil;
  * 
  * @author moshew
  */
-public enum CDILState {
+public enum CDState {
 
 	/** 0 CDIL is uninitialised. */
-	Uninitialized,
+	UNINITIALIZED,
 	/** 1 tried to bring up connection, but it failed. */
-	InvalidConnection,
+	INVALID_CONNECTION,
 	/** 2 is not connected. */
-	Disconnected,
+	DISCONNECTED,
 	/** 3 is listening for a connection. */
-	Listening,
+	LISTENING,
 	/** 4 A connection is pending. */
-	ConnectPending,
+	CONNECT_PENDING,
 	/** 5 is connected. */
-	Connected,
+	CONNECTED,
 	/** 6 is either reading or writing. */
-	Busy,
+	BUSY,
 	/** 7 is currently aborting. */
-	Aborting,
+	ABORTING,
 	/** 8 is currently starting up. */
-	Startup,
+	STARTUP,
 	/** 50 Users can add states after this point. */
-	Userstate;
+	USER;
 
 }
