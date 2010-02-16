@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.ProtocolException;
 import java.nio.ByteBuffer;
 
+import net.sf.jncu.cdil.mnp.MNPPacketFactory;
 import net.sf.lang.ControlCharacter;
 import net.sf.util.zip.CRC16;
 
@@ -49,24 +50,13 @@ public class DockingFrame {
 	/** Index of the start of a command. */
 	public static int INDEX_COMMAND = 3;
 
-	/** Frame type - LR. */
-	public static final byte PAYLOAD_TYPE_LR = 0x01;
-	/** Frame type - LD. */
-	public static final byte PAYLOAD_TYPE_LD = 0x02;
-	/** Frame type - . */
-	public static final byte PAYLOAD_TYPE_3 = 0x03;
-	/** Frame type - LT. */
-	public static final byte PAYLOAD_TYPE_LT = 0x04;
-	/** Frame type - LA. */
-	public static final byte PAYLOAD_TYPE_LA = 0x05;
-
 	/** Desktop to Newton handshake response #1. */
 	public static final byte[] PAYLOAD_DTN_HANDSHAKE_1 = { 0x1D, 0x01, 0x02, 0x01, 0x06, 0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0xFF, 0x02, 0x01, 0x02, 0x03,
 			0x01, 0x08, 0x04, 0x02, 0x40, 0x00, 0x08, 0x01, 0x03, 0x0E, 0x04, 0x03, 0x04, 0x00, (byte) 0xFA };
 
 	/** Desktop to Newton handshake response #2. */
 	public static final byte[] PAYLOAD_DTN_LA = { 0x03, /* Length of header */
-	PAYLOAD_TYPE_LA, /* Type indication LA frame */
+	MNPPacketFactory.PACKET_TYPE_LA, /* Type indication LA frame */
 	0x00, /* Sequence number */
 	0x01 };
 
@@ -278,7 +268,7 @@ public class DockingFrame {
 	 * @return the command - <tt>null</tt> otherwise.
 	 */
 	public DockCommandFromNewton receiveCommand(InputStream in) throws IOException, ProtocolException {
-		byte[] frame = waitForType(in, PAYLOAD_TYPE_LT);
+		byte[] frame = waitForType(in, MNPPacketFactory.PACKET_TYPE_LT);
 		if (!DockCommandFromNewton.isCommand(frame)) {
 			throw new ProtocolException(ERROR_NOT_COMMAND);
 		}
