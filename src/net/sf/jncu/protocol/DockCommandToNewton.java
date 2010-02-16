@@ -31,11 +31,11 @@ public abstract class DockCommandToNewton extends DockCommand {
 	}
 
 	/**
-	 * Get the frame content for sending.
+	 * Get the payload to send.
 	 * 
-	 * @return the frame content.
+	 * @return the payload.
 	 */
-	public byte[] getFrame() {
+	public byte[] getPayload() {
 		ByteArrayOutputStream frame = new ByteArrayOutputStream();
 		ByteArrayOutputStream buf = new ByteArrayOutputStream();
 		try {
@@ -43,7 +43,7 @@ public abstract class DockCommandToNewton extends DockCommand {
 			int length = (data == null) ? 0 : data.length;
 			setLength(length);
 
-			buf.write(DockingFrame.FRAME_TYPE_LT);
+			buf.write(DockingFrame.PAYLOAD_TYPE_LT);
 			buf.write(kDNewtonDockBytes);
 			buf.write(cmdBytes);
 			buf.write((length >> 24) & 0xFF);

@@ -178,18 +178,18 @@ public class NCUSerialPortEngine extends Thread {
 		status = Status.CONNECTED;
 		System.out.println("@@@ waiting to connect...");
 		do {
-			docking.waitForType(in, DockingFrame.FRAME_TYPE_LR);
+			docking.waitForType(in, DockingFrame.PAYLOAD_TYPE_LR);
 			System.out.println("@@@ connected.");
-			docking.send(out, DockingFrame.FRAME_DTN_HANDSHAKE_1);
+			docking.send(out, DockingFrame.PAYLOAD_DTN_HANDSHAKE_1);
 			System.out.println("@@@ handshaking...");
 			do {
 				cmdFromNewton = docking.receiveCommand(in);
 			} while (!DockCommandSession.NewtonToDesktop.kDRequestToDock.equals(cmdFromNewton.getCommand()));
-			docking.send(out, DockingFrame.FRAME_DTN_LA);
+			docking.send(out, DockingFrame.PAYLOAD_DTN_LA);
 			cmdInitiateDocking = (DInitiateDocking) factory.create(DockCommandSession.DesktopToNewton.kDInitiateDocking);
 			cmdInitiateDocking.setSession(0);
 			docking.sendCommand(out, cmdInitiateDocking);
-			docking.waitForType(in, DockingFrame.FRAME_TYPE_LA);
+			docking.waitForType(in, DockingFrame.PAYLOAD_TYPE_LA);
 			System.out.println("@@@ polling...");
 			poll();
 		} while ((status == Status.CONNECTED) && (port != null));
