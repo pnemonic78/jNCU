@@ -3,7 +3,7 @@ package net.sf.jncu.protocol;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import net.sf.jncu.cdil.mnp.MNPPacketFactory;
+import net.sf.jncu.cdil.mnp.MNPPacket;
 
 /**
  * Docking command from desktop to Newton.
@@ -45,7 +45,7 @@ public abstract class DockCommandToNewton extends DockCommand {
 			int length = (data == null) ? 0 : data.length;
 			setLength(length);
 
-			buf.write(MNPPacketFactory.PACKET_TYPE_LT);
+			buf.write(MNPPacket.LT);
 			buf.write(kDNewtonDockBytes);
 			buf.write(cmdBytes);
 			buf.write((length >> 24) & 0xFF);
