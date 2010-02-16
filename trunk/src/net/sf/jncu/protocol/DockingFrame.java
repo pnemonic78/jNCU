@@ -49,23 +49,23 @@ public class DockingFrame {
 	public static int INDEX_COMMAND = 3;
 
 	/** Frame type - LR. */
-	public static final byte FRAME_TYPE_LR = 0x01;
+	public static final byte PAYLOAD_TYPE_LR = 0x01;
 	/** Frame type - LD. */
-	public static final byte FRAME_TYPE_LD = 0x02;
+	public static final byte PAYLOAD_TYPE_LD = 0x02;
 	/** Frame type - . */
-	public static final byte FRAME_TYPE_3 = 0x03;
+	public static final byte PAYLOAD_TYPE_3 = 0x03;
 	/** Frame type - LT. */
-	public static final byte FRAME_TYPE_LT = 0x04;
+	public static final byte PAYLOAD_TYPE_LT = 0x04;
 	/** Frame type - LA. */
-	public static final byte FRAME_TYPE_LA = 0x05;
+	public static final byte PAYLOAD_TYPE_LA = 0x05;
 
 	/** Desktop to Newton handshake response #1. */
-	public static final byte[] FRAME_DTN_HANDSHAKE_1 = { 0x1D, 0x01, 0x02, 0x01, 0x06, 0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0xFF, 0x02, 0x01, 0x02, 0x03, 0x01,
-			0x08, 0x04, 0x02, 0x40, 0x00, 0x08, 0x01, 0x03, 0x0E, 0x04, 0x03, 0x04, 0x00, (byte) 0xFA };
+	public static final byte[] PAYLOAD_DTN_HANDSHAKE_1 = { 0x1D, 0x01, 0x02, 0x01, 0x06, 0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0xFF, 0x02, 0x01, 0x02, 0x03,
+			0x01, 0x08, 0x04, 0x02, 0x40, 0x00, 0x08, 0x01, 0x03, 0x0E, 0x04, 0x03, 0x04, 0x00, (byte) 0xFA };
 
 	/** Desktop to Newton handshake response #2. */
-	public static final byte[] FRAME_DTN_LA = { 0x03, /* Length of header */
-	FRAME_TYPE_LA, /* Type indication LA frame */
+	public static final byte[] PAYLOAD_DTN_LA = { 0x03, /* Length of header */
+	PAYLOAD_TYPE_LA, /* Type indication LA frame */
 	0x00, /* Sequence number */
 	0x01 };
 
@@ -83,7 +83,7 @@ public class DockingFrame {
 	 *            the input.
 	 * @throws IOException
 	 *             if an I/O error occurs.
-	 * @return the frame data.
+	 * @return the payload.
 	 */
 	public byte[] receive(InputStream in) throws IOException {
 		int delimiterLength = DELIMITER_PREAMBLE.length;
@@ -133,9 +133,9 @@ public class DockingFrame {
 			}
 		}
 		buf.close();
-		byte[] frame = buf.toByteArray();
-		if (frame.length < frame[INDEX_LENGTH]) {
-			throw new ProtocolException("expected frame length: " + frame[INDEX_LENGTH] + " but was: " + frame.length);
+		byte[] payload = buf.toByteArray();
+		if (payload.length < payload[INDEX_LENGTH]) {
+			throw new ProtocolException("expected frame length: " + payload[INDEX_LENGTH] + " but was: " + payload.length);
 		}
 		fcs.update(DELIMITER_TAIL, 1, DELIMITER_TAIL.length - 1);
 
@@ -154,7 +154,7 @@ public class DockingFrame {
 			throw new ProtocolException(ERROR_RECEIVE);
 		}
 
-		return frame;
+		return payload;
 	}
 
 	/**
@@ -162,18 +162,18 @@ public class DockingFrame {
 	 * 
 	 * @param out
 	 *            the output.
-	 * @param frame
-	 *            the data frame.
+	 * @param payload
+	 *            the payload.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public void send(OutputStream out, ByteBuffer frame) throws IOException {
-		if (frame.hasArray()) {
-			send(out, frame.array(), 0, frame.limit());
+	public void send(OutputStream out, ByteBuffer payload) throws IOException {
+		if (payload.hasArray()) {
+			send(out, payload.array(), 0, payload.limit());
 		} else {
-			byte[] dst = new byte[frame.limit()];
-			frame.rewind();
-			frame.get(dst);
+			byte[] dst = new byte[payload.limit()];
+			payload.rewind();
+			payload.get(dst);
 			send(out, dst);
 		}
 	}
@@ -183,13 +183,13 @@ public class DockingFrame {
 	 * 
 	 * @param out
 	 *            the output.
-	 * @param frame
-	 *            the data frame.
+	 * @param payload
+	 *            the payload.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public void send(OutputStream out, byte[] frame) throws IOException {
-		send(out, frame, 0, frame.length);
+	public void send(OutputStream out, byte[] payload) throws IOException {
+		send(out, payload, 0, payload.length);
 	}
 
 	/**
@@ -197,8 +197,8 @@ public class DockingFrame {
 	 * 
 	 * @param out
 	 *            the output.
-	 * @param frame
-	 *            the data frame.
+	 * @param payload
+	 *            the payload.
 	 * @param offset
 	 *            the frame offset.
 	 * @param length
@@ -206,7 +206,7 @@ public class DockingFrame {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public void send(OutputStream out, byte[] frame, int offset, int length) throws IOException {
+	public void send(OutputStream out, byte[] payload, int offset, int length) throws IOException {
 		int b;
 		FrameCheckSequence fcs = new FrameCheckSequence();
 
@@ -215,7 +215,7 @@ public class DockingFrame {
 
 		/* Write up to tail. */
 		for (int i = 0, o = offset; i < length; i++, o++) {
-			b = frame[o];
+			b = payload[o];
 			out.write(b);
 			fcs.update(b);
 			if (b == DELIMITER_ESCAPE) {
@@ -238,8 +238,8 @@ public class DockingFrame {
 	 * @param in
 	 *            the input.
 	 * @param type
-	 *            the frame type.
-	 * @return the frame data.
+	 *            the payload type.
+	 * @return the payload.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
@@ -262,7 +262,7 @@ public class DockingFrame {
 	 *             if an I/O error occurs.
 	 */
 	public void sendCommand(OutputStream out, DockCommandToNewton cmd) throws IOException {
-		send(out, cmd.getFrame());
+		send(out, cmd.getPayload());
 	}
 
 	/**
@@ -277,7 +277,7 @@ public class DockingFrame {
 	 * @return the command - <tt>null</tt> otherwise.
 	 */
 	public DockCommandFromNewton receiveCommand(InputStream in) throws IOException, ProtocolException {
-		byte[] frame = waitForType(in, FRAME_TYPE_LT);
+		byte[] frame = waitForType(in, PAYLOAD_TYPE_LT);
 		if (!DockCommandFromNewton.isCommand(frame)) {
 			throw new ProtocolException(ERROR_NOT_COMMAND);
 		}
@@ -285,7 +285,7 @@ public class DockingFrame {
 		if (cmd == null) {
 			throw new ProtocolException(ERROR_NOT_COMMAND);
 		}
-		// TODO send FRAME_DTN_LA;
+		// TODO send PAYLOAD_DTN_LA;
 		return cmd;
 	}
 
