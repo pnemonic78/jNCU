@@ -39,7 +39,7 @@ public class MNPPacketFactory {
 	 * @see MNPPacket#LR
 	 * @see MNPPacket#LT
 	 */
-	public MNPPacket createLinkPacket(int type) {
+	public MNPPacket createLinkPacket(byte type) {
 		switch (type) {
 		case MNPPacket.LA:
 			return new MNPLinkAcknowledgementPacket();
@@ -51,5 +51,16 @@ public class MNPPacketFactory {
 			return new MNPLinkTransferPacket();
 		}
 		throw new IllegalArgumentException("invalid type " + type);
+	}
+
+	/**
+	 * Create a MNP link packet.
+	 * 
+	 * @param payload
+	 *            the payload.
+	 * @return the packet.
+	 */
+	public MNPPacket createLinkPacket(byte[] payload) {
+		return createLinkPacket(payload[1]);
 	}
 }
