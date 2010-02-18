@@ -67,7 +67,7 @@ public class MNPPacketLayer {
 
 		/* Read up to tail. */
 		boolean isEscape = false;
-		CRC16 fcs = new CRC16();
+		CRC16 crc = new CRC16();
 		ByteArrayOutputStream buf = new ByteArrayOutputStream();
 		delimiterLength = PACKET_TAIL.length;
 		state = 0;
@@ -79,7 +79,7 @@ public class MNPPacketLayer {
 			if (b == DELIMITER_ESCAPE) {
 				if (isEscape) {
 					buf.write(b);
-					fcs.update(b);
+					crc.update(b);
 					state = 0;
 				} else if (b == PACKET_TAIL[state]) {
 					state++;
@@ -89,27 +89,27 @@ public class MNPPacketLayer {
 				state++;
 			} else if (state == 0) {
 				buf.write(b);
-				fcs.update(b);
+				crc.update(b);
 			} else {
 				throw new ProtocolException(ERROR_RECEIVE);
 			}
 		}
 		buf.close();
 		byte[] payload = buf.toByteArray();
-		fcs.update(PACKET_TAIL, 1, PACKET_TAIL.length - 1);
+		crc.update(PACKET_TAIL, 1, PACKET_TAIL.length - 1);
 
 		/* Read the FCS. */
 		b = in.read();
 		if (b < 0) {
 			throw new EOFException(ERROR_RECEIVE);
 		}
-		long fcsWord = b;
+		long crcWord = b;
 		b = in.read();
 		if (b < 0) {
 			throw new EOFException(ERROR_RECEIVE);
 		}
-		fcsWord = (b << 8) | fcsWord;
-		if (fcsWord != fcs.getValue()) {
+		crcWord = (b << 8) | crcWord;
+		if (crcWord != crc.getValue()) {
 			throw new ProtocolException(ERROR_RECEIVE);
 		}
 
@@ -146,7 +146,7 @@ public class MNPPacketLayer {
 	 */
 	protected void write(OutputStream out, byte[] payload, int offset, int length) throws IOException {
 		int b;
-		CRC16 fcs = new CRC16();
+		CRC16 crc = new CRC16();
 
 		/* Write header. */
 		out.write(PACKET_HEAD);
@@ -155,19 +155,18 @@ public class MNPPacketLayer {
 		for (int i = 0, o = offset; i < length; i++, o++) {
 			b = payload[o];
 			out.write(b);
-			fcs.update(b);
 			if (b == DELIMITER_ESCAPE) {
 				out.write(b);
-				fcs.update(b);
 			}
+			crc.update(b);
 		}
 		out.write(PACKET_TAIL);
-		fcs.update(PACKET_TAIL, 1, PACKET_TAIL.length - 1);
+		crc.update(PACKET_TAIL, 1, PACKET_TAIL.length - 1);
 
 		/* Write the FCS. */
-		b = (int) (fcs.getValue() & 0xFFFF);
+		b = (int) (crc.getValue() & 0xFFFFL);
 		out.write(b & 0xFF);
-		out.write(b >> 8);
+		out.write((b >> 8) & 0xFF);
 	}
 
 	/**
