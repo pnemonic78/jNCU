@@ -153,7 +153,7 @@ public class MNPPacketLayer {
 
 		/* Write up to tail. */
 		for (int i = 0, o = offset; i < length; i++, o++) {
-			b = payload[o];
+			b = payload[o] & 0xFF;
 			out.write(b);
 			if (b == DELIMITER_ESCAPE) {
 				out.write(b);

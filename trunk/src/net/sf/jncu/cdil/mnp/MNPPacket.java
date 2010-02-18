@@ -45,7 +45,8 @@ public abstract class MNPPacket implements Serializable {
 	 */
 	public int deserialize(byte[] payload) {
 		int offset = 0;
-		if (payload[offset++] == 255) {
+		if (payload[offset] == 255) {
+			offset++;
 			headerLength = ((payload[offset++] & 0xFF) << 8) + (payload[offset++] & 0xFF);
 			type = payload[offset++];
 		} else {
