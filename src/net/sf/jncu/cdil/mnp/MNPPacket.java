@@ -1,12 +1,13 @@
 package net.sf.jncu.cdil.mnp;
 
+import java.io.Serializable;
 
 /**
  * MNP packet.
  * 
  * @author moshew
  */
-public abstract class MNPPacket {
+public abstract class MNPPacket implements Serializable {
 
 	/** Link Request packet. */
 	public static final byte LR = 0x01;
@@ -17,8 +18,8 @@ public abstract class MNPPacket {
 	/** Link Acknowledgement packet. */
 	public static final byte LA = 0x05;
 
-	private byte type;
-	private int headerLength;
+	protected byte type;
+	protected int headerLength;
 	private int transmitted;
 
 	/**
@@ -33,15 +34,25 @@ public abstract class MNPPacket {
 	 * 
 	 * @param payload
 	 *            the payload.
+	 * @return the array offset.
 	 */
-	public void deserialize(byte[] payload) {
-		if (payload[0] == 255) {
-			headerLength = (payload[1] << 8) + payload[2];
-			type = payload[3];
+	public int deserialize(byte[] payload) {
+		int offset = 0;
+		if (payload[offset++] == 255) {
+			headerLength = (payload[offset++] << 8) + payload[offset++];
+			type = payload[offset++];
 		} else {
-			headerLength = payload[0];
-			type = payload[1];
+			headerLength = payload[offset++];
+			type = payload[offset++];
 		}
+		return offset;
 	}
+
+	/**
+	 * Serialise the packet.
+	 * 
+	 * @return the payload.
+	 */
+	public abstract byte[] serialize();
 
 }
