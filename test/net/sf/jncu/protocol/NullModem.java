@@ -147,7 +147,7 @@ public class NullModem {
 	private void logRead(int b) {
 		if (((r & 15) == 0) || (w > 0)) {
 			System.out.println();
-			System.out.print('<');
+			System.out.println('<');
 			r = 0;
 			w = 0;
 		} else {
@@ -160,7 +160,7 @@ public class NullModem {
 	private void logWrite(int b) {
 		if (((w & 15) == 0) || (r > 0)) {
 			System.out.println();
-			System.out.print('>');
+			System.out.println('>');
 			r = 0;
 			w = 0;
 		} else {

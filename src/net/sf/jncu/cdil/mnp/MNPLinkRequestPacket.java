@@ -7,16 +7,16 @@ package net.sf.jncu.cdil.mnp;
  */
 public class MNPLinkRequestPacket extends MNPPacket {
 
-	private byte framing_mode = 0x02;
-	private byte max_outstanding = 0x08;
-	private short max_info_length = 0x0040;
-	private byte data_phase_opt = 0x03;
+	private byte framingMode = 0x02;
+	private byte maxOutstanding = 0x08;
+	private short maxInfoLength = 0x0040;
+	private byte dataPhaseOpt = 0x03;
 
 	/**
 	 * Creates a new MNP LR packet.
 	 */
 	public MNPLinkRequestPacket() {
-		super();
+		super(LR, 0x17);
 	}
 
 	@Override
@@ -27,26 +27,103 @@ public class MNPLinkRequestPacket extends MNPPacket {
 		offset += 9;
 
 		offset += 2;
-		framing_mode = payload[offset++];
+		setFramingMode(payload[offset++]);
 
 		offset += 2;
-		max_outstanding = payload[offset++];
+		setMaxOutstanding(payload[offset++]);
 
 		offset += 2;
-		max_info_length = payload[offset++];
-		max_info_length = (short) (((payload[offset++] & 0xFF) << 8) | (max_info_length & 0xFF));
+		int maxInfoLength = payload[offset++] & 0xFF;
+		maxInfoLength = ((payload[offset++] & 0xFF) << 8) | maxInfoLength;
+		setMaxInfoLength((short) maxInfoLength);
 
 		offset += 2;
-		data_phase_opt = payload[offset++];
+		setDataPhaseOpt(payload[offset++]);
 
 		return offset;
 	}
 
 	@Override
 	public byte[] serialize() {
-		byte[] payload = new byte[] { 0x17, LR, 0x02, 0x01, 0x06, 0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0xFF, 0x02, 0x01, framing_mode, 0x03, 0x01,
-				max_outstanding, 0x04, 0x02, (byte) (max_info_length & 0xFF), (byte) ((max_info_length >> 8) & 0xFF), 0x08, 0x01, data_phase_opt };
+		byte[] payload = new byte[] { 0x17, LR, 0x02, 0x01, 0x06, 0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0xFF, 0x02, 0x01, framingMode, 0x03, 0x01,
+				maxOutstanding, 0x04, 0x02, (byte) (maxInfoLength & 0xFF), (byte) ((maxInfoLength >> 8) & 0xFF), 0x08, 0x01, dataPhaseOpt };
 		return payload;
+	}
+
+	/**
+	 * Get the framing mode.
+	 * 
+	 * @return the framingMode the framing mode.
+	 */
+	public byte getFramingMode() {
+		return framingMode;
+	}
+
+	/**
+	 * Set the framing mode.
+	 * 
+	 * @param framingMode
+	 *            the framing mode.
+	 */
+	public void setFramingMode(byte framingMode) {
+		this.framingMode = framingMode;
+	}
+
+	/**
+	 * Get the maximum outstanding.
+	 * 
+	 * @return the maxOutstanding the maximum.
+	 */
+	public byte getMaxOutstanding() {
+		return maxOutstanding;
+	}
+
+	/**
+	 * Set the maximum outstanding.
+	 * 
+	 * @param maxOutstanding
+	 *            the maximum.
+	 */
+	public void setMaxOutstanding(byte maxOutstanding) {
+		this.maxOutstanding = maxOutstanding;
+	}
+
+	/**
+	 * Get the maximum information length.
+	 * 
+	 * @return the maximum length.
+	 */
+	public short getMaxInfoLength() {
+		return maxInfoLength;
+	}
+
+	/**
+	 * Set the maximum information length.
+	 * 
+	 * @param maxInfoLength
+	 *            the maximum length.
+	 */
+	public void setMaxInfoLength(short maxInfoLength) {
+		this.maxInfoLength = maxInfoLength;
+	}
+
+	/**
+	 * Get the data phase.
+	 * 
+	 * @return the data phase.
+	 */
+	public byte getDataPhaseOpt() {
+		return dataPhaseOpt;
+	}
+
+	/**
+	 * Set the data phase.
+	 * 
+	 * @param dataPhaseOpt
+	 *            the data phase.
+	 */
+	public void setDataPhaseOpt(byte dataPhaseOpt) {
+		this.dataPhaseOpt = dataPhaseOpt;
 	}
 
 }
