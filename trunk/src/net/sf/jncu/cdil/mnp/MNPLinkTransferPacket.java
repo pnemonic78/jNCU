@@ -14,17 +14,18 @@ public class MNPLinkTransferPacket extends MNPPacket {
 	 * Creates a new MNP LT packet.
 	 */
 	public MNPLinkTransferPacket() {
-		super();
+		super(LR, 2);
 	}
 
 	@Override
 	public int deserialize(byte[] payload) {
 		int offset = super.deserialize(payload);
 
-		sequence = payload[offset++];
-		data = new byte[payload.length - offset];
+		setSequence(payload[offset++]);
+		byte[] data = new byte[payload.length - offset];
 		System.arraycopy(payload, offset, data, 0, data.length);
 		offset += data.length;
+		setData(data);
 
 		return offset;
 	}
@@ -37,6 +38,44 @@ public class MNPLinkTransferPacket extends MNPPacket {
 		payload[2] = sequence;
 		System.arraycopy(data, 0, payload, 3, data.length);
 		return payload;
+	}
+
+	/**
+	 * Get the data.
+	 * 
+	 * @return the data.
+	 */
+	public byte[] getData() {
+		return data;
+	}
+
+	/**
+	 * Set the data.
+	 * 
+	 * @param data
+	 *            the data.
+	 */
+	public void setData(byte[] data) {
+		this.data = data;
+	}
+
+	/**
+	 * Get the sequence number.
+	 * 
+	 * @return the sequence.
+	 */
+	public byte getSequence() {
+		return sequence;
+	}
+
+	/**
+	 * Set the sequence number.
+	 * 
+	 * @param sequence
+	 *            the sequence.
+	 */
+	public void setSequence(byte sequence) {
+		this.sequence = sequence;
 	}
 
 }

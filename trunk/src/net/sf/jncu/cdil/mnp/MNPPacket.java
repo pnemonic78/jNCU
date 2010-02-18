@@ -18,15 +18,22 @@ public abstract class MNPPacket implements Serializable {
 	/** Link Acknowledgement packet. */
 	public static final byte LA = 0x05;
 
-	protected byte type;
-	protected int headerLength;
+	private byte type;
+	private int headerLength;
 	private int transmitted;
 
 	/**
 	 * Creates a new MNP packet.
+	 * 
+	 * @param type
+	 *            the type.
+	 * @param headerLength
+	 *            the default header length.
 	 */
-	public MNPPacket() {
+	public MNPPacket(byte type, int headerLength) {
 		super();
+		this.type = type;
+		this.headerLength = headerLength;
 	}
 
 	/**
@@ -39,10 +46,10 @@ public abstract class MNPPacket implements Serializable {
 	public int deserialize(byte[] payload) {
 		int offset = 0;
 		if (payload[offset++] == 255) {
-			headerLength = (payload[offset++] << 8) + payload[offset++];
+			headerLength = ((payload[offset++] & 0xFF) << 8) + (payload[offset++] & 0xFF);
 			type = payload[offset++];
 		} else {
-			headerLength = payload[offset++];
+			headerLength = payload[offset++] & 0xFF;
 			type = payload[offset++];
 		}
 		return offset;
@@ -54,5 +61,42 @@ public abstract class MNPPacket implements Serializable {
 	 * @return the payload.
 	 */
 	public abstract byte[] serialize();
+
+	/**
+	 * Get the type.
+	 * 
+	 * @return the type.
+	 */
+	public byte getType() {
+		return type;
+	}
+
+	/**
+	 * Get the header length.
+	 * 
+	 * @return the header length.
+	 */
+	public int getHeaderLength() {
+		return headerLength;
+	}
+
+	/**
+	 * Get the transmitted.
+	 * 
+	 * @return the transmitted.
+	 */
+	public int getTransmitted() {
+		return transmitted;
+	}
+
+	/**
+	 * Set the transmitted.
+	 * 
+	 * @param transmitted
+	 *            the transmitted.
+	 */
+	public void setTransmitted(int transmitted) {
+		this.transmitted = transmitted;
+	}
 
 }
