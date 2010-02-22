@@ -265,7 +265,7 @@ public class DockCommandFile extends DockingEventCommands {
 		 * and folders on the desktop.
 		 * <p>
 		 * If the item is an alias there is an <tt>alias</tt> slot. The
-		 * existence of this slot indicates that the item is an alias. <br>
+		 * existence of this slot indicates that the item is an alias.<br>
 		 * A Windows alias could be a "shortcut", or a "NTFS symbolic link". A
 		 * Unix/Linux/Posix alias is a link (as created by the "ln" command).
 		 * 
