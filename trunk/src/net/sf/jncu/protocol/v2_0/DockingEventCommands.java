@@ -11,7 +11,7 @@ package net.sf.jncu.protocol.v2_0;
  * following the length field. All strings are C strings unless otherwise
  * specified.
  * <p>
- * All commands begin with the sequence -- '<tt>newt</tt>', '<tt>dock</tt>'. <br>
+ * All commands begin with the sequence -- '<tt>newt</tt>', '<tt>dock</tt>'.<br>
  * Newton communicates with the desktop by exchanging Newton event commands. The
  * general command structure looks like this:
  * 

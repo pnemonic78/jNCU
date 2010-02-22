@@ -191,7 +191,7 @@ public class DockCommandSession extends DockingEventCommands {
 	/** Desktop to Newton. */
 	public static class DesktopToNewton extends DockingEventCommands.DesktopToNewton {
 		/**
-		 * Ask Newton to start docking process. <br>
+		 * Ask Newton to start docking process.<br>
 		 * This command should be sent to the Newton in response to a
 		 * kDRequestToDock command. Session type should be 4 to load a package.
 		 * 
