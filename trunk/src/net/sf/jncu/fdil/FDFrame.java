@@ -6,7 +6,7 @@ package net.sf.jncu.fdil;
 public class FDFrame extends FDPointer {
 
 	/**
-	 * 
+	 * Creates a new .
 	 */
 	public FDFrame() {
 		super();

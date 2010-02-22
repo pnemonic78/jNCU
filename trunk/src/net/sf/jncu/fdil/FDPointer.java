@@ -6,7 +6,7 @@ package net.sf.jncu.fdil;
 public class FDPointer extends FDObject {
 
 	/**
-	 * 
+	 * Creates a new .
 	 */
 	public FDPointer() {
 		super();

@@ -6,7 +6,7 @@ package net.sf.jncu.fdil;
 public class FDReserved extends FDImmediate {
 
 	/**
-	 * 
+	 * Creates a new .
 	 */
 	public FDReserved() {
 		super();
