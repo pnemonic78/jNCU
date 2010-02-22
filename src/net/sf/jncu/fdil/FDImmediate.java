@@ -6,7 +6,7 @@ package net.sf.jncu.fdil;
 public class FDImmediate extends FDObject {
 
 	/**
-	 * 
+	 * Creates a new .
 	 */
 	public FDImmediate() {
 		super();

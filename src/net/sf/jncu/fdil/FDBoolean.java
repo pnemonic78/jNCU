@@ -6,7 +6,7 @@ package net.sf.jncu.fdil;
 public class FDBoolean extends FDImmediate {
 
 	/**
-	 * 
+	 * Creates a new .
 	 */
 	public FDBoolean() {
 		super();

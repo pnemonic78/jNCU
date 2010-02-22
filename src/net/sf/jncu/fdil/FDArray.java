@@ -6,7 +6,7 @@ package net.sf.jncu.fdil;
 public class FDArray extends FDPointer {
 
 	/**
-	 * 
+	 * Creates a new .
 	 */
 	public FDArray() {
 		super();

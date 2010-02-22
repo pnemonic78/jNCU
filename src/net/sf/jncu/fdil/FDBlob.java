@@ -4,12 +4,12 @@ package net.sf.jncu.fdil;
  * @author moshew
  *
  */
-public class FDLargeBinaryObject extends FDPointer {
+public class FDBlob extends FDPointer {
 
 	/**
-	 * 
+	 * Creates a new .
 	 */
-	public FDLargeBinaryObject() {
+	public FDBlob() {
 		super();
 	}
 

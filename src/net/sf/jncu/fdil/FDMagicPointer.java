@@ -7,7 +7,7 @@ package net.sf.jncu.fdil;
 public class FDMagicPointer extends FDObject {
 
 	/**
-	 * 
+	 * Creates a new .
 	 */
 	public FDMagicPointer() {
 		super();
