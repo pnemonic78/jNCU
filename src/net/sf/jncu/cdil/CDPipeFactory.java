@@ -84,7 +84,7 @@ public class CDPipeFactory {
 	 *             if the service is not supported.
 	 */
 	@SuppressWarnings("unused")
-	public static void checkADSP() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
+	public void checkADSP() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		throw new ServiceNotSupportedException();
 	}
 
@@ -99,7 +99,7 @@ public class CDPipeFactory {
 	 *             if the service is not supported.
 	 */
 	@SuppressWarnings("unused")
-	public static void checkMNPSerial() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
+	public void checkMNPSerial() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 	}
 
 	/**
@@ -113,7 +113,7 @@ public class CDPipeFactory {
 	 *             if the service is not supported.
 	 */
 	@SuppressWarnings("unused")
-	public static void checkTCP() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
+	public void checkTCP() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class CDPipeFactory {
 	 *             if the service is not supported.
 	 */
 	@SuppressWarnings("unused")
-	public static void checkCTB(String toolName) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
+	public void checkCTB(String toolName) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		throw new ServiceNotSupportedException();
 	}
 
