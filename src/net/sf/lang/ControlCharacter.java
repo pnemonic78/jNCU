@@ -306,11 +306,11 @@ public interface ControlCharacter {
 	public static final char BEL = 0x0007;
 	/** Backspace. */
 	public static final char BS = 0x0008;
-	/** Horizontal tab. */
+	/** Horizontal tabulation. */
 	public static final char HT = 0x0009;
 	/** Line feed. */
 	public static final char LF = 0x000A;
-	/** Vertical tab. */
+	/** Vertical tabulation. */
 	public static final char VT = 0x000B;
 	/** Form feed. */
 	public static final char FF = 0x000C;
