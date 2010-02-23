@@ -1,7 +1,6 @@
 package net.sf.jncu.cdil;
 
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -11,13 +10,26 @@ import java.util.concurrent.TimeoutException;
  */
 public abstract class CDPipe {
 
-	private CDState state = CDState.DISCONNECTED;
+	private final CDLayer layer;
+	private CDState state = CDState.UNINITIALIZED;
 
 	/**
 	 * Creates a new pipe.
 	 */
 	public CDPipe() {
+		this(null);
+	}
+
+	/**
+	 * Creates a new pipe.
+	 * 
+	 * @param layer
+	 *            the owner layer.
+	 */
+	public CDPipe(CDLayer layer) {
 		super();
+		this.layer = layer;
+		state = CDState.DISCONNECTED;
 	}
 
 	/**
@@ -87,6 +99,10 @@ public abstract class CDPipe {
 	 */
 	@SuppressWarnings("unused")
 	public void disconnect() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
+		if (state == CDState.DISCONNECTED) {
+			throw new PipeDisconnectedException();
+		}
+		setState(CDState.DISCONNECTED);
 	}
 
 	/**
@@ -109,6 +125,10 @@ public abstract class CDPipe {
 	 */
 	@SuppressWarnings("unused")
 	public void startListening() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
+		if (state != CDState.DISCONNECTED) {
+			throw new BadPipeStateException();
+		}
+		setState(CDState.LISTENING);
 	}
 
 	/**
@@ -133,6 +153,10 @@ public abstract class CDPipe {
 	 */
 	@SuppressWarnings("unused")
 	public void accept() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
+		if (state != CDState.CONNECT_PENDING) {
+			throw new BadPipeStateException();
+		}
+		setState(CDState.CONNECTED);
 	}
 
 	/**
@@ -159,6 +183,9 @@ public abstract class CDPipe {
 	 */
 	@SuppressWarnings("unused")
 	public InputStream read() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
+		if ((state != CDState.CONNECTED) && (state != CDState.DISCONNECT_PENDING)) {
+			throw new BadPipeStateException();
+		}
 		return null;
 	}
 
@@ -171,6 +198,8 @@ public abstract class CDPipe {
 	 * executed: <tt>CD_Idle</tt>, <tt>CD_Read</tt>, <tt>CD_Disconnect</tt>, or
 	 * <tt>CD_BytesAvailable</tt>.
 	 * 
+	 * @param b
+	 *            the data.
 	 * @return the output.
 	 * @throws CDILNotInitializedException
 	 *             if CDIL is not initialised.
@@ -184,8 +213,45 @@ public abstract class CDPipe {
 	 *             if timeout occurs.
 	 */
 	@SuppressWarnings("unused")
-	public OutputStream write() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
-		return null;
+	public void write(byte[] b) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
+		if (state != CDState.CONNECTED) {
+			throw new BadPipeStateException();
+		}
+	}
+
+	/**
+	 * Sends the given bytes to the Newton device.<br>
+	 * <tt>DIL_Error CD_Write(CD_Handle pipe, const void* p, long count)</tt>
+	 * <p>
+	 * The data is not actually sent each time <tt>CD_Write</tt> is called. It
+	 * is buffered until either the buffer is full, or a non-CD_Write call is
+	 * executed: <tt>CD_Idle</tt>, <tt>CD_Read</tt>, <tt>CD_Disconnect</tt>, or
+	 * <tt>CD_BytesAvailable</tt>.
+	 * 
+	 * @param b
+	 *            the data.
+	 * @param offset
+	 *            the array offset.
+	 * @param count
+	 *            the number of bytes to write to the pipe.
+	 * @return the output.
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
+	 * @throws BadPipeStateException
+	 *             if pipe is in an incorrect state.
+	 * @throws PipeDisconnectedException
+	 *             if the pipe is disconnected.
+	 * @throws TimeoutException
+	 *             if timeout occurs.
+	 */
+	@SuppressWarnings("unused")
+	public void write(byte[] b, int offset, int count) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
+			TimeoutException {
+		if (state != CDState.CONNECTED) {
+			throw new BadPipeStateException();
+		}
 	}
 
 	/**
@@ -247,5 +313,51 @@ public abstract class CDPipe {
 	@SuppressWarnings("unused")
 	public void setTimeout(int timeoutInSecs) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
 			TimeoutException {
+	}
+
+	/**
+	 * Error occurs or Newton device disconnects.
+	 * 
+	 * @throws TimeoutException
+	 *             if timeout occurs.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
+	 * @throws BadPipeStateException
+	 *             if pipe is in an incorrect state.
+	 */
+	protected void notifyDisconnect() throws BadPipeStateException, CDILNotInitializedException, PlatformException, TimeoutException {
+		if (state == CDState.CONNECTED) {
+			setState(CDState.DISCONNECT_PENDING);
+		} else {
+			try {
+				disconnect();
+			} catch (PipeDisconnectedException pde) {
+				// OK, we are already disconnected.
+			}
+		}
+	}
+
+	/**
+	 * Newton device connects.
+	 * 
+	 * @throws TimeoutException
+	 *             if timeout occurs.
+	 * @throws PipeDisconnectedException
+	 *             if the pipe is disconnected.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
+	 * @throws BadPipeStateException
+	 *             if pipe is in an incorrect state.
+	 */
+	@SuppressWarnings("unused")
+	protected void notifyConnect() throws BadPipeStateException, CDILNotInitializedException, PlatformException, TimeoutException {
+		if (state != CDState.LISTENING) {
+			throw new BadPipeStateException();
+		}
+		setState(CDState.CONNECT_PENDING);
 	}
 }
