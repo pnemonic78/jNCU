@@ -7,25 +7,60 @@ package net.sf.jncu.cdil;
  */
 public enum CDState {
 
-	/** 0 CDIL is uninitialised. */
+	/**
+	 * Is uninitialised.<br>
+	 * <tt>kCD_Uninitialized</tt>
+	 */
 	UNINITIALIZED,
-	/** 1 tried to bring up connection, but it failed. */
-	INVALID_CONNECTION,
-	/** 2 is not connected. */
+	// /**
+	// * Tried to bring up connection, but it failed.<br>
+	// * <tt></tt>
+	// */
+	// INVALID_CONNECTION,
+	/**
+	 * Is not connected.<br>
+	 * <tt>kCD_Disconnected</tt>
+	 */
 	DISCONNECTED,
-	/** 3 is listening for a connection. */
+	/**
+	 * Is listening for a connection.<br>
+	 * <tt>kCD_Listening</tt>
+	 */
 	LISTENING,
-	/** 4 A connection is pending. */
+	/**
+	 * A connection is pending.<br>
+	 * <tt>kCD_ConnectPending</tt>
+	 */
 	CONNECT_PENDING,
-	/** 5 is connected. */
+	/**
+	 * Is connected.<br>
+	 * <tt>kCD_Connected</tt>
+	 */
 	CONNECTED,
-	/** 6 is either reading or writing. */
-	BUSY,
-	/** 7 is currently aborting. */
-	ABORTING,
-	/** 8 is currently starting up. */
-	STARTUP,
-	/** 50 Users can add states after this point. */
-	USER;
+	/**
+	 * A disconnection is pending.<br>
+	 * <tt>kCD_DisconnectPending</tt>
+	 */
+	DISCONNECT_PENDING;
+	// /**
+	// * Is either reading or writing.<br>
+	// * <tt></tt>
+	// */
+	// BUSY,
+	// /**
+	// * Is currently aborting.<br>
+	// * <tt></tt>
+	// */
+	// ABORTING,
+	// /**
+	// * Is currently starting up.<br>
+	// * <tt></tt>
+	// */
+	// STARTUP,
+	// /**
+	// * 50 Users can add states after this point.<br>
+	// * <tt></tt>
+	// */
+	// USER;
 
 }
