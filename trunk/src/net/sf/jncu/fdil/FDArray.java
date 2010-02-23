@@ -27,7 +27,8 @@ public class FDArray extends FDPointer {
 	}
 
 	/**
-	 * Creates a new array.
+	 * Creates a new array.<br>
+	 * <tt>FD_Handle FD_MakeArray(long size, const char* cls)</tt>
 	 * 
 	 * @param size
 	 *            the initial size, number of slots, of the array.
@@ -39,7 +40,7 @@ public class FDArray extends FDPointer {
 
 	/**
 	 * Returns the object in the given slot of the array.<br>
-	 * <tt>FD_GetArraySlot</tt>
+	 * <tt>FD_Handle FD_GetArraySlot(FD_Handle array, long pos)</tt>
 	 * 
 	 * @param pos
 	 *            the slot position. Which array slot to access.
@@ -52,7 +53,7 @@ public class FDArray extends FDPointer {
 	/**
 	 * Sets the array slot at the given position to contain the specified new
 	 * element.<br>
-	 * <tt>FD_SetArraySlot</tt>
+	 * <tt>FD_Handle FD_SetArraySlot(FD_Handle array, long pos, FD_Handle item)</tt>
 	 * <p>
 	 * The object being replaced in the array is returned to the caller so that
 	 * it can dispose of the object. No other array elements are affected, and
@@ -70,7 +71,7 @@ public class FDArray extends FDPointer {
 
 	/**
 	 * Appends the given element to the end of the array.<br>
-	 * <tt>FD_AppendArraySlot</tt>
+	 * <tt>DIL_Error FD_AppendArraySlot(FD_Handle array, FD_Handle item)</tt>
 	 * 
 	 * @param item
 	 *            the item to insert.
@@ -81,7 +82,7 @@ public class FDArray extends FDPointer {
 
 	/**
 	 * Inserts the given object into the array at the specified position.<br>
-	 * <tt>FD_InsertArraySlot</tt>
+	 * <tt>DIL_Error FD_InsertArraySlot(FD_Handle array, long pos, FD_Handle item)</tt>
 	 * <p>
 	 * Any objects between that position and the end of the array are moved down
 	 * in the array to make room.
@@ -97,7 +98,7 @@ public class FDArray extends FDPointer {
 
 	/**
 	 * Removes the object at the given position in the array.<br>
-	 * <tt>FD_RemoveArraySlot</tt>
+	 * <tt>FD_Handle FD_RemoveArraySlot(FD_Handle array, long pos)</tt>
 	 * <p>
 	 * Any objects between that position and the end of the array are moved
 	 * forward in the array to fill in the vacated slot. The removed object is
@@ -112,7 +113,8 @@ public class FDArray extends FDPointer {
 	}
 
 	/**
-	 * Returns the length of the array.
+	 * Returns the length of the array.<br>
+	 * <tt>long FD_GetLength(FD_Handle obj)</tt>
 	 * 
 	 * @return the number of slots.
 	 */
@@ -122,19 +124,19 @@ public class FDArray extends FDPointer {
 
 	/**
 	 * Set the array size.<br>
-	 * <tt>FD_SetLength</tt>
+	 * <tt>DIL_Error FD_SetLength(FD_Handle obj, long newSize)</tt>
 	 * <p>
 	 * The length of the array can be directly manipulated with
 	 * <tt>FD_SetLength</tt>; this function adds slots at the end of an array
 	 * initialised to <tt>kFD_NIL</tt>, or removes slots from the end of the
 	 * array.
 	 * 
-	 * @param length
+	 * @param newSize
 	 *            the array length.
 	 */
-	public void setLength(int length) {
+	public void setLength(int newSize) {
 		int lengthOld = slots.size();
-		int lengthNew = length;
+		int lengthNew = newSize;
 
 		if (lengthOld == lengthNew) {
 			// Nothing to change.

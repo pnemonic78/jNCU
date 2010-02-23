@@ -24,11 +24,22 @@ public class FDCharacter extends FDImmediate {
 	}
 
 	/**
-	 * Get the value.
+	 * Get the value.<br>
+	 * <tt>char FD_GetChar(FD_Handle obj)</tt>
 	 * 
 	 * @return the value
 	 */
-	public char getValue() {
+	public char getChar() {
+		return getWideChar();
+	}
+
+	/**
+	 * Get the value.<br>
+	 * <tt>DIL_WideChar FD_GetWideChar(FD_Handle obj)</tt>
+	 * 
+	 * @return the value
+	 */
+	public char getWideChar() {
 		return value;
 	}
 
