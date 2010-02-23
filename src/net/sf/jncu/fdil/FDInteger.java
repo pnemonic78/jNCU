@@ -34,11 +34,12 @@ public class FDInteger extends FDObject {
 	}
 
 	/**
-	 * Get the value.
+	 * Get the value.<br>
+	 * <tt>long FD_GetInt(FD_Handle obj)</tt>
 	 * 
 	 * @return the value.
 	 */
-	public int getValue() {
+	public int getInt() {
 		return value;
 	}
 }

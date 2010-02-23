@@ -10,7 +10,7 @@ package net.sf.jncu.fdil;
 public abstract class FDImmediate extends FDObject {
 
 	/**
-	 * Creates a new .
+	 * Creates a new immediate.
 	 */
 	public FDImmediate() {
 		super();

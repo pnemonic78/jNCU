@@ -32,7 +32,8 @@ public class FDBinaryObject extends FDPointer {
 	}
 
 	/**
-	 * Get the value.
+	 * Get the value.<br>
+	 * <tt>void* FD_GetBinaryData(FD_Handle obj)</tt>
 	 * 
 	 * @return the value.
 	 */
@@ -41,7 +42,8 @@ public class FDBinaryObject extends FDPointer {
 	}
 
 	/**
-	 * Returns the length of the array.
+	 * Returns the length of the array.<br>
+	 * <tt>long FD_GetLength(FD_Handle obj)</tt>
 	 * 
 	 * @return the length.
 	 */
@@ -50,7 +52,8 @@ public class FDBinaryObject extends FDPointer {
 	}
 
 	/**
-	 * Grow or shrink the data.
+	 * Grow or shrink the data.<br>
+	 * <tt>DIL_Error FD_SetLength(FD_Handle obj, long newSize)</tt>
 	 * <p>
 	 * You can change the size of a binary object with the <tt>FD_SetLength</tt>
 	 * function. However, any pointers to a binary object’s contents are
