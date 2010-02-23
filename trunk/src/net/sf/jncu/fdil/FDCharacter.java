@@ -1,19 +1,26 @@
 package net.sf.jncu.fdil;
 
 /**
+ * Character objects are immediate objects which contain a 16 bit Unicode
+ * character.
+ * 
  * @author moshew
  */
 public class FDCharacter extends FDImmediate {
 
 	protected static final String HEX = "0123456789ABDEF";
 
-	private char value;
+	private final char value;
 
 	/**
-	 * Creates a new .
+	 * Creates a new character.
+	 * 
+	 * @param value
+	 *            the value.
 	 */
-	public FDCharacter() {
+	public FDCharacter(char value) {
 		super();
+		this.value = value;
 	}
 
 	/**
@@ -25,19 +32,8 @@ public class FDCharacter extends FDImmediate {
 		return value;
 	}
 
-	/**
-	 * Set the value.
-	 * 
-	 * @param value
-	 *            the value.
-	 */
-	public void setValue(char value) {
-		this.value = value;
-	}
-
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -47,7 +43,6 @@ public class FDCharacter extends FDImmediate {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

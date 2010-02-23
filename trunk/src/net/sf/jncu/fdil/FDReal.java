@@ -22,4 +22,13 @@ public class FDReal extends FDBinaryObject {
 		this.value = value;
 	}
 
+	/**
+	 * Get the value.
+	 * 
+	 * @return the value.
+	 */
+	public double getReal() {
+		return value;
+	}
+
 }
