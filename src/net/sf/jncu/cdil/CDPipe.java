@@ -1,6 +1,10 @@
 package net.sf.jncu.cdil;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -8,17 +12,11 @@ import java.util.concurrent.TimeoutException;
  * 
  * @author moshew
  */
-public abstract class CDPipe {
+public abstract class CDPipe extends Thread {
 
 	private final CDLayer layer;
-	private CDState state = CDState.UNINITIALIZED;
-
-	/**
-	 * Creates a new pipe.
-	 */
-	public CDPipe() {
-		this(null);
-	}
+	private PipedOutputStream pipeSource;
+	private PipedInputStream pipeSink;
 
 	/**
 	 * Creates a new pipe.
@@ -28,34 +26,12 @@ public abstract class CDPipe {
 	 */
 	public CDPipe(CDLayer layer) {
 		super();
+		if (layer == null) {
+			throw new IllegalArgumentException();
+		}
 		this.layer = layer;
-		state = CDState.DISCONNECTED;
-	}
-
-	/**
-	 * Updates and returns the state of the pipe.<br>
-	 * <tt>CD_State CD_GetState(CD_Handle pipe)</tt>
-	 * <p>
-	 * There is no guarantee that two calls to <tt>CD_GetState</tt> made one
-	 * right after the other will return the same value. In particular, the
-	 * state can always change from <tt>kCD_Listening</tt> to
-	 * <tt>kCD_ConnectPending</tt> or <tt>kCD_DisconnectPending</tt>, or from
-	 * <tt>kCD_Connected</tt> to <tt>kCD_DisconnectPending</tt>.
-	 * 
-	 * @return the state.
-	 */
-	public CDState getState() {
-		return state;
-	}
-
-	/**
-	 * Set the state.
-	 * 
-	 * @param state
-	 *            the state.
-	 */
-	protected void setState(CDState state) {
-		this.state = state;
+		this.pipeSource = new PipedOutputStream();
+		layer.setState(CDState.DISCONNECTED);
 	}
 
 	/**
@@ -99,10 +75,10 @@ public abstract class CDPipe {
 	 */
 	@SuppressWarnings("unused")
 	public void disconnect() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
-		if (state == CDState.DISCONNECTED) {
+		if (layer.getState() == CDState.DISCONNECTED) {
 			throw new PipeDisconnectedException();
 		}
-		setState(CDState.DISCONNECTED);
+		layer.setState(CDState.DISCONNECTED);
 	}
 
 	/**
@@ -125,10 +101,11 @@ public abstract class CDPipe {
 	 */
 	@SuppressWarnings("unused")
 	public void startListening() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
-		if (state != CDState.DISCONNECTED) {
+		if (layer.getState() != CDState.DISCONNECTED) {
 			throw new BadPipeStateException();
 		}
-		setState(CDState.LISTENING);
+		start();
+		layer.setState(CDState.LISTENING);
 	}
 
 	/**
@@ -153,10 +130,10 @@ public abstract class CDPipe {
 	 */
 	@SuppressWarnings("unused")
 	public void accept() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
-		if (state != CDState.CONNECT_PENDING) {
+		if (layer.getState() != CDState.CONNECT_PENDING) {
 			throw new BadPipeStateException();
 		}
-		setState(CDState.CONNECTED);
+		layer.setState(CDState.CONNECTED);
 	}
 
 	/**
@@ -182,12 +159,39 @@ public abstract class CDPipe {
 	 *             if timeout occurs.
 	 */
 	@SuppressWarnings("unused")
-	public InputStream read() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
-		if ((state != CDState.CONNECTED) && (state != CDState.DISCONNECT_PENDING)) {
+	public InputStream getInput() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
+		if ((layer.getState() != CDState.CONNECTED) && (layer.getState() != CDState.DISCONNECT_PENDING)) {
 			throw new BadPipeStateException();
 		}
-		return null;
+		if (pipeSink == null) {
+			try {
+				this.pipeSink = new PipedInputStream(pipeSource);
+			} catch (IOException ioe) {
+				throw new PipeDisconnectedException(ioe.getMessage());
+			}
+		}
+		return pipeSink;
 	}
+
+	/**
+	 * Get the output stream to write actual data that was received from the
+	 * Newton. This is the pipe source that is fed to the sink and read using
+	 * {@link #getInput()}.
+	 * 
+	 * @return the source.
+	 */
+	protected OutputStream getPipeSource() {
+		return pipeSource;
+	}
+
+	/**
+	 * Get the output stream to write packets to the Newton.
+	 * 
+	 * @return the output.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected abstract OutputStream getOutput() throws IOException;
 
 	/**
 	 * Sends the given bytes to the Newton device.<br>
@@ -212,11 +216,8 @@ public abstract class CDPipe {
 	 * @throws TimeoutException
 	 *             if timeout occurs.
 	 */
-	@SuppressWarnings("unused")
 	public void write(byte[] b) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
-		if (state != CDState.CONNECTED) {
-			throw new BadPipeStateException();
-		}
+		write(b, 0, b.length);
 	}
 
 	/**
@@ -249,7 +250,7 @@ public abstract class CDPipe {
 	@SuppressWarnings("unused")
 	public void write(byte[] b, int offset, int count) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
 			TimeoutException {
-		if (state != CDState.CONNECTED) {
+		if (layer.getState() != CDState.CONNECTED) {
 			throw new BadPipeStateException();
 		}
 	}
@@ -328,8 +329,8 @@ public abstract class CDPipe {
 	 *             if pipe is in an incorrect state.
 	 */
 	protected void notifyDisconnect() throws BadPipeStateException, CDILNotInitializedException, PlatformException, TimeoutException {
-		if (state == CDState.CONNECTED) {
-			setState(CDState.DISCONNECT_PENDING);
+		if (layer.getState() == CDState.CONNECTED) {
+			layer.setState(CDState.DISCONNECT_PENDING);
 		} else {
 			try {
 				disconnect();
@@ -355,9 +356,10 @@ public abstract class CDPipe {
 	 */
 	@SuppressWarnings("unused")
 	protected void notifyConnect() throws BadPipeStateException, CDILNotInitializedException, PlatformException, TimeoutException {
-		if (state != CDState.LISTENING) {
+		if (layer.getState() != CDState.LISTENING) {
 			throw new BadPipeStateException();
 		}
-		setState(CDState.CONNECT_PENDING);
+		layer.setState(CDState.CONNECT_PENDING);
 	}
+
 }

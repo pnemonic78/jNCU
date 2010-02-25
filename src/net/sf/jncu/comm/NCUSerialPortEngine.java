@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.util.TooManyListenersException;
 
 import net.sf.jncu.NCUComm;
+import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.cdil.mnp.MNPPacket;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockingFrame;
@@ -26,10 +27,6 @@ import net.sf.jncu.protocol.v2_0.session.DockCommandSession;
  */
 public class NCUSerialPortEngine extends Thread {
 
-	public static enum Status {
-		CLOSED, OPEN, DISCONNECTED, CONNECTED;
-	}
-
 	private static final String ERROR_PORT_USED = "Port in use";
 	private static final String ERROR_UNSUPPORTED_COMM_OP = "Unsupported comm. operation";
 	private static final String ERROR_TOO_MANY_LISTENERS = "Too many listeners";
@@ -42,7 +39,7 @@ public class NCUSerialPortEngine extends Thread {
 	private final int baud;
 	private NCUSerialPort port;
 
-	private Status status = Status.CLOSED;
+	private CDState state = CDState.UNINITIALIZED;
 
 	public NCUSerialPortEngine(NCUComm owner, CommPortIdentifier portId, int baud) {
 		super();
@@ -53,7 +50,6 @@ public class NCUSerialPortEngine extends Thread {
 
 	@Override
 	public void run() {
-		System.out.println("@@@ run enter");
 		try {
 			initPort();
 			connectToNewton();
@@ -67,7 +63,6 @@ public class NCUSerialPortEngine extends Thread {
 		} finally {
 			close();
 		}
-		System.out.println("@@@ run leave");
 	}
 
 	/**
@@ -90,7 +85,7 @@ public class NCUSerialPortEngine extends Thread {
 				serialPort.setSerialPortParams(baud, serialPort.getDataBits(), serialPort.getStopBits(), serialPort.getParity());
 			}
 			this.port = new NCUSerialPort(serialPort);
-			status = Status.OPEN;
+			state = CDState.CONNECTED;
 		} catch (PortInUseException piue) {
 			throw new IOException(ERROR_PORT_USED, piue);
 		} catch (UnsupportedCommOperationException ucoe) {
@@ -104,23 +99,21 @@ public class NCUSerialPortEngine extends Thread {
 	 * Close the port.
 	 */
 	protected void closePort() {
-		System.out.println("@@@ closePort enter");
+		state = CDState.DISCONNECT_PENDING;
 		if (port != null) {
-			status = Status.DISCONNECTED;
 			port.close();
 			port = null;
-			status = Status.CLOSED;
+			state = CDState.DISCONNECTED;
 		}
-		System.out.println("@@@ closePort leave");
 	}
 
 	/**
-	 * Get the status.
+	 * Get the state.
 	 * 
-	 * @return the status.
+	 * @return the state.
 	 */
-	public Status getStatus() {
-		return status;
+	public CDState getCDState() {
+		return state;
 	}
 
 	public void write(byte[] b) {
@@ -134,15 +127,11 @@ public class NCUSerialPortEngine extends Thread {
 	 *             if an I/O error occurs.
 	 */
 	protected void poll() throws IOException {
-		System.out.println("@@@ poll enter");
-		if (status == Status.CLOSED) {
-			throw new IllegalStateException(ERROR_PORT_CLOSED);
-		}
-		if (status == Status.DISCONNECTED) {
+		if (state == CDState.DISCONNECTED) {
 			throw new IllegalStateException(ERROR_PORT_DISCONNECTED);
 		}
 		InputStream in = port.getInputStream();
-		status = Status.CONNECTED;
+		state = CDState.CONNECTED;
 		int i = 0;
 		int b;
 		do {
@@ -157,17 +146,15 @@ public class NCUSerialPortEngine extends Thread {
 			}
 			System.out.print("0x" + (b < 0x10 ? "0" : "") + Integer.toHexString(b));
 			i++;
-		} while ((status == Status.CONNECTED) && (port != null));
-		System.out.println("@@@ poll leave");
+		} while ((state == CDState.CONNECTED) && (port != null));
 	}
 
 	// TODO move this method to a class in package net.sf.jncu.protocol
 	protected void connectToNewton() throws IOException {
-		System.out.println("@@@ connectToNewton enter");
-		if (status == Status.CLOSED) {
+		if (state == CDState.DISCONNECTED) {
 			throw new IllegalStateException(ERROR_PORT_CLOSED);
 		}
-		if (status == Status.DISCONNECTED) {
+		if (state == CDState.DISCONNECTED) {
 			throw new IllegalStateException(ERROR_PORT_DISCONNECTED);
 		}
 		DockingFrame docking = new DockingFrame();
@@ -176,13 +163,10 @@ public class NCUSerialPortEngine extends Thread {
 		DockCommandFromNewton cmdFromNewton;
 		DInitiateDocking cmdInitiateDocking;
 		DockCommandFactory factory = DockCommandFactory.getInstance();
-		status = Status.CONNECTED;
-		System.out.println("@@@ waiting to connect...");
+		state = CDState.CONNECTED;
 		do {
 			docking.waitForType(in, MNPPacket.LR);
-			System.out.println("@@@ connected.");
 			docking.send(out, DockingFrame.PAYLOAD_DTN_HANDSHAKE_1);
-			System.out.println("@@@ handshaking...");
 			do {
 				cmdFromNewton = docking.receiveCommand(in);
 			} while (!DockCommandSession.NewtonToDesktop.kDRequestToDock.equals(cmdFromNewton.getCommand()));
@@ -191,10 +175,8 @@ public class NCUSerialPortEngine extends Thread {
 			cmdInitiateDocking.setSession(0);
 			docking.sendCommand(out, cmdInitiateDocking);
 			docking.waitForType(in, MNPPacket.LA);
-			System.out.println("@@@ polling...");
 			poll();
-		} while ((status == Status.CONNECTED) && (port != null));
-		System.out.println("@@@ connectToNewton leave");
+		} while ((state == CDState.CONNECTED) && (port != null));
 	}
 
 	protected void commandReceived(DockCommandFromNewton cmd) {

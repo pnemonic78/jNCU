@@ -1,9 +1,16 @@
 package net.sf.jncu.cdil;
 
+import gnu.io.CommPortIdentifier;
+import gnu.io.NoSuchPortException;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sf.jncu.cdil.adsp.ADSPPipe;
 import net.sf.jncu.cdil.ctb.CTBPipe;
 import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.cdil.tcp.TCPPipe;
+import net.sf.jncu.comm.CommPorts;
 
 /**
  * CDIL layer. Manages CDIL connections.
@@ -13,6 +20,8 @@ import net.sf.jncu.cdil.tcp.TCPPipe;
 public class CDLayer {
 
 	private static CDLayer instance;
+	private final List<CommPortIdentifier> serialPorts = new ArrayList<CommPortIdentifier>();
+	private CDState state = CDState.UNINITIALIZED;
 
 	/**
 	 * Creates a new CDIL layer.
@@ -49,6 +58,10 @@ public class CDLayer {
 	 */
 	@SuppressWarnings("unused")
 	public void startUp() throws PlatformException {
+		initADSP();
+		initCTB();
+		initMNP();
+		initTCP();
 	}
 
 	/**
@@ -70,6 +83,12 @@ public class CDLayer {
 	 */
 	@SuppressWarnings("unused")
 	public void shutDown() throws CDILNotInitializedException, PlatformException {
+		checkInitialized();
+		disposeADSP();
+		disposeCTB();
+		disposeMNP();
+		disposeTCP();
+		instance = null;
 	}
 
 	/**
@@ -85,6 +104,7 @@ public class CDLayer {
 	 */
 	@SuppressWarnings("unused")
 	public void checkADSP() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
+		checkInitialized();
 		throw new ServiceNotSupportedException();
 	}
 
@@ -101,6 +121,10 @@ public class CDLayer {
 	 */
 	@SuppressWarnings("unused")
 	public void checkMNPSerial() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
+		checkInitialized();
+		if (serialPorts.size() == 0) {
+			throw new ServiceNotSupportedException();
+		}
 	}
 
 	/**
@@ -116,6 +140,7 @@ public class CDLayer {
 	 */
 	@SuppressWarnings("unused")
 	public void checkTCP() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
+		checkInitialized();
 	}
 
 	/**
@@ -133,6 +158,7 @@ public class CDLayer {
 	 */
 	@SuppressWarnings("unused")
 	public void checkCTB(String toolName) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
+		checkInitialized();
 		throw new ServiceNotSupportedException();
 	}
 
@@ -150,7 +176,7 @@ public class CDLayer {
 	 * @return the port name.
 	 */
 	public String getSerialPortName(int index) {
-		return null;
+		return serialPorts.get(index).getName();
 	}
 
 	/**
@@ -171,9 +197,12 @@ public class CDLayer {
 	 *            parameter, the CDIL uses the type specified by the
 	 *            Connection/Dock application.
 	 * @return the connection.
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
 	 */
-	public ADSPPipe createADSP(String name, byte type) {
-		return new ADSPPipe();
+	public ADSPPipe createADSP(String name, byte type) throws CDILNotInitializedException {
+		checkInitialized();
+		return new ADSPPipe(this, name, type);
 	}
 
 	/**
@@ -189,9 +218,12 @@ public class CDLayer {
 	 * @param baud
 	 *            the baud rate to communicate at in bytes per second.
 	 * @return the connection.
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
 	 */
-	public MNPPipe createMNPSerial(int port, int baud) {
-		return new MNPPipe();
+	public MNPPipe createMNPSerial(int port, int baud) throws CDILNotInitializedException {
+		checkInitialized();
+		return new MNPPipe(this, serialPorts.get(port), baud);
 	}
 
 	/**
@@ -205,9 +237,12 @@ public class CDLayer {
 	 *            chosen, port. This frees up the port specified in this
 	 *            parameter for future connections.
 	 * @return the connection.
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
 	 */
-	public TCPPipe createTCP(int port) {
-		return new TCPPipe();
+	public TCPPipe createTCP(int port) throws CDILNotInitializedException {
+		checkInitialized();
+		return new TCPPipe(this, port);
 	}
 
 	/**
@@ -222,8 +257,105 @@ public class CDLayer {
 	 * @param configString
 	 *            a tool-dependent configuration string.
 	 * @return the connection.
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
 	 */
-	public CTBPipe createCTB(String toolName, String configString) {
-		return new CTBPipe();
+	public CTBPipe createCTB(String toolName, String configString) throws CDILNotInitializedException {
+		checkInitialized();
+		return new CTBPipe(this, toolName, configString);
+	}
+
+	/**
+	 * Initialise ADSP.
+	 */
+	protected void initADSP() {
+	}
+
+	/**
+	 * Initialise CTB.
+	 */
+	protected void initCTB() {
+	}
+
+	/**
+	 * Initialise MNP.
+	 */
+	protected void initMNP() {
+		serialPorts.clear();
+		CommPorts commPorts = new CommPorts();
+		try {
+			serialPorts.addAll(commPorts.getPortIdentifiers(CommPortIdentifier.PORT_SERIAL));
+		} catch (NoSuchPortException nspe) {
+			// no ports found
+		}
+	}
+
+	/**
+	 * Initialise TCP.
+	 */
+	protected void initTCP() {
+	}
+
+	/**
+	 * Dispose ADSP.
+	 */
+	protected void disposeADSP() {
+	}
+
+	/**
+	 * Dispose CTB.
+	 */
+	protected void disposeCTB() {
+	}
+
+	/**
+	 * Dispose MNP.
+	 */
+	protected void disposeMNP() {
+		serialPorts.clear();
+	}
+
+	/**
+	 * Dispose TCP.
+	 */
+	protected void disposeTCP() {
+	}
+
+	/**
+	 * Check that CDIL has been initialised.
+	 * 
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
+	 */
+	protected final void checkInitialized() throws CDILNotInitializedException {
+		if (state == CDState.UNINITIALIZED) {
+			throw new CDILNotInitializedException();
+		}
+	}
+
+	/**
+	 * Updates and returns the state of the pipe.<br>
+	 * <tt>CD_State CD_GetState(CD_Handle pipe)</tt>
+	 * <p>
+	 * There is no guarantee that two calls to <tt>CD_GetState</tt> made one
+	 * right after the other will return the same value. In particular, the
+	 * state can always change from <tt>kCD_Listening</tt> to
+	 * <tt>kCD_ConnectPending</tt> or <tt>kCD_DisconnectPending</tt>, or from
+	 * <tt>kCD_Connected</tt> to <tt>kCD_DisconnectPending</tt>.
+	 * 
+	 * @return the state.
+	 */
+	public CDState getState() {
+		return state;
+	}
+
+	/**
+	 * Set the state.
+	 * 
+	 * @param state
+	 *            the state.
+	 */
+	protected void setState(CDState state) {
+		this.state = state;
 	}
 }

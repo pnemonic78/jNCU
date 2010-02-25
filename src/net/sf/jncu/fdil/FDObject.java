@@ -46,9 +46,9 @@ public abstract class FDObject implements Cloneable {
 	/**
 	 * The <tt>FD_Flatten</tt> function converts any FDIL object, including
 	 * aggregate objects such as frames and arrays, to a flat stream of bytes in
-	 * Newton Stream Object Format (NSOF).You could, for instance, send the data
-	 * to a Newton device over a CDIL pipe with the <tt>CD_Write</tt> function,
-	 * or store it to disk.<br>
+	 * Newton Stream Object Format (NSOF). You could, for instance, send the
+	 * data to a Newton device over a CDIL pipe with the <tt>CD_Write</tt>
+	 * function, or store it to disk.<br>
 	 * <tt>DIL_Error FD_Flatten(FD_Handle obj, DIL_WriteProc writeFn, void* userData)</tt>
 	 * 
 	 * @return the NSOF bytes.

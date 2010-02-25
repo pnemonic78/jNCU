@@ -17,4 +17,8 @@ public class PipeDisconnectedException extends IOException {
 		super(message);
 	}
 
+	public PipeDisconnectedException(Throwable cause) {
+		super(cause);
+	}
+
 }
