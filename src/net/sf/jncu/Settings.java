@@ -7,8 +7,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import net.sf.jncu.cdil.mnp.MNPSerialPort;
 import net.sf.jncu.comm.CommPorts;
-import net.sf.jncu.comm.NCUSerialPort;
 
 /**
  * Settings.
@@ -19,7 +19,7 @@ public class Settings {
 
 	private final Collection<CommPortIdentifier> portIds = new ArrayList<CommPortIdentifier>();
 	private CommPortIdentifier portId;
-	private int baud = NCUSerialPort.BAUD_38400;
+	private int baud = MNPSerialPort.BAUD_38400;
 	private boolean listen = true;
 	private File backupFolder = new File(".");
 

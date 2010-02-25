@@ -14,6 +14,7 @@ import java.util.TooManyListenersException;
 import net.sf.jncu.NCUComm;
 import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.cdil.mnp.MNPPacket;
+import net.sf.jncu.cdil.mnp.MNPSerialPort;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockingFrame;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
@@ -37,7 +38,7 @@ public class NCUSerialPortEngine extends Thread {
 	private final NCUComm owner;
 	private final CommPortIdentifier portId;
 	private final int baud;
-	private NCUSerialPort port;
+	private MNPSerialPort port;
 
 	private CDState state = CDState.UNINITIALIZED;
 
@@ -84,7 +85,7 @@ public class NCUSerialPortEngine extends Thread {
 			if (baud != serialPort.getBaudRate()) {
 				serialPort.setSerialPortParams(baud, serialPort.getDataBits(), serialPort.getStopBits(), serialPort.getParity());
 			}
-			this.port = new NCUSerialPort(serialPort);
+			this.port = new MNPSerialPort(serialPort);
 			state = CDState.CONNECTED;
 		} catch (PortInUseException piue) {
 			throw new IOException(ERROR_PORT_USED, piue);

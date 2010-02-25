@@ -23,7 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 
-import net.sf.jncu.comm.NCUSerialPort;
+import net.sf.jncu.cdil.mnp.MNPSerialPort;
 
 /**
  * NCU settings.
@@ -347,11 +347,11 @@ public class NCUSettings extends JDialog {
 	private JComboBox getListSpeed() {
 		if (listSpeed == null) {
 			listSpeed = new JComboBox();
-			listSpeed.addItem(NCUSerialPort.BAUD_2400);
-			listSpeed.addItem(NCUSerialPort.BAUD_4800);
-			listSpeed.addItem(NCUSerialPort.BAUD_9600);
-			listSpeed.addItem(NCUSerialPort.BAUD_38400);
-			listSpeed.addItem(NCUSerialPort.BAUD_57600);
+			listSpeed.addItem(MNPSerialPort.BAUD_2400);
+			listSpeed.addItem(MNPSerialPort.BAUD_4800);
+			listSpeed.addItem(MNPSerialPort.BAUD_9600);
+			listSpeed.addItem(MNPSerialPort.BAUD_38400);
+			listSpeed.addItem(MNPSerialPort.BAUD_57600);
 		}
 		return listSpeed;
 	}

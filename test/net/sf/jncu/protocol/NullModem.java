@@ -13,8 +13,8 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Iterator;
 
+import net.sf.jncu.cdil.mnp.MNPSerialPort;
 import net.sf.jncu.comm.CommPorts;
-import net.sf.jncu.comm.NCUSerialPort;
 
 /**
  * Use Virtual COM ports for testing. COM2 attaches to NCU. COM3 attaches to
@@ -50,8 +50,8 @@ public class NullModem {
 			throw new NoSuchPortException();
 		}
 		SerialPort serialPort = (SerialPort) portId.open(getClass().getName(), 30000);
-		serialPort.setSerialPortParams(NCUSerialPort.BAUD_38400, serialPort.getDataBits(), serialPort.getStopBits(), serialPort.getParity());
-		NCUSerialPort port = new NCUSerialPort(serialPort);
+		serialPort.setSerialPortParams(MNPSerialPort.BAUD_38400, serialPort.getDataBits(), serialPort.getStopBits(), serialPort.getParity());
+		MNPSerialPort port = new MNPSerialPort(serialPort);
 		Reader reader = new Reader(port);
 		reader.start();
 
@@ -83,7 +83,7 @@ public class NullModem {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected void poll(NCUSerialPort port) throws IOException {
+	protected void poll(MNPSerialPort port) throws IOException {
 		InputStream in = port.getInputStream();
 		int i = 0;
 		int b;
@@ -103,11 +103,11 @@ public class NullModem {
 	}
 
 	private class Reader extends Thread {
-		private final NCUSerialPort port;
+		private final MNPSerialPort port;
 		private boolean running;
 		private InputStream in;
 
-		Reader(NCUSerialPort port) {
+		Reader(MNPSerialPort port) {
 			super();
 			this.port = port;
 			this.in = port.getInputStream();
