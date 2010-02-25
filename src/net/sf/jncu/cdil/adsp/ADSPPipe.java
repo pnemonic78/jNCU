@@ -1,8 +1,5 @@
 package net.sf.jncu.cdil.adsp;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
@@ -41,12 +38,6 @@ public class ADSPPipe extends CDPipe {
 		super(layer);
 		this.name = name;
 		this.type = type;
-	}
-
-	@Override
-	protected OutputStream getOutput() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

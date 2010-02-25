@@ -1,8 +1,5 @@
 package net.sf.jncu.cdil.tcp;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
@@ -32,12 +29,6 @@ public class TCPPipe extends CDPipe {
 	public TCPPipe(CDLayer layer, int port) throws ServiceNotSupportedException {
 		super(layer);
 		this.port = port;
-	}
-
-	@Override
-	protected OutputStream getOutput() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
