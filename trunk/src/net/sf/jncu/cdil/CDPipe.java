@@ -161,7 +161,6 @@ public abstract class CDPipe extends Thread {
 			throw new BadPipeStateException();
 		}
 		acceptImpl();
-		layer.setState(CDState.CONNECTED);
 	}
 
 	/**
