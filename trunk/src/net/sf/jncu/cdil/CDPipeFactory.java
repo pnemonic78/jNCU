@@ -40,7 +40,7 @@ public class CDPipeFactory {
 	 * @return the connection.
 	 */
 	public CDPipe createADSP() {
-		return new ADSPPipe();
+		return new ADSPPipe(null, null, (byte) 0);
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class CDPipeFactory {
 	 * @return the connection.
 	 */
 	public CDPipe createMNPSerial() {
-		return new MNPPipe();
+		return new MNPPipe(null, null, 0);
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class CDPipeFactory {
 	 * @return the connection.
 	 */
 	public CDPipe createTCP() {
-		return new TCPPipe();
+		return new TCPPipe(null, 0);
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class CDPipeFactory {
 	 * @return the connection.
 	 */
 	public CDPipe createCTB() {
-		return new CTBPipe();
+		return new CTBPipe(null, null, null);
 	}
 
 }

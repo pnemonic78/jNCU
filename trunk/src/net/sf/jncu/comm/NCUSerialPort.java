@@ -1,5 +1,7 @@
 package net.sf.jncu.comm;
 
+import gnu.io.CommPortIdentifier;
+import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 
 import java.io.IOException;
@@ -25,6 +27,24 @@ public class NCUSerialPort {
 	private final SerialPort port;
 	private NCUSerialPortReader reader;
 	private NCUSerialPortWriter writer;
+
+	/**
+	 * Creates a new port.
+	 * 
+	 * @param portId
+	 *            the serial port identifier.
+	 * @param baud
+	 *            the baud rate.
+	 * @throws TooManyListenersException
+	 *             if too many listeners.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 * @throws PortInUseException
+	 *             if port is not found.
+	 */
+	public NCUSerialPort(CommPortIdentifier portId, int baud) throws TooManyListenersException, IOException, PortInUseException {
+		this((SerialPort) portId.open(portId.getName(), baud));
+	}
 
 	/**
 	 * Creates a new port.
