@@ -5,6 +5,7 @@ import java.io.OutputStream;
 
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDPipe;
+import net.sf.jncu.cdil.ServiceNotSupportedException;
 
 /**
  * AppleTalk pipe.
@@ -33,8 +34,10 @@ public class ADSPPipe extends CDPipe {
 	 *            the Newton OS device. If you pass <tt>NULL</tt> for this
 	 *            parameter, the CDIL uses the type specified by the
 	 *            Connection/Dock application.
+	 * @throws ServiceNotSupportedException
+	 *             if the service is not supported.
 	 */
-	public ADSPPipe(CDLayer layer, String name, byte type) {
+	public ADSPPipe(CDLayer layer, String name, byte type) throws ServiceNotSupportedException {
 		super(layer);
 		this.name = name;
 		this.type = type;

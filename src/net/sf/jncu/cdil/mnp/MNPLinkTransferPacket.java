@@ -14,7 +14,7 @@ public class MNPLinkTransferPacket extends MNPPacket {
 	 * Creates a new MNP LT packet.
 	 */
 	public MNPLinkTransferPacket() {
-		super(LR, 2);
+		super(LT, 2);
 	}
 
 	@Override

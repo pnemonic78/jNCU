@@ -5,7 +5,6 @@ package net.sf.jncu.protocol;
 
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
-import gnu.io.SerialPort;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -49,9 +48,7 @@ public class NullModem {
 		if (portId == null) {
 			throw new NoSuchPortException();
 		}
-		SerialPort serialPort = (SerialPort) portId.open(getClass().getName(), 30000);
-		serialPort.setSerialPortParams(MNPSerialPort.BAUD_38400, serialPort.getDataBits(), serialPort.getStopBits(), serialPort.getParity());
-		MNPSerialPort port = new MNPSerialPort(serialPort);
+		MNPSerialPort port = new MNPSerialPort(portId, MNPSerialPort.BAUD_38400, 30000);
 		Reader reader = new Reader(port);
 		reader.start();
 

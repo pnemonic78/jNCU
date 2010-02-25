@@ -81,7 +81,6 @@ public class CDLayer {
 	 * @throws PlatformException
 	 *             if a platform error occurs.
 	 */
-	@SuppressWarnings("unused")
 	public void shutDown() throws CDILNotInitializedException, PlatformException {
 		checkInitialized();
 		disposeADSP();
@@ -102,7 +101,6 @@ public class CDLayer {
 	 * @throws ServiceNotSupportedException
 	 *             if the service is not supported.
 	 */
-	@SuppressWarnings("unused")
 	public void checkADSP() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		checkInitialized();
 		throw new ServiceNotSupportedException();
@@ -119,7 +117,6 @@ public class CDLayer {
 	 * @throws ServiceNotSupportedException
 	 *             if the service is not supported.
 	 */
-	@SuppressWarnings("unused")
 	public void checkMNPSerial() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		checkInitialized();
 		if (serialPorts.size() == 0) {
@@ -138,9 +135,9 @@ public class CDLayer {
 	 * @throws ServiceNotSupportedException
 	 *             if the service is not supported.
 	 */
-	@SuppressWarnings("unused")
 	public void checkTCP() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		checkInitialized();
+		throw new ServiceNotSupportedException();
 	}
 
 	/**
@@ -156,7 +153,6 @@ public class CDLayer {
 	 * @throws ServiceNotSupportedException
 	 *             if the service is not supported.
 	 */
-	@SuppressWarnings("unused")
 	public void checkCTB(String toolName) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		checkInitialized();
 		throw new ServiceNotSupportedException();
@@ -199,8 +195,10 @@ public class CDLayer {
 	 * @return the connection.
 	 * @throws CDILNotInitializedException
 	 *             if CDIL is not initialised.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
 	 */
-	public ADSPPipe createADSP(String name, byte type) throws CDILNotInitializedException {
+	public ADSPPipe createADSP(String name, byte type) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		checkInitialized();
 		return new ADSPPipe(this, name, type);
 	}
@@ -220,8 +218,10 @@ public class CDLayer {
 	 * @return the connection.
 	 * @throws CDILNotInitializedException
 	 *             if CDIL is not initialised.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
 	 */
-	public MNPPipe createMNPSerial(int port, int baud) throws CDILNotInitializedException {
+	public MNPPipe createMNPSerial(int port, int baud) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		checkInitialized();
 		return new MNPPipe(this, serialPorts.get(port), baud);
 	}
@@ -239,8 +239,10 @@ public class CDLayer {
 	 * @return the connection.
 	 * @throws CDILNotInitializedException
 	 *             if CDIL is not initialised.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
 	 */
-	public TCPPipe createTCP(int port) throws CDILNotInitializedException {
+	public TCPPipe createTCP(int port) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		checkInitialized();
 		return new TCPPipe(this, port);
 	}
@@ -259,8 +261,10 @@ public class CDLayer {
 	 * @return the connection.
 	 * @throws CDILNotInitializedException
 	 *             if CDIL is not initialised.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
 	 */
-	public CTBPipe createCTB(String toolName, String configString) throws CDILNotInitializedException {
+	public CTBPipe createCTB(String toolName, String configString) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		checkInitialized();
 		return new CTBPipe(this, toolName, configString);
 	}
@@ -326,8 +330,11 @@ public class CDLayer {
 	 * 
 	 * @throws CDILNotInitializedException
 	 *             if CDIL is not initialised.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
 	 */
-	protected final void checkInitialized() throws CDILNotInitializedException {
+	@SuppressWarnings("unused")
+	protected final void checkInitialized() throws CDILNotInitializedException, PlatformException {
 		if (state == CDState.UNINITIALIZED) {
 			throw new CDILNotInitializedException();
 		}
