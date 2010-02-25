@@ -100,13 +100,11 @@ public class NullModem {
 	}
 
 	private class Reader extends Thread {
-		private final MNPSerialPort port;
 		private boolean running;
 		private InputStream in;
 
 		Reader(MNPSerialPort port) {
 			super();
-			this.port = port;
 			this.in = port.getInputStream();
 		}
 
@@ -141,7 +139,7 @@ public class NullModem {
 	private int r = 0;
 	private int w = 0;
 
-	private void logRead(int b) {
+	protected void logRead(int b) {
 		if (((r & 15) == 0) || (w > 0)) {
 			System.out.println();
 			System.out.println('<');
@@ -154,7 +152,7 @@ public class NullModem {
 		r++;
 	}
 
-	private void logWrite(int b) {
+	protected void logWrite(int b) {
 		if (((w & 15) == 0) || (r > 0)) {
 			System.out.println();
 			System.out.println('>');
