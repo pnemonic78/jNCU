@@ -51,9 +51,18 @@ public abstract class CDPipe extends Thread {
 	 *             if CDIL is not initialised.
 	 * @throws PlatformException
 	 *             if a platform error occurs.
+	 * @throws BadPipeStateException
+	 *             if pipe is in an incorrect state.
+	 * @throws PipeDisconnectedException
+	 *             if the pipe is already disconnected.
+	 * @throws TimeoutException
+	 *             if timeout occurs.
 	 */
-	public void dispose() throws CDILNotInitializedException, PlatformException {
+	public void dispose() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		layer.checkInitialized();
+		if (layer.getState() != CDState.DISCONNECTED) {
+			disconnect();
+		}
 	}
 
 	/**
@@ -76,13 +85,26 @@ public abstract class CDPipe extends Thread {
 	 * @throws TimeoutException
 	 *             if timeout occurs.
 	 */
-	@SuppressWarnings("unused")
 	public void disconnect() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		layer.checkInitialized();
 		if (layer.getState() == CDState.DISCONNECTED) {
 			throw new PipeDisconnectedException();
 		}
+		layer.setState(CDState.DISCONNECT_PENDING);
+		disconnectImpl();
 		layer.setState(CDState.DISCONNECTED);
+	}
+
+	/**
+	 * Disconnection implementation.
+	 * 
+	 * @throws PlatformException
+	 *             if a platform error occurs.
+	 * @throws TimeoutException
+	 *             if timeout occurs.
+	 */
+	@SuppressWarnings("unused")
+	protected void disconnectImpl() throws PlatformException, TimeoutException {
 	}
 
 	/**
