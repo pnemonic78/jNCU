@@ -20,7 +20,7 @@ import net.sf.jncu.comm.CommPorts;
 public class CDLayer {
 
 	private static CDLayer instance;
-	private final List<CommPortIdentifier> serialPorts = new ArrayList<CommPortIdentifier>();
+	private List<CommPortIdentifier> serialPorts = new ArrayList<CommPortIdentifier>();
 	private CDState state = CDState.UNINITIALIZED;
 
 	/**
@@ -285,7 +285,7 @@ public class CDLayer {
 	 * Initialise MNP.
 	 */
 	protected void initMNP() {
-		serialPorts.clear();
+		serialPorts = new ArrayList<CommPortIdentifier>();
 		CommPorts commPorts = new CommPorts();
 		try {
 			serialPorts.addAll(commPorts.getPortIdentifiers(CommPortIdentifier.PORT_SERIAL));
@@ -317,6 +317,7 @@ public class CDLayer {
 	 */
 	protected void disposeMNP() {
 		serialPorts.clear();
+		serialPorts = null;
 	}
 
 	/**
@@ -335,7 +336,7 @@ public class CDLayer {
 	 */
 	@SuppressWarnings("unused")
 	protected final void checkInitialized() throws CDILNotInitializedException, PlatformException {
-		if (state == CDState.UNINITIALIZED) {
+		if ((state == CDState.UNINITIALIZED) && (serialPorts != null)) {
 			throw new CDILNotInitializedException();
 		}
 	}
