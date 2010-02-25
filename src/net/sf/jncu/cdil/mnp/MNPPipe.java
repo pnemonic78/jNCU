@@ -135,9 +135,10 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	@Override
 	protected void acceptImpl() throws PlatformException, PipeDisconnectedException, TimeoutException {
 		super.acceptImpl();
-		MNPLinkAcknowledgementPacket la = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
+		MNPLinkAcknowledgementPacket ack;
 		try {
-			packetLayer.send(port.getOutputStream(), la);
+			ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
+			packetLayer.send(port.getOutputStream(), ack);
 			MNPPacket packet;
 			do {
 				packet = packetLayer.receive(port.getInputStream());
@@ -154,6 +155,8 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 					if (DockCommandSession.NewtonToDesktop.kDRequestToDock.equals(cmd.getCommand())) {
 						layer.setState(this, CDState.CONNECTED);
 					}
+					ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
+					packetLayer.send(getOutput(), ack);
 				}
 			} while (getCDState() == CDState.CONNECT_PENDING);
 		} catch (IOException ioe) {
