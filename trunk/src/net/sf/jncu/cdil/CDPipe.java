@@ -60,7 +60,7 @@ public abstract class CDPipe extends Thread {
 	 */
 	public void dispose() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		layer.checkInitialized();
-		if (layer.getState() != CDState.DISCONNECTED) {
+		if (getCDState() != CDState.DISCONNECTED) {
 			disconnect();
 		}
 	}
@@ -87,7 +87,7 @@ public abstract class CDPipe extends Thread {
 	 */
 	public void disconnect() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		layer.checkInitialized();
-		if (layer.getState() == CDState.DISCONNECTED) {
+		if (getCDState() == CDState.DISCONNECTED) {
 			throw new PipeDisconnectedException();
 		}
 		layer.setState(CDState.DISCONNECT_PENDING);
@@ -127,7 +127,7 @@ public abstract class CDPipe extends Thread {
 	 */
 	@SuppressWarnings("unused")
 	public void startListening() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
-		if (layer.getState() != CDState.DISCONNECTED) {
+		if (getCDState() != CDState.DISCONNECTED) {
 			throw new BadPipeStateException();
 		}
 		start();
@@ -154,13 +154,25 @@ public abstract class CDPipe extends Thread {
 	 * @throws TimeoutException
 	 *             if timeout occurs.
 	 */
-	@SuppressWarnings("unused")
 	public void accept() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		layer.checkInitialized();
-		if (layer.getState() != CDState.CONNECT_PENDING) {
+		if (getCDState() != CDState.CONNECT_PENDING) {
 			throw new BadPipeStateException();
 		}
+		acceptImpl();
 		layer.setState(CDState.CONNECTED);
+	}
+
+	/**
+	 * Acceptance implementation.
+	 * 
+	 * @throws PlatformException
+	 *             if a platform error occurs.
+	 * @throws TimeoutException
+	 *             if timeout occurs.
+	 */
+	@SuppressWarnings("unused")
+	protected void acceptImpl() throws PlatformException, PipeDisconnectedException, TimeoutException {
 	}
 
 	/**
@@ -188,7 +200,7 @@ public abstract class CDPipe extends Thread {
 	@SuppressWarnings("unused")
 	public InputStream getInput() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		layer.checkInitialized();
-		if ((layer.getState() != CDState.CONNECTED) && (layer.getState() != CDState.DISCONNECT_PENDING)) {
+		if ((getCDState() != CDState.CONNECTED) && (getCDState() != CDState.DISCONNECT_PENDING)) {
 			throw new BadPipeStateException();
 		}
 		if (pipeSink == null) {
@@ -208,18 +220,9 @@ public abstract class CDPipe extends Thread {
 	 * 
 	 * @return the source.
 	 */
-	protected OutputStream getPipeSource() {
+	protected OutputStream getOutput() {
 		return pipeSource;
 	}
-
-	/**
-	 * Get the output stream to write packets to the Newton.
-	 * 
-	 * @return the output.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
-	protected abstract OutputStream getOutput() throws IOException;
 
 	/**
 	 * Sends the given bytes to the Newton device.<br>
@@ -279,7 +282,7 @@ public abstract class CDPipe extends Thread {
 	public void write(byte[] b, int offset, int count) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
 			TimeoutException {
 		layer.checkInitialized();
-		if (layer.getState() != CDState.CONNECTED) {
+		if (getCDState() != CDState.CONNECTED) {
 			throw new BadPipeStateException();
 		}
 	}
@@ -370,7 +373,7 @@ public abstract class CDPipe extends Thread {
 	 *             if pipe is in an incorrect state.
 	 */
 	protected void notifyDisconnect() throws BadPipeStateException, CDILNotInitializedException, PlatformException, TimeoutException {
-		if (layer.getState() == CDState.CONNECTED) {
+		if (getCDState() == CDState.CONNECTED) {
 			layer.setState(CDState.DISCONNECT_PENDING);
 		} else {
 			try {
@@ -397,10 +400,17 @@ public abstract class CDPipe extends Thread {
 	 */
 	@SuppressWarnings("unused")
 	protected void notifyConnect() throws BadPipeStateException, CDILNotInitializedException, PlatformException, TimeoutException {
-		if (layer.getState() != CDState.LISTENING) {
+		if (getCDState() != CDState.LISTENING) {
 			throw new BadPipeStateException();
 		}
 		layer.setState(CDState.CONNECT_PENDING);
 	}
 
+	protected CDState getCDState() {
+		return layer.getState();
+	}
+
+	protected void setCDState(CDState state) {
+		layer.setState(this, state);
+	}
 }

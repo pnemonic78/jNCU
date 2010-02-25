@@ -1,8 +1,5 @@
 package net.sf.jncu.cdil.ctb;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
@@ -33,12 +30,6 @@ public class CTBPipe extends CDPipe {
 		super(layer);
 		this.toolName = toolName;
 		this.configString = configString;
-	}
-
-	@Override
-	protected OutputStream getOutput() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

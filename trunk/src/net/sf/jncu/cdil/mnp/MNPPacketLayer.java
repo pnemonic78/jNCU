@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ProtocolException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import net.sf.lang.ControlCharacter;
 import net.sf.util.zip.CRC16;
@@ -30,6 +32,8 @@ public class MNPPacketLayer {
 	private static final String ERROR_SEND = "Error in writing to Newton device!";
 	/** Not a command error message. */
 	private static final String ERROR_NOT_COMMAND = "Expected a command";
+
+	private final Collection<MNPPacketListener> listeners = new ArrayList<MNPPacketListener>();
 
 	/**
 	 * Creates a new MNP packet layer.
@@ -198,5 +202,51 @@ public class MNPPacketLayer {
 	public void send(OutputStream out, MNPPacket packet) throws IOException {
 		byte[] payload = packet.serialize();
 		write(out, payload);
+	}
+
+	/**
+	 * Add a packet listener.
+	 * 
+	 * @param listener
+	 *            the listener to add.
+	 */
+	public void addPacketListener(MNPPacketListener listener) {
+		if (!listeners.contains(listener)) {
+			listeners.add(listener);
+		}
+	}
+
+	/**
+	 * Remove a packet listener.
+	 * 
+	 * @param listener
+	 *            the listener to remove.
+	 */
+	public void removePacketListener(MNPPacketListener listener) {
+		listeners.remove(listener);
+	}
+
+	/**
+	 * Notify all the listeners that a packet has been received.
+	 * 
+	 * @param packet
+	 *            the received packet.
+	 */
+	protected void firePacketReceived(MNPPacket packet) {
+		for (MNPPacketListener listener : listeners) {
+			listener.packetReceived(packet);
+		}
+	}
+
+	/**
+	 * Listen for incoming packets.
+	 * 
+	 * @param in
+	 *            the input.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	public void listen(InputStream in) throws IOException {
+		firePacketReceived(receive(in));
 	}
 }

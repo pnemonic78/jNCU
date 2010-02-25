@@ -5,8 +5,6 @@ import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.TooManyListenersException;
 import java.util.concurrent.TimeoutException;
 
@@ -14,6 +12,7 @@ import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDPipe;
+import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
@@ -23,7 +22,7 @@ import net.sf.jncu.cdil.ServiceNotSupportedException;
  * 
  * @author moshew
  */
-public class MNPPipe extends CDPipe {
+public class MNPPipe extends CDPipe implements MNPPacketListener {
 
 	private final CommPortIdentifier portId;
 	private final int baud;
@@ -46,44 +45,36 @@ public class MNPPipe extends CDPipe {
 		super(layer);
 		this.portId = portId;
 		this.baud = baud;
+		packetLayer.addPacketListener(this);
 	}
 
 	@Override
 	public void run() {
-		InputStream in;
-		MNPPacket packet;
-
-		try {
-			port = new MNPSerialPort(portId, baud, getTimeout());
-			in = this.getInput();
-			packet = packetLayer.receive(in);
-		} catch (BadPipeStateException bpse) {
-			bpse.printStackTrace();
-		} catch (CDILNotInitializedException ce) {
-			// TODO Auto-generated catch block
-			ce.printStackTrace();
-		} catch (PlatformException pe) {
-			// TODO Auto-generated catch block
-			pe.printStackTrace();
-		} catch (PipeDisconnectedException pde) {
-			// TODO Auto-generated catch block
-			pde.printStackTrace();
-		} catch (TimeoutException te) {
-			// TODO Auto-generated catch block
-			te.printStackTrace();
-		} catch (IOException ioe) {
-			// TODO Auto-generated catch block
-			ioe.printStackTrace();
-		} catch (PortInUseException piue) {
-			// TODO Auto-generated catch block
-			piue.printStackTrace();
-		} catch (TooManyListenersException tmle) {
-			// TODO Auto-generated catch block
-			tmle.printStackTrace();
-		} catch (UnsupportedCommOperationException ucoe) {
-			// TODO Auto-generated catch block
-			ucoe.printStackTrace();
-		}
+		do {
+			try {
+				port = new MNPSerialPort(portId, baud, getTimeout());
+				do {
+					packetLayer.listen(port.getInputStream());
+				} while (getCDState() != CDState.CONNECT_PENDING);
+			} catch (BadPipeStateException bpse) {
+				bpse.printStackTrace();
+			} catch (PipeDisconnectedException pde) {
+				// TODO Auto-generated catch block
+				pde.printStackTrace();
+			} catch (IOException ioe) {
+				// TODO Auto-generated catch block
+				ioe.printStackTrace();
+			} catch (PortInUseException piue) {
+				// TODO Auto-generated catch block
+				piue.printStackTrace();
+			} catch (TooManyListenersException tmle) {
+				// TODO Auto-generated catch block
+				tmle.printStackTrace();
+			} catch (UnsupportedCommOperationException ucoe) {
+				// TODO Auto-generated catch block
+				ucoe.printStackTrace();
+			}
+		} while (getCDState() != CDState.DISCONNECTED);
 	}
 
 	@Override
@@ -95,15 +86,10 @@ public class MNPPipe extends CDPipe {
 		System.arraycopy(b, offset, data, 0, count);
 		packet.setData(data);
 		try {
-			packetLayer.send(getOutput(), packet);
+			packetLayer.send(port.getOutputStream(), packet);
 		} catch (IOException ioe) {
 			throw new PipeDisconnectedException(ioe);
 		}
-	}
-
-	@Override
-	protected OutputStream getOutput() throws IOException {
-		return port.getOutputStream();
 	}
 
 	@Override
@@ -122,4 +108,24 @@ public class MNPPipe extends CDPipe {
 		port.close();
 		packetLayer = null;
 	}
+
+	public void packetReceived(MNPPacket packet) {
+		if (getCDState() == CDState.LISTENING) {
+			if (packet.getType() == MNPPacket.LR) {
+				layer.setState(this, CDState.CONNECT_PENDING);
+			}
+		}
+	}
+
+	@Override
+	protected void acceptImpl() throws PlatformException, PipeDisconnectedException, TimeoutException {
+		super.acceptImpl();
+		MNPLinkAcknowledgementPacket packet = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
+		try {
+			packetLayer.send(port.getOutputStream(), packet);
+		} catch (IOException ioe) {
+			throw new PipeDisconnectedException();
+		}
+	}
+
 }

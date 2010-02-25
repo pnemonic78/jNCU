@@ -365,4 +365,19 @@ public class CDLayer {
 	protected void setState(CDState state) {
 		this.state = state;
 	}
+
+	/**
+	 * Set the state from a pipe.
+	 * 
+	 * @param pipe
+	 *            the pipe.
+	 * @param state
+	 *            the state.
+	 */
+	public void setState(CDPipe pipe, CDState state) {
+		if (pipe == null) {
+			throw new IllegalArgumentException();
+		}
+		this.state = state;
+	}
 }
