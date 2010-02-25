@@ -1,4 +1,4 @@
-package net.sf.jncu.comm;
+package net.sf.jncu.cdil.mnp;
 
 import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
@@ -9,12 +9,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.TooManyListenersException;
 
+
 /**
  * Wraps a serial port.
  * 
  * @author moshew
  */
-public class NCUSerialPort {
+public class MNPSerialPort {
 
 	public static final int BAUD_2400 = 2400;
 	public static final int BAUD_4800 = BAUD_2400 << 1;
@@ -25,8 +26,8 @@ public class NCUSerialPort {
 	public static final int BAUD_115200 = BAUD_57600 << 1;
 
 	private final SerialPort port;
-	private NCUSerialPortReader reader;
-	private NCUSerialPortWriter writer;
+	private MNPSerialPortReader reader;
+	private MNPSerialPortWriter writer;
 
 	/**
 	 * Creates a new port.
@@ -42,7 +43,7 @@ public class NCUSerialPort {
 	 * @throws PortInUseException
 	 *             if port is not found.
 	 */
-	public NCUSerialPort(CommPortIdentifier portId, int baud) throws TooManyListenersException, IOException, PortInUseException {
+	public MNPSerialPort(CommPortIdentifier portId, int baud) throws TooManyListenersException, IOException, PortInUseException {
 		this((SerialPort) portId.open(portId.getName(), baud));
 	}
 
@@ -56,11 +57,11 @@ public class NCUSerialPort {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public NCUSerialPort(SerialPort port) throws TooManyListenersException, IOException {
+	public MNPSerialPort(SerialPort port) throws TooManyListenersException, IOException {
 		super();
 		this.port = port;
-		this.reader = new NCUSerialPortReader(port);
-		this.writer = new NCUSerialPortWriter(port);
+		this.reader = new MNPSerialPortReader(port);
+		this.writer = new MNPSerialPortWriter(port);
 		reader.start();
 		writer.start();
 	}

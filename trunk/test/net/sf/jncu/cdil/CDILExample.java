@@ -1,6 +1,6 @@
 package net.sf.jncu.cdil;
 
-import net.sf.jncu.comm.NCUSerialPort;
+import net.sf.jncu.cdil.mnp.MNPSerialPort;
 
 /**
  * <code>
@@ -62,7 +62,7 @@ public class CDILExample {
 			byte[] dataBuffer = new byte[256];
 			int count;
 			layer.startUp(); // Initialize the library
-			pipe = layer.createMNPSerial(0, NCUSerialPort.BAUD_38400); // Create
+			pipe = layer.createMNPSerial(0, MNPSerialPort.BAUD_38400); // Create
 			// a connection object
 			pipe.startListening(); // Have that object listen for a
 			// connection from a Newton device

@@ -1,4 +1,4 @@
-package net.sf.jncu.comm;
+package net.sf.jncu.cdil.mnp;
 
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
@@ -14,7 +14,7 @@ import java.util.concurrent.BlockingQueue;
  * 
  * @author moshew
  */
-public class NCUSerialPortEventListener implements SerialPortEventListener {
+public class MNPSerialPortEventListener implements SerialPortEventListener {
 
 	private final SerialPort port;
 	private final BlockingQueue<Byte> q;
@@ -28,7 +28,7 @@ public class NCUSerialPortEventListener implements SerialPortEventListener {
 	 * @param queue
 	 *            the queue for populating data.
 	 */
-	public NCUSerialPortEventListener(SerialPort port, BlockingQueue<Byte> queue) {
+	public MNPSerialPortEventListener(SerialPort port, BlockingQueue<Byte> queue) {
 		super();
 		this.port = port;
 		this.out = null;
@@ -43,7 +43,7 @@ public class NCUSerialPortEventListener implements SerialPortEventListener {
 	 * @param out
 	 *            the queue for populating data.
 	 */
-	public NCUSerialPortEventListener(SerialPort port, OutputStream out) {
+	public MNPSerialPortEventListener(SerialPort port, OutputStream out) {
 		super();
 		this.port = port;
 		this.out = out;

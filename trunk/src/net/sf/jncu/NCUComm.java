@@ -4,8 +4,8 @@ import gnu.io.CommPortIdentifier;
 
 import java.util.List;
 
+import net.sf.jncu.cdil.mnp.MNPSerialPort;
 import net.sf.jncu.comm.CommPorts;
-import net.sf.jncu.comm.NCUSerialPort;
 import net.sf.jncu.comm.NCUSerialPortEngine;
 
 /**
@@ -61,7 +61,7 @@ public class NCUComm {
 		try {
 			List<CommPortIdentifier> ports = commPorts.getPortIdentifiers(CommPortIdentifier.PORT_SERIAL);
 			CommPortIdentifier portId = ports.get(0);
-			comm.startListenForNewton(portId, NCUSerialPort.BAUD_38400);
+			comm.startListenForNewton(portId, MNPSerialPort.BAUD_38400);
 			// Thread.sleep(5000);
 			// comm.stopListenForNewton();
 		} catch (Throwable t) {

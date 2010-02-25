@@ -1,4 +1,4 @@
-package net.sf.jncu.comm;
+package net.sf.jncu.cdil.mnp;
 
 import gnu.io.SerialPort;
 
@@ -6,11 +6,11 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class NCUSerialPortWriter extends Thread implements Closeable {
+public class MNPSerialPortWriter extends Thread implements Closeable {
 
 	private final SerialPort port;
 
-	public NCUSerialPortWriter(SerialPort port) {
+	public MNPSerialPortWriter(SerialPort port) {
 		super();
 		this.port = port;
 	}

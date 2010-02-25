@@ -1,4 +1,4 @@
-package net.sf.jncu.comm;
+package net.sf.jncu.cdil.mnp;
 
 import gnu.io.SerialPort;
 
@@ -9,15 +9,16 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.TooManyListenersException;
 
+
 /**
  * NCU serial port reader.
  * 
  * @author moshew
  */
-public class NCUSerialPortReader extends Thread implements Closeable {
+public class MNPSerialPortReader extends Thread implements Closeable {
 
 	private final SerialPort port;
-	private NCUSerialPortEventListener listener;
+	private MNPSerialPortEventListener listener;
 	private final PipedOutputStream q = new PipedOutputStream();
 	private InputStream in;
 
@@ -31,10 +32,10 @@ public class NCUSerialPortReader extends Thread implements Closeable {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public NCUSerialPortReader(SerialPort port) throws TooManyListenersException, IOException {
+	public MNPSerialPortReader(SerialPort port) throws TooManyListenersException, IOException {
 		super();
 		this.port = port;
-		this.listener = new NCUSerialPortEventListener(port, q);
+		this.listener = new MNPSerialPortEventListener(port, q);
 		this.in = new PipedInputStream(q);
 		port.notifyOnDataAvailable(true);
 		port.addEventListener(listener);
