@@ -25,10 +25,10 @@ import net.sf.jncu.cdil.ServiceNotSupportedException;
  */
 public class MNPPipe extends CDPipe {
 
-	private MNPPacketLayer packetLayer = new MNPPacketLayer();
 	private final CommPortIdentifier portId;
 	private final int baud;
 	private MNPSerialPort port;
+	private MNPPacketLayer packetLayer = new MNPPacketLayer();
 
 	/**
 	 * Creates a new MNP pipe.
@@ -114,5 +114,12 @@ public class MNPPipe extends CDPipe {
 			throw new BadPipeStateException();
 		}
 		super.setTimeout(timeoutInSecs);
+	}
+
+	@Override
+	protected void disconnectImpl() throws PlatformException, TimeoutException {
+		super.disconnectImpl();
+		port.close();
+		packetLayer = null;
 	}
 }
