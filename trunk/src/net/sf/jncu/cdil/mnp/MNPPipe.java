@@ -28,10 +28,10 @@ import net.sf.jncu.protocol.v2_0.session.DockCommandSession;
  */
 public class MNPPipe extends CDPipe implements MNPPacketListener {
 
-	private final CommPortIdentifier portId;
-	private final int baud;
-	private MNPSerialPort port;
-	private MNPPacketLayer packetLayer = new MNPPacketLayer();
+	protected final CommPortIdentifier portId;
+	protected final int baud;
+	protected MNPSerialPort port;
+	protected MNPPacketLayer packetLayer = new MNPPacketLayer();
 
 	/**
 	 * Creates a new MNP pipe.
@@ -169,7 +169,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	private void poll() throws IOException {
+	protected void poll() throws IOException {
 		InputStream in = port.getInputStream();
 		int i = 0;
 		int b;
@@ -186,6 +186,16 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 			System.out.print("0x" + (b < 0x10 ? "0" : "") + Integer.toHexString(b));
 			i++;
 		} while ((getCDState() == CDState.CONNECTED) && (port != null));
+	}
+
+	@Override
+	protected void idleImpl() throws PlatformException, PipeDisconnectedException, TimeoutException {
+		super.idleImpl();
+		try {
+			packetLayer.listen(port.getInputStream());
+		} catch (IOException ioe) {
+			throw new PipeDisconnectedException(ioe);
+		}
 	}
 
 }

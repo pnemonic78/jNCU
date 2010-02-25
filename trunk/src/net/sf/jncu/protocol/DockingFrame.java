@@ -31,13 +31,9 @@ public class DockingFrame {
 
 	/** Receive error message. */
 	private static final String ERROR_RECEIVE = "Error in reading from Newton device!";
-	/** Send error message. */
-	private static final String ERROR_SEND = "Error in writing to Newton device!";
 	/** Not a command error message. */
 	private static final String ERROR_NOT_COMMAND = "Expected a command";
 
-	/** Maximum length of header. */
-	private static final int MAX_HEADER_LENGTH = 256;
 	/** Maximum length of data. */
 	private static final int MAX_DATA_LENGTH = 256;
 

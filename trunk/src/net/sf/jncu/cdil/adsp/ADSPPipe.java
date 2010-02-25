@@ -11,8 +11,8 @@ import net.sf.jncu.cdil.ServiceNotSupportedException;
  */
 public class ADSPPipe extends CDPipe {
 
-	private final String name;
-	private final byte type;
+	protected final String name;
+	protected final byte type;
 
 	/**
 	 * Creates a new ADSP pipe.

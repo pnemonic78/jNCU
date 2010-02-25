@@ -26,13 +26,6 @@ public class MNPPacketLayer {
 	/** Packet escape character. */
 	public static final byte DELIMITER_ESCAPE = ControlCharacter.DLE;
 
-	/** Receive error message. */
-	private static final String ERROR_RECEIVE = "Error in reading from Newton device!";
-	/** Send error message. */
-	private static final String ERROR_SEND = "Error in writing to Newton device!";
-	/** Not a command error message. */
-	private static final String ERROR_NOT_COMMAND = "Expected a command";
-
 	private final Collection<MNPPacketListener> listeners = new ArrayList<MNPPacketListener>();
 
 	/**
@@ -60,7 +53,7 @@ public class MNPPacketLayer {
 		while (state < delimiterLength) {
 			b = in.read();
 			if (b < 0) {
-				throw new EOFException(ERROR_RECEIVE);
+				throw new EOFException();
 			}
 			if (b == PACKET_HEAD[state]) {
 				state++;
@@ -78,7 +71,7 @@ public class MNPPacketLayer {
 		while (state < delimiterLength) {
 			b = in.read();
 			if (b < 0) {
-				throw new EOFException(ERROR_RECEIVE);
+				throw new EOFException();
 			}
 			if (b == DELIMITER_ESCAPE) {
 				if (isEscape) {
@@ -95,7 +88,7 @@ public class MNPPacketLayer {
 				buf.write(b);
 				crc.update(b);
 			} else {
-				throw new ProtocolException(ERROR_RECEIVE);
+				throw new ProtocolException();
 			}
 		}
 		buf.close();
@@ -105,16 +98,16 @@ public class MNPPacketLayer {
 		/* Read the FCS. */
 		b = in.read();
 		if (b < 0) {
-			throw new EOFException(ERROR_RECEIVE);
+			throw new EOFException();
 		}
 		long crcWord = b;
 		b = in.read();
 		if (b < 0) {
-			throw new EOFException(ERROR_RECEIVE);
+			throw new EOFException();
 		}
 		crcWord = (b << 8) | crcWord;
 		if (crcWord != crc.getValue()) {
-			throw new ProtocolException(ERROR_RECEIVE);
+			throw new ProtocolException();
 		}
 
 		return payload;

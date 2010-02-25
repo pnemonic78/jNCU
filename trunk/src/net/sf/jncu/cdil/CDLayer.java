@@ -56,7 +56,6 @@ public class CDLayer {
 	 * @throws PlatformException
 	 *             if a platform error occurs.
 	 */
-	@SuppressWarnings("unused")
 	public void startUp() throws PlatformException {
 		initADSP();
 		initCTB();
@@ -334,7 +333,6 @@ public class CDLayer {
 	 * @throws PlatformException
 	 *             if a platform error occurs.
 	 */
-	@SuppressWarnings("unused")
 	protected final void checkInitialized() throws CDILNotInitializedException, PlatformException {
 		if ((state == CDState.UNINITIALIZED) && (serialPorts != null)) {
 			throw new CDILNotInitializedException();

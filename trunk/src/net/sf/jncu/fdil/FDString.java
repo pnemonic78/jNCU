@@ -10,9 +10,9 @@ import net.sf.lang.ControlCharacter;
 public class FDString extends FDBinaryObject {
 
 	/** Character in place of the embedded ink for 16-bit strings. */
-	private static final char INK = 0xF700;
+	protected static final char INK = 0xF700;
 	/** Character in place of the embedded ink for 8-bit strings. */
-	private static final char INK8 = ControlCharacter.SUB;
+	protected static final char INK8 = ControlCharacter.SUB;
 
 	private final String value;
 
