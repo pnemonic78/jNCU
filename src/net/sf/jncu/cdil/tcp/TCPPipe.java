@@ -11,7 +11,7 @@ import net.sf.jncu.cdil.ServiceNotSupportedException;
  */
 public class TCPPipe extends CDPipe {
 
-	private final int port;
+	protected final int port;
 
 	/**
 	 * Creates a new TCP pipe.

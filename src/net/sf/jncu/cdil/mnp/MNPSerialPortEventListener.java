@@ -16,7 +16,7 @@ import java.util.concurrent.BlockingQueue;
  */
 public class MNPSerialPortEventListener implements SerialPortEventListener {
 
-	private final SerialPort port;
+	protected final SerialPort port;
 	private final BlockingQueue<Byte> q;
 	private final OutputStream out;
 

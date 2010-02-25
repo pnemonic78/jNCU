@@ -17,7 +17,7 @@ import java.util.TooManyListenersException;
  */
 public class MNPSerialPortReader extends Thread implements Closeable {
 
-	private final SerialPort port;
+	protected final SerialPort port;
 	private MNPSerialPortEventListener listener;
 	private final PipedOutputStream q = new PipedOutputStream();
 	private InputStream in;

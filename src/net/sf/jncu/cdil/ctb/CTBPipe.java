@@ -11,8 +11,8 @@ import net.sf.jncu.cdil.ServiceNotSupportedException;
  */
 public class CTBPipe extends CDPipe {
 
-	private final String toolName;
-	private final String configString;
+	protected final String toolName;
+	protected final String configString;
 
 	/**
 	 * Creates a new CTB pipe.

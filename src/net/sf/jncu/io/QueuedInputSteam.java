@@ -33,7 +33,7 @@ public class QueuedInputSteam extends InputStream {
 	@Override
 	public int read() throws IOException {
 		Byte b;
-		if (q instanceof BlockingQueue) {
+		if (q instanceof BlockingQueue<?>) {
 			BlockingQueue<Byte> bq = (BlockingQueue<Byte>) q;
 			try {
 				b = bq.take();
