@@ -3,12 +3,12 @@ package net.sf.jncu.cdil.mnp;
 import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
+import gnu.io.UnsupportedCommOperationException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.TooManyListenersException;
-
 
 /**
  * Wraps a serial port.
@@ -36,15 +36,20 @@ public class MNPSerialPort {
 	 *            the serial port identifier.
 	 * @param baud
 	 *            the baud rate.
+	 * @param timeout
+	 *            the timeout period.
 	 * @throws TooManyListenersException
 	 *             if too many listeners.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 * @throws PortInUseException
 	 *             if port is not found.
+	 * @throws UnsupportedCommOperationException
+	 *             TODO comment me!
 	 */
-	public MNPSerialPort(CommPortIdentifier portId, int baud) throws TooManyListenersException, IOException, PortInUseException {
-		this((SerialPort) portId.open(portId.getName(), baud));
+	public MNPSerialPort(CommPortIdentifier portId, int baud, int timeout) throws TooManyListenersException, IOException, PortInUseException,
+			UnsupportedCommOperationException {
+		this((SerialPort) portId.open(portId.getName(), timeout));
 	}
 
 	/**
@@ -52,18 +57,39 @@ public class MNPSerialPort {
 	 * 
 	 * @param port
 	 *            the serial port.
+	 * @param baud
+	 *            the baud rate.
 	 * @throws TooManyListenersException
 	 *             if too many listeners.
 	 * @throws IOException
 	 *             if an I/O error occurs.
+	 * @throws UnsupportedCommOperationException
+	 *             TODO comment me!
 	 */
-	public MNPSerialPort(SerialPort port) throws TooManyListenersException, IOException {
+	public MNPSerialPort(SerialPort port, int baud) throws TooManyListenersException, IOException, UnsupportedCommOperationException {
 		super();
 		this.port = port;
+		port.setSerialPortParams(baud, port.getDataBits(), port.getStopBits(), port.getParity());
 		this.reader = new MNPSerialPortReader(port);
 		this.writer = new MNPSerialPortWriter(port);
 		reader.start();
 		writer.start();
+	}
+
+	/**
+	 * Creates a new port at 38,400 baud.
+	 * 
+	 * @param port
+	 *            the serial port.
+	 * @throws TooManyListenersException
+	 *             if too many listeners.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 * @throws UnsupportedCommOperationException
+	 *             TODO comment me!
+	 */
+	public MNPSerialPort(SerialPort port) throws TooManyListenersException, IOException, UnsupportedCommOperationException {
+		this(port, BAUD_38400);
 	}
 
 	/**

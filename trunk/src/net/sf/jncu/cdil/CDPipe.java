@@ -14,20 +14,23 @@ import java.util.concurrent.TimeoutException;
  */
 public abstract class CDPipe extends Thread {
 
-	private final CDLayer layer;
+	protected final CDLayer layer;
 	private PipedOutputStream pipeSource;
 	private PipedInputStream pipeSink;
+	private int timeout;
 
 	/**
 	 * Creates a new pipe.
 	 * 
 	 * @param layer
 	 *            the owner layer.
+	 * @throws ServiceNotSupportedException
+	 *             if the service is not supported.
 	 */
-	public CDPipe(CDLayer layer) {
+	public CDPipe(CDLayer layer) throws ServiceNotSupportedException {
 		super();
 		if (layer == null) {
-			throw new IllegalArgumentException();
+			throw new ServiceNotSupportedException();
 		}
 		this.layer = layer;
 		this.pipeSource = new PipedOutputStream();
@@ -49,8 +52,8 @@ public abstract class CDPipe extends Thread {
 	 * @throws PlatformException
 	 *             if a platform error occurs.
 	 */
-	@SuppressWarnings("unused")
 	public void dispose() throws CDILNotInitializedException, PlatformException {
+		layer.checkInitialized();
 	}
 
 	/**
@@ -75,6 +78,7 @@ public abstract class CDPipe extends Thread {
 	 */
 	@SuppressWarnings("unused")
 	public void disconnect() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
+		layer.checkInitialized();
 		if (layer.getState() == CDState.DISCONNECTED) {
 			throw new PipeDisconnectedException();
 		}
@@ -130,6 +134,7 @@ public abstract class CDPipe extends Thread {
 	 */
 	@SuppressWarnings("unused")
 	public void accept() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
+		layer.checkInitialized();
 		if (layer.getState() != CDState.CONNECT_PENDING) {
 			throw new BadPipeStateException();
 		}
@@ -160,6 +165,7 @@ public abstract class CDPipe extends Thread {
 	 */
 	@SuppressWarnings("unused")
 	public InputStream getInput() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
+		layer.checkInitialized();
 		if ((layer.getState() != CDState.CONNECTED) && (layer.getState() != CDState.DISCONNECT_PENDING)) {
 			throw new BadPipeStateException();
 		}
@@ -250,6 +256,7 @@ public abstract class CDPipe extends Thread {
 	@SuppressWarnings("unused")
 	public void write(byte[] b, int offset, int count) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
 			TimeoutException {
+		layer.checkInitialized();
 		if (layer.getState() != CDState.CONNECTED) {
 			throw new BadPipeStateException();
 		}
@@ -281,6 +288,7 @@ public abstract class CDPipe extends Thread {
 	 */
 	@SuppressWarnings("unused")
 	public void idle() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
+		layer.checkInitialized();
 	}
 
 	/**
@@ -314,6 +322,17 @@ public abstract class CDPipe extends Thread {
 	@SuppressWarnings("unused")
 	public void setTimeout(int timeoutInSecs) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
 			TimeoutException {
+		layer.checkInitialized();
+		this.timeout = timeoutInSecs;
+	}
+
+	/**
+	 * Get the timeout period.
+	 * 
+	 * @return the timeout in seconds.
+	 */
+	protected int getTimeout() {
+		return timeout;
 	}
 
 	/**

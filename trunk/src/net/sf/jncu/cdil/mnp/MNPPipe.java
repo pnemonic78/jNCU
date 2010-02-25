@@ -2,11 +2,12 @@ package net.sf.jncu.cdil.mnp;
 
 import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
-import gnu.io.SerialPort;
+import gnu.io.UnsupportedCommOperationException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.TooManyListenersException;
 import java.util.concurrent.TimeoutException;
 
 import net.sf.jncu.cdil.BadPipeStateException;
@@ -15,6 +16,7 @@ import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
+import net.sf.jncu.cdil.ServiceNotSupportedException;
 
 /**
  * MNP Serial pipe.
@@ -26,7 +28,7 @@ public class MNPPipe extends CDPipe {
 	private MNPPacketLayer packetLayer = new MNPPacketLayer();
 	private final CommPortIdentifier portId;
 	private final int baud;
-	private SerialPort port;
+	private MNPSerialPort port;
 
 	/**
 	 * Creates a new MNP pipe.
@@ -37,8 +39,10 @@ public class MNPPipe extends CDPipe {
 	 *            the port identifier.
 	 * @param baud
 	 *            the baud rate to communicate at in bytes per second.
+	 * @throws ServiceNotSupportedException
+	 *             if the service is not supported.
 	 */
-	public MNPPipe(CDLayer layer, CommPortIdentifier portId, int baud) {
+	public MNPPipe(CDLayer layer, CommPortIdentifier portId, int baud) throws ServiceNotSupportedException {
 		super(layer);
 		this.portId = portId;
 		this.baud = baud;
@@ -50,8 +54,7 @@ public class MNPPipe extends CDPipe {
 		MNPPacket packet;
 
 		try {
-			port = (SerialPort) portId.open(portId.getName(), baud);
-
+			port = new MNPSerialPort(portId, baud, getTimeout());
 			in = this.getInput();
 			packet = packetLayer.receive(in);
 		} catch (BadPipeStateException bpse) {
@@ -74,6 +77,12 @@ public class MNPPipe extends CDPipe {
 		} catch (PortInUseException piue) {
 			// TODO Auto-generated catch block
 			piue.printStackTrace();
+		} catch (TooManyListenersException tmle) {
+			// TODO Auto-generated catch block
+			tmle.printStackTrace();
+		} catch (UnsupportedCommOperationException ucoe) {
+			// TODO Auto-generated catch block
+			ucoe.printStackTrace();
 		}
 	}
 
@@ -95,5 +104,15 @@ public class MNPPipe extends CDPipe {
 	@Override
 	protected OutputStream getOutput() throws IOException {
 		return port.getOutputStream();
+	}
+
+	@Override
+	public void setTimeout(int timeoutInSecs) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
+			TimeoutException {
+		// Can only set the port timeout at port creation.
+		if (port != null) {
+			throw new BadPipeStateException();
+		}
+		super.setTimeout(timeoutInSecs);
 	}
 }

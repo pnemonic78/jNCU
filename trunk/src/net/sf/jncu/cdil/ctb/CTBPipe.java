@@ -5,6 +5,7 @@ import java.io.OutputStream;
 
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDPipe;
+import net.sf.jncu.cdil.ServiceNotSupportedException;
 
 /**
  * Macintosh Communication Tool Serial pipe.
@@ -25,8 +26,10 @@ public class CTBPipe extends CDPipe {
 	 *            the name of the communication tool.
 	 * @param configString
 	 *            a tool-dependent configuration string.
+	 * @throws ServiceNotSupportedException
+	 *             if the service is not supported.
 	 */
-	public CTBPipe(CDLayer layer, String toolName, String configString) {
+	public CTBPipe(CDLayer layer, String toolName, String configString) throws ServiceNotSupportedException {
 		super(layer);
 		this.toolName = toolName;
 		this.configString = configString;

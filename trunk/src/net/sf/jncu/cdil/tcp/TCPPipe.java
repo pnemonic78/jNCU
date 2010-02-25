@@ -5,6 +5,7 @@ import java.io.OutputStream;
 
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDPipe;
+import net.sf.jncu.cdil.ServiceNotSupportedException;
 
 /**
  * TCP pipe.
@@ -25,8 +26,10 @@ public class TCPPipe extends CDPipe {
 	 *            made, data transfer actually occurs on a different, randomly
 	 *            chosen, port. This frees up the port specified in this
 	 *            parameter for future connections.
+	 * @throws ServiceNotSupportedException
+	 *             if the service is not supported.
 	 */
-	public TCPPipe(CDLayer layer, int port) {
+	public TCPPipe(CDLayer layer, int port) throws ServiceNotSupportedException {
 		super(layer);
 		this.port = port;
 	}
