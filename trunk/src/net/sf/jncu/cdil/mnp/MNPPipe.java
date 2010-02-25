@@ -72,17 +72,8 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		do {
 			try {
 				do {
-					MNPPacket packet = packetLayer.receive(port.getInputStream());
-					if (packet.getType() == MNPPacket.LR) {
-						layer.setState(this, CDState.CONNECT_PENDING);
-					}
-
+					packetLayer.listen(port.getInputStream());
 				} while (getCDState() != CDState.CONNECT_PENDING);
-			} catch (BadPipeStateException bpse) {
-				bpse.printStackTrace();
-			} catch (PipeDisconnectedException pde) {
-				// TODO Auto-generated catch block
-				pde.printStackTrace();
 			} catch (IOException ioe) {
 				// TODO Auto-generated catch block
 				ioe.printStackTrace();
@@ -123,26 +114,22 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	}
 
 	public void packetReceived(MNPPacket packet) {
-		switch (getCDState()) {
-		case LISTENING:
-			if (packet.getType() == MNPPacket.LR) {
-				layer.setState(this, CDState.CONNECT_PENDING);
-			}
-			break;
-		}
-	}
-
-	@Override
-	protected void acceptImpl() throws PlatformException, PipeDisconnectedException, TimeoutException {
-		super.acceptImpl();
 		MNPLinkAcknowledgementPacket ack;
+
 		try {
-			ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
-			packetLayer.send(port.getOutputStream(), ack);
-			MNPPacket packet;
-			do {
-				packet = packetLayer.receive(port.getInputStream());
+			switch (getCDState()) {
+			case LISTENING:
+				if (packet.getType() == MNPPacket.LR) {
+					ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
+					packetLayer.send(port.getOutputStream(), ack);
+					layer.setState(this, CDState.CONNECT_PENDING);
+				}
+				break;
+			case CONNECT_PENDING:
 				if (packet.getType() == MNPPacket.LT) {
+					ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
+					packetLayer.send(getOutput(), ack);
+
 					MNPLinkTransferPacket lt = (MNPLinkTransferPacket) packet;
 					byte[] data = lt.getData();
 					if (!DockCommandFromNewton.isCommand(data)) {
@@ -155,9 +142,21 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 					if (DockCommandSession.NewtonToDesktop.kDRequestToDock.equals(cmd.getCommand())) {
 						layer.setState(this, CDState.CONNECTED);
 					}
-					ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
-					packetLayer.send(getOutput(), ack);
 				}
+				break;
+			}
+		} catch (IOException ioe) {
+			// TODO Auto-generated catch block
+			ioe.printStackTrace();
+		}
+	}
+
+	@Override
+	protected void acceptImpl() throws PlatformException, PipeDisconnectedException, TimeoutException {
+		super.acceptImpl();
+		try {
+			do {
+				packetLayer.listen(port.getInputStream());
 			} while (getCDState() == CDState.CONNECT_PENDING);
 		} catch (IOException ioe) {
 			throw new PipeDisconnectedException(ioe);

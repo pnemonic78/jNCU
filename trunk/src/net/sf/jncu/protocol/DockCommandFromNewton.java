@@ -32,45 +32,38 @@ public abstract class DockCommandFromNewton extends DockCommand {
 	}
 
 	/**
-	 * Is the frame a command frame?
+	 * Is the data a command?
 	 * 
-	 * @param frame
-	 *            the frame data.
+	 * @param data
+	 *            the data.
 	 * @return <tt>true</tt> if frame contains a command - <tt>false</tt>
 	 *         otherwise.
 	 */
-	public static boolean isCommand(byte[] frame) {
-//		if (frame[DockingFrame.INDEX_LENGTH] < DockingFrame.INDEX_COMMAND + kDNewtonDockLength + COMMAND_LENGTH) {
-//			return false;
-//		}
-		int o = DockingFrame.INDEX_COMMAND;
+	public static boolean isCommand(byte[] data) {
+		int o = 0;
 		for (int i = 0; i < kDNewtonDockLength; i++, o++) {
-			if (kDNewtonDockBytes[i] != frame[o]) {
+			if (kDNewtonDockBytes[i] != data[o]) {
 				return false;
 			}
-		}
-		// Null-terminated strings.
-		if (frame[o] != 0) {
-
 		}
 		return true;
 	}
 
 	/**
-	 * Decode the frame.
+	 * Decode the data.
 	 * 
-	 * @param frame
-	 *            the frame data.
+	 * @param data
+	 *            the data.
 	 * @return the command.
 	 * @throws ProtocolException
 	 *             if a protocol error occurs.
 	 */
-	public static DockCommandFromNewton deserialize(byte[] frame) throws ProtocolException {
+	public static DockCommandFromNewton deserialize(byte[] data) throws ProtocolException {
 		byte[] cmdName = new byte[COMMAND_LENGTH];
-		System.arraycopy(frame, DockingFrame.INDEX_COMMAND + kDNewtonDockLength, cmdName, 0, COMMAND_LENGTH);
+		System.arraycopy(data, kDNewtonDockLength, cmdName, 0, COMMAND_LENGTH);
 		DockCommandFactory factory = DockCommandFactory.getInstance();
 		DockCommandFromNewton cmd = (DockCommandFromNewton) factory.create(cmdName);
-		cmd.decode(frame, DockingFrame.INDEX_COMMAND + kDNewtonDockLength + COMMAND_LENGTH);
+		cmd.decode(data, kDNewtonDockLength + COMMAND_LENGTH);
 		return cmd;
 	}
 
