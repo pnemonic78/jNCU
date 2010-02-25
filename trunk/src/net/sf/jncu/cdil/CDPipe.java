@@ -127,6 +127,7 @@ public abstract class CDPipe extends Thread {
 	 */
 	@SuppressWarnings("unused")
 	public void startListening() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
+		layer.checkInitialized();
 		if (getCDState() != CDState.DISCONNECTED) {
 			throw new BadPipeStateException();
 		}

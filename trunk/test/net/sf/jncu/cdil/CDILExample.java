@@ -76,7 +76,7 @@ public class CDILExample {
 			if (layer.getState() == CDState.CONNECT_PENDING) {
 				pipe.accept(); // Accept the connect request
 				// TODO MyFnToGetDataToSend(dataBuffer);
-				pipe.write(dataBuffer);
+				// TODO pipe.write(dataBuffer);
 				// This step is optional. We'd execute it if we wanted to
 				// ensure that there were 100 bytes available before calling
 				// CD_Read, which would otherwise block.
