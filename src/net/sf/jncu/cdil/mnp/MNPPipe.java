@@ -4,7 +4,9 @@ import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
 
+import java.io.EOFException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.TooManyListenersException;
 import java.util.concurrent.TimeoutException;
 
@@ -16,6 +18,8 @@ import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.v2_0.session.DockCommandSession;
 
 /**
  * MNP Serial pipe.
@@ -50,11 +54,29 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 
 	@Override
 	public void run() {
+		try {
+			port = new MNPSerialPort(portId, baud, getTimeout());
+		} catch (PortInUseException piue) {
+			// TODO Auto-generated catch block
+			piue.printStackTrace();
+		} catch (TooManyListenersException tmle) {
+			// TODO Auto-generated catch block
+			tmle.printStackTrace();
+		} catch (UnsupportedCommOperationException ucoe) {
+			// TODO Auto-generated catch block
+			ucoe.printStackTrace();
+		} catch (IOException ioe) {
+			// TODO Auto-generated catch block
+			ioe.printStackTrace();
+		}
 		do {
 			try {
-				port = new MNPSerialPort(portId, baud, getTimeout());
 				do {
-					packetLayer.listen(port.getInputStream());
+					MNPPacket packet = packetLayer.receive(port.getInputStream());
+					if (packet.getType() == MNPPacket.LR) {
+						layer.setState(this, CDState.CONNECT_PENDING);
+					}
+
 				} while (getCDState() != CDState.CONNECT_PENDING);
 			} catch (BadPipeStateException bpse) {
 				bpse.printStackTrace();
@@ -64,15 +86,6 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 			} catch (IOException ioe) {
 				// TODO Auto-generated catch block
 				ioe.printStackTrace();
-			} catch (PortInUseException piue) {
-				// TODO Auto-generated catch block
-				piue.printStackTrace();
-			} catch (TooManyListenersException tmle) {
-				// TODO Auto-generated catch block
-				tmle.printStackTrace();
-			} catch (UnsupportedCommOperationException ucoe) {
-				// TODO Auto-generated catch block
-				ucoe.printStackTrace();
 			}
 		} while (getCDState() != CDState.DISCONNECTED);
 	}
@@ -110,22 +123,67 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	}
 
 	public void packetReceived(MNPPacket packet) {
-		if (getCDState() == CDState.LISTENING) {
+		switch (getCDState()) {
+		case LISTENING:
 			if (packet.getType() == MNPPacket.LR) {
 				layer.setState(this, CDState.CONNECT_PENDING);
 			}
+			break;
 		}
 	}
 
 	@Override
 	protected void acceptImpl() throws PlatformException, PipeDisconnectedException, TimeoutException {
 		super.acceptImpl();
-		MNPLinkAcknowledgementPacket packet = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
+		MNPLinkAcknowledgementPacket la = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
 		try {
-			packetLayer.send(port.getOutputStream(), packet);
+			packetLayer.send(port.getOutputStream(), la);
+			MNPPacket packet;
+			do {
+				packet = packetLayer.receive(port.getInputStream());
+				if (packet.getType() == MNPPacket.LT) {
+					MNPLinkTransferPacket lt = (MNPLinkTransferPacket) packet;
+					byte[] data = lt.getData();
+					if (!DockCommandFromNewton.isCommand(data)) {
+						throw new PipeDisconnectedException();
+					}
+					DockCommandFromNewton cmd = DockCommandFromNewton.deserialize(data);
+					if (cmd == null) {
+						throw new PipeDisconnectedException();
+					}
+					if (DockCommandSession.NewtonToDesktop.kDRequestToDock.equals(cmd.getCommand())) {
+						layer.setState(this, CDState.CONNECTED);
+					}
+				}
+			} while (getCDState() == CDState.CONNECT_PENDING);
 		} catch (IOException ioe) {
-			throw new PipeDisconnectedException();
+			throw new PipeDisconnectedException(ioe);
 		}
+	}
+
+	/**
+	 * Poll the Newton for debugging.
+	 * 
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	private void poll() throws IOException {
+		InputStream in = port.getInputStream();
+		int i = 0;
+		int b;
+		do {
+			b = in.read();
+			if (b == -1) {
+				throw new EOFException();
+			}
+			if ((i & 15) == 0) {
+				System.out.println();
+			} else {
+				System.out.print(' ');
+			}
+			System.out.print("0x" + (b < 0x10 ? "0" : "") + Integer.toHexString(b));
+			i++;
+		} while ((getCDState() == CDState.CONNECTED) && (port != null));
 	}
 
 }
