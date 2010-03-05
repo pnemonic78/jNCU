@@ -29,6 +29,7 @@ public class CommTrace implements SerialPortEventListener {
 
 	private SerialPort port1;
 	private SerialPort port2;
+	private boolean direction1To2 = true;
 
 	/**
 	 * Creates a new trace.
@@ -93,7 +94,6 @@ public class CommTrace implements SerialPortEventListener {
 		}
 	}
 
-	@Override
 	public void serialEvent(SerialPortEvent e) {
 		SerialPort port = (SerialPort) e.getSource();
 		if (e.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
@@ -109,14 +109,18 @@ public class CommTrace implements SerialPortEventListener {
 					directionOneToTwo = false;
 					out = port1.getOutputStream();
 				}
+				if (direction1To2 != directionOneToTwo) {
+					this.direction1To2 = directionOneToTwo;
+					if (directionOneToTwo) {
+						System.out.println(">");
+					} else {
+						System.out.println("<");
+					}
+				}
 
 				int b = in.read();
 				do {
-					if (directionOneToTwo) {
-						System.out.println("> " + toHex(b));
-					} else {
-						System.out.println("<" + toHex(b));
-					}
+					System.out.print(toHex(b) + " ");
 					out.write(b);
 					b = in.read();
 				} while (b != -1);
