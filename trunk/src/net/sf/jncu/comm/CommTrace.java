@@ -1,16 +1,20 @@
 package net.sf.jncu.comm;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.TooManyListenersException;
-
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.TooManyListenersException;
 
 /**
  * Trace serial port traffic.
@@ -30,6 +34,7 @@ public class CommTrace implements SerialPortEventListener {
 	private SerialPort port1;
 	private SerialPort port2;
 	private boolean direction1To2 = true;
+	private PrintStream logOut = System.out;
 
 	/**
 	 * Creates a new trace.
@@ -46,13 +51,16 @@ public class CommTrace implements SerialPortEventListener {
 	 */
 	public static void main(String[] args) {
 		if ((args == null) || (args.length < 2)) {
-			System.out.println("args: port1 port2");
+			System.out.println("args: port1 port2 [file]");
 			System.exit(1);
 			return;
 		}
 
 		CommTrace tracer = new CommTrace();
 		try {
+			if (args.length > 2) {
+				tracer.setOutput(new File(args[2]));
+			}
 			tracer.trace(args[0], args[1]);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -112,15 +120,15 @@ public class CommTrace implements SerialPortEventListener {
 				if (direction1To2 != directionOneToTwo) {
 					this.direction1To2 = directionOneToTwo;
 					if (directionOneToTwo) {
-						System.out.println(">");
+						logOut.println(">");
 					} else {
-						System.out.println("<");
+						logOut.println("<");
 					}
 				}
 
 				int b = in.read();
 				do {
-					System.out.print(toHex(b) + " ");
+					logOut.print(toHex(b) + " ");
 					out.write(b);
 					b = in.read();
 				} while (b != -1);
@@ -136,5 +144,37 @@ public class CommTrace implements SerialPortEventListener {
 		char h0 = HEX.charAt(b & 0x0F);
 		char h1 = HEX.charAt((b >> 4) & 0x0F);
 		return "" + h1 + h0;
+	}
+
+	/**
+	 * Set the trace output.
+	 * 
+	 * @param file
+	 *            the output file.
+	 * @throws FileNotFoundException
+	 *             if file is not found.
+	 */
+	public void setOutput(File file) throws FileNotFoundException {
+		setOutput(new FileOutputStream(file));
+	}
+
+	/**
+	 * Set the trace output.
+	 * 
+	 * @param out
+	 *            the output.
+	 */
+	public void setOutput(OutputStream out) {
+		setOutput(new PrintStream(out));
+	}
+
+	/**
+	 * Set the trace output.
+	 * 
+	 * @param out
+	 *            the output.
+	 */
+	public void setOutput(PrintStream out) {
+		this.logOut = out;
 	}
 }
