@@ -6,6 +6,7 @@ import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
+import gnu.io.UnsupportedCommOperationException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,6 +16,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.TooManyListenersException;
+
+import net.sf.jncu.cdil.mnp.MNPSerialPort;
 
 /**
  * Trace serial port traffic.
@@ -68,13 +71,13 @@ public class CommTrace implements SerialPortEventListener {
 		}
 	}
 
-	public void trace(String portName1, String portName2) throws NoSuchPortException, PortInUseException {
+	public void trace(String portName1, String portName2) throws NoSuchPortException, PortInUseException, UnsupportedCommOperationException {
 		CommPortIdentifier portId1 = CommPortIdentifier.getPortIdentifier(portName1);
 		CommPortIdentifier portId2 = CommPortIdentifier.getPortIdentifier(portName2);
 		trace(portId1, portId2);
 	}
 
-	public void trace(CommPortIdentifier portId1, CommPortIdentifier portId2) throws NoSuchPortException, PortInUseException {
+	public void trace(CommPortIdentifier portId1, CommPortIdentifier portId2) throws NoSuchPortException, PortInUseException, UnsupportedCommOperationException {
 		if (portId1.getPortType() != CommPortIdentifier.PORT_SERIAL) {
 			throw new NoSuchPortException();
 		}
@@ -87,10 +90,14 @@ public class CommTrace implements SerialPortEventListener {
 		trace(port1, port2);
 	}
 
-	public void trace(SerialPort port1, SerialPort port2) throws PortInUseException {
+	public void trace(SerialPort port1, SerialPort port2) throws PortInUseException, UnsupportedCommOperationException {
 		this.port1 = port1;
 		this.port2 = port2;
 
+		int baud = MNPSerialPort.BAUD_38400;// TODO make this a command-line
+		// argument.
+		port1.setSerialPortParams(baud, port1.getDataBits(), port1.getStopBits(), port1.getParity());
+		port2.setSerialPortParams(baud, port2.getDataBits(), port2.getStopBits(), port2.getParity());
 		port1.notifyOnDataAvailable(true);
 		port2.notifyOnDataAvailable(true);
 
@@ -119,6 +126,7 @@ public class CommTrace implements SerialPortEventListener {
 				}
 				if (direction1To2 != directionOneToTwo) {
 					this.direction1To2 = directionOneToTwo;
+					logOut.println();
 					if (directionOneToTwo) {
 						logOut.println(">");
 					} else {
