@@ -61,6 +61,7 @@ public class CDLayer {
 		initCTB();
 		initMNP();
 		initTCP();
+		setState(CDState.DISCONNECTED);
 	}
 
 	/**
