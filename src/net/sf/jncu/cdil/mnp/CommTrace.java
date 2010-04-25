@@ -152,8 +152,8 @@ public class CommTrace implements SerialPortEventListener {
 
 				int b = in.read();
 				do {
-					logOut.print(HEX.charAt(b & 0x0F));
 					logOut.print(HEX.charAt((b >> 4) & 0x0F));
+					logOut.print(HEX.charAt(b & 0x0F));
 					logOut.print(' ');
 					out.write(b);
 					b = in.read();
