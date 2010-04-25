@@ -17,7 +17,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.TooManyListenersException;
 
-
 /**
  * Trace serial port traffic.
  * <p>
@@ -50,6 +49,10 @@ import java.util.TooManyListenersException;
  */
 public class CommTrace implements SerialPortEventListener {
 
+	public static final char CHAR_DIRECTION_1TO2 = '>';
+	public static final char CHAR_DIRECTION_2TO1 = '<';
+	private static final String HEX = "0123456789ABCDEF";
+
 	private SerialPort port1;
 	private SerialPort port2;
 	private boolean direction1To2 = true;
@@ -66,7 +69,7 @@ public class CommTrace implements SerialPortEventListener {
 	 * Main method.
 	 * 
 	 * @param args
-	 *            the array of arguments.
+	 *          the array of arguments.
 	 */
 	public static void main(String[] args) {
 		if ((args == null) || (args.length < 2)) {
@@ -129,6 +132,7 @@ public class CommTrace implements SerialPortEventListener {
 		SerialPort port = (SerialPort) e.getSource();
 		if (e.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			boolean directionOneToTwo = false;
+
 			try {
 				InputStream in = port.getInputStream();
 				OutputStream out = null;
@@ -143,16 +147,14 @@ public class CommTrace implements SerialPortEventListener {
 				if (direction1To2 != directionOneToTwo) {
 					this.direction1To2 = directionOneToTwo;
 					logOut.println();
-					if (directionOneToTwo) {
-						logOut.println(">");
-					} else {
-						logOut.println("<");
-					}
+					logOut.println(directionOneToTwo ? CHAR_DIRECTION_1TO2 : CHAR_DIRECTION_2TO1);
 				}
 
 				int b = in.read();
 				do {
-					logOut.print(toHex(b) + " ");
+					logOut.print(HEX.charAt(b & 0x0F));
+					logOut.print(HEX.charAt((b >> 4) & 0x0F));
+					logOut.print(' ');
 					out.write(b);
 					b = in.read();
 				} while (b != -1);
@@ -162,21 +164,13 @@ public class CommTrace implements SerialPortEventListener {
 		}
 	}
 
-	private static final String HEX = "0123456789ABCDEF";
-
-	private String toHex(int b) {
-		char h0 = HEX.charAt(b & 0x0F);
-		char h1 = HEX.charAt((b >> 4) & 0x0F);
-		return "" + h1 + h0;
-	}
-
 	/**
 	 * Set the trace output.
 	 * 
 	 * @param file
-	 *            the output file.
+	 *          the output file.
 	 * @throws FileNotFoundException
-	 *             if file is not found.
+	 *           if file is not found.
 	 */
 	public void setOutput(File file) throws FileNotFoundException {
 		setOutput(new FileOutputStream(file));
@@ -186,7 +180,7 @@ public class CommTrace implements SerialPortEventListener {
 	 * Set the trace output.
 	 * 
 	 * @param out
-	 *            the output.
+	 *          the output.
 	 */
 	public void setOutput(OutputStream out) {
 		setOutput(new PrintStream(out));
@@ -196,7 +190,7 @@ public class CommTrace implements SerialPortEventListener {
 	 * Set the trace output.
 	 * 
 	 * @param out
-	 *            the output.
+	 *          the output.
 	 */
 	public void setOutput(PrintStream out) {
 		this.logOut = out;
