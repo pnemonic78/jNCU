@@ -55,8 +55,8 @@ public class CommTrace implements SerialPortEventListener {
 
 	private SerialPort port1;
 	private SerialPort port2;
-	private boolean direction1To2 = true;
 	private PrintStream logOut = System.out;
+	private int logWidth = 0;
 
 	/**
 	 * Creates a new trace.
@@ -131,30 +131,32 @@ public class CommTrace implements SerialPortEventListener {
 	public void serialEvent(SerialPortEvent e) {
 		SerialPort port = (SerialPort) e.getSource();
 		if (e.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-			boolean directionOneToTwo = false;
+			char direction;
 
 			try {
 				InputStream in = port.getInputStream();
 				OutputStream out = null;
 
 				if (port == port1) {
-					directionOneToTwo = true;
+					direction = CHAR_DIRECTION_1TO2;
 					out = port2.getOutputStream();
 				} else {
-					directionOneToTwo = false;
+					direction = CHAR_DIRECTION_2TO1;
 					out = port1.getOutputStream();
-				}
-				if (direction1To2 != directionOneToTwo) {
-					this.direction1To2 = directionOneToTwo;
-					logOut.println();
-					logOut.println(directionOneToTwo ? CHAR_DIRECTION_1TO2 : CHAR_DIRECTION_2TO1);
 				}
 
 				int b = in.read();
 				do {
-					logOut.print(HEX.charAt((b >> 4) & 0x0F));
-					logOut.print(HEX.charAt(b & 0x0F));
-					logOut.print(' ');
+					synchronized (logOut) {
+						logOut.print(direction);
+						logOut.print(HEX.charAt((b >> 4) & 0x0F));
+						logOut.print(HEX.charAt(b & 0x0F));
+						logWidth++;
+						if (logWidth == 16) {
+							logOut.println();
+							logWidth = 0;
+						}
+					}
 					out.write(b);
 					b = in.read();
 				} while (b != -1);
