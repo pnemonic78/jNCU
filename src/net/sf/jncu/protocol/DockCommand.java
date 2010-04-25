@@ -17,7 +17,6 @@ public abstract class DockCommand {
 	protected static final byte[] kDNewtonDockBytes = DockCommandSession.kDNewtonDock.getBytes();
 	protected static final int kDNewtonDockLength = kDNewtonDockBytes.length;
 
-	protected final DockingFrame frame = new DockingFrame();
 	protected final String cmd;
 	protected final byte[] cmdBytes;
 	private int length;

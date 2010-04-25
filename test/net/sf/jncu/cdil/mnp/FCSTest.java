@@ -1,4 +1,4 @@
-package net.sf.jncu.protocol;
+package net.sf.jncu.cdil.mnp;
 
 import net.sf.junit.SFTestCase;
 import net.sf.util.zip.CRC16;
@@ -15,11 +15,11 @@ public class FCSTest extends SFTestCase {
 		int fcsWord = 0xBFB9;
 		int dataLength = 41;
 		int fcsLength = 2;
-		assertEquals(DockingFrame.DELIMITER_PREAMBLE.length + dataLength + DockingFrame.DELIMITER_TAIL.length + fcsLength, frame.length);
+		assertEquals(MNPPacketLayer.PACKET_HEAD.length + dataLength + MNPPacketLayer.PACKET_TAIL.length + fcsLength, frame.length);
 
 		CRC16 fcs = new CRC16();
-		fcs.update(frame, DockingFrame.DELIMITER_PREAMBLE.length, dataLength);
-		fcs.update(DockingFrame.DELIMITER_TAIL[1]);
+		fcs.update(frame, MNPPacketLayer.PACKET_HEAD.length, dataLength);
+		fcs.update(MNPPacketLayer.PACKET_TAIL[1]);
 		assertEquals(fcsWord, fcs.getValue());
 	}
 }

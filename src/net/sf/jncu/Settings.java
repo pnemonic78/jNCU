@@ -7,8 +7,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import net.sf.jncu.cdil.mnp.CommPorts;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
-import net.sf.jncu.comm.CommPorts;
 
 /**
  * Settings.

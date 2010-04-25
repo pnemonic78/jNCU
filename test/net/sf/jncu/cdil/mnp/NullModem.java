@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.sf.jncu.protocol;
+package net.sf.jncu.cdil.mnp;
 
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
@@ -12,8 +12,8 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Iterator;
 
+import net.sf.jncu.cdil.mnp.CommPorts;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
-import net.sf.jncu.comm.CommPorts;
 
 /**
  * Use Virtual COM ports for testing. COM2 attaches to NCU. COM3 attaches to

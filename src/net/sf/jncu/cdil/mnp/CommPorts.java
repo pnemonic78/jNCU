@@ -1,4 +1,4 @@
-package net.sf.jncu.comm;
+package net.sf.jncu.cdil.mnp;
 
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;

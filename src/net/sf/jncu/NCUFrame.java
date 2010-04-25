@@ -43,8 +43,7 @@ public class NCUFrame extends JFrame {
 	private NCUSettings settingsDialog = null;
 	private Settings settings = null;
 	private JPanel panelStatus = null;
-	private JLabel labelStatus = null;
-	private final NCUComm comm = new NCUComm(); // @jve:decl-index=0:
+	private JLabel labelStatus = null; // @jve:decl-index=0:
 
 	/**
 	 * This method initializes mainMenu
@@ -140,16 +139,15 @@ public class NCUFrame extends JFrame {
 			menuSettings = new JMenuItem();
 			menuSettings.setMnemonic(KeyEvent.VK_S);
 			menuSettings.setText("Settings...");
-			menuSettings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-					InputEvent.CTRL_MASK));
+			menuSettings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
 			menuSettings.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					Settings settings = getSettings();
-					comm.stopListenForNewton();
+					// comm.stopListenForNewton();
 					getSettingsDialog().setVisible(true);
 					if (settings.isListen()) {
-						comm.startListenForNewton(settings.getPortIdentifier(),
-								settings.getPortSpeed());
+						// comm.startListenForNewton(settings.getPortIdentifier(),
+						// settings.getPortSpeed());
 					}
 				}
 			});
@@ -241,8 +239,7 @@ public class NCUFrame extends JFrame {
 			labelStatus = new JLabel();
 			labelStatus.setText("For help, press F1");
 			panelStatus = new JPanel();
-			panelStatus.setLayout(new BoxLayout(getPanelStatus(),
-					BoxLayout.X_AXIS));
+			panelStatus.setLayout(new BoxLayout(getPanelStatus(), BoxLayout.X_AXIS));
 			panelStatus.setPreferredSize(new Dimension(0, 24));
 			panelStatus.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
 			panelStatus.add(labelStatus, null);
@@ -290,8 +287,7 @@ public class NCUFrame extends JFrame {
 		this.setTitle("jNewton Connection Utility");
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		Dimension screenSize = toolkit.getScreenSize();
-		this.setLocation((screenSize.width - this.getWidth()) >> 1,
-				(screenSize.height - this.getHeight()) >> 1);
+		this.setLocation((screenSize.width - this.getWidth()) >> 1, (screenSize.height - this.getHeight()) >> 1);
 	}
 
 	/**
@@ -324,7 +320,7 @@ public class NCUFrame extends JFrame {
 	}
 
 	public void close() {
-		comm.stopListenForNewton();
+		// comm.stopListenForNewton();
 		dispatchEvent(new WindowEvent(jFrame, WindowEvent.WINDOW_CLOSING));
 	}
 }
