@@ -61,9 +61,10 @@ public class CDILExample {
 			CDPipe pipe;
 			byte[] dataBuffer = new byte[256];
 			int count;
-			layer.startUp(); // Initialize the library
-			pipe = layer.createMNPSerial(0, MNPSerialPort.BAUD_38400); // Create
-			// a connection object
+			// Initialize the library
+			layer.startUp();
+			// Create a connection object
+			pipe = layer.createMNPSerial(0, MNPSerialPort.BAUD_38400);
 			pipe.startListening(); // Have that object listen for a
 			// connection from a Newton device
 			while (layer.getState() == CDState.LISTENING) // Wait for a connect
@@ -86,7 +87,8 @@ public class CDILExample {
 					// You could check for clicks on menus or buttons, or call
 					// WaitNextEvent here.
 				} while (count < 100);
-				pipe.getInput().read(dataBuffer, 0, 100); // Assumes we expect 100
+				pipe.getInput().read(dataBuffer, 0, 100); // Assumes we expect
+				// 100
 				// bytes back
 				pipe.disconnect(); // Break the connection.
 			}

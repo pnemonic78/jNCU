@@ -22,6 +22,9 @@ public class MNPLinkAcknowledgementPacket extends MNPPacket {
 	public int deserialize(byte[] payload) {
 		int offset = super.deserialize(payload);
 
+		if (getHeaderLength() != 3) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
 		setSequence(payload[offset++]);
 		setCredit(payload[offset++]);
 		byte[] data = new byte[payload.length - offset];

@@ -1,4 +1,4 @@
-package net.sf.jncu.comm;
+package net.sf.jncu.cdil.mnp;
 
 import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
@@ -13,8 +13,6 @@ import java.util.TooManyListenersException;
 
 import net.sf.jncu.NCUComm;
 import net.sf.jncu.cdil.CDState;
-import net.sf.jncu.cdil.mnp.MNPPacket;
-import net.sf.jncu.cdil.mnp.MNPSerialPort;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockingFrame;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
@@ -26,6 +24,7 @@ import net.sf.jncu.protocol.v2_0.session.DockCommandSession;
  * 
  * @author moshew
  */
+@Deprecated
 public class NCUSerialPortEngine extends Thread {
 
 	private static final String ERROR_PORT_USED = "Port in use";

@@ -4,9 +4,9 @@ import gnu.io.CommPortIdentifier;
 
 import java.util.List;
 
+import net.sf.jncu.cdil.mnp.CommPorts;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
-import net.sf.jncu.comm.CommPorts;
-import net.sf.jncu.comm.NCUSerialPortEngine;
+import net.sf.jncu.cdil.mnp.NCUSerialPortEngine;
 
 /**
  * Communications helper.
@@ -30,6 +30,7 @@ import net.sf.jncu.comm.NCUSerialPortEngine;
  * 
  * @author moshew
  */
+@Deprecated
 public class NCUComm {
 
 	private NCUSerialPortEngine talk;

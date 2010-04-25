@@ -9,7 +9,7 @@ import java.net.ProtocolException;
 import java.nio.ByteBuffer;
 
 import net.sf.jncu.cdil.mnp.MNPPacket;
-import net.sf.lang.ControlCharacter;
+import net.sf.jncu.cdil.mnp.MNPPacketLayer;
 import net.sf.util.zip.CRC16;
 
 /**
@@ -20,14 +20,15 @@ import net.sf.util.zip.CRC16;
  * 
  * @author moshew
  */
+@Deprecated
 public class DockingFrame {
 
 	/** Frame escape character. */
-	public static final byte DELIMITER_ESCAPE = ControlCharacter.DLE;
+	public static final byte DELIMITER_ESCAPE = MNPPacketLayer.DELIMITER_ESCAPE;
 	/** Frame-starting delimiter. */
-	public static final byte[] DELIMITER_PREAMBLE = { ControlCharacter.SYN, DELIMITER_ESCAPE, ControlCharacter.STX };
+	public static final byte[] DELIMITER_PREAMBLE = MNPPacketLayer.PACKET_HEAD;
 	/** Frame-ending delimiter. */
-	public static final byte[] DELIMITER_TAIL = { DELIMITER_ESCAPE, ControlCharacter.ETX };
+	public static final byte[] DELIMITER_TAIL = MNPPacketLayer.PACKET_TAIL;
 
 	/** Receive error message. */
 	private static final String ERROR_RECEIVE = "Error in reading from Newton device!";
