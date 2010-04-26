@@ -33,7 +33,7 @@ public class TraceDecode {
 	 * Main method.
 	 * 
 	 * @param args
-	 *          the array of arguments.
+	 *            the array of arguments.
 	 */
 	public static void main(String[] args) {
 		File f;
@@ -64,7 +64,7 @@ public class TraceDecode {
 	}
 
 	public void parse(Reader reader) throws IOException {
-		PipedInputStream in1To2 = new PipedInputStream(2);
+		PipedInputStream in1To2 = new PipedInputStream(1);
 		PipedInputStream in2To1 = new PipedInputStream(1);
 		PipedOutputStream buf1To2 = new PipedOutputStream(in1To2);
 		PipedOutputStream buf2To1 = new PipedOutputStream(in2To1);
@@ -78,16 +78,16 @@ public class TraceDecode {
 		char c;
 		int hex;
 		int value;
-		char direction1To2 = DIRECTION_1TO2;
+		char direction = DIRECTION_1TO2;
 		int b = reader.read();
 
 		while (b != -1) {
 			c = (char) b;
 
 			if (c == CommTrace.CHAR_DIRECTION_1TO2) {
-				direction1To2 = DIRECTION_1TO2;
+				direction = DIRECTION_1TO2;
 			} else if (c == CommTrace.CHAR_DIRECTION_2TO1) {
-				direction1To2 = DIRECTION_2TO1;
+				direction = DIRECTION_2TO1;
 			} else if (Character.isLetterOrDigit(c)) {
 				hex = HEX.indexOf(c);
 				value = hex;
@@ -95,18 +95,18 @@ public class TraceDecode {
 				c = (char) b;
 				hex = HEX.indexOf(c);
 				value = (value << 4) | hex;
-				if (direction1To2 == DIRECTION_1TO2) {
+				if (direction == DIRECTION_1TO2) {
 					buf1To2.write(value);
-				} else if (direction1To2 == DIRECTION_2TO1) {
+					buf1To2.flush();
+				} else if (direction == DIRECTION_2TO1) {
 					buf2To1.write(value);
+					buf2To1.flush();
 				}
 			}
 
 			b = reader.read();
 		}
 
-		buf1To2.flush();
-		buf2To1.flush();
 		buf1To2.close();
 		buf2To1.close();
 		pp1.cancel();
@@ -174,13 +174,13 @@ public class TraceDecode {
 		}
 
 		private void processLD(char direction, MNPLinkDisconnectPacket packet) {
-			System.out.println(direction + " type:(LD)" + packet.getType() + " trans:" + packet.getTransmitted() + " reason:" + packet.getReasonCode() + " user:"
-					+ packet.getUserCode());
+			System.out.println(direction + " type:(LD)" + packet.getType() + " trans:" + packet.getTransmitted() + " reason:" + packet.getReasonCode()
+					+ " user:" + packet.getUserCode());
 		}
 
 		private void processLR(char direction, MNPLinkRequestPacket packet) {
-			System.out.println(direction + " type:(LR)" + packet.getType() + " trans:" + packet.getTransmitted() + " dpo:" + packet.getDataPhaseOpt() + " framing:"
-					+ packet.getFramingMode() + " info:" + packet.getMaxInfoLength() + " outstanding:" + packet.getMaxOutstanding());
+			System.out.println(direction + " type:(LR)" + packet.getType() + " trans:" + packet.getTransmitted() + " dpo:" + packet.getDataPhaseOpt()
+					+ " framing:" + packet.getFramingMode() + " info:" + packet.getMaxInfoLength() + " outstanding:" + packet.getMaxOutstanding());
 		}
 
 		private void processLT(char direction, MNPLinkTransferPacket packet) {
