@@ -1,11 +1,13 @@
 package net.sf.jncu.cdil.mnp;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.io.Reader;
 
 /**
@@ -15,8 +17,8 @@ import java.io.Reader;
  */
 public class TraceDecode {
 
-	private static final char CHAR_DIRECTION_1TO2 = CommTrace.CHAR_DIRECTION_1TO2;
-	private static final char CHAR_DIRECTION_2TO1 = CommTrace.CHAR_DIRECTION_2TO1;
+	private static final char DIRECTION_1TO2 = CommTrace.CHAR_DIRECTION_1TO2;
+	private static final char DIRECTION_2TO1 = CommTrace.CHAR_DIRECTION_2TO1;
 	private static final String HEX = "0123456789ABCDEF";
 	private final MNPPacketLayer layer = new MNPPacketLayer();
 
@@ -62,24 +64,30 @@ public class TraceDecode {
 	}
 
 	public void parse(Reader reader) throws IOException {
-		int b;
+		PipedInputStream in1To2 = new PipedInputStream(2);
+		PipedInputStream in2To1 = new PipedInputStream(1);
+		PipedOutputStream buf1To2 = new PipedOutputStream(in1To2);
+		PipedOutputStream buf2To1 = new PipedOutputStream(in2To1);
+
+		ProcessPayload pp1 = new ProcessPayload(DIRECTION_1TO2, in1To2);
+		ProcessPayload pp2 = new ProcessPayload(DIRECTION_2TO1, in2To1);
+
+		pp1.start();
+		pp2.start();
+
 		char c;
 		int hex;
 		int value;
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		byte[] payload;
-		char direction1To2 = CHAR_DIRECTION_1TO2;
-		char direction = direction1To2;
+		char direction1To2 = DIRECTION_1TO2;
+		int b = reader.read();
 
-		b = reader.read();
 		while (b != -1) {
 			c = (char) b;
-			value = 0;
 
-			if (c == CHAR_DIRECTION_1TO2) {
-				direction1To2 = CHAR_DIRECTION_1TO2;
-			} else if (c == CHAR_DIRECTION_2TO1) {
-				direction1To2 = CHAR_DIRECTION_2TO1;
+			if (c == CommTrace.CHAR_DIRECTION_1TO2) {
+				direction1To2 = DIRECTION_1TO2;
+			} else if (c == CommTrace.CHAR_DIRECTION_2TO1) {
+				direction1To2 = DIRECTION_2TO1;
 			} else if (Character.isLetterOrDigit(c)) {
 				hex = HEX.indexOf(c);
 				value = hex;
@@ -87,75 +95,102 @@ public class TraceDecode {
 				c = (char) b;
 				hex = HEX.indexOf(c);
 				value = (value << 4) | hex;
-				out.write(value);
-			}
-
-			if (direction != direction1To2) {
-				out.close();
-				payload = out.toByteArray();
-				processPayload(direction, payload);
-				out = new ByteArrayOutputStream();
-				direction = direction1To2;
+				if (direction1To2 == DIRECTION_1TO2) {
+					buf1To2.write(value);
+				} else if (direction1To2 == DIRECTION_2TO1) {
+					buf2To1.write(value);
+				}
 			}
 
 			b = reader.read();
 		}
 
-		out.close();
-		payload = out.toByteArray();
-		processPayload(direction, payload);
+		buf1To2.flush();
+		buf2To1.flush();
+		buf1To2.close();
+		buf2To1.close();
+		pp1.cancel();
+		pp2.cancel();
 	}
 
-	private void processPayload(char direction, byte[] payload) throws IOException {
-		if ((payload == null) || (payload.length == 0)) {
-			return;
+	private class ProcessPayload extends Thread {
+
+		private boolean running = false;
+		private final char direction;
+		private final InputStream in;
+
+		public ProcessPayload(char direction, InputStream in) {
+			super();
+			this.direction = direction;
+			this.in = in;
 		}
-		processPayload(direction, new ByteArrayInputStream(payload));
-	}
 
-	private void processPayload(char direction, InputStream in) throws IOException {
-		if (in.available() == 0) {
-			return;
+		@Override
+		public void run() {
+			running = true;
+			try {
+				processPayload(direction, in);
+				do {
+					yield();
+				} while (running);
+			} catch (EOFException eof) {
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
 		}
-		MNPPacket packet;
-		while (in.available() > 0) {
-			packet = layer.receive(in);
-			processPacket(direction, packet);
+
+		private void processPayload(char direction, byte[] payload) throws IOException {
+			if ((payload == null) || (payload.length == 0)) {
+				return;
+			}
+			processPayload(direction, new ByteArrayInputStream(payload));
 		}
-	}
 
-	private void processPacket(char direction, MNPPacket packet) {
-		if (packet instanceof MNPLinkAcknowledgementPacket) {
-			processLA(direction, (MNPLinkAcknowledgementPacket) packet);
-		} else if (packet instanceof MNPLinkDisconnectPacket) {
-			processLD(direction, (MNPLinkDisconnectPacket) packet);
-		} else if (packet instanceof MNPLinkRequestPacket) {
-			processLR(direction, (MNPLinkRequestPacket) packet);
-		} else if (packet instanceof MNPLinkTransferPacket) {
-			processLT(direction, (MNPLinkTransferPacket) packet);
-		} else {
-			throw new ClassCastException();
+		private void processPayload(char direction, InputStream in) throws IOException {
+			MNPPacket packet;
+			do {
+				packet = layer.receive(in);
+				processPacket(direction, packet);
+			} while (packet != null);
 		}
-	}
 
-	private void processLA(char direction, MNPLinkAcknowledgementPacket packet) {
-		System.out.println(direction + " type:(LA)" + packet.getType() + " trans:" + packet.getTransmitted() + " credit:" + packet.getCredit() + " seq:"
-				+ packet.getSequence());
-	}
+		private void processPacket(char direction, MNPPacket packet) {
+			if (packet instanceof MNPLinkAcknowledgementPacket) {
+				processLA(direction, (MNPLinkAcknowledgementPacket) packet);
+			} else if (packet instanceof MNPLinkDisconnectPacket) {
+				processLD(direction, (MNPLinkDisconnectPacket) packet);
+			} else if (packet instanceof MNPLinkRequestPacket) {
+				processLR(direction, (MNPLinkRequestPacket) packet);
+			} else if (packet instanceof MNPLinkTransferPacket) {
+				processLT(direction, (MNPLinkTransferPacket) packet);
+			} else {
+				throw new ClassCastException();
+			}
+		}
 
-	private void processLD(char direction, MNPLinkDisconnectPacket packet) {
-		System.out.println(direction + " type:(LD)" + packet.getType() + " trans:" + packet.getTransmitted() + " reason:" + packet.getReasonCode()
-				+ " user:" + packet.getUserCode());
-	}
+		private void processLA(char direction, MNPLinkAcknowledgementPacket packet) {
+			System.out.println(direction + " type:(LA)" + packet.getType() + " trans:" + packet.getTransmitted() + " credit:" + packet.getCredit() + " seq:"
+					+ packet.getSequence());
+		}
 
-	private void processLR(char direction, MNPLinkRequestPacket packet) {
-		System.out.println(direction + " type:(LR)" + packet.getType() + " trans:" + packet.getTransmitted() + " dpo:" + packet.getDataPhaseOpt()
-				+ " framing:" + packet.getFramingMode() + " info:" + packet.getMaxInfoLength() + " outstanding:" + packet.getMaxOutstanding());
-	}
+		private void processLD(char direction, MNPLinkDisconnectPacket packet) {
+			System.out.println(direction + " type:(LD)" + packet.getType() + " trans:" + packet.getTransmitted() + " reason:" + packet.getReasonCode() + " user:"
+					+ packet.getUserCode());
+		}
 
-	private void processLT(char direction, MNPLinkTransferPacket packet) {
-		System.out.println(direction + " type:(LT)" + packet.getType() + " trans:" + packet.getTransmitted() + " seq:" + packet.getSequence() + " data:"
-				+ packet.getData());
-	}
+		private void processLR(char direction, MNPLinkRequestPacket packet) {
+			System.out.println(direction + " type:(LR)" + packet.getType() + " trans:" + packet.getTransmitted() + " dpo:" + packet.getDataPhaseOpt() + " framing:"
+					+ packet.getFramingMode() + " info:" + packet.getMaxInfoLength() + " outstanding:" + packet.getMaxOutstanding());
+		}
 
+		private void processLT(char direction, MNPLinkTransferPacket packet) {
+			System.out.println(direction + " type:(LT)" + packet.getType() + " trans:" + packet.getTransmitted() + " seq:" + packet.getSequence() + " data:"
+					+ packet.getData());
+		}
+
+		public void cancel() {
+			running = false;
+		}
+
+	}
 }
