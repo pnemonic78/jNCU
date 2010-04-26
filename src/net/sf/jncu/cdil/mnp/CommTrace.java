@@ -57,6 +57,7 @@ public class CommTrace implements SerialPortEventListener {
 	private SerialPort port2;
 	private PrintStream logOut = System.out;
 	private int logWidth = 0;
+	private int baud = MNPSerialPort.BAUD_38400;
 
 	/**
 	 * Creates a new trace.
@@ -73,7 +74,7 @@ public class CommTrace implements SerialPortEventListener {
 	 */
 	public static void main(String[] args) {
 		if ((args == null) || (args.length < 2)) {
-			System.out.println("args: port1 port2 [file]");
+			System.out.println("args: port1 port2 baud [file]");
 			System.exit(1);
 			return;
 		}
@@ -81,7 +82,10 @@ public class CommTrace implements SerialPortEventListener {
 		CommTrace tracer = new CommTrace();
 		try {
 			if (args.length > 2) {
-				tracer.setOutput(new File(args[2]));
+				tracer.setBaud(Integer.parseInt(args[2]));
+				if (args.length > 3) {
+					tracer.setOutput(new File(args[3]));
+				}
 			}
 			tracer.trace(args[0], args[1]);
 		} catch (Exception e) {
@@ -113,8 +117,6 @@ public class CommTrace implements SerialPortEventListener {
 		this.port1 = port1;
 		this.port2 = port2;
 
-		int baud = MNPSerialPort.BAUD_38400;// TODO make this a command-line
-		// argument.
 		port1.setSerialPortParams(baud, port1.getDataBits(), port1.getStopBits(), port1.getParity());
 		port2.setSerialPortParams(baud, port2.getDataBits(), port2.getStopBits(), port2.getParity());
 		port1.notifyOnDataAvailable(true);
@@ -152,7 +154,7 @@ public class CommTrace implements SerialPortEventListener {
 						logOut.print(HEX.charAt((b >> 4) & 0x0F));
 						logOut.print(HEX.charAt(b & 0x0F));
 						logWidth++;
-						if (logWidth == 16) {
+						if (logWidth >= 32) {
 							logOut.println();
 							logWidth = 0;
 						}
@@ -196,5 +198,15 @@ public class CommTrace implements SerialPortEventListener {
 	 */
 	public void setOutput(PrintStream out) {
 		this.logOut = out;
+	}
+
+	/**
+	 * Set the baud rate.
+	 * 
+	 * @param baud
+	 *          the baude rate.
+	 */
+	public void setBaud(int baud) {
+		this.baud = baud;
 	}
 }
