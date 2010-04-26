@@ -54,13 +54,15 @@ public class MNPPacketFactory {
 	}
 
 	/**
-	 * Create a MNP link packet.
+	 * Create a MNP link packet, and decode.
 	 * 
 	 * @param payload
 	 *            the payload.
 	 * @return the packet.
 	 */
 	public MNPPacket createLinkPacket(byte[] payload) {
-		return createLinkPacket(payload[1]);
+		MNPPacket packet = createLinkPacket(payload[1]);
+		packet.deserialize(payload);
+		return packet;
 	}
 }
