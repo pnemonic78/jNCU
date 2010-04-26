@@ -177,9 +177,7 @@ public class MNPPacketLayer {
 	 */
 	public MNPPacket receive(InputStream in) throws IOException {
 		byte[] payload = read(in);
-		MNPPacket packet = MNPPacketFactory.getInstance().createLinkPacket(payload);
-		packet.deserialize(payload);
-		return packet;
+		return MNPPacketFactory.getInstance().createLinkPacket(payload);
 	}
 
 	/**
