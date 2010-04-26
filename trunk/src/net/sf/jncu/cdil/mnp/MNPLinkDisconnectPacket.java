@@ -7,6 +7,9 @@ package net.sf.jncu.cdil.mnp;
  */
 public class MNPLinkDisconnectPacket extends MNPPacket {
 
+	private static final int REASON_CODE = 0x01;
+	private static final int USER_CODE = 0x02;
+
 	private byte reasonCode;
 	private byte userCode;
 
@@ -35,9 +38,9 @@ public class MNPLinkDisconnectPacket extends MNPPacket {
 	@Override
 	public byte[] serialize() {
 		if (userCode == 0) {
-			return new byte[] { 0x05, LD, 0x00, 0x00, reasonCode };
+			return new byte[] { 0x05, LD, REASON_CODE, 0x01, reasonCode };
 		}
-		return new byte[] { 0x07, LD, 0x00, 0x00, reasonCode, 0x00, 0x00, userCode };
+		return new byte[] { 0x07, LD, REASON_CODE, 0x01, reasonCode, USER_CODE, 0x01, userCode };
 	}
 
 	/**

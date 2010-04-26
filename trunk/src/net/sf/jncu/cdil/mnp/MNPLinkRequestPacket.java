@@ -7,6 +7,11 @@ package net.sf.jncu.cdil.mnp;
  */
 public class MNPLinkRequestPacket extends MNPPacket {
 
+	private static final int FRAMING_MODE = 0x02;
+	private static final int MAX_OUTSTANDING = 0x03;
+	private static final int MAX_INFO_LENGTH = 0x04;
+	private static final int DATA_PHASE_OPT = 0x08;
+
 	private byte framingMode = 0x02;
 	private byte maxOutstanding = 0x08;
 	private short maxInfoLength = 0x0040;
@@ -24,29 +29,44 @@ public class MNPLinkRequestPacket extends MNPPacket {
 		int offset = super.deserialize(payload);
 
 		// remove fixed fields
-		offset += 9;
+		offset++;
 
-		offset += 2;
-		setFramingMode(payload[offset++]);
+		int type;
+		int length;
+		while (offset < payload.length) {
+			type = payload[offset++];
+			length = payload[offset++];
 
-		offset += 2;
-		setMaxOutstanding(payload[offset++]);
+			switch (type) {
+			case FRAMING_MODE:
+				setFramingMode(payload[offset]);
+				break;
+			case MAX_OUTSTANDING:
+				setMaxOutstanding(payload[offset]);
+				break;
+			case MAX_INFO_LENGTH:
+				int maxInfoLength = payload[offset] & 0xFF;
+				if (length > 1) {
+					maxInfoLength = ((payload[offset + 1] & 0xFF) << 8) | maxInfoLength;
+				}
+				setMaxInfoLength((short) maxInfoLength);
+				break;
+			case DATA_PHASE_OPT:
+				setDataPhaseOpt(payload[offset]);
+				break;
+			}
 
-		offset += 2;
-		int maxInfoLength = payload[offset++] & 0xFF;
-		maxInfoLength = ((payload[offset++] & 0xFF) << 8) | maxInfoLength;
-		setMaxInfoLength((short) maxInfoLength);
-
-		offset += 2;
-		setDataPhaseOpt(payload[offset++]);
+			offset += length;
+		}
 
 		return offset;
 	}
 
 	@Override
 	public byte[] serialize() {
-		byte[] payload = new byte[] { 0x17, LR, 0x02, 0x01, 0x06, 0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0xFF, 0x02, 0x01, framingMode, 0x03, 0x01,
-				maxOutstanding, 0x04, 0x02, (byte) (maxInfoLength & 0xFF), (byte) ((maxInfoLength >> 8) & 0xFF), 0x08, 0x01, dataPhaseOpt };
+		byte[] payload = new byte[] { 0x17, LR, 0x02, 0x01, 0x06, 0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0xFF, FRAMING_MODE, 0x01, framingMode, MAX_OUTSTANDING,
+				0x01, maxOutstanding, MAX_INFO_LENGTH, 0x02, (byte) (maxInfoLength & 0xFF), (byte) ((maxInfoLength >> 8) & 0xFF), DATA_PHASE_OPT, 0x01,
+				dataPhaseOpt };
 		return payload;
 	}
 
