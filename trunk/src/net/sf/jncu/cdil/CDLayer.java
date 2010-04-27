@@ -272,19 +272,19 @@ public class CDLayer {
 	/**
 	 * Initialise ADSP.
 	 */
-	protected void initADSP() {
+	protected void initADSP() throws PlatformException {
 	}
 
 	/**
 	 * Initialise CTB.
 	 */
-	protected void initCTB() {
+	protected void initCTB() throws PlatformException {
 	}
 
 	/**
 	 * Initialise MNP.
 	 */
-	protected void initMNP() {
+	protected void initMNP() throws PlatformException {
 		serialPorts = new ArrayList<CommPortIdentifier>();
 		CommPorts commPorts = new CommPorts();
 		try {
@@ -297,7 +297,7 @@ public class CDLayer {
 	/**
 	 * Initialise TCP.
 	 */
-	protected void initTCP() {
+	protected void initTCP() throws PlatformException {
 	}
 
 	/**

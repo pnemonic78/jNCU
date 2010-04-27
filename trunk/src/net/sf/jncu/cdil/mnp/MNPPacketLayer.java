@@ -238,6 +238,10 @@ public class MNPPacketLayer {
 	 *             if an I/O error occurs.
 	 */
 	public void listen(InputStream in) throws IOException {
-		firePacketReceived(receive(in));
+		MNPPacket packet = receive(in);
+		while (packet != null) {
+			firePacketReceived(packet);
+			packet = receive(in);
+		}
 	}
 }

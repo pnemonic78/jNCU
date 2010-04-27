@@ -17,4 +17,7 @@ public class ServiceNotSupportedException extends DILException {
 		super(message);
 	}
 
+	public ServiceNotSupportedException(Throwable cause) {
+		super(cause);
+	}
 }
