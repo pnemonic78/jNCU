@@ -185,11 +185,34 @@ public class TraceDecode {
 
 		private void processLT(char direction, MNPLinkTransferPacket packet) {
 			System.out.println(direction + " type:(LT)" + packet.getType() + " trans:" + packet.getTransmitted() + " seq:" + packet.getSequence() + " data:"
-					+ packet.getData());
+					+ dataToString(packet.getData()));
 		}
 
 		public void cancel() {
 			running = false;
+		}
+
+		private String dataToString(byte[] data) {
+			StringBuffer buf = new StringBuffer();
+			buf.append('[');
+			int b;
+			for (int i = 0; i < data.length; i++) {
+				if (i > 0) {
+					buf.append(',');
+				}
+				b = data[i] & 0xFF;
+				if ((b >= 0x020) && (b <= 0x7E)) {
+					buf.append((char) b);
+				} else {
+					buf.append("0x");
+					if (b < 0x10) {
+						buf.append('0');
+					}
+					buf.append(Integer.toHexString(b));
+				}
+			}
+			buf.append(']');
+			return buf.toString();
 		}
 
 	}
