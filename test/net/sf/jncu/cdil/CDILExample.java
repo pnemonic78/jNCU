@@ -73,6 +73,7 @@ public class CDILExample {
 				// If you are displaying a dialog box telling the user to
 				// initiate a connection from a Newton OS device, you could
 				// check for clicks on a Cancel button here.
+				Thread.yield();
 			}
 			if (layer.getState() == CDState.CONNECT_PENDING) {
 				pipe.accept(); // Accept the connect request
