@@ -15,4 +15,8 @@ public class BadPipeStateException extends IllegalStateException {
 		super(message);
 	}
 
+	public BadPipeStateException(Throwable cause) {
+		super(cause);
+	}
+
 }
