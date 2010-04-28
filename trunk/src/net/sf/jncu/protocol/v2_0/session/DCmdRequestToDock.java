@@ -1,5 +1,9 @@
 package net.sf.jncu.protocol.v2_0.session;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.ProtocolException;
+
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
@@ -38,18 +42,12 @@ public class DCmdRequestToDock extends DockCommandFromNewton {
 	}
 
 	@Override
-	protected void decodeData(byte[] data, int offset, int length) {
-		// Bug that sometimes length is read as [0x00,0x01,0x00,0x00,0x04]
-		// instead of [0x00,0x00,0x00,0x04]
-		if (length == 0x010000) {
-			offset -= 3;
-			data[offset] = 0;
-			length = htonl(data, offset);
-			setLength(length);
-			offset += LENGTH_WORD;
-		}
-		int protocol = htonl(data, offset);
+	protected void decodeData(InputStream data) throws IOException {
+		int protocol = htonl(data);
 		setProtocol(protocol);
-		offset += LENGTH_WORD;
+		if (protocol != 9) {
+			throw new ProtocolException();
+		}
 	}
+
 }
