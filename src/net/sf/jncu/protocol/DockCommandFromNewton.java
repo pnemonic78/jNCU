@@ -1,7 +1,5 @@
 package net.sf.jncu.protocol;
 
-import java.net.ProtocolException;
-
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 
 /**
@@ -54,44 +52,67 @@ public abstract class DockCommandFromNewton extends DockCommand {
 	 * @param data
 	 *            the data.
 	 * @return the command.
-	 * @throws ProtocolException
-	 *             if a protocol error occurs.
 	 */
-	public static DockCommandFromNewton deserialize(byte[] data) throws ProtocolException {
+	public static DockCommandFromNewton deserialize(byte[] data) {
+		if ((data == null) || (data.length < 16)) {
+			return null;
+		}
+		int offset = 0;
 		byte[] cmdName = new byte[COMMAND_LENGTH];
-		System.arraycopy(data, kDNewtonDockLength, cmdName, 0, COMMAND_LENGTH);
+		System.arraycopy(data, kDNewtonDockLength, cmdName, offset, COMMAND_LENGTH);
+		offset += kDNewtonDockLength;
 		DockCommandFactory factory = DockCommandFactory.getInstance();
 		DockCommandFromNewton cmd = (DockCommandFromNewton) factory.create(cmdName);
-		cmd.decode(data, kDNewtonDockLength + COMMAND_LENGTH);
+		offset += COMMAND_LENGTH;
+		if (cmd != null) {
+			cmd.decode(data, offset);
+		}
 		return cmd;
 	}
 
 	/**
-	 * Decode the frame.
+	 * Decode the command.
 	 * 
 	 * @param frame
 	 *            the frame data.
 	 * @param offset
 	 *            the frame offset.
-	 * @throws ProtocolException
-	 *             if a protocol error occurs.
+	 * @return the new offset.
 	 */
-	protected abstract void decode(byte[] frame, int offset) throws ProtocolException;
+	protected void decode(byte[] frame, int offset) {
+		int length = htonl(frame, offset);
+		setLength(length);
+		offset += LENGTH_WORD;
+		decodeData(frame, offset, length);
+	}
 
 	/**
-	 * Read 4 bytes.
+	 * Decode the command data.
+	 * 
+	 * @param data
+	 *            the data.
+	 * @param offset
+	 *            the data offset.
+	 * @param length
+	 *            the data length.
+	 */
+	protected abstract void decodeData(byte[] data, int offset, int length);
+
+	/**
+	 * Read 4 bytes as an unsigned integer in network byte order (Big Endian).
 	 * 
 	 * @param frame
 	 *            the frame data.
 	 * @param offset
 	 *            the frame offset.
-	 * @return the word.
+	 * @return the number.
 	 */
-	protected int readWord(byte[] frame, int offset) {
-		int b24 = (frame[offset++] & 0xFF) << 24;
-		int b16 = (frame[offset++] & 0xFF) << 16;
-		int b08 = (frame[offset++] & 0xFF) << 8;
-		int b00 = (frame[offset] & 0xFF) << 0;
-		return b24 | b16 | b08 | b00;
+	protected int htonl(byte[] frame, int offset) {
+		int n24 = (frame[offset++] & 0xFF) << 24;
+		int n16 = (frame[offset++] & 0xFF) << 16;
+		int n08 = (frame[offset++] & 0xFF) << 8;
+		int n00 = (frame[offset] & 0xFF) << 0;
+
+		return n24 | n16 | n08 | n00;
 	}
 }

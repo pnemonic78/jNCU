@@ -17,23 +17,23 @@ public abstract class DockCommand {
 	protected static final byte[] kDNewtonDockBytes = DockCommandSession.kDNewtonDock.getBytes();
 	protected static final int kDNewtonDockLength = kDNewtonDockBytes.length;
 
-	protected final String cmd;
-	protected final byte[] cmdBytes;
+	protected final String command;
+	protected final byte[] commandBytes;
 	private int length;
 
 	/**
 	 * Creates a new docking command.
 	 * 
-	 * @param cmd
+	 * @param command
 	 *            the command.
 	 */
-	protected DockCommand(String cmd) {
+	protected DockCommand(String command) {
 		super();
-		if (cmd.length() != COMMAND_LENGTH) {
+		if (command.length() != COMMAND_LENGTH) {
 			throw new IllegalArgumentException("command length must be " + COMMAND_LENGTH);
 		}
-		this.cmd = cmd;
-		this.cmdBytes = cmd.getBytes();
+		this.command = command;
+		this.commandBytes = command.getBytes();
 	}
 
 	/**
@@ -42,13 +42,13 @@ public abstract class DockCommand {
 	 * @param cmdBytes
 	 *            the command.
 	 */
-	protected DockCommand(byte[] cmdBytes) {
+	protected DockCommand(byte[] commandBytes) {
 		super();
-		if (cmdBytes.length != COMMAND_LENGTH) {
+		if (commandBytes.length != COMMAND_LENGTH) {
 			throw new IllegalArgumentException("command length must be " + COMMAND_LENGTH);
 		}
-		this.cmdBytes = cmdBytes;
-		this.cmd = new String(cmdBytes);
+		this.commandBytes = commandBytes;
+		this.command = new String(commandBytes);
 	}
 
 	/**
@@ -57,7 +57,7 @@ public abstract class DockCommand {
 	 * @return the command.
 	 */
 	public String getCommand() {
-		return cmd;
+		return command;
 	}
 
 	/**
