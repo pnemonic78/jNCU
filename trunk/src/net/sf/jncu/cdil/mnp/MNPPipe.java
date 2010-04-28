@@ -7,7 +7,6 @@ import gnu.io.UnsupportedCommOperationException;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.ProtocolException;
 import java.util.TooManyListenersException;
 import java.util.concurrent.TimeoutException;
 
@@ -21,7 +20,7 @@ import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
-import net.sf.jncu.protocol.v2_0.session.DInitiateDocking;
+import net.sf.jncu.protocol.v2_0.session.DCmdInitiateDocking;
 import net.sf.jncu.protocol.v2_0.session.DockCommandSession;
 
 /**
@@ -197,17 +196,13 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 					if (!DockCommandFromNewton.isCommand(data)) {
 						throw new BadPipeStateException();
 					}
-					try {
-						DockCommandFromNewton cmd = DockCommandFromNewton.deserialize(data);
-						if (!DockCommandSession.NewtonToDesktop.kDRequestToDock.equals(cmd.getCommand())) {
-							// Ignore erroneous command
-							return;
-						}
-					} catch (ProtocolException pe) {
-						throw new BadPipeStateException(pe);
+					DockCommandFromNewton cmd = DockCommandFromNewton.deserialize(data);
+					if (!DockCommandSession.NewtonToDesktop.kDRequestToDock.equals(cmd.getCommand())) {
+						// Ignore erroneous command
+						return;
 					}
 
-					DInitiateDocking cmdReply = (DInitiateDocking) DockCommandFactory.getInstance()
+					DCmdInitiateDocking cmdReply = (DCmdInitiateDocking) DockCommandFactory.getInstance()
 							.create(DockCommandSession.DesktopToNewton.kDInitiateDocking);
 					cmdReply.setSession(1);
 					MNPLinkTransferPacket reply = (MNPLinkTransferPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LT);
