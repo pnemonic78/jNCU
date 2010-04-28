@@ -252,7 +252,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 						// Ignore erroneous command
 						return;
 					}
-					// TODO keep the Newton Name for getter. 
+					// TODO keep the Newton Name for getter.
 
 					DockCommandToNewton cmdReply = (DockCommandToNewton) DockCommandFactory.getInstance().create(
 							DockCommandSession.DesktopToNewton.kDDesktopInfo);
@@ -286,7 +286,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 						// Ignore erroneous command
 						return;
 					}
-					// TODO keep the Newton Info for getter. 
+					// TODO keep the Newton Info for getter.
 
 					DockCommandToNewton cmdReply = (DockCommandToNewton) DockCommandFactory.getInstance().create(
 							DockCommandSession.DesktopToNewton.kDWhichIcons);
@@ -308,6 +308,12 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 			case IDLE:
 				if (packet instanceof MNPLinkTransferPacket) {
 					MNPLinkTransferPacket lt = (MNPLinkTransferPacket) packet;
+
+					MNPLinkAcknowledgementPacket ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
+					ack.setSequence(lt.getSequence());
+					ack.setCredit((byte) 7);
+					packetSendAndAcknowledge(ack);
+
 					byte[] data = lt.getData();
 					if (!DockCommandFromNewton.isCommand(data)) {
 						throw new BadPipeStateException();
