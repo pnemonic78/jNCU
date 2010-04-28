@@ -32,11 +32,16 @@ public class MNPLinkTransferPacket extends MNPPacket {
 
 	@Override
 	public byte[] serialize() {
-		byte[] payload = new byte[3 + data.length];
+		byte[] payload;
+		if (data == null) {
+			payload = new byte[3];
+		} else {
+			payload = new byte[3 + data.length];
+			System.arraycopy(data, 0, payload, 3, data.length);
+		}
 		payload[0] = 2;
 		payload[1] = LT;
 		payload[2] = sequence;
-		System.arraycopy(data, 0, payload, 3, data.length);
 		return payload;
 	}
 

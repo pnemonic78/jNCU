@@ -7,10 +7,17 @@ package net.sf.jncu.cdil.mnp;
  */
 public class MNPLinkRequestPacket extends MNPPacket {
 
+	private static final int TYPE1 = 0x01;
 	private static final int FRAMING_MODE = 0x02;
 	private static final int MAX_OUTSTANDING = 0x03;
 	private static final int MAX_INFO_LENGTH = 0x04;
 	private static final int DATA_PHASE_OPT = 0x08;
+
+	private static final byte TYPE1_LENGTH = 6;
+	private static final byte FRAMING_MODE_LENGTH = 1;
+	private static final byte MAX_OUTSTANDING_LENGTH = 1;
+	private static final byte MAX_INFO_LENGTH_LENGTH = 2;
+	private static final byte DATA_PHASE_OPT_LENGTH = 1;
 
 	private byte framingMode = 0x02;
 	private byte maxOutstanding = 0x08;
@@ -64,9 +71,9 @@ public class MNPLinkRequestPacket extends MNPPacket {
 
 	@Override
 	public byte[] serialize() {
-		byte[] payload = new byte[] { 0x17, LR, 0x02, 0x01, 0x06, 0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0xFF, FRAMING_MODE, 0x01, framingMode, MAX_OUTSTANDING,
-				0x01, maxOutstanding, MAX_INFO_LENGTH, 0x02, (byte) (maxInfoLength & 0xFF), (byte) ((maxInfoLength >> 8) & 0xFF), DATA_PHASE_OPT, 0x01,
-				dataPhaseOpt };
+		byte[] payload = new byte[] { 0x17, LR, 0x02, TYPE1, TYPE1_LENGTH, 0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0xFF, FRAMING_MODE, FRAMING_MODE_LENGTH,
+				framingMode, MAX_OUTSTANDING, MAX_OUTSTANDING_LENGTH, maxOutstanding, MAX_INFO_LENGTH, MAX_INFO_LENGTH_LENGTH, (byte) (maxInfoLength & 0xFF),
+				(byte) ((maxInfoLength >> 8) & 0xFF), DATA_PHASE_OPT, DATA_PHASE_OPT_LENGTH, dataPhaseOpt };
 		return payload;
 	}
 
