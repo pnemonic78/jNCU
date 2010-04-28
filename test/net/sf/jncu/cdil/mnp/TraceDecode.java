@@ -10,6 +10,9 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.Reader;
 
+import net.sf.jncu.protocol.DockCommand;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+
 /**
  * Decode trace dumps.
  * 
@@ -186,6 +189,7 @@ public class TraceDecode {
 		private void processLT(char direction, MNPLinkTransferPacket packet) {
 			System.out.println(direction + " type:(LT)" + packet.getType() + " trans:" + packet.getTransmitted() + " seq:" + packet.getSequence() + " data:"
 					+ dataToString(packet.getData()));
+			processCmd(direction, packet);
 		}
 
 		public void cancel() {
@@ -213,6 +217,20 @@ public class TraceDecode {
 			}
 			buf.append(']');
 			return buf.toString();
+		}
+
+		private void processCmd(char direction, MNPLinkTransferPacket packet) {
+			byte[] data = packet.getData();
+			if ((data == null) || (data.length == 0)) {
+				return;
+			}
+			if (DockCommandFromNewton.isCommand(data)) {
+				DockCommand cmd = null;
+				if (direction == DIRECTION_1TO2) {
+					cmd = DockCommandFromNewton.deserialize(data);
+					System.out.println(direction + "\tcmd:" + cmd);
+				}
+			}
 		}
 
 	}
