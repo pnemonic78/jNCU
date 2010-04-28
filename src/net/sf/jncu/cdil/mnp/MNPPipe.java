@@ -202,8 +202,8 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 						return;
 					}
 
-					DCmdInitiateDocking cmdReply = (DCmdInitiateDocking) DockCommandFactory.getInstance()
-							.create(DockCommandSession.DesktopToNewton.kDInitiateDocking);
+					DCmdInitiateDocking cmdReply = (DCmdInitiateDocking) DockCommandFactory.getInstance().create(
+							DockCommandSession.DesktopToNewton.kDInitiateDocking);
 					cmdReply.setSession(1);
 					MNPLinkTransferPacket reply = (MNPLinkTransferPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LT);
 					reply.setSequence(++sequence);
@@ -222,6 +222,14 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 			case ACCEPTED:
 			case IDLE:
 				if (packet instanceof MNPLinkTransferPacket) {
+					MNPLinkTransferPacket lt = (MNPLinkTransferPacket) packet;
+					byte[] data = lt.getData();
+					if (!DockCommandFromNewton.isCommand(data)) {
+						throw new BadPipeStateException();
+					}
+					DockCommandFromNewton cmd = DockCommandFromNewton.deserialize(data);
+					// TODO wait for concatenated command (commands split over
+					// multiple packets).
 					// TODO process the command.
 				} else if (packet instanceof MNPLinkDisconnectPacket) {
 					disconnectQuiet();
@@ -310,21 +318,21 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 			ack = lt.getSequence();
 		}
 
-		do {
+		// TODO do {
+		try {
+			packetLayer.send(port.getOutputStream(), packet);
+		} catch (IOException ioe) {
 			try {
-				packetLayer.send(port.getOutputStream(), packet);
-			} catch (IOException ioe) {
-				try {
-					if (retry <= 0) {
-						throw new TimeoutException();
-					}
-					Thread.sleep(timeout);
-					retry -= timeout;
-				} catch (InterruptedException ie) {
-					// consume so that we can process an incoming ACK.
+				if (retry <= 0) {
+					throw new TimeoutException();
 				}
+				Thread.sleep(timeout);
+				retry -= timeout;
+			} catch (InterruptedException ie) {
+				// consume so that we can process an incoming ACK.
 			}
-		} while (ack != acknowledge);
+		}
+		// TODO } while (ack != acknowledge);
 	}
 
 	private void setState(State state) {

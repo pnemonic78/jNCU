@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.v2_0.session.DockCommandSession;
 import net.sf.junit.SFTestCase;
 
 public class MNPPacketLayerTest extends SFTestCase {
@@ -56,5 +58,20 @@ public class MNPPacketLayerTest extends SFTestCase {
 		byte[] buf = out.toByteArray();
 		assertNotNull(buf);
 		assertEquals(buf[3], packet.getHeaderLength());
+	}
+
+	/**
+	 * Test receiving a command "name".
+	 */
+	public void testReceiveName() {
+		byte[] data = { 110, 101, 119, 116, 100, 111, 99, 107, 110, 97, 109, 101, 0, 0, 0, 122, 0, 0, 0, 72, 18, 126, 21, 116, 1, 0, 0, 0, 16, 0, 48, 0, 0, 2,
+				0, 2, 0, 0, -128, 0, 0, 14, 32, 0, 0, 0, 1, -32, 0, 0, 1, 64, 0, 0, 0, 1, 0, 0, 0, 1, 1, -66, 82, -52, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0, 4,
+				0, 0, 0, 3, 0, 0, 0, 0, 1, -66, 82, -52, 0, 0, 0, 11, 0, 77, 0, 111, 0, 115, 0, 104, 0, 101, 0, 32, 0, 77, 0, 105, 0, 99, 0, 104, 0, 97, 0,
+				101, 0, 108, 0, 32, 0, 87, 0, 97, 0, 105, 0, 115, 0, 98, 0, 101, 0, 114, 0, 103, 0, 0, 0, 0 };
+
+		DockCommandFromNewton cmd = DockCommandFromNewton.deserialize(data);
+		assertNotNull(cmd);
+		assertTrue(DockCommandFromNewton.isCommand(data));
+		assertEquals(DockCommandSession.NewtonToDesktop.kDNewtonName, cmd.getCommand());
 	}
 }

@@ -1,5 +1,9 @@
 package net.sf.jncu.protocol;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 
 /**
@@ -65,7 +69,14 @@ public abstract class DockCommandFromNewton extends DockCommand {
 		DockCommandFromNewton cmd = (DockCommandFromNewton) factory.create(cmdName);
 		offset += COMMAND_LENGTH;
 		if (cmd != null) {
-			cmd.decode(data, offset);
+			byte[] dataBytes = new byte[data.length - offset];
+			System.arraycopy(data, offset, dataBytes, 0, dataBytes.length);
+			InputStream in = new ByteArrayInputStream(dataBytes);
+			try {
+				cmd.decode(in);
+			} catch (IOException ioe) {
+				throw new ArrayIndexOutOfBoundsException();
+			}
 		}
 		return cmd;
 	}
@@ -75,15 +86,16 @@ public abstract class DockCommandFromNewton extends DockCommand {
 	 * 
 	 * @param frame
 	 *            the frame data.
-	 * @param offset
-	 *            the frame offset.
-	 * @return the new offset.
+	 * @throws IOException
+	 *             if read past data buffer.
 	 */
-	protected void decode(byte[] frame, int offset) {
-		int length = htonl(frame, offset);
+	protected void decode(InputStream frame) throws IOException {
+		int length = htonl(frame);
 		setLength(length);
-		offset += LENGTH_WORD;
-		decodeData(frame, offset, length);
+		if (frame.available() < length) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		decodeData(frame);
 	}
 
 	/**
@@ -91,27 +103,25 @@ public abstract class DockCommandFromNewton extends DockCommand {
 	 * 
 	 * @param data
 	 *            the data.
-	 * @param offset
-	 *            the data offset.
-	 * @param length
-	 *            the data length.
+	 * @throws IOException
+	 *             if read past data buffer.
 	 */
-	protected abstract void decodeData(byte[] data, int offset, int length);
+	protected abstract void decodeData(InputStream data) throws IOException;
 
 	/**
 	 * Read 4 bytes as an unsigned integer in network byte order (Big Endian).
 	 * 
-	 * @param frame
-	 *            the frame data.
-	 * @param offset
-	 *            the frame offset.
+	 * @param b
+	 *            the byte buffer.
 	 * @return the number.
+	 * @throws IOException
+	 *             if read past buffer.
 	 */
-	protected int htonl(byte[] frame, int offset) {
-		int n24 = (frame[offset++] & 0xFF) << 24;
-		int n16 = (frame[offset++] & 0xFF) << 16;
-		int n08 = (frame[offset++] & 0xFF) << 8;
-		int n00 = (frame[offset] & 0xFF) << 0;
+	protected int htonl(InputStream b) throws IOException {
+		int n24 = (b.read() & 0xFF) << 24;
+		int n16 = (b.read() & 0xFF) << 16;
+		int n08 = (b.read() & 0xFF) << 8;
+		int n00 = (b.read() & 0xFF) << 0;
 
 		return n24 | n16 | n08 | n00;
 	}

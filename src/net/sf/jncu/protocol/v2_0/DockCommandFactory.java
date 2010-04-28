@@ -2,6 +2,7 @@ package net.sf.jncu.protocol.v2_0;
 
 import net.sf.jncu.protocol.DockCommand;
 import net.sf.jncu.protocol.v2_0.session.DCmdInitiateDocking;
+import net.sf.jncu.protocol.v2_0.session.DCmdNewtonName;
 import net.sf.jncu.protocol.v2_0.session.DCmdRequestToDock;
 import net.sf.jncu.protocol.v2_0.session.DockCommandSession;
 
@@ -54,6 +55,9 @@ public class DockCommandFactory {
 	public DockCommand create(String cmdName) {
 		if (DockCommandSession.DesktopToNewton.kDInitiateDocking.equals(cmdName)) {
 			return new DCmdInitiateDocking();
+		}
+		if (DockCommandSession.NewtonToDesktop.kDNewtonName.equals(cmdName)) {
+			return new DCmdNewtonName();
 		}
 		if (DockCommandSession.NewtonToDesktop.kDRequestToDock.equals(cmdName)) {
 			return new DCmdRequestToDock();
