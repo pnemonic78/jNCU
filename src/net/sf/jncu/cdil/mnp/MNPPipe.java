@@ -19,6 +19,7 @@ import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 import net.sf.jncu.protocol.v2_0.session.DCmdInitiateDocking;
 import net.sf.jncu.protocol.v2_0.session.DockCommandSession;
@@ -53,13 +54,29 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		/** Newton sends LA (for LR in previous step). */
 		HANDSHAKE_LR_RECEIVED,
 		/**
-		 * Newton sends LT.<br>
+		 * Newton sends LT (kDRequestToDock).<br>
 		 * Send LA to Newton (for LT in previous step).<br>
-		 * Send LT to Newton.
+		 * Send LT (kDInitiateDocking) to Newton.
 		 */
-		HANDSHAKE_LISTEN_LT,
+		HANDSHAKE_LISTEN_RTDK,
 		/** Newton sends LA (for LT in previous step). */
-		HANDSHAKE_LT_RECEIVED,
+		HANDSHAKE_RTDK_RECEIVED,
+		/**
+		 * Newton sends LT (kDNewtonName).<br>
+		 * Send LA to Newton (for LT in previous step).<br>
+		 * Send LT (kDDesktopInfo) to Newton.
+		 */
+		HANDSHAKE_LISTEN_NAME,
+		/** Newton sends LA (for LT in previous step). */
+		HANDSHAKE_NAME_RECEIVED,
+		/**
+		 * Newton sends LT (kDNewtonInfo).<br>
+		 * Send LA to Newton (for LT in previous step).<br>
+		 * Send LT (kDWhichIcons) to Newton (optional).
+		 */
+		HANDSHAKE_LISTEN_INFO,
+		/** Newton sends LA (for LT in previous step). */
+		HANDSHAKE_INFO_RECEIVED,
 		/** Finished handshaking. */
 		HANDSHAKE_DONE,
 		/** Connect request accepted. */
@@ -180,10 +197,10 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 				break;
 			case HANDSHAKE_LR_RECEIVED:
 				if (packet instanceof MNPLinkAcknowledgementPacket) {
-					setState(State.HANDSHAKE_LISTEN_LT);
+					setState(State.HANDSHAKE_LISTEN_RTDK);
 				}
 				break;
-			case HANDSHAKE_LISTEN_LT:
+			case HANDSHAKE_LISTEN_RTDK:
 				if (packet instanceof MNPLinkTransferPacket) {
 					MNPLinkTransferPacket lt = (MNPLinkTransferPacket) packet;
 
@@ -204,15 +221,83 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 
 					DCmdInitiateDocking cmdReply = (DCmdInitiateDocking) DockCommandFactory.getInstance().create(
 							DockCommandSession.DesktopToNewton.kDInitiateDocking);
-					cmdReply.setSession(1);
+					cmdReply.setSession(DCmdInitiateDocking.SESSION_SETTING_UP);
 					MNPLinkTransferPacket reply = (MNPLinkTransferPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LT);
 					reply.setSequence(++sequence);
 					reply.setData(cmdReply.getPayload());
 					packetSendAndAcknowledge(reply);
-					setState(State.HANDSHAKE_LT_RECEIVED);
+					setState(State.HANDSHAKE_RTDK_RECEIVED);
 				}
 				break;
-			case HANDSHAKE_LT_RECEIVED:
+			case HANDSHAKE_RTDK_RECEIVED:
+				if (packet instanceof MNPLinkAcknowledgementPacket) {
+					setState(State.HANDSHAKE_LISTEN_NAME);
+				}
+				break;
+			case HANDSHAKE_LISTEN_NAME:
+				if (packet instanceof MNPLinkTransferPacket) {
+					MNPLinkTransferPacket lt = (MNPLinkTransferPacket) packet;
+
+					MNPLinkAcknowledgementPacket ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
+					ack.setSequence(lt.getSequence());
+					ack.setCredit((byte) 7);
+					packetSendAndAcknowledge(ack);
+
+					byte[] data = lt.getData();
+					if (!DockCommandFromNewton.isCommand(data)) {
+						throw new BadPipeStateException();
+					}
+					DockCommandFromNewton cmd = DockCommandFromNewton.deserialize(data);
+					if (!DockCommandSession.NewtonToDesktop.kDNewtonName.equals(cmd.getCommand())) {
+						// Ignore erroneous command
+						return;
+					}
+					// TODO keep the Newton Name for getter. 
+
+					DockCommandToNewton cmdReply = (DockCommandToNewton) DockCommandFactory.getInstance().create(
+							DockCommandSession.DesktopToNewton.kDDesktopInfo);
+					MNPLinkTransferPacket reply = (MNPLinkTransferPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LT);
+					reply.setSequence(++sequence);
+					reply.setData(cmdReply.getPayload());
+					packetSendAndAcknowledge(reply);
+					setState(State.HANDSHAKE_NAME_RECEIVED);
+				}
+				break;
+			case HANDSHAKE_NAME_RECEIVED:
+				if (packet instanceof MNPLinkAcknowledgementPacket) {
+					setState(State.HANDSHAKE_LISTEN_INFO);
+				}
+				break;
+			case HANDSHAKE_LISTEN_INFO:
+				if (packet instanceof MNPLinkTransferPacket) {
+					MNPLinkTransferPacket lt = (MNPLinkTransferPacket) packet;
+
+					MNPLinkAcknowledgementPacket ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
+					ack.setSequence(lt.getSequence());
+					ack.setCredit((byte) 7);
+					packetSendAndAcknowledge(ack);
+
+					byte[] data = lt.getData();
+					if (!DockCommandFromNewton.isCommand(data)) {
+						throw new BadPipeStateException();
+					}
+					DockCommandFromNewton cmd = DockCommandFromNewton.deserialize(data);
+					if (!DockCommandSession.NewtonToDesktop.kDNewtonInfo.equals(cmd.getCommand())) {
+						// Ignore erroneous command
+						return;
+					}
+					// TODO keep the Newton Info for getter. 
+
+					DockCommandToNewton cmdReply = (DockCommandToNewton) DockCommandFactory.getInstance().create(
+							DockCommandSession.DesktopToNewton.kDWhichIcons);
+					MNPLinkTransferPacket reply = (MNPLinkTransferPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LT);
+					reply.setSequence(++sequence);
+					reply.setData(cmdReply.getPayload());
+					packetSendAndAcknowledge(reply);
+					setState(State.HANDSHAKE_NAME_RECEIVED);
+				}
+				break;
+			case HANDSHAKE_INFO_RECEIVED:
 				if (packet instanceof MNPLinkAcknowledgementPacket) {
 					setState(State.HANDSHAKE_DONE);
 					layer.setState(this, CDState.CONNECT_PENDING);
