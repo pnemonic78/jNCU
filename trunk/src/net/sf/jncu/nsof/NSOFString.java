@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.jncu.newton.stream;
 
 import java.io.EOFException;
@@ -10,15 +7,13 @@ import java.io.OutputStream;
 
 /**
  * @author Moshe
- * 
  */
 public class NSOFString extends NSOFObject {
 
 	private String value;
 
 	/**
-	 * Constructs a new object.
-	 * 
+	 * Constructs a new string.
 	 */
 	public NSOFString() {
 		super();
@@ -26,8 +21,8 @@ public class NSOFString extends NSOFObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
+	 * @see
+	 * com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
@@ -58,8 +53,8 @@ public class NSOFString extends NSOFObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
+	 * @see
+	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
 	 */
 	@Override
 	public void encode(OutputStream out) throws IOException {
@@ -88,7 +83,6 @@ public class NSOFString extends NSOFObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -98,7 +92,6 @@ public class NSOFString extends NSOFObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
