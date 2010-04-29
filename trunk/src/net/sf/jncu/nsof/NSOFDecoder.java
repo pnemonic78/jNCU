@@ -9,7 +9,6 @@ import java.util.TreeMap;
 
 /**
  * @author Moshe
- * 
  */
 public class NSOFDecoder {
 
@@ -19,7 +18,6 @@ public class NSOFDecoder {
 
 	/**
 	 * Constructs a new decoder.
-	 * 
 	 */
 	public NSOFDecoder() {
 		super();
@@ -38,42 +36,42 @@ public class NSOFDecoder {
 		}
 
 		switch (dataType) {
-		case NewtonStreamedObjectFormat.kArray:
+		case NewtonStreamedObjectFormat.ARRAY:
 			nsof = new NSOFArray();
 			break;
-		case NewtonStreamedObjectFormat.kBinaryObject:
+		case NewtonStreamedObjectFormat.BINARY_OBJECT:
 			nsof = new NSOFBinaryObject();
 			break;
-		case NewtonStreamedObjectFormat.kCharacter:
+		case NewtonStreamedObjectFormat.CHARACTER:
 			nsof = new NSOFCharacter();
-		case NewtonStreamedObjectFormat.kFrame:
+		case NewtonStreamedObjectFormat.FRAME:
 			nsof = new NSOFFrame();
 			break;
-		case NewtonStreamedObjectFormat.kImmediate:
+		case NewtonStreamedObjectFormat.IMMEDIATE:
 			nsof = new NSOFImmediate();
 			break;
-		case NewtonStreamedObjectFormat.kLargeBinary:
+		case NewtonStreamedObjectFormat.LARGE_BINARY:
 			nsof = new NSOFLargeBinary();
 			break;
-		case NewtonStreamedObjectFormat.kNIL:
+		case NewtonStreamedObjectFormat.NIL:
 			nsof = new NSOFNil();
 			break;
-		case NewtonStreamedObjectFormat.kPlainArray:
+		case NewtonStreamedObjectFormat.PLAIN_ARRAY:
 			nsof = new NSOFPlainArray();
 			break;
-		case NewtonStreamedObjectFormat.kPrecedent:
+		case NewtonStreamedObjectFormat.PRECEDENT:
 			nsof = new NSOFPrecedent();
 			break;
-		case NewtonStreamedObjectFormat.kSmallRect:
+		case NewtonStreamedObjectFormat.SMALL_RECT:
 			nsof = new NSOFSmallRect();
 			break;
-		case NewtonStreamedObjectFormat.kString:
+		case NewtonStreamedObjectFormat.STRING:
 			nsof = new NSOFString();
 			break;
-		case NewtonStreamedObjectFormat.kSymbol:
+		case NewtonStreamedObjectFormat.SYMBOL:
 			nsof = new NSOFSymbol();
 			break;
-		case NewtonStreamedObjectFormat.kUnicodeCharacter:
+		case NewtonStreamedObjectFormat.UNICODE_CHARACTER:
 			nsof = new NSOFUnicodeCharacter();
 			break;
 		}
