@@ -66,6 +66,9 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 	 */
 	public static final String COMMAND = "dinf";
 
+	/** The protocol version. */
+	public static final int kProtocolVersion = 10;
+
 	/** Newton Backup Utility. */
 	public static final int kNBU = 1;
 	/** Newton Connection Utilities. */
@@ -75,6 +78,8 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 	public static final int kMacintosh = 0;
 	/** Microsoft Windows desktop type. */
 	public static final int kWindows = 1;
+
+	private static final int desktopType = (System.getProperty("os.name").startsWith("Windows")) ? kWindows : kMacintosh;
 
 	/**
 	 * Creates a new command.
@@ -86,6 +91,19 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 	@Override
 	protected ByteArrayOutputStream getData() {
 		ByteArrayOutputStream data = new ByteArrayOutputStream();
+		// protocol version
+		ntohl(kProtocolVersion, data);
+		// desktopType // 0 for Mac, 1 for Windows
+		ntohl(desktopType, data);
+		// encrypted key // 2 longs
+		ntohl(0, data);
+		ntohl(0, data);
+		// session type
+		ntohl(DCmdInitiateDocking.SESSION_SETTING_UP, data);
+		// allowSelectiveSync // 0 = no, 1 = yes
+		ntohl(FALSE, data);
+		// desktopApps ref
+		ntohl(0, data);
 		return data;
 	}
 }
