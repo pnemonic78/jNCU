@@ -5,24 +5,19 @@ import java.io.ByteArrayOutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * Command to initiate docking.
+ * <tt>kDInitiateDocking</tt><br>
+ * Ask Newton to start docking process.<br>
+ * This command should be sent to the Newton in response to a kDRequestToDock
+ * command. Session type should be 4 to load a package.
  * 
- * @author moshew
+ * <pre>
+ * 'dock'
+ * length = 4
+ * session type
+ * </pre>
  */
 public class DCmdInitiateDocking extends DockCommandToNewton {
 
-	/**
-	 * <tt>kDInitiateDocking</tt><br>
-	 * Ask Newton to start docking process.<br>
-	 * This command should be sent to the Newton in response to a
-	 * kDRequestToDock command. Session type should be 4 to load a package.
-	 * 
-	 * <pre>
-	 * 'dock'
-	 * length = 4
-	 * session type
-	 * </pre>
-	 */
 	public static final String COMMAND = "dock";
 
 	public static final int SESSION_NONE = 0;
