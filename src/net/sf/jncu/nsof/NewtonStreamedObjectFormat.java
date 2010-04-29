@@ -15,9 +15,9 @@ import java.io.OutputStream;
  * objects, beginning with the root object.<br>
  * The beginning of each object’s description is a tag byte that specifies the
  * encoding type used for the object.<br>
- * The tag byte is followed an ID, called a <em>precedent ID</em>. The IDs
- * are assigned consecutively, starting with 0 for the root object, and are used
- * by the kPrecedent tag to generate backward pointer references to objects that
+ * The tag byte is followed an ID, called a <em>precedent ID</em>. The IDs are
+ * assigned consecutively, starting with 0 for the root object, and are used by
+ * the kPrecedent tag to generate backward pointer references to objects that
  * have already been introduced. Note that no object may be traversed more than
  * once; any pointers to previously traversed objects must be represented with
  * kPrecedent. Immediate objects cannot be precedents; all precedents are heap
@@ -27,44 +27,35 @@ import java.io.OutputStream;
  */
 public abstract class NewtonStreamedObjectFormat {
 
-	/** TODO comment me! */
-	public static final int kImmediate = 0;
+	/** <tt>kImmediate</tt> */
+	public static final int IMMEDIATE = 0;
+	/** <tt>kCharacter</tt> */
+	public static final int CHARACTER = 1;
+	/** <tt>kUnicodeCharacter</tt> */
+	public static final int UNICODE_CHARACTER = 2;
+	/** <tt>kBinaryObject</tt> */
+	public static final int BINARY_OBJECT = 3;
+	/** <tt>kArray</tt> */
+	public static final int ARRAY = 4;
+	/** <tt>kPlainArray</tt> */
+	public static final int PLAIN_ARRAY = 5;
+	/** <tt>kFrame</tt> */
+	public static final int FRAME = 6;
+	/** <tt>kSymbol</tt> */
+	public static final int SYMBOL = 7;
+	/** <tt>kString</tt> */
+	public static final int STRING = 8;
+	/** <tt>kPrecedent</tt> */
+	public static final int PRECEDENT = 9;
+	/** <tt>kNIL</tt> */
+	public static final int NIL = 10;
+	/** <tt>kSmallRect</tt> */
+	public static final int SMALL_RECT = 11;
+	/** <tt>kLargeBinary</tt> */
+	public static final int LARGE_BINARY = 12;
 
-	/** TODO comment me! */
-	public static final int kCharacter = 1;
-
-	/** TODO comment me! */
-	public static final int kUnicodeCharacter = 2;
-
-	/** TODO comment me! */
-	public static final int kBinaryObject = 3;
-
-	/** TODO comment me! */
-	public static final int kArray = 4;
-
-	/** TODO comment me! */
-	public static final int kPlainArray = 5;
-
-	/** TODO comment me! */
-	public static final int kFrame = 6;
-
-	/** TODO comment me! */
-	public static final int kSymbol = 7;
-
-	/** TODO comment me! */
-	public static final int kString = 8;
-
-	/** TODO comment me! */
-	public static final int kPrecedent = 9;
-
-	/** TODO comment me! */
-	public static final int kNIL = 10;
-
-	/** TODO comment me! */
-	public static final int kSmallRect = 11;
-
-	/** TODO comment me! */
-	public static final int kLargeBinary = 12;
+	/** NSOF version. */
+	public static final int VERSION = 2;
 
 	private int id;
 
@@ -95,8 +86,7 @@ public abstract class NewtonStreamedObjectFormat {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public abstract void decode(InputStream in, NSOFDecoder decoder)
-			throws IOException;
+	public abstract void decode(InputStream in, NSOFDecoder decoder) throws IOException;
 
 	/**
 	 * Get the id.
