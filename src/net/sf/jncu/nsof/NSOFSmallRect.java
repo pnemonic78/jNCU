@@ -10,7 +10,6 @@ import java.io.OutputStream;
 
 /**
  * @author Moshe
- * 
  */
 public class NSOFSmallRect extends NSOFObject {
 
@@ -24,7 +23,6 @@ public class NSOFSmallRect extends NSOFObject {
 
 	/**
 	 * Constructs a new object.
-	 * 
 	 */
 	public NSOFSmallRect() {
 		super();
@@ -32,8 +30,8 @@ public class NSOFSmallRect extends NSOFObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
+	 * @see
+	 * com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
@@ -70,8 +68,8 @@ public class NSOFSmallRect extends NSOFObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
+	 * @see
+	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
 	 */
 	@Override
 	public void encode(OutputStream out) throws IOException {
@@ -157,7 +155,6 @@ public class NSOFSmallRect extends NSOFObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -167,12 +164,10 @@ public class NSOFSmallRect extends NSOFObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "{left: " + left + ", top: " + top + ", right: " + right
-				+ ", bottom: " + bottom + "}";
+		return "{left: " + left + ", top: " + top + ", right: " + right + ", bottom: " + bottom + "}";
 	}
 }

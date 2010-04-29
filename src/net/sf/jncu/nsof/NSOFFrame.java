@@ -11,7 +11,6 @@ import java.util.TreeMap;
 
 /**
  * @author Moshe
- * 
  */
 public class NSOFFrame extends NSOFObject {
 
@@ -19,7 +18,6 @@ public class NSOFFrame extends NSOFObject {
 
 	/**
 	 * Constructs a new object.
-	 * 
 	 */
 	public NSOFFrame() {
 		super();
@@ -27,8 +25,8 @@ public class NSOFFrame extends NSOFObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
+	 * @see
+	 * com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
@@ -40,8 +38,8 @@ public class NSOFFrame extends NSOFObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
+	 * @see
+	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
 	 */
 	@Override
 	public void encode(OutputStream out) throws IOException {
