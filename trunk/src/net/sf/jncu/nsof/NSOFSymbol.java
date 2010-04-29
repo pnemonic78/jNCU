@@ -1,9 +1,5 @@
-/**
- * 
- */
 package net.sf.jncu.newton.stream;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,7 +10,7 @@ import java.io.OutputStream;
 public class NSOFSymbol extends NSOFString {
 
 	/**
-	 * Constructs a new object.
+	 * Constructs a new symbol.
 	 */
 	public NSOFSymbol() {
 		super();
@@ -27,23 +23,14 @@ public class NSOFSymbol extends NSOFString {
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
-		setValue(null);
 		// Number of characters in name (xlong)
 		XLong xlong = new XLong();
 		xlong.decode(in, decoder);
 		int len = xlong.getValue();
 		// Name (bytes)
-		int c;
-		StringBuffer s = new StringBuffer();
-
-		for (int i = 0; i < len; i++) {
-			c = in.read();
-			if ((c == -1)) {
-				throw new EOFException();
-			}
-			s.append((char) (c & 0xFF));
-		}
-		setValue(s.toString());
+		byte[] name = new byte[len];
+		in.read(name);
+		setValue(new String(name, "US-ASCII"));
 	}
 
 	/*
@@ -53,8 +40,12 @@ public class NSOFSymbol extends NSOFString {
 	 */
 	@Override
 	public void encode(OutputStream out) throws IOException {
-		// TODO Auto-generated method stub
+		out.write(SYMBOL);
 
+		String name = getValue();
+		XLong xlong = new XLong(name.length());
+		xlong.encode(out);
+		out.write(name.getBytes("US-ASCII"));
 	}
 
 }
