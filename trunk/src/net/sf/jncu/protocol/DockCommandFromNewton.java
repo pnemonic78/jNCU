@@ -92,7 +92,7 @@ public abstract class DockCommandFromNewton extends DockCommand {
 	protected void decode(InputStream frame) throws IOException {
 		int length = htonl(frame);
 		setLength(length);
-		if (frame.available() < length) {
+		if ((frame.available() < length) && (length != 0x0010000)) {
 			throw new ArrayIndexOutOfBoundsException();
 		}
 		decodeData(frame);
@@ -111,17 +111,17 @@ public abstract class DockCommandFromNewton extends DockCommand {
 	/**
 	 * Read 4 bytes as an unsigned integer in network byte order (Big Endian).
 	 * 
-	 * @param b
-	 *            the byte buffer.
+	 * @param in
+	 *            the input.
 	 * @return the number.
 	 * @throws IOException
 	 *             if read past buffer.
 	 */
-	protected int htonl(InputStream b) throws IOException {
-		int n24 = (b.read() & 0xFF) << 24;
-		int n16 = (b.read() & 0xFF) << 16;
-		int n08 = (b.read() & 0xFF) << 8;
-		int n00 = (b.read() & 0xFF) << 0;
+	protected int htonl(InputStream in) throws IOException {
+		int n24 = (in.read() & 0xFF) << 24;
+		int n16 = (in.read() & 0xFF) << 16;
+		int n08 = (in.read() & 0xFF) << 8;
+		int n00 = (in.read() & 0xFF) << 0;
 
 		return n24 | n16 | n08 | n00;
 	}

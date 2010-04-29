@@ -1,6 +1,7 @@
 package net.sf.jncu.protocol.v2_0.session;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import net.sf.jncu.protocol.DockCommandToNewton;
 
@@ -58,7 +59,7 @@ public class DCmdInitiateDocking extends DockCommandToNewton {
 	}
 
 	@Override
-	protected ByteArrayOutputStream getData() {
+	protected ByteArrayOutputStream getCommandData() throws IOException {
 		ByteArrayOutputStream data = new ByteArrayOutputStream(LENGTH_WORD);
 		ntohl(session, data);
 		return data;
