@@ -14,6 +14,11 @@ public abstract class DockCommand {
 	/** Number of command characters. */
 	protected static final int COMMAND_LENGTH = LENGTH_WORD;
 
+	/** False. */
+	public static final int FALSE = 0;
+	/** True. */
+	public static final int TRUE = 1;
+
 	protected static final byte[] kDNewtonDockBytes = DockCommandSession.kDNewtonDock.getBytes();
 	protected static final int kDNewtonDockLength = kDNewtonDockBytes.length;
 
