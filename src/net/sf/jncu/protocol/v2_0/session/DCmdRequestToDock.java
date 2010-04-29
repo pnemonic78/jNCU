@@ -13,13 +13,29 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DCmdRequestToDock extends DockCommandFromNewton {
 
+	/**
+	 * <tt>kDRequestToDock</tt><br>
+	 * This command is sent to the desktop after the connection is established
+	 * using AppleTalk, serial, etc. (when the user taps the "connect" button).
+	 * The protocol version is the version of the messaging protocol that's
+	 * being used and should always be set to the number 9 for the version of
+	 * the protocol defined here.
+	 * 
+	 * <pre>
+	 * 'rtdk'
+	 * length = 4
+	 * protocol version = 9
+	 * </pre>
+	 */
+	public static final String COMMAND = "rtdk";
+
 	private int protocol;
 
 	/**
 	 * Creates a new command.
 	 */
 	public DCmdRequestToDock() {
-		super(DockCommandSession.NewtonToDesktop.kDRequestToDock);
+		super(COMMAND);
 	}
 
 	/**

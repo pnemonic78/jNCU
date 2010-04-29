@@ -20,6 +20,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 import net.sf.jncu.protocol.v2_0.session.DCmdInitiateDocking;
+import net.sf.jncu.protocol.v2_0.session.DCmdNewtonName;
 import net.sf.jncu.protocol.v2_0.session.DockCommandSession;
 
 /**
@@ -213,13 +214,12 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 						throw new BadPipeStateException();
 					}
 					DockCommandFromNewton cmd = DockCommandFromNewton.deserialize(data);
-					if (!DockCommandSession.NewtonToDesktop.kDRequestToDock.equals(cmd.getCommand())) {
+					if (!DCmdInitiateDocking.COMMAND.equals(cmd.getCommand())) {
 						// Ignore erroneous command
 						return;
 					}
 
-					DCmdInitiateDocking cmdReply = (DCmdInitiateDocking) DockCommandFactory.getInstance().create(
-							DockCommandSession.DesktopToNewton.kDInitiateDocking);
+					DCmdInitiateDocking cmdReply = (DCmdInitiateDocking) DockCommandFactory.getInstance().create(DCmdInitiateDocking.COMMAND);
 					cmdReply.setSession(DCmdInitiateDocking.SESSION_SETTING_UP);
 					MNPLinkTransferPacket reply = (MNPLinkTransferPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LT);
 					reply.setSequence(++sequence);
@@ -247,7 +247,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 						throw new BadPipeStateException();
 					}
 					DockCommandFromNewton cmd = DockCommandFromNewton.deserialize(data);
-					if (!DockCommandSession.NewtonToDesktop.kDNewtonName.equals(cmd.getCommand())) {
+					if (!DCmdNewtonName.COMMAND.equals(cmd.getCommand())) {
 						// Ignore erroneous command
 						return;
 					}

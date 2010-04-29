@@ -191,18 +191,6 @@ public class DockCommandSession extends DockingEventCommands {
 	/** Desktop to Newton. */
 	public static class DesktopToNewton extends DockingEventCommands.DesktopToNewton {
 		/**
-		 * Ask Newton to start docking process.<br>
-		 * This command should be sent to the Newton in response to a
-		 * kDRequestToDock command. Session type should be 4 to load a package.
-		 * 
-		 * <pre>
-		 * 'dock'
-		 * length = 4
-		 * session type
-		 * </pre>
-		 */
-		public static final String kDInitiateDocking = "dock";
-		/**
 		 * This command is used to customise the set of icons shown on the
 		 * Newton. The <tt>iconMask</tt> is a long that indicates which icons
 		 * should be shown. For example, to show all icons you would use this:
@@ -336,44 +324,6 @@ public class DockCommandSession extends DockingEventCommands {
 		 */
 		public static final String kDPassword = "pass";
 		/**
-		 * This command is sent in response to a correct
-		 * <tt>kDInitiateDocking</tt> command from the docker. The Newton's name
-		 * is used to locate the proper synchronise file. The version info
-		 * includes things like machine type (e.g. J1), ROM version, etc. Here's
-		 * the full list of what the version info includes (all are
-		 * <code>long</code>s):
-		 * <ol>
-		 * <li>length of version info in bytes
-		 * <li>NewtonUniqueID - a number uniquely identifying the Newton
-		 * <li>manufacturer id
-		 * <li>machine type
-		 * <li>ROM version
-		 * <li>ROM stage
-		 * <li>RAM size
-		 * <li>screen height
-		 * <li>screen width
-		 * <li>system update version
-		 * <li>Newton object system version
-		 * <li>signature of internal store
-		 * <li>vertical screen resolution
-		 * <li>horizontal screen resolution
-		 * <li>screen depth
-		 * </ol>
-		 * The version info is followed by the name of the Newton sent as a
-		 * Unicode string including the terminating zeros at the end. The string
-		 * is padded to an even 4 bytes by adding zeros as necessary (the
-		 * padding bytes are not included in the length sent as part of the
-		 * command header).
-		 * 
-		 * <pre>
-		 * 'name'
-		 * length
-		 * version info
-		 * name
-		 * </pre>
-		 */
-		public static final String kDNewtonName = "name";
-		/**
 		 * This command is used to negotiate the real protocol version. See
 		 * <tt>kDDesktopInfo</tt> below for more info. The password key is used
 		 * as part of the password verification.
@@ -386,20 +336,6 @@ public class DockCommandSession extends DockingEventCommands {
 		 * </pre>
 		 */
 		public static final String kDNewtonInfo = "ninf";
-		/**
-		 * This command is sent to the desktop after the connection is
-		 * established using AppleTalk, serial, etc. (when the user taps the
-		 * "connect" button). The protocol version is the version of the
-		 * messaging protocol that's being used and should always be set to the
-		 * number 9 for the version of the protocol defined here.
-		 * 
-		 * <pre>
-		 * 'rtdk'
-		 * length = 4
-		 * protocol version = 9
-		 * </pre>
-		 */
-		public static final String kDRequestToDock = "rtdk";
 	}
 
 	/** Command prefix. */
