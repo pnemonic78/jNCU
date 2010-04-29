@@ -1,7 +1,10 @@
 package net.sf.jncu.protocol.v2_0.session;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
+import net.sf.jncu.newton.stream.NSOFPlainArray;
+import net.sf.jncu.newton.stream.NewtonStreamedObjectFormat;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
@@ -78,7 +81,7 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 	private int desktopType;
 	private boolean selectiveSync;
 	private long encryptedKey;
-	private Object desktopApps;
+	private NSOFPlainArray desktopApps;
 
 	/**
 	 * Creates a new command.
@@ -93,7 +96,7 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 	}
 
 	@Override
-	protected ByteArrayOutputStream getData() {
+	protected ByteArrayOutputStream getCommandData() throws IOException {
 		ByteArrayOutputStream data = new ByteArrayOutputStream();
 		ntohl(PROTOCOL_VERSION, data);
 		ntohl(desktopType, data);
@@ -102,8 +105,13 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 		ntohl((int) (key & 0xFFFFFFFFL), data);
 		ntohl(sessionType, data);
 		ntohl(selectiveSync ? TRUE : FALSE, data);
-		data.write(2);
-		// TODO write desktopApps
+		data.write(NewtonStreamedObjectFormat.VERSION);
+		NSOFPlainArray apps = getDesktopApps();
+		if (apps == null) {
+			ntohl(0, data);
+		} else {
+			apps.encode(data);
+		}
 		return data;
 	}
 
@@ -170,7 +178,7 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 	 * 
 	 * @return the array of desktop applications.
 	 */
-	public Object getDesktopApps() {
+	public NSOFPlainArray getDesktopApps() {
 		return desktopApps;
 	}
 
@@ -180,7 +188,7 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 	 * @param desktopApps
 	 *            the array of desktop applications.
 	 */
-	public void setDesktopApps(Object desktopApps) {
+	public void setDesktopApps(NSOFPlainArray desktopApps) {
 		this.desktopApps = desktopApps;
 	}
 

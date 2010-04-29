@@ -2,6 +2,7 @@ package net.sf.jncu.protocol;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Docking command from desktop to Newton.
@@ -37,11 +38,12 @@ public abstract class DockCommandToNewton extends DockCommand {
 	 */
 	public byte[] getPayload() {
 		ByteArrayOutputStream payload = new ByteArrayOutputStream();
-		ByteArrayOutputStream dataStream = getData();
+		ByteArrayOutputStream dataStream;
 		int length = 0;
 		byte[] data = null;
 
 		try {
+			dataStream = getCommandData();
 			if (dataStream != null) {
 				dataStream.flush();
 				dataStream.close();
@@ -75,23 +77,29 @@ public abstract class DockCommandToNewton extends DockCommand {
 
 	/**
 	 * Encode the data to write.
+	 * 
+	 * @throws IOException
+	 *             if an I/O error occurs.
 	 */
-	protected ByteArrayOutputStream getData() {
+	@SuppressWarnings("unused")
+	protected ByteArrayOutputStream getCommandData() throws IOException {
 		return null;
 	}
 
 	/**
 	 * Write 4 bytes as an unsigned integer in network byte order (Big Endian).
 	 * 
-	 * @param n
-	 *            the number.
+	 * @param out
+	 *            the output.
 	 * @param frame
 	 *            the frame data.
+	 * @throws IOException
+	 *             if an I/O error occurs.
 	 */
-	protected void ntohl(int n, ByteArrayOutputStream frame) {
-		frame.write((n >> 24) & 0xFF);
-		frame.write((n >> 16) & 0xFF);
-		frame.write((n >> 8) & 0xFF);
-		frame.write((n >> 0) & 0xFF);
+	protected void ntohl(int n, OutputStream out) throws IOException {
+		out.write((n >> 24) & 0xFF);
+		out.write((n >> 16) & 0xFF);
+		out.write((n >> 8) & 0xFF);
+		out.write((n >> 0) & 0xFF);
 	}
 }
