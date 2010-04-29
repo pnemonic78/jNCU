@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.jncu.newton.stream;
 
 import java.io.EOFException;
@@ -24,45 +21,51 @@ public class XLong extends NewtonStreamedObjectFormat {
 		super();
 	}
 
+	/**
+	 * Constructs a new xlong.
+	 * 
+	 * @param value
+	 *            the value.
+	 */
+	public XLong(int value) {
+		super();
+		this.value = value;
+	}
+
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.mmw.newton.nsof.NewtonStreamedObjectFormat#decode(java.io.InputStream)
+	 * @see
+	 * com.mmw.newton.nsof.NewtonStreamedObjectFormat#decode(java.io.InputStream
+	 * )
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
-		// TODO Auto-generated method stub
 		// 0 <= value <= 254: unsigned byte
 		// else: byte 0xFF followed by signed long
 		int b = in.read();
 		if (b == -1) {
 			throw new EOFException();
 		}
-		if ((0 <= b) && (b <= 254)) {
-			setValue(b);
-		} else if (b == 0xFF) {
-			int b3 = in.read();
-			int b2 = in.read();
-			int b1 = in.read();
-			int b0 = in.read();
-			if ((b0 == -1) || (b1 == -1) || (b2 == -1) || (b3 == -1)) {
-				throw new EOFException();
-			}
-			int signedLong = ((b3 & 0xFF) << 24) | ((b2 & 0xFF) << 16)
-					| ((b1 & 0xFF) << 8) | ((b0 & 0xFF) << 0);
-			setValue(signedLong);
+		if (b >= 0xFF) {
+			b = htonl(in);
 		}
+		setValue(b);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.mmw.newton.nsof.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
+	 * @see
+	 * com.mmw.newton.nsof.NewtonStreamedObjectFormat#encode(java.io.OutputStream
+	 * )
 	 */
 	@Override
 	public void encode(OutputStream out) throws IOException {
-		// TODO Auto-generated method stub
-
+		if (value < 0xFF) {
+			out.write(value & 0xFF);
+		} else {
+			out.write(0xFF);
+			ntohl(value, out);
+		}
 	}
 
 	/**
@@ -91,7 +94,6 @@ public class XLong extends NewtonStreamedObjectFormat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see com.mmw.newton.nsof.NewtonStreamedObjectFormat#getId()
 	 */
 	@Override

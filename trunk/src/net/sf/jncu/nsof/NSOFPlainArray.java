@@ -9,13 +9,11 @@ import java.io.OutputStream;
 
 /**
  * @author Moshe
- * 
  */
 public class NSOFPlainArray extends NSOFArray {
 
 	/**
 	 * Constructs a new object.
-	 * 
 	 */
 	public NSOFPlainArray() {
 		super();
@@ -23,8 +21,8 @@ public class NSOFPlainArray extends NSOFArray {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
+	 * @see
+	 * com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
@@ -33,23 +31,35 @@ public class NSOFPlainArray extends NSOFArray {
 		XLong xlong = new XLong();
 		xlong.decode(in, decoder);
 		int len = xlong.getValue();
-		NSOFObject[] slots = new NSOFObject[len];
+		NSOFObject[] entries = new NSOFObject[len];
 		// Slot values in ascending order (objects)
 		for (int i = 0; i < len; i++) {
-			slots[i] = decoder.decode(in);
+			entries[i] = decoder.decode(in);
 		}
-		setValue(slots);
+		setValue(entries);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
+	 * @see
+	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
 	 */
 	@Override
 	public void encode(OutputStream out) throws IOException {
-		// TODO Auto-generated method stub
+		out.write(PLAIN_ARRAY);
 
+		XLong xlong;
+		NSOFObject[] entries = getValue();
+		if (entries == null) {
+			xlong = new XLong(0);
+			xlong.encode(out);
+		} else {
+			int length = entries.length;
+			xlong = new XLong(length);
+			xlong.encode(out);
+			for (int i = 0; i < length; i++) {
+				entries[i].encode(out);
+			}
+		}
 	}
-
 }
