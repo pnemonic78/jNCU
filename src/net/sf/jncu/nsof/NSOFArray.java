@@ -9,15 +9,13 @@ import java.io.OutputStream;
 
 /**
  * @author Moshe
- * 
  */
 public class NSOFArray extends NSOFObject {
 
 	private NSOFObject[] value;
 
 	/**
-	 * Constructs a new object.
-	 * 
+	 * Constructs a new array.
 	 */
 	public NSOFArray() {
 		super();
@@ -25,8 +23,8 @@ public class NSOFArray extends NSOFObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
+	 * @see
+	 * com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
@@ -47,13 +45,12 @@ public class NSOFArray extends NSOFObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
+	 * @see
+	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
 	 */
 	@Override
 	public void encode(OutputStream out) throws IOException {
 		// TODO Auto-generated method stub
-
 	}
 
 	/**

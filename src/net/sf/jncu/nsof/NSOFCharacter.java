@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.jncu.newton.stream;
 
 import java.io.EOFException;
@@ -10,7 +7,6 @@ import java.io.OutputStream;
 
 /**
  * @author Moshe
- * 
  */
 public class NSOFCharacter extends NSOFObject {
 
@@ -19,8 +15,7 @@ public class NSOFCharacter extends NSOFObject {
 	private char value;
 
 	/**
-	 * Constructs a new object.
-	 * 
+	 * Constructs a new character.
 	 */
 	public NSOFCharacter() {
 		super();
@@ -28,8 +23,8 @@ public class NSOFCharacter extends NSOFObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
+	 * @see
+	 * com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
@@ -44,13 +39,13 @@ public class NSOFCharacter extends NSOFObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
+	 * @see
+	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
 	 */
 	@Override
 	public void encode(OutputStream out) throws IOException {
-		// TODO Auto-generated method stub
-
+		out.write(CHARACTER);
+		out.write(getValue() & 0xFF);
 	}
 
 	/**
@@ -74,7 +69,6 @@ public class NSOFCharacter extends NSOFObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -84,7 +78,6 @@ public class NSOFCharacter extends NSOFObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -94,5 +87,16 @@ public class NSOFCharacter extends NSOFObject {
 		value >>= 4;
 		char hex1 = HEX.charAt(value & 0x000F);
 		return "$\\" + hex1 + hex0;
+	}
+
+	/**
+	 * Decoder can test if the immediate is a character.
+	 * 
+	 * @param r
+	 *            the Ref of an Immediate.
+	 * @return true if a character.
+	 */
+	public static boolean isRefCharacter(int r) {
+		return (r & 0xF) == 0x6;
 	}
 }

@@ -107,4 +107,38 @@ public abstract class NewtonStreamedObjectFormat {
 		this.id = id;
 	}
 
+	/**
+	 * Read 4 bytes as an unsigned integer in network byte order (Big Endian).
+	 * 
+	 * @param in
+	 *            the input.
+	 * @return the number.
+	 * @throws IOException
+	 *             if read past buffer.
+	 */
+	protected int htonl(InputStream in) throws IOException {
+		int n24 = (in.read() & 0xFF) << 24;
+		int n16 = (in.read() & 0xFF) << 16;
+		int n08 = (in.read() & 0xFF) << 8;
+		int n00 = (in.read() & 0xFF) << 0;
+
+		return n24 | n16 | n08 | n00;
+	}
+
+	/**
+	 * Write 4 bytes as an unsigned integer in network byte order (Big Endian).
+	 * 
+	 * @param out
+	 *            the output.
+	 * @param frame
+	 *            the frame data.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected void ntohl(int n, OutputStream out) throws IOException {
+		out.write((n >> 24) & 0xFF);
+		out.write((n >> 16) & 0xFF);
+		out.write((n >> 8) & 0xFF);
+		out.write((n >> 0) & 0xFF);
+	}
 }

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.jncu.newton.stream;
 
 import java.io.EOFException;
@@ -10,13 +7,11 @@ import java.io.OutputStream;
 
 /**
  * @author Moshe
- * 
  */
 public class NSOFUnicodeCharacter extends NSOFCharacter {
 
 	/**
-	 * Constructs a new object.
-	 * 
+	 * Constructs a new Unicode character.
 	 */
 	public NSOFUnicodeCharacter() {
 		super();
@@ -24,8 +19,8 @@ public class NSOFUnicodeCharacter extends NSOFCharacter {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
+	 * @see
+	 * com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
@@ -38,23 +33,24 @@ public class NSOFUnicodeCharacter extends NSOFCharacter {
 			throw new EOFException();
 		}
 		int c = ((hi & 0xFF) << 8) | ((lo & 0xFF) << 0);
-		setValue((char) (c & 0xFFFF));
+		setValue((char) c);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
+	 * @see
+	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
 	 */
 	@Override
 	public void encode(OutputStream out) throws IOException {
-		// TODO Auto-generated method stub
-
+		out.write(UNICODE_CHARACTER);
+		int val = getValue();
+		out.write((val >> 8) & 0xFF);
+		out.write((val >> 0) & 0xFF);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

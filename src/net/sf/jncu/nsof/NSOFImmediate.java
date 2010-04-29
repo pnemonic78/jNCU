@@ -22,12 +22,11 @@ public class NSOFImmediate extends NSOFObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
+	 * @see
+	 * com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
-		setValue(0);
 		// Immediate Ref (xlong)
 		XLong xlong = new XLong();
 		xlong.decode(in, decoder);
@@ -36,12 +35,13 @@ public class NSOFImmediate extends NSOFObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
+	 * @see
+	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
 	 */
 	@Override
 	public void encode(OutputStream out) throws IOException {
-		// TODO Auto-generated method stub
+		out.write(IMMEDIATE);
+		out.write(getValue());
 	}
 
 	/**
@@ -65,7 +65,6 @@ public class NSOFImmediate extends NSOFObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
