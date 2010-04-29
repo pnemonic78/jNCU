@@ -29,6 +29,9 @@ public class DCmdRequestToDock extends DockCommandFromNewton {
 	 */
 	public static final String COMMAND = "rtdk";
 
+	/** The protocol version. */
+	public static final int kProtocolVersion = 9;
+
 	private int protocol;
 
 	/**
@@ -61,7 +64,7 @@ public class DCmdRequestToDock extends DockCommandFromNewton {
 	protected void decodeData(InputStream data) throws IOException {
 		int protocol = htonl(data);
 		setProtocol(protocol);
-		if (protocol != 9) {
+		if (protocol != kProtocolVersion) {
 			throw new ProtocolException();
 		}
 	}

@@ -19,6 +19,7 @@ import net.sf.jncu.cdil.ServiceNotSupportedException;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
+import net.sf.jncu.protocol.v2_0.session.DCmdDesktopInfo;
 import net.sf.jncu.protocol.v2_0.session.DCmdInitiateDocking;
 import net.sf.jncu.protocol.v2_0.session.DCmdNewtonName;
 import net.sf.jncu.protocol.v2_0.session.DockCommandSession;
@@ -147,7 +148,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		System.arraycopy(b, offset, data, 0, count);
 		packet.setData(data);
 		packet.setSequence(++sequence);
-		packetSendAndAcknowledge(packet);
+		sendAndAcknowledge(packet);
 	}
 
 	@Override
@@ -163,7 +164,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	@Override
 	protected void disconnectImpl() throws PlatformException, TimeoutException {
 		MNPLinkDisconnectPacket packet = (MNPLinkDisconnectPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LD);
-		packetSendAndAcknowledge(packet);
+		sendAndAcknowledge(packet);
 
 		super.disconnectImpl();
 		port.close();
@@ -191,7 +192,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 					reply.setMaxInfoLength(lr.getMaxInfoLength());
 					reply.setMaxOutstanding(lr.getMaxOutstanding());
 					reply.setTransmitted(lr.getTransmitted());
-					packetSendAndAcknowledge(reply);
+					sendAndAcknowledge(reply);
 					setState(State.HANDSHAKE_LR_RECEIVED);
 				}
 				break;
@@ -207,7 +208,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 					MNPLinkAcknowledgementPacket ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
 					ack.setSequence(lt.getSequence());
 					ack.setCredit((byte) 7);
-					packetSendAndAcknowledge(ack);
+					sendAndAcknowledge(ack);
 
 					byte[] data = lt.getData();
 					if (!DockCommandFromNewton.isCommand(data)) {
@@ -221,10 +222,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 
 					DCmdInitiateDocking cmdReply = (DCmdInitiateDocking) DockCommandFactory.getInstance().create(DCmdInitiateDocking.COMMAND);
 					cmdReply.setSession(DCmdInitiateDocking.SESSION_SETTING_UP);
-					MNPLinkTransferPacket reply = (MNPLinkTransferPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LT);
-					reply.setSequence(++sequence);
-					reply.setData(cmdReply.getPayload());
-					packetSendAndAcknowledge(reply);
+					sendCommand(cmdReply);
 					setState(State.HANDSHAKE_RTDK_RECEIVED);
 				}
 				break;
@@ -240,7 +238,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 					MNPLinkAcknowledgementPacket ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
 					ack.setSequence(lt.getSequence());
 					ack.setCredit((byte) 7);
-					packetSendAndAcknowledge(ack);
+					sendAndAcknowledge(ack);
 
 					byte[] data = lt.getData();
 					if (!DockCommandFromNewton.isCommand(data)) {
@@ -251,14 +249,10 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 						// Ignore erroneous command
 						return;
 					}
-					// TODO keep the Newton Name for getter.
+					// TODO keep the Newton Name for later use.
 
-					DockCommandToNewton cmdReply = (DockCommandToNewton) DockCommandFactory.getInstance().create(
-							DockCommandSession.DesktopToNewton.kDDesktopInfo);
-					MNPLinkTransferPacket reply = (MNPLinkTransferPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LT);
-					reply.setSequence(++sequence);
-					reply.setData(cmdReply.getPayload());
-					packetSendAndAcknowledge(reply);
+					DCmdDesktopInfo cmdReply = (DCmdDesktopInfo) DockCommandFactory.getInstance().create(DCmdDesktopInfo.COMMAND);
+					sendCommand(cmdReply);
 					setState(State.HANDSHAKE_NAME_RECEIVED);
 				}
 				break;
@@ -274,7 +268,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 					MNPLinkAcknowledgementPacket ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
 					ack.setSequence(lt.getSequence());
 					ack.setCredit((byte) 7);
-					packetSendAndAcknowledge(ack);
+					sendAndAcknowledge(ack);
 
 					byte[] data = lt.getData();
 					if (!DockCommandFromNewton.isCommand(data)) {
@@ -285,14 +279,11 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 						// Ignore erroneous command
 						return;
 					}
-					// TODO keep the Newton Info for getter.
+					// TODO keep the Newton Info for later use.
 
 					DockCommandToNewton cmdReply = (DockCommandToNewton) DockCommandFactory.getInstance().create(
 							DockCommandSession.DesktopToNewton.kDWhichIcons);
-					MNPLinkTransferPacket reply = (MNPLinkTransferPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LT);
-					reply.setSequence(++sequence);
-					reply.setData(cmdReply.getPayload());
-					packetSendAndAcknowledge(reply);
+					sendCommand(cmdReply);
 					setState(State.HANDSHAKE_NAME_RECEIVED);
 				}
 				break;
@@ -311,7 +302,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 					MNPLinkAcknowledgementPacket ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
 					ack.setSequence(lt.getSequence());
 					ack.setCredit((byte) 7);
-					packetSendAndAcknowledge(ack);
+					sendAndAcknowledge(ack);
 
 					byte[] data = lt.getData();
 					if (!DockCommandFromNewton.isCommand(data)) {
@@ -369,7 +360,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	 * @throws TimeoutException
 	 *             if timeout occurs.
 	 */
-	private void packetSendAndAcknowledge(MNPPacket packet) throws TimeoutException {
+	private void sendAndAcknowledge(MNPPacket packet) throws TimeoutException {
 		byte acknowledge = sequence;
 		long timeout = 2000L;
 		long retry = timeout * 5;
@@ -440,4 +431,10 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		}
 	}
 
+	private void sendCommand(DockCommandToNewton cmd) throws TimeoutException {
+		MNPLinkTransferPacket packet = (MNPLinkTransferPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LT);
+		packet.setSequence(++sequence);
+		packet.setData(cmd.getPayload());
+		sendAndAcknowledge(packet);
+	}
 }
