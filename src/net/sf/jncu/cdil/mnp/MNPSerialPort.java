@@ -25,7 +25,7 @@ public class MNPSerialPort {
 	public static final int BAUD_57600 = 57600;
 	public static final int BAUD_115200 = BAUD_57600 << 1;
 
-	private final SerialPort port;
+	private final SerialPort ser;
 	private MNPSerialPortReader reader;
 	private MNPSerialPortWriter writer;
 
@@ -68,7 +68,7 @@ public class MNPSerialPort {
 	 */
 	public MNPSerialPort(SerialPort port, int baud) throws TooManyListenersException, IOException, UnsupportedCommOperationException {
 		super();
-		this.port = port;
+		this.ser = port;
 		port.setSerialPortParams(baud, port.getDataBits(), port.getStopBits(), port.getParity());
 		this.reader = new MNPSerialPortReader(port);
 		this.writer = new MNPSerialPortWriter(port);
@@ -97,15 +97,19 @@ public class MNPSerialPort {
 	 */
 	public void close() {
 		try {
-			reader.close();
-			writer.close();
+			if (reader != null) {
+				reader.close();
+			}
+			if (writer != null) {
+				writer.close();
+			}
 		} catch (IOException ioe) {
 			// ignore
 		}
 		reader = null;
 		writer = null;
-		port.removeEventListener();
-		port.close();
+		ser.removeEventListener();
+		ser.close();
 	}
 
 	/**
@@ -114,7 +118,7 @@ public class MNPSerialPort {
 	 * @return the port.
 	 */
 	public SerialPort getPort() {
-		return port;
+		return ser;
 	}
 
 	/**
