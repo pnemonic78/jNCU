@@ -27,15 +27,4 @@ public class NSOFMagicPointer extends NSOFImmediate {
 		// TODO Auto-generated method stub
 		super.encode(out);
 	}
-
-	/**
-	 * Decoder can test if the immediate is an integer.
-	 * 
-	 * @param r
-	 *            the Ref of an Immediate.
-	 * @return true if an integer.
-	 */
-	public static boolean isRefMagicPointer(int r) {
-		return (r & 0x3) == 0x3;
-	}
 }

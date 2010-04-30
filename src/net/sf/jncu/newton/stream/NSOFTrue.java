@@ -29,15 +29,4 @@ public class NSOFTrue extends NSOFImmediate {
 		XLong xlong = new XLong(0x1A);
 		xlong.encode(out);
 	}
-
-	/**
-	 * Decoder can test if the immediate is TRUE.
-	 * 
-	 * @param r
-	 *            the Ref of an Immediate.
-	 * @return true if TRUE.
-	 */
-	public static boolean isRefTrue(int r) {
-		return (r == 0x1A);
-	}
 }

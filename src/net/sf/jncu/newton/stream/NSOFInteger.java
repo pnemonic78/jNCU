@@ -29,15 +29,4 @@ public class NSOFInteger extends NSOFImmediate {
 		XLong xlong = new XLong(getValue() << 2);
 		xlong.encode(out);
 	}
-
-	/**
-	 * Decoder can test if the immediate is an integer.
-	 * 
-	 * @param r
-	 *            the Ref of an Immediate.
-	 * @return true if an integer.
-	 */
-	public static boolean isRefInteger(int r) {
-		return (r & 0x3) == 0x0;
-	}
 }
