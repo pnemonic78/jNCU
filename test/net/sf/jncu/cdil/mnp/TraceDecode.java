@@ -1,6 +1,5 @@
 package net.sf.jncu.cdil.mnp;
 
-import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileReader;
@@ -140,13 +139,6 @@ public class TraceDecode {
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
 			}
-		}
-
-		private void processPayload(char direction, byte[] payload) throws IOException {
-			if ((payload == null) || (payload.length == 0)) {
-				return;
-			}
-			processPayload(direction, new ByteArrayInputStream(payload));
 		}
 
 		private void processPayload(char direction, InputStream in) throws IOException {

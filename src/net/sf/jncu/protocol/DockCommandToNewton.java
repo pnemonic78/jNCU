@@ -81,7 +81,6 @@ public abstract class DockCommandToNewton extends DockCommand {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	@SuppressWarnings("unused")
 	protected ByteArrayOutputStream getCommandData() throws IOException {
 		return null;
 	}
