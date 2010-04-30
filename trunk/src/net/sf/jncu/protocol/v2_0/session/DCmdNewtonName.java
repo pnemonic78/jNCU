@@ -47,7 +47,7 @@ public class DCmdNewtonName extends DockCommandFromNewton {
 	public static final String COMMAND = "name";
 
 	private String name;
-	private VersionInfo version;
+	private NewtonInfo info;
 
 	/**
 	 * Creates a new command.
@@ -59,28 +59,33 @@ public class DCmdNewtonName extends DockCommandFromNewton {
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
 		int versionInfoLength = htonl(data);
-		version = new VersionInfo();
-		version.newtonUniqueId = htonl(data);
-		version.manufacturerId = htonl(data);
-		version.machineType = htonl(data);
-		version.romVersion = htonl(data);
-		version.romStage = htonl(data);
-		version.ramSize = htonl(data);
-		version.screenHeight = htonl(data);
-		version.screenWidth = htonl(data);
-		version.systemUpdateVersion = htonl(data);
-		version.objectSystemVersion = htonl(data);
-		version.internalStoreSignature = htonl(data);
-		version.screenResolutionVertical = htonl(data);
-		version.screenResolutionHorizontal = htonl(data);
-		version.screenDepth = htonl(data);
+		info = new NewtonInfo();
+		info.newtonId = htonl(data);
+		info.manufacturerId = htonl(data);
+		info.machineType = htonl(data);
+		info.romVersion = htonl(data);
+		info.romStage = htonl(data);
+		info.ramSize = htonl(data);
+		info.screenHeight = htonl(data);
+		info.screenWidth = htonl(data);
+		info.patchVersion = htonl(data);
+		info.objectSystemVersion = htonl(data);
+		info.internalStoreSignature = htonl(data);
+		info.screenResolutionVertical = htonl(data);
+		info.screenResolutionHorizontal = htonl(data);
+		info.screenDepth = htonl(data);
 
 		final int versionSize = 14 * LENGTH_WORD;
 		if (versionInfoLength > versionSize) {
-			int versionOtherLength = (versionInfoLength - versionSize) / LENGTH_WORD;
-			version.other = new int[versionOtherLength];
-			for (int i = 0; i < versionOtherLength; i++) {
-				version.other[i] = htonl(data);
+			info.systemFlags = htonl(data);
+
+			if ((info.systemFlags & 0x1) == 0x1) {
+				long serHi = htonl(data) & 0xFFFFFFFFL;
+				long serLo = htonl(data) & 0xFFFFFFFFL;
+				info.serialNumber = (serHi << 32) | serLo;
+			}
+			if ((info.systemFlags & 0x2) == 0x2) {
+				info.targetProtocol = htonl(data);
 			}
 		}
 
