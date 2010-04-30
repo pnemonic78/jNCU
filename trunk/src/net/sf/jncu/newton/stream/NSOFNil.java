@@ -35,16 +35,4 @@ public class NSOFNil extends NSOFObject {
 	public void encode(OutputStream out) throws IOException {
 		out.write(NIL);
 	}
-
-	/**
-	 * Decoder can test if the immediate is a NIL.
-	 * 
-	 * @param r
-	 *            the Ref of an Immediate.
-	 * @return true if NIL.
-	 */
-	public static boolean isRefNil(int r) {
-		return r == 0x2;
-	}
-
 }

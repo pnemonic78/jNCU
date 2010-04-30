@@ -88,15 +88,4 @@ public class NSOFCharacter extends NSOFObject {
 		char hex1 = HEX.charAt(value & 0x000F);
 		return "$\\" + hex1 + hex0;
 	}
-
-	/**
-	 * Decoder can test if the immediate is a character.
-	 * 
-	 * @param r
-	 *            the Ref of an Immediate.
-	 * @return true if a character.
-	 */
-	public static boolean isRefCharacter(int r) {
-		return (r & 0xF) == 0x6;
-	}
 }

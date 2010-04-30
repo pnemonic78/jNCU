@@ -11,7 +11,19 @@ import java.io.OutputStream;
  */
 public class NSOFImmediate extends NSOFObject {
 
+	/** Integer immediate. */
+	public static final int IMMEDIATE_INTEGER = 0x0;
+	/** Character immediate. */
+	public static final int IMMEDIATE_CHARACTER = 0x6;
+	/** TRUE immediate. */
+	public static final int IMMEDIATE_TRUE = 0xA;
+	/** NIL immediate. */
+	public static final int IMMEDIATE_NIL = 0x2;
+	/** Magic Pointer immediate. */
+	public static final int IMMEDIATE_MAGIC_POINTER = 0x3;
+
 	private int value;
+	private int type = IMMEDIATE_INTEGER;
 
 	/**
 	 * Constructs a new immediate.
@@ -30,7 +42,28 @@ public class NSOFImmediate extends NSOFObject {
 		// Immediate Ref (xlong)
 		XLong xlong = new XLong();
 		xlong.decode(in, decoder);
-		setValue(xlong.getValue());
+		int ref = xlong.getValue();
+		int val = ref;
+		int type = -1;
+
+		if (isRefCharacter(ref)) {
+			type = IMMEDIATE_CHARACTER;
+			val = (ref >> 4) & 0xFFFF;
+		} else if (isRefInteger(ref)) {
+			type = IMMEDIATE_INTEGER;
+			val = ref >> 2;
+		} else if (isRefMagicPointer(ref)) {
+			type = IMMEDIATE_MAGIC_POINTER;
+			val = ref >> 2;
+		} else if (isRefNil(ref)) {
+			type = IMMEDIATE_NIL;
+			val = 0;
+		} else if (isRefTrue(ref)) {
+			type = IMMEDIATE_TRUE;
+			val = 1;
+		}
+		setType(type);
+		setValue(val);
 	}
 
 	/*
@@ -41,7 +74,29 @@ public class NSOFImmediate extends NSOFObject {
 	@Override
 	public void encode(OutputStream out) throws IOException {
 		out.write(IMMEDIATE);
-		out.write(getValue());
+		XLong xlong = new XLong();
+		int val = getValue();
+		switch (type) {
+		case IMMEDIATE_CHARACTER:
+			xlong.setValue((val << 4) | 0x6);
+			break;
+		case IMMEDIATE_INTEGER:
+			xlong.setValue(val << 2);
+			break;
+		case IMMEDIATE_MAGIC_POINTER:
+			xlong.setValue((val << 2) | 0x3);
+			break;
+		case IMMEDIATE_NIL:
+			xlong.setValue(0x2);
+			break;
+		case IMMEDIATE_TRUE:
+			xlong.setValue(0x1A);
+			break;
+		default:
+			xlong.setValue(val);
+			break;
+		}
+		xlong.encode(out);
 	}
 
 	/**
@@ -70,5 +125,134 @@ public class NSOFImmediate extends NSOFObject {
 	@Override
 	public int hashCode() {
 		return value;
+	}
+
+	/**
+	 * Get the type.
+	 * 
+	 * @return the type.
+	 */
+	public int getType() {
+		return type;
+	}
+
+	/**
+	 * Set the type.
+	 * 
+	 * @param type
+	 *            the type.
+	 */
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	/**
+	 * Decoder can test if the immediate is a character.
+	 * 
+	 * @param r
+	 *            the Ref of an Immediate.
+	 * @return true if a character.
+	 */
+	protected boolean isRefCharacter(int r) {
+		return (r & 0xF) == 0x6;
+	}
+
+	/**
+	 * Decoder can test if the immediate is an integer.
+	 * 
+	 * @param r
+	 *            the Ref of an Immediate.
+	 * @return true if an integer.
+	 */
+	protected boolean isRefInteger(int r) {
+		return (r & 0x3) == 0x0;
+	}
+
+	/**
+	 * Decoder can test if the immediate is an integer.
+	 * 
+	 * @param r
+	 *            the Ref of an Immediate.
+	 * @return true if an integer.
+	 */
+	protected boolean isRefMagicPointer(int r) {
+		return (r & 0x3) == 0x3;
+	}
+
+	/**
+	 * Decoder can test if the immediate is a NIL.
+	 * 
+	 * @param r
+	 *            the Ref of an Immediate.
+	 * @return true if NIL.
+	 */
+	protected boolean isRefNil(int r) {
+		return r == 0x2;
+	}
+
+	/**
+	 * Decoder can test if the immediate is TRUE.
+	 * 
+	 * @param r
+	 *            the Ref of an Immediate.
+	 * @return true if TRUE.
+	 */
+	protected boolean isRefTrue(int r) {
+		return (r == 0x1A);
+	}
+
+	/**
+	 * Decoder can test if the immediate is a character.
+	 * 
+	 * @param r
+	 *            the Ref of an Immediate.
+	 * @return true if a character.
+	 */
+	public boolean isCharacter() {
+		return type == IMMEDIATE_CHARACTER;
+	}
+
+	/**
+	 * Decoder can test if the immediate is an integer.
+	 * 
+	 * @param r
+	 *            the Ref of an Immediate.
+	 * @return true if an integer.
+	 */
+	public boolean isInteger() {
+		return type == IMMEDIATE_INTEGER;
+	}
+
+	/**
+	 * Decoder can test if the immediate is an integer.
+	 * 
+	 * @param r
+	 *            the Ref of an Immediate.
+	 * @return true if an integer.
+	 */
+	public boolean isMagicPointer() {
+		return type == IMMEDIATE_MAGIC_POINTER;
+	}
+
+	/**
+	 * Decoder can test if the immediate is a NIL.
+	 * 
+	 * @param r
+	 *            the Ref of an Immediate.
+	 * @return true if NIL.
+	 */
+	public boolean isNil() {
+		return type == IMMEDIATE_NIL;
+	}
+
+	/**
+	 * Decoder can test if the immediate is TRUE.
+	 * 
+	 * @param r
+	 *            the Ref of an Immediate.
+	 * @return true if TRUE.
+	 */
+	public boolean isTrue() {
+		return type == IMMEDIATE_TRUE;
 	}
 }
