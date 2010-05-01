@@ -24,7 +24,7 @@ public class NSOFMagicPointer extends NSOFImmediate {
 
 	@Override
 	public void encode(OutputStream out) throws IOException {
-		// TODO Auto-generated method stub
-		super.encode(out);
+		out.write(IMMEDIATE);
+		XLong.encode((getValue() << 2) | 0x3, out);
 	}
 }

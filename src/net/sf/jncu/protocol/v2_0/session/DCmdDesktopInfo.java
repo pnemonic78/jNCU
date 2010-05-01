@@ -100,9 +100,7 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 		ByteArrayOutputStream data = new ByteArrayOutputStream();
 		ntohl(PROTOCOL_VERSION, data);
 		ntohl(desktopType, data);
-		long key = getEncryptedKey();
-		ntohl((int) ((key >> 32) & 0xFFFFFFFFL), data);
-		ntohl((int) (key & 0xFFFFFFFFL), data);
+		ntohl(getEncryptedKey(), data);
 		ntohl(sessionType, data);
 		ntohl(selectiveSync ? TRUE : FALSE, data);
 		data.write(NewtonStreamedObjectFormat.VERSION);

@@ -26,7 +26,6 @@ public class NSOFTrue extends NSOFImmediate {
 	@Override
 	public void encode(OutputStream out) throws IOException {
 		out.write(IMMEDIATE);
-		XLong xlong = new XLong(0x1A);
-		xlong.encode(out);
+		XLong.encode(0x1A, out);
 	}
 }

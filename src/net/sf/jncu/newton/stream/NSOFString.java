@@ -21,6 +21,17 @@ public class NSOFString extends NSOFObject {
 		super();
 	}
 
+	/**
+	 * Constructs a new string.
+	 * 
+	 * @param value
+	 *            the value.
+	 */
+	public NSOFString(String value) {
+		super();
+		setValue(value);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -51,15 +62,12 @@ public class NSOFString extends NSOFObject {
 	public void encode(OutputStream out) throws IOException {
 		out.write(STRING);
 		String s = getValue();
-		XLong xlong = new XLong();
 		if (s == null) {
-			xlong.setValue(0);
-			xlong.encode(out);
+			XLong.encode(0, out);
 		} else {
 			int len = s.length();
-			// 2-bytes per character + null-termintated
-			xlong.setValue((len + 1) << 1);
-			xlong.encode(out);
+			// 2-bytes per character + null-terminated
+			XLong.encode((len + 1) << 1, out);
 			out.write(s.getBytes("UTF-16"));
 			out.write(0);
 			out.write(0);

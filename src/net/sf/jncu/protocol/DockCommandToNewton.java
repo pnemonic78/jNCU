@@ -101,4 +101,19 @@ public abstract class DockCommandToNewton extends DockCommand {
 		out.write((n >> 8) & 0xFF);
 		out.write((n >> 0) & 0xFF);
 	}
+
+	/**
+	 * Write 4 bytes as an unsigned integer in network byte order (Big Endian).
+	 * 
+	 * @param out
+	 *            the output.
+	 * @param frame
+	 *            the frame data.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected void ntohl(long n, OutputStream out) throws IOException {
+		ntohl((int) ((n >> 32) & 0xFFFFFFFFL), out);
+		ntohl((int) ((n >> 0) & 0xFFFFFFFFL), out);
+	}
 }

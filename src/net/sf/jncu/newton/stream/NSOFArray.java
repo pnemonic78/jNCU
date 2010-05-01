@@ -13,6 +13,7 @@ import java.io.OutputStream;
 public class NSOFArray extends NSOFObject {
 
 	private NSOFObject[] value;
+	private NSOFSymbol arrayClass;
 
 	/**
 	 * Constructs a new array.
@@ -50,7 +51,18 @@ public class NSOFArray extends NSOFObject {
 	 */
 	@Override
 	public void encode(OutputStream out) throws IOException {
-		// TODO Auto-generated method stub
+		out.write(ARRAY);
+
+		NSOFObject[] slots = getValue();
+		int length = (slots == null) ? 0 : slots.length;
+
+		XLong.encode(length, out);
+
+		arrayClass.encode(out);
+
+		for (int i = 0; i < length; i++) {
+			slots[i].encode(out);
+		}
 	}
 
 	/**
@@ -72,4 +84,32 @@ public class NSOFArray extends NSOFObject {
 		this.value = value;
 	}
 
+	/**
+	 * Set the array class.
+	 * 
+	 * @param arrayClass
+	 *            the array class.
+	 */
+	public void setArrayClass(NSOFSymbol arrayClass) {
+		this.arrayClass = arrayClass;
+	}
+
+	/**
+	 * Set the array class.
+	 * 
+	 * @param arrayClass
+	 *            the array class.
+	 */
+	public void setArrayClass(String arrayClass) {
+		setArrayClass(new NSOFSymbol(arrayClass));
+	}
+
+	/**
+	 * Get the array class.
+	 * 
+	 * @return the array class.
+	 */
+	public NSOFSymbol getArrayClass() {
+		return arrayClass;
+	}
 }
