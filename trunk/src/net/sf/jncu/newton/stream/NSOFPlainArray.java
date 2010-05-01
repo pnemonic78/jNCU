@@ -48,17 +48,14 @@ public class NSOFPlainArray extends NSOFArray {
 	public void encode(OutputStream out) throws IOException {
 		out.write(PLAIN_ARRAY);
 
-		XLong xlong;
-		NSOFObject[] entries = getValue();
-		if (entries == null) {
-			xlong = new XLong(0);
-			xlong.encode(out);
+		NSOFObject[] slots = getValue();
+		if (slots == null) {
+			XLong.encode(0, out);
 		} else {
-			int length = entries.length;
-			xlong = new XLong(length);
-			xlong.encode(out);
+			int length = slots.length;
+			XLong.encode(length, out);
 			for (int i = 0; i < length; i++) {
-				entries[i].encode(out);
+				slots[i].encode(out);
 			}
 		}
 	}

@@ -26,7 +26,6 @@ public class NSOFInteger extends NSOFImmediate {
 	@Override
 	public void encode(OutputStream out) throws IOException {
 		out.write(IMMEDIATE);
-		XLong xlong = new XLong(getValue() << 2);
-		xlong.encode(out);
+		XLong.encode(getValue() << 2, out);
 	}
 }

@@ -74,29 +74,27 @@ public class NSOFImmediate extends NSOFObject {
 	@Override
 	public void encode(OutputStream out) throws IOException {
 		out.write(IMMEDIATE);
-		XLong xlong = new XLong();
+
 		int val = getValue();
+		int ref = val;
 		switch (type) {
 		case IMMEDIATE_CHARACTER:
-			xlong.setValue((val << 4) | 0x6);
+			ref = (val << 4) | 0x6;
 			break;
 		case IMMEDIATE_INTEGER:
-			xlong.setValue(val << 2);
+			ref = val << 2;
 			break;
 		case IMMEDIATE_MAGIC_POINTER:
-			xlong.setValue((val << 2) | 0x3);
+			ref = (val << 2) | 0x3;
 			break;
 		case IMMEDIATE_NIL:
-			xlong.setValue(0x2);
+			ref = 0x2;
 			break;
 		case IMMEDIATE_TRUE:
-			xlong.setValue(0x1A);
-			break;
-		default:
-			xlong.setValue(val);
+			ref = 0x1A;
 			break;
 		}
-		xlong.encode(out);
+		XLong.encode(ref, out);
 	}
 
 	/**

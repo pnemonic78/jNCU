@@ -16,6 +16,16 @@ public class NSOFSymbol extends NSOFString {
 		super();
 	}
 
+	/**
+	 * Constructs a new symbol.
+	 * 
+	 * @param name
+	 *            the symbol name.
+	 */
+	public NSOFSymbol(String name) {
+		super(name);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -43,8 +53,7 @@ public class NSOFSymbol extends NSOFString {
 		out.write(SYMBOL);
 
 		String name = getValue();
-		XLong xlong = new XLong(name.length());
-		xlong.encode(out);
+		XLong.encode(name.length(), out);
 		out.write(name.getBytes("US-ASCII"));
 	}
 

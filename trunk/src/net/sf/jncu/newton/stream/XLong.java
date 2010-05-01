@@ -60,12 +60,7 @@ public class XLong extends NewtonStreamedObjectFormat {
 	 */
 	@Override
 	public void encode(OutputStream out) throws IOException {
-		if (value < 0xFF) {
-			out.write(value & 0xFF);
-		} else {
-			out.write(0xFF);
-			ntohl(value, out);
-		}
+		encode(getValue(), out);
 	}
 
 	/**
@@ -99,5 +94,24 @@ public class XLong extends NewtonStreamedObjectFormat {
 	@Override
 	public int getId() {
 		return -1;
+	}
+
+	/**
+	 * Encode the XLong.
+	 * 
+	 * @param value
+	 *            the xlong value.
+	 * @param out
+	 *            the output stream.
+	 * @throws IOException
+	 *             if an encoding error occurs.
+	 */
+	public static void encode(int value, OutputStream out) throws IOException {
+		if (value < 0xFF) {
+			out.write(value & 0xFF);
+		} else {
+			out.write(0xFF);
+			ntohl(value, out);
+		}
 	}
 }

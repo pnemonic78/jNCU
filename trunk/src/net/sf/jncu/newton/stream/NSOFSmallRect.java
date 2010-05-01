@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.jncu.newton.stream;
 
 import java.io.EOFException;
@@ -14,11 +11,8 @@ import java.io.OutputStream;
 public class NSOFSmallRect extends NSOFObject {
 
 	private int top;
-
 	private int left;
-
 	private int bottom;
-
 	private int right;
 
 	/**
@@ -35,29 +29,27 @@ public class NSOFSmallRect extends NSOFObject {
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
-		setTop(0);
-		setLeft(0);
-		setBottom(0);
-		setRight(0);
-
 		// Top value (int)
 		int top = in.read();
 		if (top == -1) {
 			throw new EOFException();
 		}
 		setTop(top);
+
 		// Left value (int)
 		int left = in.read();
 		if (left == -1) {
 			throw new EOFException();
 		}
 		setLeft(left);
+
 		// Bottom value (int)
 		int bottom = in.read();
 		if (bottom == -1) {
 			throw new EOFException();
 		}
 		setBottom(bottom);
+
 		// Right value (int)
 		int right = in.read();
 		if (right == -1) {
@@ -73,8 +65,11 @@ public class NSOFSmallRect extends NSOFObject {
 	 */
 	@Override
 	public void encode(OutputStream out) throws IOException {
-		// TODO Auto-generated method stub
-
+		out.write(SMALL_RECT);
+		out.write(getTop());
+		out.write(getLeft());
+		out.write(getBottom());
+		out.write(getRight());
 	}
 
 	/**
@@ -97,6 +92,16 @@ public class NSOFSmallRect extends NSOFObject {
 	}
 
 	/**
+	 * Set the bottom.
+	 * 
+	 * @param bottom
+	 *            the bottom.
+	 */
+	public void setBottom(byte bottom) {
+		setBottom((int) bottom);
+	}
+
+	/**
 	 * Get the left.
 	 * 
 	 * @return the left
@@ -113,6 +118,16 @@ public class NSOFSmallRect extends NSOFObject {
 	 */
 	public void setLeft(int left) {
 		this.left = left & 0xFF;
+	}
+
+	/**
+	 * Set the left.
+	 * 
+	 * @param left
+	 *            the left.
+	 */
+	public void setLeft(byte left) {
+		setLeft((int) left);
 	}
 
 	/**
@@ -135,6 +150,16 @@ public class NSOFSmallRect extends NSOFObject {
 	}
 
 	/**
+	 * Set the right.
+	 * 
+	 * @param right
+	 *            the right.
+	 */
+	public void setRight(byte right) {
+		setRight((int) right);
+	}
+
+	/**
 	 * Get the top.
 	 * 
 	 * @return the top
@@ -151,6 +176,16 @@ public class NSOFSmallRect extends NSOFObject {
 	 */
 	public void setTop(int top) {
 		this.top = top & 0xFF;
+	}
+
+	/**
+	 * Set the top.
+	 * 
+	 * @param top
+	 *            the top.
+	 */
+	public void setTop(byte top) {
+		setTop((int) top);
 	}
 
 	/*
