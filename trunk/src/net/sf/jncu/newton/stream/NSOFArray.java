@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.jncu.newton.stream;
 
 import java.io.IOException;
@@ -8,6 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * Newton Streamed Object Format - Array.
+ * 
  * @author Moshe
  */
 public class NSOFArray extends NSOFObject {

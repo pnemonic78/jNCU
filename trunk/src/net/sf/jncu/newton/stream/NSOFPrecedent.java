@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.jncu.newton.stream;
 
 import java.io.IOException;
@@ -8,6 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * Newton Streamed Object Format - Precedent ID.
+ * 
  * @author Moshe
  */
 public class NSOFPrecedent extends NSOFObject {
@@ -15,7 +14,7 @@ public class NSOFPrecedent extends NSOFObject {
 	private int value;
 
 	/**
-	 * Constructs a new object.
+	 * Constructs a new precedent.
 	 */
 	public NSOFPrecedent() {
 		super();
@@ -40,7 +39,7 @@ public class NSOFPrecedent extends NSOFObject {
 	@Override
 	public void encode(OutputStream out) throws IOException {
 		out.write(PRECEDENT);
-		// TODO Auto-generated method stub
+		XLong.encode(getValue(), out);
 	}
 
 	/**

@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * Newton Streamed Object Format - Symbol.
+ * 
  * @author Moshe
  */
 public class NSOFSymbol extends NSOFString {

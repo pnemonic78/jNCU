@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * Newton Streamed Object Format - True.
+ * 
  * @author moshew
  */
 public class NSOFTrue extends NSOFImmediate {

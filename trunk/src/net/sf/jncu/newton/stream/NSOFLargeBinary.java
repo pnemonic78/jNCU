@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.jncu.newton.stream;
 
 import java.io.IOException;
@@ -8,12 +5,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * Newton Streamed Object Format - Large Binary.
+ * 
  * @author Moshe
  */
 public class NSOFLargeBinary extends NSOFBinaryObject {
 
 	/**
-	 * Constructs a new object.
+	 * Constructs a new large binary object.
 	 */
 	public NSOFLargeBinary() {
 		super();

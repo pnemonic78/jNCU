@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
+ * Newton Streamed Object Format decoder.
+ * 
  * @author Moshe
  */
 public class NSOFDecoder {
