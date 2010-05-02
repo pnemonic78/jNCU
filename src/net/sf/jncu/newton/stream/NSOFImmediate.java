@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * Immediate.
+ * Newton Streamed Object Format - Immediate.
  * 
  * @author Moshe
  */

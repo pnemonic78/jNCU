@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * Newton Streamed Object Format - Character.
+ * 
  * @author Moshe
  */
 public class NSOFCharacter extends NSOFObject {

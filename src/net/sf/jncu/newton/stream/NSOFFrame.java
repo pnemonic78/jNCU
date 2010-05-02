@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.jncu.newton.stream;
 
 import java.io.IOException;
@@ -10,6 +7,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
+ * Newton Streamed Object Format - Frame.
+ * 
  * @author Moshe
  */
 public class NSOFFrame extends NSOFObject {

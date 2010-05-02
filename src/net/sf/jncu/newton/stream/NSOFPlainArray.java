@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.jncu.newton.stream;
 
 import java.io.IOException;
@@ -8,12 +5,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * Newton Streamed Object Format - Plain Array.
+ * 
  * @author Moshe
  */
 public class NSOFPlainArray extends NSOFArray {
 
 	/**
-	 * Constructs a new object.
+	 * Constructs a new array.
 	 */
 	public NSOFPlainArray() {
 		super();

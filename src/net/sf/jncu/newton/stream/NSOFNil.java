@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * Newton Streamed Object Format - NIL.
+ * 
  * @author Moshe
  */
 public class NSOFNil extends NSOFObject {

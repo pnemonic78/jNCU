@@ -5,12 +5,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * Newton Streamed Object Format - Magic Pointer.
+ * 
  * @author moshew
  */
 public class NSOFMagicPointer extends NSOFImmediate {
 
 	/**
-	 *Creates a new magic pointer.
+	 * Creates a new magic pointer.
 	 */
 	public NSOFMagicPointer() {
 		super();
