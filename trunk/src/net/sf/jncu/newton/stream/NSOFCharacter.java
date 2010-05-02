@@ -47,6 +47,7 @@ public class NSOFCharacter extends NSOFObject {
 	@Override
 	public void encode(OutputStream out) throws IOException {
 		out.write(CHARACTER);
+		// Character code (byte)
 		out.write(getValue() & 0xFF);
 	}
 

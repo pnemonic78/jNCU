@@ -61,11 +61,13 @@ public class NSOFString extends NSOFObject {
 		out.write(STRING);
 		String s = getValue();
 		if (s == null) {
+			// Number of bytes in string (xlong)
 			XLong.encode(0, out);
 		} else {
-			int len = s.length();
+			// Number of bytes in string (xlong)
 			// 2-bytes per character + null-terminated
-			XLong.encode((len + 1) << 1, out);
+			XLong.encode((s.length() + 1) << 1, out);
+			// String (halfwords)
 			out.write(s.getBytes("UTF-16"));
 			out.write(0);
 			out.write(0);

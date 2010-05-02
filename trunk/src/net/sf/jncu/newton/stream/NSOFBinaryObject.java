@@ -38,8 +38,10 @@ public class NSOFBinaryObject extends NSOFObject {
 	 */
 	@Override
 	public void encode(OutputStream out) throws IOException {
-		// TODO Auto-generated method stub
-
+		out.write(BINARY_OBJECT);
+		// Number of bytes of data (xlong)
+		// Class (object)
+		// Data
 	}
 
 }

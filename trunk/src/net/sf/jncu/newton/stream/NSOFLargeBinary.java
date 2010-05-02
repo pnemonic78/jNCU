@@ -45,7 +45,15 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	@Override
 	public void encode(OutputStream out) throws IOException {
 		// TODO Auto-generated method stub
-
+		// Class (object)
+		// compressed? (non-zero means compressed) (byte)
+		// Number of bytes of data (long)
+		// Number of characters in compander name (long)
+		// Number of byte of compander parameters (long)
+		// Reserved (encode zero, ignore when decoding) (long0
+		// Compander name (bytes)
+		// Compander parameters (bytes)
+		// Data (bytes)
 	}
 
 }

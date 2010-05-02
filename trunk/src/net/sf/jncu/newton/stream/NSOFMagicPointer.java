@@ -1,7 +1,6 @@
 package net.sf.jncu.newton.stream;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -16,12 +15,6 @@ public class NSOFMagicPointer extends NSOFImmediate {
 	 */
 	public NSOFMagicPointer() {
 		super();
-	}
-
-	@Override
-	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
-		// TODO Auto-generated method stub
-		super.decode(in, decoder);
 	}
 
 	@Override

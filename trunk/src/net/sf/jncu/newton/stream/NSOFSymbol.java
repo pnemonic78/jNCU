@@ -53,7 +53,9 @@ public class NSOFSymbol extends NSOFString {
 		out.write(SYMBOL);
 
 		String name = getValue();
+		// Number of characters in name (xlong)
 		XLong.encode(name.length(), out);
+		// Name (bytes)
 		out.write(name.getBytes("US-ASCII"));
 	}
 

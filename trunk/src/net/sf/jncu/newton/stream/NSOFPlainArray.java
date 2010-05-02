@@ -25,7 +25,6 @@ public class NSOFPlainArray extends NSOFArray {
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
-		setValue(null);
 		// Number of slots (xlong)
 		int len = XLong.decodeValue(in);
 		NSOFObject[] entries = new NSOFObject[len];
@@ -47,10 +46,13 @@ public class NSOFPlainArray extends NSOFArray {
 
 		NSOFObject[] slots = getValue();
 		if (slots == null) {
+			// Number of slots (xlong)
 			XLong.encode(0, out);
 		} else {
+			// Number of slots (xlong)
 			int length = slots.length;
 			XLong.encode(length, out);
+			// Slot values in ascending order (objects)
 			for (int i = 0; i < length; i++) {
 				slots[i].encode(out);
 			}

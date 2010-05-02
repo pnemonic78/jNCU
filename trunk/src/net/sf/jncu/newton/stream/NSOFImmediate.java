@@ -73,6 +73,7 @@ public class NSOFImmediate extends NSOFObject {
 	public void encode(OutputStream out) throws IOException {
 		out.write(IMMEDIATE);
 
+		// Immediate Ref (xlong)
 		int val = getValue();
 		int ref = val;
 		switch (type) {

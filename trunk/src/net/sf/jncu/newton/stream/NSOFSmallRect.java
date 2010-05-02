@@ -31,28 +31,28 @@ public class NSOFSmallRect extends NSOFObject {
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
-		// Top value (int)
+		// Top value (byte)
 		int top = in.read();
 		if (top == -1) {
 			throw new EOFException();
 		}
 		setTop(top);
 
-		// Left value (int)
+		// Left value (byte)
 		int left = in.read();
 		if (left == -1) {
 			throw new EOFException();
 		}
 		setLeft(left);
 
-		// Bottom value (int)
+		// Bottom value (byte)
 		int bottom = in.read();
 		if (bottom == -1) {
 			throw new EOFException();
 		}
 		setBottom(bottom);
 
-		// Right value (int)
+		// Right value (byte)
 		int right = in.read();
 		if (right == -1) {
 			throw new EOFException();
@@ -68,9 +68,13 @@ public class NSOFSmallRect extends NSOFObject {
 	@Override
 	public void encode(OutputStream out) throws IOException {
 		out.write(SMALL_RECT);
+		// Top value (byte)
 		out.write(getTop());
+		// Left value (byte)
 		out.write(getLeft());
+		// Bottom value (byte)
 		out.write(getBottom());
+		// Right value (byte)
 		out.write(getRight());
 	}
 
