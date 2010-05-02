@@ -35,6 +35,17 @@ public class NSOFImmediate extends NSOFObject {
 		setNSClass(NS_CLASS);
 	}
 
+	/**
+	 * Constructs a new immediate.
+	 * 
+	 * @param value
+	 *            the value.
+	 */
+	public NSOFImmediate(int value) {
+		this();
+		setValue(value);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -124,7 +135,7 @@ public class NSOFImmediate extends NSOFObject {
 	 */
 	@Override
 	public int hashCode() {
-		return value;
+		return getValue();
 	}
 
 	/**
@@ -254,5 +265,10 @@ public class NSOFImmediate extends NSOFObject {
 	 */
 	public boolean isTrue() {
 		return type == IMMEDIATE_TRUE;
+	}
+
+	@Override
+	public String toString() {
+		return String.valueOf(getValue());
 	}
 }

@@ -89,4 +89,14 @@ public class NSOFArray extends NSOFObject {
 	public void setValue(NSOFObject[] value) {
 		this.value = value;
 	}
+
+	@Override
+	public String toString() {
+		return (value == null) ? null : value.toString();
+	}
+
+	@Override
+	public int hashCode() {
+		return (value == null) ? null : value.hashCode();
+	}
 }

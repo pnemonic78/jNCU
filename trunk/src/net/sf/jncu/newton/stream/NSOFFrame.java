@@ -109,6 +109,18 @@ public class NSOFFrame extends NSOFObject {
 	}
 
 	/**
+	 * Associates the specified slot value with the specified symbol.
+	 * 
+	 * @param key
+	 *            the slot symbol name.
+	 * @param value
+	 *            the slot value.
+	 */
+	public void put(String key, NSOFObject value) {
+		slots.put(new NSOFSymbol(key), value);
+	}
+
+	/**
 	 * Get the mapped slot value for the specified key.
 	 * 
 	 * @param key
@@ -120,6 +132,17 @@ public class NSOFFrame extends NSOFObject {
 	}
 
 	/**
+	 * Get the mapped slot value for the specified key.
+	 * 
+	 * @param key
+	 *            the slot symbol name.
+	 * @return the slot value - <tt>null</tt> otherwise.
+	 */
+	public NSOFObject get(String key) {
+		return slots.get(new NSOFSymbol(key));
+	}
+
+	/**
 	 * Remove a slot entry.
 	 * 
 	 * @param key
@@ -128,5 +151,10 @@ public class NSOFFrame extends NSOFObject {
 	 */
 	public NSOFObject remove(NSOFSymbol key) {
 		return slots.remove(key);
+	}
+
+	@Override
+	public String toString() {
+		return slots.toString();
 	}
 }

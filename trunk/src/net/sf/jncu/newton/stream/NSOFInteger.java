@@ -20,6 +20,17 @@ public class NSOFInteger extends NSOFImmediate {
 		setNSClass(NS_CLASS);
 	}
 
+	/**
+	 * Creates a new integer.
+	 * 
+	 * @param value
+	 *            the integer value.
+	 */
+	public NSOFInteger(int value) {
+		super(value);
+		setNSClass(NS_CLASS);
+	}
+
 	@Override
 	public void encode(OutputStream out) throws IOException {
 		out.write(IMMEDIATE);
