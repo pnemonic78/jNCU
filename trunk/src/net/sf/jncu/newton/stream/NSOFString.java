@@ -39,12 +39,8 @@ public class NSOFString extends NSOFObject {
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
-		setValue(null);
-
 		// Number of bytes in string (xlong)
-		XLong xlong = new XLong();
-		xlong.decode(in, decoder);
-		int numBytes = xlong.getValue();
+		int numBytes = XLong.decodeValue(in);
 		// String (halfwords)
 		int len = numBytes >> 1;
 		byte[] buf = new byte[len];

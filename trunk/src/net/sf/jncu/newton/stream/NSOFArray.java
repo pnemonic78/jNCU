@@ -31,9 +31,7 @@ public class NSOFArray extends NSOFObject {
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
 		setValue(null);
 		// Number of slots (xlong)
-		XLong xlong = new XLong();
-		xlong.decode(in, decoder);
-		int len = xlong.getValue();
+		int len = XLong.decodeValue(in);
 		NSOFObject[] slots = new NSOFObject[len];
 		// Class (object)
 		// TODO implement me
@@ -60,8 +58,10 @@ public class NSOFArray extends NSOFObject {
 
 		arrayClass.encode(out);
 
-		for (int i = 0; i < length; i++) {
-			slots[i].encode(out);
+		if (slots != null) {
+			for (int i = 0; i < length; i++) {
+				slots[i].encode(out);
+			}
 		}
 	}
 

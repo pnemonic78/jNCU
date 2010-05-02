@@ -28,11 +28,8 @@ public class NSOFPrecedent extends NSOFObject {
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
-		setValue(0);
 		// Precedent ID (xlong)
-		XLong xlong = new XLong();
-		xlong.decode(in, decoder);
-		setValue(xlong.getValue());
+		setValue(XLong.decodeValue(in));
 	}
 
 	/*
@@ -42,8 +39,8 @@ public class NSOFPrecedent extends NSOFObject {
 	 */
 	@Override
 	public void encode(OutputStream out) throws IOException {
+		out.write(PRECEDENT);
 		// TODO Auto-generated method stub
-
 	}
 
 	/**

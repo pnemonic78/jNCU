@@ -40,9 +40,7 @@ public class NSOFImmediate extends NSOFObject {
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Immediate Ref (xlong)
-		XLong xlong = new XLong();
-		xlong.decode(in, decoder);
-		int ref = xlong.getValue();
+		int ref = XLong.decodeValue(in);
 		int val = ref;
 		int type = -1;
 
