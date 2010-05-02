@@ -40,16 +40,7 @@ public class XLong extends NewtonStreamedObjectFormat {
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
-		// 0 <= value <= 254: unsigned byte
-		// else: byte 0xFF followed by signed long
-		int b = in.read();
-		if (b == -1) {
-			throw new EOFException();
-		}
-		if (b >= 0xFF) {
-			b = htonl(in);
-		}
-		setValue(b);
+		setValue(decodeValue(in));
 	}
 
 	/*
@@ -113,5 +104,40 @@ public class XLong extends NewtonStreamedObjectFormat {
 			out.write(0xFF);
 			ntohl(value, out);
 		}
+	}
+
+	/**
+	 * Decode an <tt>XLong</tt>.
+	 * 
+	 * @param in
+	 *            the input stream.
+	 * @return the xlong.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	public static XLong decode(InputStream in) throws IOException {
+		return new XLong(decodeValue(in));
+	}
+
+	/**
+	 * Decode an <tt>XLong</tt>.
+	 * 
+	 * @param in
+	 *            the input stream.
+	 * @return the xlong.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	public static int decodeValue(InputStream in) throws IOException {
+		// 0 <= value <= 254: unsigned byte
+		// else: byte 0xFF followed by signed long
+		int l = in.read();
+		if (l == -1) {
+			throw new EOFException();
+		}
+		if (l >= 0xFF) {
+			l = htonl(in);
+		}
+		return l;
 	}
 }

@@ -34,9 +34,7 @@ public class NSOFSymbol extends NSOFString {
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Number of characters in name (xlong)
-		XLong xlong = new XLong();
-		xlong.decode(in, decoder);
-		int len = xlong.getValue();
+		int len = XLong.decodeValue(in);
 		// Name (bytes)
 		byte[] name = new byte[len];
 		in.read(name);
