@@ -11,6 +11,8 @@ import java.io.OutputStream;
  */
 public class NSOFArray extends NSOFObject {
 
+	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("array");
+
 	private NSOFObject[] value;
 
 	/**
@@ -18,7 +20,7 @@ public class NSOFArray extends NSOFObject {
 	 */
 	public NSOFArray() {
 		super();
-		setNSClass("array");
+		setNSClass(NS_CLASS);
 	}
 
 	/*
@@ -33,8 +35,7 @@ public class NSOFArray extends NSOFObject {
 		NSOFObject[] slots = new NSOFObject[length];
 
 		// Class (object)
-		NSOFSymbol symbol = new NSOFSymbol();
-		symbol.decode(in, decoder);
+		NSOFSymbol symbol = (NSOFSymbol) decoder.decode(in);
 		setNSClass(symbol);
 
 		// Slot values in ascending order (objects)

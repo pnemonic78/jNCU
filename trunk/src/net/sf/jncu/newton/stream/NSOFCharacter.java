@@ -12,6 +12,8 @@ import java.io.OutputStream;
  */
 public class NSOFCharacter extends NSOFObject {
 
+	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("character");
+
 	protected static final String HEX = "0123456789ABDEF";
 
 	private char value;
@@ -21,7 +23,7 @@ public class NSOFCharacter extends NSOFObject {
 	 */
 	public NSOFCharacter() {
 		super();
-		setNSClass("character");
+		setNSClass(NS_CLASS);
 	}
 
 	/*

@@ -12,6 +12,8 @@ import java.io.OutputStream;
  */
 public class NSOFSmallRect extends NSOFObject {
 
+	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("smallRect");
+
 	private int top;
 	private int left;
 	private int bottom;
@@ -22,7 +24,7 @@ public class NSOFSmallRect extends NSOFObject {
 	 */
 	public NSOFSmallRect() {
 		super();
-		setNSClass("smallRect");
+		setNSClass(NS_CLASS);
 	}
 
 	/*

@@ -11,12 +11,14 @@ import java.io.OutputStream;
  */
 public class NSOFNil extends NSOFObject {
 
+	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("NIL");
+
 	/**
 	 * Constructs a new Nil.
 	 */
 	public NSOFNil() {
 		super();
-		setNSClass("NIL");
+		setNSClass(NS_CLASS);
 	}
 
 	/*

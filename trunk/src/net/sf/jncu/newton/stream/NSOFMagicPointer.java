@@ -10,12 +10,14 @@ import java.io.OutputStream;
  */
 public class NSOFMagicPointer extends NSOFImmediate {
 
+	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("magicptr");
+
 	/**
 	 * Creates a new magic pointer.
 	 */
 	public NSOFMagicPointer() {
 		super();
-		setNSClass("magicptr");
+		setNSClass(NS_CLASS);
 	}
 
 	@Override

@@ -9,7 +9,9 @@ import java.io.OutputStream;
  * 
  * @author Moshe
  */
-public class NSOFString extends NSOFObject {
+public class NSOFString extends NSOFObject implements Comparable<NSOFString> {
+
+	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("string");
 
 	protected static final String HEX = "0123456789ABDEF";
 
@@ -21,7 +23,7 @@ public class NSOFString extends NSOFObject {
 	 */
 	public NSOFString() {
 		super();
-		setNSClass("string");
+		setNSClass(NS_CLASS);
 	}
 
 	/**
@@ -155,5 +157,15 @@ public class NSOFString extends NSOFObject {
 			}
 		}
 		return toString;
+	}
+
+	@Override
+	public int compareTo(NSOFString that) {
+		String valThis = this.getValue();
+		String valThat = that.getValue();
+		if (valThis == null) {
+			return (valThat == null) ? 0 : -1;
+		}
+		return valThis.compareTo(valThat);
 	}
 }

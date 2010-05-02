@@ -11,12 +11,14 @@ import java.io.OutputStream;
  */
 public class NSOFPlainArray extends NSOFArray {
 
+	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("plainArray");
+
 	/**
 	 * Constructs a new array.
 	 */
 	public NSOFPlainArray() {
 		super();
-		setNSClass("plainArray");
+		setNSClass(NS_CLASS);
 	}
 
 	/*

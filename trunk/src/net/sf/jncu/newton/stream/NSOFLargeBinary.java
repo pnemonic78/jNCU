@@ -11,12 +11,14 @@ import java.io.OutputStream;
  */
 public class NSOFLargeBinary extends NSOFBinaryObject {
 
+	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("largeBinary");
+
 	/**
 	 * Constructs a new large binary object.
 	 */
 	public NSOFLargeBinary() {
 		super();
-		setNSClass("largeBinary");
+		setNSClass(NS_CLASS);
 	}
 
 	/*
@@ -26,16 +28,25 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
-		// TODO Auto-generated method stub
 		// Class (object)
+		NSOFSymbol symbol = (NSOFSymbol) decoder.decode(in);
+		setNSClass(symbol);
 		// compressed? (non-zero means compressed) (byte)
+		// TODO implement me!
 		// Number of bytes of data (long)
+		// TODO implement me!
 		// Number of characters in compander name (long)
+		// TODO implement me!
 		// Number of byte of compander parameters (long)
-		// Reserved (encode zero, ignore when decoding) (long0
+		// TODO implement me!
+		// Reserved (encode zero, ignore when decoding) (long)
+		// TODO implement me!
 		// Compander name (bytes)
+		// TODO implement me!
 		// Compander parameters (bytes)
+		// TODO implement me!
 		// Data (bytes)
+		// TODO implement me!
 	}
 
 	/*
@@ -45,16 +56,25 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	 */
 	@Override
 	public void encode(OutputStream out) throws IOException {
-		// TODO Auto-generated method stub
+		out.write(LARGE_BINARY);
 		// Class (object)
+		getNSClass().encode(out);
 		// compressed? (non-zero means compressed) (byte)
+		// TODO implement me!
 		// Number of bytes of data (long)
+		// TODO implement me!
 		// Number of characters in compander name (long)
+		// TODO implement me!
 		// Number of byte of compander parameters (long)
-		// Reserved (encode zero, ignore when decoding) (long0
+		// TODO implement me!
+		// Reserved (encode zero, ignore when decoding) (long)
+		// TODO implement me!
 		// Compander name (bytes)
+		// TODO implement me!
 		// Compander parameters (bytes)
+		// TODO implement me!
 		// Data (bytes)
+		// TODO implement me!
 	}
 
 }

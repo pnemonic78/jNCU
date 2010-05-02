@@ -11,12 +11,14 @@ import java.io.OutputStream;
  */
 public class NSOFSymbol extends NSOFString {
 
+	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("symbol");
+
 	/**
 	 * Constructs a new symbol.
 	 */
 	public NSOFSymbol() {
 		super();
-		setNSClass("symbol");
+		setNSClass(NS_CLASS);
 	}
 
 	/**
