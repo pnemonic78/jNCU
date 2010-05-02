@@ -19,6 +19,7 @@ public class NSOFArray extends NSOFObject {
 	 */
 	public NSOFArray() {
 		super();
+		setArrayClass("array");
 	}
 
 	/*
@@ -29,14 +30,16 @@ public class NSOFArray extends NSOFObject {
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Number of slots (xlong)
-		int len = XLong.decodeValue(in);
-		NSOFObject[] slots = new NSOFObject[len];
+		int length = XLong.decodeValue(in);
+		NSOFObject[] slots = new NSOFObject[length];
+
 		// Class (object)
 		NSOFSymbol symbol = new NSOFSymbol();
 		symbol.decode(in, decoder);
 		setArrayClass(symbol);
+
 		// Slot values in ascending order (objects)
-		for (int i = 0; i < len; i++) {
+		for (int i = 0; i < length; i++) {
 			slots[i] = decoder.decode(in);
 		}
 		setValue(slots);
