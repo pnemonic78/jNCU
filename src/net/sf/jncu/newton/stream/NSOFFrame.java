@@ -16,7 +16,7 @@ public class NSOFFrame extends NSOFObject {
 	protected final Map<NSOFSymbol, NSOFObject> slots = new TreeMap<NSOFSymbol, NSOFObject>();
 
 	/**
-	 * Constructs a new object.
+	 * Constructs a new frame.
 	 */
 	public NSOFFrame() {
 		super();
@@ -42,8 +42,11 @@ public class NSOFFrame extends NSOFObject {
 	 */
 	@Override
 	public void encode(OutputStream out) throws IOException {
+		out.write(FRAME);
 		// TODO Auto-generated method stub
-
+		// Number of slots (xlong)
+		// Slot tags in ascending order (symbol objects)
+		// Slot values in ascending order (objects)
 	}
 
 }

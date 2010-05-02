@@ -44,11 +44,10 @@ public class NSOFString extends NSOFObject {
 		// Number of bytes in string (xlong)
 		int numBytes = XLong.decodeValue(in);
 		// String (halfwords)
-		int len = numBytes >> 1;
-		byte[] buf = new byte[len];
+		byte[] buf = new byte[numBytes];
 
 		in.read(buf);
-		setValue(new String(buf, 0, len - 1, "UTF-16"));
+		setValue(new String(buf, 0, numBytes - 2, "UTF-16"));
 	}
 
 	/*
@@ -64,11 +63,12 @@ public class NSOFString extends NSOFObject {
 			// Number of bytes in string (xlong)
 			XLong.encode(0, out);
 		} else {
+			byte[] buf = s.getBytes("UTF-16");
 			// Number of bytes in string (xlong)
 			// 2-bytes per character + null-terminated
-			XLong.encode((s.length() + 1) << 1, out);
+			XLong.encode(buf.length + 2, out);
 			// String (halfwords)
-			out.write(s.getBytes("UTF-16"));
+			out.write(buf);
 			out.write(0);
 			out.write(0);
 		}
