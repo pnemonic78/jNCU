@@ -3,7 +3,10 @@ package net.sf.jncu.protocol.v2_0.session;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import net.sf.jncu.newton.stream.NSOFPlainArray;
+import net.sf.jncu.newton.stream.NSOFArray;
+import net.sf.jncu.newton.stream.NSOFFrame;
+import net.sf.jncu.newton.stream.NSOFInteger;
+import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.newton.stream.NewtonStreamedObjectFormat;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
@@ -65,7 +68,7 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 	public static final String COMMAND = "dinf";
 
 	/** The protocol version. */
-	public static final int PROTOCOL_VERSION = 10;
+	public static final int PROTOCOL_VERSION = 11;
 
 	/** Newton Backup Utility. */
 	public static final int kNBU = 1;
@@ -81,7 +84,7 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 	private int desktopType;
 	private boolean selectiveSync;
 	private long encryptedKey;
-	private NSOFPlainArray desktopApps;
+	private NSOFArray desktopApps;
 
 	/**
 	 * Creates a new command.
@@ -99,12 +102,12 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 	protected ByteArrayOutputStream getCommandData() throws IOException {
 		ByteArrayOutputStream data = new ByteArrayOutputStream();
 		ntohl(PROTOCOL_VERSION, data);
-		ntohl(desktopType, data);
+		ntohl(getDesktopType(), data);
 		ntohl(getEncryptedKey(), data);
-		ntohl(sessionType, data);
-		ntohl(selectiveSync ? TRUE : FALSE, data);
+		ntohl(getSessionType(), data);
+		ntohl(isSelectiveSync() ? TRUE : FALSE, data);
 		data.write(NewtonStreamedObjectFormat.VERSION);
-		NSOFPlainArray apps = getDesktopApps();
+		NSOFArray apps = getDesktopApps();
 		if (apps == null) {
 			ntohl(0, data);
 		} else {
@@ -176,7 +179,16 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 	 * 
 	 * @return the array of desktop applications.
 	 */
-	public NSOFPlainArray getDesktopApps() {
+	public NSOFArray getDesktopApps() {
+		if (desktopApps == null) {
+			NSOFFrame app = new NSOFFrame();
+			app.put("id", new NSOFInteger(kNCU));
+			app.put("name", new NSOFString("Newton Connection Utilities"));
+			app.put("version", new NSOFInteger(1));
+
+			this.desktopApps = new NSOFArray();
+			desktopApps.setValue(new NSOFFrame[] { app });
+		}
 		return desktopApps;
 	}
 
@@ -186,7 +198,7 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 	 * @param desktopApps
 	 *            the array of desktop applications.
 	 */
-	public void setDesktopApps(NSOFPlainArray desktopApps) {
+	public void setDesktopApps(NSOFArray desktopApps) {
 		this.desktopApps = desktopApps;
 	}
 

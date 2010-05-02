@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.v2_0.DockCommandFactory;
+import net.sf.jncu.protocol.v2_0.session.DCmdDesktopInfo;
 import net.sf.jncu.protocol.v2_0.session.DCmdNewtonName;
 import net.sf.junit.SFTestCase;
 
@@ -73,5 +76,16 @@ public class MNPPacketLayerTest extends SFTestCase {
 		assertNotNull(cmd);
 		assertTrue(DockCommandFromNewton.isCommand(data));
 		assertEquals(DCmdNewtonName.COMMAND, cmd.getCommand());
+	}
+
+	/**
+	 * Test sending a command "desktop info".
+	 */
+	public void testDesktopInfo() {
+		DockCommandToNewton cmd = (DockCommandToNewton) DockCommandFactory.getInstance().create(DCmdDesktopInfo.COMMAND);
+		assertNotNull(cmd);
+		assertEquals(DCmdDesktopInfo.COMMAND, cmd.getCommand());
+		byte[] payload = cmd.getPayload();
+		assertNotNull(payload);
 	}
 }

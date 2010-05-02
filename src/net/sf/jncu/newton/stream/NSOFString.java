@@ -66,12 +66,13 @@ public class NSOFString extends NSOFObject implements Comparable<NSOFString> {
 			// Number of bytes in string (xlong)
 			XLong.encode(0, out);
 		} else {
+			// Bytes [0] and [1] are 0xFE and 0xFF
 			byte[] buf = s.getBytes("UTF-16");
 			// Number of bytes in string (xlong)
 			// 2-bytes per character + null-terminated
-			XLong.encode(buf.length + 2, out);
+			XLong.encode(buf.length, out);
 			// String (halfwords)
-			out.write(buf);
+			out.write(buf, 2, buf.length - 2);
 			out.write(0);
 			out.write(0);
 		}
