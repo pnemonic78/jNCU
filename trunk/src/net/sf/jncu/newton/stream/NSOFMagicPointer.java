@@ -15,6 +15,7 @@ public class NSOFMagicPointer extends NSOFImmediate {
 	 */
 	public NSOFMagicPointer() {
 		super();
+		setNSClass("magicptr");
 	}
 
 	@Override

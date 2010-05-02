@@ -13,14 +13,13 @@ import java.io.OutputStream;
 public class NSOFBinaryObject extends NSOFObject {
 
 	private byte[] value;
-	private NSOFSymbol arrayClass;
 
 	/**
 	 * Constructs a new binary object.
 	 */
 	public NSOFBinaryObject() {
 		super();
-		setArrayClass("binary");
+		setNSClass("binary");
 	}
 
 	/*
@@ -37,7 +36,7 @@ public class NSOFBinaryObject extends NSOFObject {
 		// Class (object)
 		NSOFSymbol symbol = new NSOFSymbol();
 		symbol.decode(in, decoder);
-		setArrayClass(symbol);
+		setNSClass(symbol);
 
 		// Data
 		if (in.read(v) != length) {
@@ -61,7 +60,7 @@ public class NSOFBinaryObject extends NSOFObject {
 		XLong.encode(length, out);
 
 		// Class (object)
-		getArrayClass().encode(out);
+		getNSClass().encode(out);
 
 		// Data
 		if (v != null) {
@@ -88,32 +87,4 @@ public class NSOFBinaryObject extends NSOFObject {
 		this.value = value;
 	}
 
-	/**
-	 * Set the array class.
-	 * 
-	 * @param arrayClass
-	 *            the array class.
-	 */
-	public void setArrayClass(NSOFSymbol arrayClass) {
-		this.arrayClass = arrayClass;
-	}
-
-	/**
-	 * Set the array class.
-	 * 
-	 * @param arrayClass
-	 *            the array class.
-	 */
-	public void setArrayClass(String arrayClass) {
-		setArrayClass(new NSOFSymbol(arrayClass));
-	}
-
-	/**
-	 * Get the array class.
-	 * 
-	 * @return the array class.
-	 */
-	public NSOFSymbol getArrayClass() {
-		return arrayClass;
-	}
 }

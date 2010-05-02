@@ -16,6 +16,7 @@ public class NSOFSymbol extends NSOFString {
 	 */
 	public NSOFSymbol() {
 		super();
+		setNSClass("symbol");
 	}
 
 	/**

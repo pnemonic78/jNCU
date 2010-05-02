@@ -16,6 +16,7 @@ public class NSOFPlainArray extends NSOFArray {
 	 */
 	public NSOFPlainArray() {
 		super();
+		setNSClass("plainArray");
 	}
 
 	/*

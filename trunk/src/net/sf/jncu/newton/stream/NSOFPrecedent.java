@@ -30,6 +30,7 @@ public class NSOFPrecedent extends NSOFObject {
 	 */
 	public NSOFPrecedent() {
 		super();
+		setNSClass("precedent");
 	}
 
 	/*

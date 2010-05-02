@@ -12,14 +12,13 @@ import java.io.OutputStream;
 public class NSOFArray extends NSOFObject {
 
 	private NSOFObject[] value;
-	private NSOFSymbol arrayClass;
 
 	/**
 	 * Constructs a new array.
 	 */
 	public NSOFArray() {
 		super();
-		setArrayClass("array");
+		setNSClass("array");
 	}
 
 	/*
@@ -36,7 +35,7 @@ public class NSOFArray extends NSOFObject {
 		// Class (object)
 		NSOFSymbol symbol = new NSOFSymbol();
 		symbol.decode(in, decoder);
-		setArrayClass(symbol);
+		setNSClass(symbol);
 
 		// Slot values in ascending order (objects)
 		for (int i = 0; i < length; i++) {
@@ -61,7 +60,7 @@ public class NSOFArray extends NSOFObject {
 		XLong.encode(length, out);
 
 		// Class (object)
-		getArrayClass().encode(out);
+		getNSClass().encode(out);
 
 		// Slot values in ascending order (objects)
 		if (slots != null) {
@@ -88,34 +87,5 @@ public class NSOFArray extends NSOFObject {
 	 */
 	public void setValue(NSOFObject[] value) {
 		this.value = value;
-	}
-
-	/**
-	 * Set the array class.
-	 * 
-	 * @param arrayClass
-	 *            the array class.
-	 */
-	public void setArrayClass(NSOFSymbol arrayClass) {
-		this.arrayClass = arrayClass;
-	}
-
-	/**
-	 * Set the array class.
-	 * 
-	 * @param arrayClass
-	 *            the array class.
-	 */
-	public void setArrayClass(String arrayClass) {
-		setArrayClass(new NSOFSymbol(arrayClass));
-	}
-
-	/**
-	 * Get the array class.
-	 * 
-	 * @return the array class.
-	 */
-	public NSOFSymbol getArrayClass() {
-		return arrayClass;
 	}
 }

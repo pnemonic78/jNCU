@@ -17,6 +17,7 @@ public class NSOFUnicodeCharacter extends NSOFCharacter {
 	 */
 	public NSOFUnicodeCharacter() {
 		super();
+		setNSClass("uniChar");
 	}
 
 	/*
