@@ -11,6 +11,8 @@ import java.io.OutputStream;
  */
 public class NSOFImmediate extends NSOFObject {
 
+	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("immediate");
+
 	/** Integer immediate. */
 	public static final int IMMEDIATE_INTEGER = 0x0;
 	/** Character immediate. */
@@ -30,7 +32,7 @@ public class NSOFImmediate extends NSOFObject {
 	 */
 	public NSOFImmediate() {
 		super();
-		setNSClass("immediate");
+		setNSClass(NS_CLASS);
 	}
 
 	/*

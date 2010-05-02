@@ -23,6 +23,8 @@ import java.io.OutputStream;
  */
 public class NSOFPrecedent extends NSOFObject {
 
+	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("precedent");
+
 	private int value;
 
 	/**
@@ -30,7 +32,7 @@ public class NSOFPrecedent extends NSOFObject {
 	 */
 	public NSOFPrecedent() {
 		super();
-		setNSClass("precedent");
+		setNSClass(NS_CLASS);
 	}
 
 	/*

@@ -12,6 +12,8 @@ import java.io.OutputStream;
  */
 public class NSOFBinaryObject extends NSOFObject {
 
+	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("binary");
+
 	private byte[] value;
 
 	/**
@@ -19,7 +21,7 @@ public class NSOFBinaryObject extends NSOFObject {
 	 */
 	public NSOFBinaryObject() {
 		super();
-		setNSClass("binary");
+		setNSClass(NS_CLASS);
 	}
 
 	/*
@@ -34,8 +36,7 @@ public class NSOFBinaryObject extends NSOFObject {
 		byte[] v = new byte[length];
 
 		// Class (object)
-		NSOFSymbol symbol = new NSOFSymbol();
-		symbol.decode(in, decoder);
+		NSOFSymbol symbol = (NSOFSymbol) decoder.decode(in);
 		setNSClass(symbol);
 
 		// Data

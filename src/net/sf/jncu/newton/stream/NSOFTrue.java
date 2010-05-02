@@ -10,12 +10,14 @@ import java.io.OutputStream;
  */
 public class NSOFTrue extends NSOFImmediate {
 
+	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("TRUE");
+
 	/**
 	 * Creates a new True.
 	 */
 	public NSOFTrue() {
 		super();
-		setNSClass("TRUE");
+		setNSClass(NS_CLASS);
 		setValue(0x1A);
 	}
 

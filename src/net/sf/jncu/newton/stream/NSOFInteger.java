@@ -10,12 +10,14 @@ import java.io.OutputStream;
  */
 public class NSOFInteger extends NSOFImmediate {
 
+	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("integer");
+
 	/**
 	 * Creates a new integer.
 	 */
 	public NSOFInteger() {
 		super();
-		setNSClass("integer");
+		setNSClass(NS_CLASS);
 	}
 
 	@Override

@@ -12,12 +12,14 @@ import java.io.OutputStream;
  */
 public class NSOFUnicodeCharacter extends NSOFCharacter {
 
+	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("uniChar");
+
 	/**
 	 * Constructs a new Unicode character.
 	 */
 	public NSOFUnicodeCharacter() {
 		super();
-		setNSClass("uniChar");
+		setNSClass(NS_CLASS);
 	}
 
 	/*
