@@ -15,6 +15,7 @@ public class NSOFInteger extends NSOFImmediate {
 	 */
 	public NSOFInteger() {
 		super();
+		setNSClass("integer");
 	}
 
 	@Override

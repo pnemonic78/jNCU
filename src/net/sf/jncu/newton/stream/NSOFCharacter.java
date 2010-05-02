@@ -21,6 +21,7 @@ public class NSOFCharacter extends NSOFObject {
 	 */
 	public NSOFCharacter() {
 		super();
+		setNSClass("character");
 	}
 
 	/*

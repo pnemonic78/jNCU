@@ -18,10 +18,11 @@ public class NSOFSmallRect extends NSOFObject {
 	private int right;
 
 	/**
-	 * Constructs a new object.
+	 * Constructs a new small rectangle.
 	 */
 	public NSOFSmallRect() {
 		super();
+		setNSClass("smallRect");
 	}
 
 	/*

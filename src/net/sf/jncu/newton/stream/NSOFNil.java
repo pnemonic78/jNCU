@@ -16,6 +16,7 @@ public class NSOFNil extends NSOFObject {
 	 */
 	public NSOFNil() {
 		super();
+		setNSClass("NIL");
 	}
 
 	/*

@@ -15,6 +15,7 @@ public class NSOFTrue extends NSOFImmediate {
 	 */
 	public NSOFTrue() {
 		super();
+		setNSClass("TRUE");
 		setValue(0x1A);
 	}
 

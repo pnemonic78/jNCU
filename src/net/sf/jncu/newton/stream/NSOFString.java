@@ -21,6 +21,7 @@ public class NSOFString extends NSOFObject {
 	 */
 	public NSOFString() {
 		super();
+		setNSClass("string");
 	}
 
 	/**

@@ -16,6 +16,7 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	 */
 	public NSOFLargeBinary() {
 		super();
+		setNSClass("largeBinary");
 	}
 
 	/*

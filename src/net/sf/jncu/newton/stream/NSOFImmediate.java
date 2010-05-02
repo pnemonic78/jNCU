@@ -30,6 +30,7 @@ public class NSOFImmediate extends NSOFObject {
 	 */
 	public NSOFImmediate() {
 		super();
+		setNSClass("immediate");
 	}
 
 	/*

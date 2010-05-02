@@ -20,6 +20,7 @@ public class NSOFFrame extends NSOFObject {
 	 */
 	public NSOFFrame() {
 		super();
+		setNSClass("frame");
 	}
 
 	/*
