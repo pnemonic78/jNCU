@@ -28,8 +28,8 @@ public class NSOFUnicodeCharacter extends NSOFCharacter {
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
 		setValue((char) 0);
 		// High byte of character code (byte)
-		// Low byte of character code (byte)
 		int hi = in.read();
+		// Low byte of character code (byte)
 		int lo = in.read();
 		if ((hi == -1) || (lo == -1)) {
 			throw new EOFException();
@@ -46,8 +46,10 @@ public class NSOFUnicodeCharacter extends NSOFCharacter {
 	@Override
 	public void encode(OutputStream out) throws IOException {
 		out.write(UNICODE_CHARACTER);
-		int val = getValue();
+		int val = getValue() & 0xFFFF;
+		// High byte of character code (byte)
 		out.write((val >> 8) & 0xFF);
+		// Low byte of character code (byte)
 		out.write((val >> 0) & 0xFF);
 	}
 

@@ -39,6 +39,7 @@ public class NSOFPrecedent extends NSOFObject {
 	@Override
 	public void encode(OutputStream out) throws IOException {
 		out.write(PRECEDENT);
+		// Precedent ID (xlong)
 		XLong.encode(getValue(), out);
 	}
 
