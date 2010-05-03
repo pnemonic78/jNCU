@@ -52,7 +52,7 @@ public class NSOFSymbol extends NSOFString {
 	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
 	 */
 	@Override
-	public void encode(OutputStream out) throws IOException {
+	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(SYMBOL);
 
 		String name = getValue();

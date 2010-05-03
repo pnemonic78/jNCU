@@ -4,10 +4,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import net.sf.jncu.newton.stream.NSOFArray;
+import net.sf.jncu.newton.stream.NSOFEncoder;
 import net.sf.jncu.newton.stream.NSOFFrame;
 import net.sf.jncu.newton.stream.NSOFInteger;
 import net.sf.jncu.newton.stream.NSOFString;
-import net.sf.jncu.newton.stream.NewtonStreamedObjectFormat;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
@@ -106,13 +106,8 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 		ntohl(getEncryptedKey(), data);
 		ntohl(getSessionType(), data);
 		ntohl(isSelectiveSync() ? TRUE : FALSE, data);
-		data.write(NewtonStreamedObjectFormat.VERSION);
-		NSOFArray apps = getDesktopApps();
-		if (apps == null) {
-			ntohl(0, data);
-		} else {
-			apps.encode(data);
-		}
+		NSOFEncoder encoder = new NSOFEncoder();
+		encoder.encode(getDesktopApps(), data);
 		return data;
 	}
 

@@ -109,7 +109,7 @@ public class NSOFSmallRect extends NSOFObject implements Precedent {
 	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
 	 */
 	@Override
-	public void encode(OutputStream out) throws IOException {
+	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(SMALL_RECT);
 		// Top value (byte)
 		out.write(getTop());
@@ -254,4 +254,5 @@ public class NSOFSmallRect extends NSOFObject implements Precedent {
 	public String toString() {
 		return "{left: " + left + ", top: " + top + ", right: " + right + ", bottom: " + bottom + "}";
 	}
+
 }

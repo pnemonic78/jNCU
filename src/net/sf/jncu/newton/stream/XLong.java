@@ -50,7 +50,7 @@ public class XLong extends NewtonStreamedObjectFormat {
 	 * )
 	 */
 	@Override
-	public void encode(OutputStream out) throws IOException {
+	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		encode(getValue(), out);
 	}
 

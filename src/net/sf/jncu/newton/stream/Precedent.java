@@ -19,18 +19,4 @@ package net.sf.jncu.newton.stream;
  */
 public interface Precedent {
 
-	/**
-	 * Get the id.
-	 * 
-	 * @return the id
-	 */
-	public int getId();
-
-	/**
-	 * Set the id.
-	 * 
-	 * @param id
-	 *            the id.
-	 */
-	public void setId(int id);
 }

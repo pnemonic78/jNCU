@@ -121,14 +121,14 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
 	 */
 	@Override
-	public void encode(OutputStream out) throws IOException {
+	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(LARGE_BINARY);
 		String companderName = getCompanderName();
 		byte[] companderNameBytes = (companderName == null) ? null : companderName.getBytes();
 		byte[] args = getCompanderArguments();
 		byte[] data = getValue();
 		// Class (object)
-		getNSClass().encode(out);
+		encoder.encode(getNSClass(), out);
 		// compressed? (non-zero means compressed) (byte)
 		out.write(isCompressed() ? FLAG_UNCOMPRESSED : FLAG_UNCOMPRESSED);
 		// Number of bytes of data (long)

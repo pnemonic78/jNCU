@@ -52,7 +52,7 @@ public class NSOFBinaryObject extends NSOFObject implements Precedent {
 	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
 	 */
 	@Override
-	public void encode(OutputStream out) throws IOException {
+	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(BINARY_OBJECT);
 		byte[] v = getValue();
 
@@ -61,7 +61,7 @@ public class NSOFBinaryObject extends NSOFObject implements Precedent {
 		XLong.encode(length, out);
 
 		// Class (object)
-		getNSClass().encode(out);
+		encoder.encode(getNSClass(), out);
 
 		// Data
 		if (v != null) {
