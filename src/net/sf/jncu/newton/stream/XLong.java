@@ -75,7 +75,15 @@ public class XLong extends NewtonStreamedObjectFormat {
 
 	@Override
 	public int hashCode() {
-		return value;
+		return getValue();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof XLong) {
+			return this.getValue() == ((XLong) obj).getValue();
+		}
+		return super.equals(obj);
 	}
 
 	/**
