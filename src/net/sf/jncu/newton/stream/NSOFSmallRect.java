@@ -246,6 +246,16 @@ public class NSOFSmallRect extends NSOFObject implements Precedent {
 		return (top << 24) | (left << 16) | (bottom << 8) | (right << 0);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof NSOFSmallRect) {
+			NSOFSmallRect that = (NSOFSmallRect) obj;
+			return (this.getBottom() == that.getBottom()) && (this.getLeft() == that.getLeft()) && (this.getRight() == that.getRight())
+					&& (this.getTop() == that.getTop());
+		}
+		return super.equals(obj);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
