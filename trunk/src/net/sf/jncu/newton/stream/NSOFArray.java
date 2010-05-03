@@ -62,7 +62,7 @@ public class NSOFArray extends NSOFObject implements Precedent {
 	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
 	 */
 	@Override
-	public void encode(OutputStream out) throws IOException {
+	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(ARRAY);
 
 		NSOFObject[] slots = getValue();
@@ -72,12 +72,12 @@ public class NSOFArray extends NSOFObject implements Precedent {
 		XLong.encode(length, out);
 
 		// Class (object)
-		getNSClass().encode(out);
+		encoder.encode(getNSClass(), out);
 
 		// Slot values in ascending order (objects)
 		if (slots != null) {
 			for (int i = 0; i < length; i++) {
-				slots[i].encode(out);
+				encoder.encode(slots[i], out);
 			}
 		}
 	}
@@ -110,4 +110,5 @@ public class NSOFArray extends NSOFObject implements Precedent {
 	public int hashCode() {
 		return (value == null) ? null : value.hashCode();
 	}
+
 }

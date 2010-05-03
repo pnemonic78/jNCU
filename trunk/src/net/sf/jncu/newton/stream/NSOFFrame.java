@@ -58,7 +58,7 @@ public class NSOFFrame extends NSOFObject implements Precedent {
 	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
 	 */
 	@Override
-	public void encode(OutputStream out) throws IOException {
+	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(FRAME);
 
 		// Number of slots (xlong)
@@ -66,12 +66,12 @@ public class NSOFFrame extends NSOFObject implements Precedent {
 
 		// Slot tags in ascending order (symbol objects)
 		for (NSOFSymbol sym : slots.keySet()) {
-			sym.encode(out);
+			encoder.encode(sym, out);
 		}
 
 		// Slot values in ascending order (objects)
 		for (NSOFObject slot : slots.values()) {
-			slot.encode(out);
+			encoder.encode(slot, out);
 		}
 	}
 
@@ -157,4 +157,5 @@ public class NSOFFrame extends NSOFObject implements Precedent {
 	public String toString() {
 		return slots.toString();
 	}
+
 }

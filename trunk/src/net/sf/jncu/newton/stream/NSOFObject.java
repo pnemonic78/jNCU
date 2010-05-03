@@ -8,7 +8,6 @@ package net.sf.jncu.newton.stream;
 public abstract class NSOFObject extends NewtonStreamedObjectFormat {
 
 	private NSOFSymbol nsClass;
-	private int id;
 
 	/**
 	 * Constructs a new object.
@@ -66,22 +65,4 @@ public abstract class NSOFObject extends NewtonStreamedObjectFormat {
 		return nsClass;
 	}
 
-	/**
-	 * Get the id.
-	 * 
-	 * @return the id
-	 */
-	public int getId() {
-		return id;
-	}
-
-	/**
-	 * Set the id.
-	 * 
-	 * @param id
-	 *            the id.
-	 */
-	public void setId(int id) {
-		this.id = id;
-	}
 }

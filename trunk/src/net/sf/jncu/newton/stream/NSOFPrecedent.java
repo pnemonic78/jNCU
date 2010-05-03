@@ -21,11 +21,11 @@ import java.io.OutputStream;
  * 
  * @author Moshe
  */
-public class NSOFPrecedent extends NSOFObject {
+public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPrecedent> {
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("precedent");
 
-	private int value;
+	private int id;
 
 	/**
 	 * Constructs a new precedent.
@@ -33,6 +33,17 @@ public class NSOFPrecedent extends NSOFObject {
 	public NSOFPrecedent() {
 		super();
 		setNSClass(NS_CLASS);
+	}
+
+	/**
+	 * Constructs a new precedent.
+	 * 
+	 * @param id
+	 *            the id.
+	 */
+	public NSOFPrecedent(int id) {
+		this();
+		setId(id);
 	}
 
 	/*
@@ -43,7 +54,7 @@ public class NSOFPrecedent extends NSOFObject {
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Precedent ID (xlong)
-		setValue(XLong.decodeValue(in));
+		setId(XLong.decodeValue(in));
 	}
 
 	/*
@@ -52,29 +63,45 @@ public class NSOFPrecedent extends NSOFObject {
 	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
 	 */
 	@Override
-	public void encode(OutputStream out) throws IOException {
+	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(PRECEDENT);
 		// Precedent ID (xlong)
-		XLong.encode(getValue(), out);
+		XLong.encode(getId(), out);
 	}
 
 	/**
-	 * Get the value.
+	 * Get the id.
 	 * 
-	 * @return the value
+	 * @return the id.
 	 */
-	public int getValue() {
-		return value;
+	public int getId() {
+		return id;
 	}
 
 	/**
-	 * Set the value.
+	 * Set the id.
 	 * 
-	 * @param value
-	 *            the value.
+	 * @param id
+	 *            the id.
 	 */
-	public void setValue(int value) {
-		this.value = value;
+	public void setId(int id) {
+		this.id = id;
 	}
 
+	@Override
+	public int hashCode() {
+		return getId();
+	}
+
+	@Override
+	public String toString() {
+		return String.valueOf(getId());
+	}
+
+	public int compareTo(NSOFPrecedent that) {
+		if (that == null) {
+			return +1;
+		}
+		return this.getId() - that.getId();
+	}
 }

@@ -58,7 +58,7 @@ public class NSOFUnicodeCharacter extends NSOFCharacter {
 	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
 	 */
 	@Override
-	public void encode(OutputStream out) throws IOException {
+	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(UNICODE_CHARACTER);
 		int val = getValue() & 0xFFFF;
 		// High byte of character code (byte)

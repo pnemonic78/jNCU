@@ -80,7 +80,7 @@ public class NSOFDecoder {
 		if (nsof == null) {
 			throw new InvalidObjectException("unknown data type " + dataType);
 		}
-		nsof.setId(id++);
+		// TODO nsof.setId(id++);
 		nsof.decode(in, this);
 		if (nsof instanceof Precedent) {
 			precedents.put(id, (Precedent) nsof);

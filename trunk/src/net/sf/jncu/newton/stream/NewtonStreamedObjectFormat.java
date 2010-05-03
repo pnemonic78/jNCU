@@ -69,10 +69,12 @@ public abstract class NewtonStreamedObjectFormat {
 	 * 
 	 * @param out
 	 *            the output.
+	 * @param encoder
+	 *            the encoder.
 	 * @throws IOException
-	 *             if an I/O error occurs.
+	 *             if an encoding error occurs.
 	 */
-	public abstract void encode(OutputStream out) throws IOException;
+	public abstract void encode(OutputStream out, NSOFEncoder encoder) throws IOException;
 
 	/**
 	 * Decode the object.
@@ -82,7 +84,7 @@ public abstract class NewtonStreamedObjectFormat {
 	 * @param decoder
 	 *            the decoder.
 	 * @throws IOException
-	 *             if an I/O error occurs.
+	 *             if a decoding error occurs.
 	 */
 	public abstract void decode(InputStream in, NSOFDecoder decoder) throws IOException;
 

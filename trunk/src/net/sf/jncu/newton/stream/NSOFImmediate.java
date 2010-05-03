@@ -84,7 +84,7 @@ public class NSOFImmediate extends NSOFObject {
 	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
 	 */
 	@Override
-	public void encode(OutputStream out) throws IOException {
+	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(IMMEDIATE);
 
 		// Immediate Ref (xlong)

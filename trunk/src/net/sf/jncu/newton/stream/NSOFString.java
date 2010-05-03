@@ -59,7 +59,7 @@ public class NSOFString extends NSOFObject implements Comparable<NSOFString>, Pr
 	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
 	 */
 	@Override
-	public void encode(OutputStream out) throws IOException {
+	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(STRING);
 		String s = getValue();
 		if (s == null) {
@@ -164,4 +164,5 @@ public class NSOFString extends NSOFObject implements Comparable<NSOFString>, Pr
 		}
 		return valThis.compareTo(valThat);
 	}
+
 }

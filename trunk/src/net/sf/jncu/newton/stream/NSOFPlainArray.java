@@ -21,6 +21,17 @@ public class NSOFPlainArray extends NSOFArray {
 		setNSClass(NS_CLASS);
 	}
 
+	/**
+	 * Constructs a new array.
+	 * 
+	 * @param value
+	 *            the value.
+	 */
+	public NSOFPlainArray(NSOFObject[] value) {
+		this();
+		setValue(value);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -44,7 +55,7 @@ public class NSOFPlainArray extends NSOFArray {
 	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
 	 */
 	@Override
-	public void encode(OutputStream out) throws IOException {
+	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(PLAIN_ARRAY);
 
 		NSOFObject[] slots = getValue();
@@ -57,7 +68,7 @@ public class NSOFPlainArray extends NSOFArray {
 			XLong.encode(length, out);
 			// Slot values in ascending order (objects)
 			for (int i = 0; i < length; i++) {
-				slots[i].encode(out);
+				encoder.encode(slots[i], out);
 			}
 		}
 	}

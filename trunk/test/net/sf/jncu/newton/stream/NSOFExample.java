@@ -96,10 +96,15 @@ public class NSOFExample extends SFTestCase {
 	 * @throws IOException
 	 */
 	public void testEncode() throws IOException {
-		NSOFObject[] phones = new NSOFObject[2];
-		phones[0] = new NSOFString("408-996-1010");
-		phones[1] = new NSOFString("408-974-9094");
-		phones[1].setClass("faxPhone");
+		NSOFObject[] phones = new NSOFObject[] { new NSOFString("408-996-1010"), null };
+		NSOFBinaryObject faxPhone = new NSOFBinaryObject();
+		faxPhone.setClass("faxPhone");
+		byte[] utf16 = "408-974-9094".getBytes("UTF-16");
+		System.arraycopy(utf16, 2, utf16, 0, utf16.length - 2);
+		utf16[utf16.length - 2] = 0;
+		utf16[utf16.length - 1] = 0;
+		faxPhone.setValue(utf16);
+		phones[1] = faxPhone;
 
 		NSOFFrame x = new NSOFFrame();
 		assertNotNull(x);
@@ -107,7 +112,7 @@ public class NSOFExample extends SFTestCase {
 		x.put("cats", new NSOFInteger(2));
 		x.put("bounds", new NSOFSmallRect(14, 10, 100, 40));
 		x.put("right", new NSOFUnicodeCharacter('\u2022'));
-		x.put("phones", new NSOFArray(phones));
+		x.put("phones", new NSOFPlainArray(phones));
 		x.put("nameAgain", x.get("name"));
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
