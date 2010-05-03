@@ -9,7 +9,7 @@ import java.io.OutputStream;
  * 
  * @author Moshe
  */
-public class NSOFArray extends NSOFObject {
+public class NSOFArray extends NSOFObject implements Precedent {
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("array");
 

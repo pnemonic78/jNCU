@@ -11,7 +11,7 @@ import java.util.TreeMap;
  * 
  * @author Moshe
  */
-public class NSOFFrame extends NSOFObject {
+public class NSOFFrame extends NSOFObject implements Precedent {
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("frame");
 

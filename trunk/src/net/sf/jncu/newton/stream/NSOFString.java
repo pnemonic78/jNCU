@@ -9,7 +9,7 @@ import java.io.OutputStream;
  * 
  * @author Moshe
  */
-public class NSOFString extends NSOFObject implements Comparable<NSOFString> {
+public class NSOFString extends NSOFObject implements Comparable<NSOFString>, Precedent {
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("string");
 

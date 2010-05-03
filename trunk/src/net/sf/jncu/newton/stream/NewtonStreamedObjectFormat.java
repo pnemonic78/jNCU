@@ -57,8 +57,6 @@ public abstract class NewtonStreamedObjectFormat {
 	/** NSOF version. */
 	public static final int VERSION = 2;
 
-	private int id;
-
 	/**
 	 * Constructs a new streamed object format.
 	 */
@@ -87,25 +85,6 @@ public abstract class NewtonStreamedObjectFormat {
 	 *             if an I/O error occurs.
 	 */
 	public abstract void decode(InputStream in, NSOFDecoder decoder) throws IOException;
-
-	/**
-	 * Get the id.
-	 * 
-	 * @return the id
-	 */
-	public int getId() {
-		return id;
-	}
-
-	/**
-	 * Set the id.
-	 * 
-	 * @param id
-	 *            the id.
-	 */
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	/**
 	 * Read 4 bytes as an unsigned integer in network byte order (Big Endian).

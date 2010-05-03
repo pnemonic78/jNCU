@@ -78,15 +78,6 @@ public class XLong extends NewtonStreamedObjectFormat {
 		return value;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.mmw.newton.nsof.NewtonStreamedObjectFormat#getId()
-	 */
-	@Override
-	public int getId() {
-		return -1;
-	}
-
 	/**
 	 * Encode the XLong.
 	 * 
