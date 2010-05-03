@@ -111,14 +111,14 @@ public class NSOFExample extends SFTestCase {
 		x.put("name", new NSOFString("Walter Smith"));
 		x.put("cats", new NSOFInteger(2));
 		x.put("bounds", new NSOFSmallRect(14, 10, 100, 40));
-		x.put("right", new NSOFUnicodeCharacter('\u2022'));
+		x.put("uchar", new NSOFUnicodeCharacter('\u2022'));
 		x.put("phones", new NSOFPlainArray(phones));
 		x.put("nameAgain", x.get("name"));
 		assertEquals(6, x.size());
 		assertNotNull(x.get("name"));
 		assertNotNull(x.get("cats"));
 		assertNotNull(x.get("bounds"));
-		assertNotNull(x.get("right"));
+		assertNotNull(x.get("uchar"));
 		assertNotNull(x.get("phones"));
 		assertEquals("Walter Smith", ((NSOFString) x.get("name")).getValue());
 
@@ -128,7 +128,7 @@ public class NSOFExample extends SFTestCase {
 		out.close();
 
 		byte[] buf = out.toByteArray();
-		System.out.println(buf);
+		//print(buf);
 		assertNotNull(buf);
 		assertEquals(nsof, buf);
 	}
@@ -138,5 +138,24 @@ public class NSOFExample extends SFTestCase {
 	 */
 	public void testDecode() {
 		// TODO implement me!
+	}
+
+	protected void print(byte[] arr) {
+		byte b;
+		String hex;
+		int col = 1;
+
+		for (int i = 0; i < arr.length; i++, col++) {
+			b = arr[i];
+			hex = Integer.toHexString(b & 0xFF).toUpperCase();
+			if (b < 0x10) {
+				System.out.print('0');
+			}
+			System.out.print(hex);
+			if (col == 32) {
+				System.out.println();
+				col = 0;
+			}
+		}
 	}
 }
