@@ -114,6 +114,13 @@ public class NSOFExample extends SFTestCase {
 		x.put("right", new NSOFUnicodeCharacter('\u2022'));
 		x.put("phones", new NSOFPlainArray(phones));
 		x.put("nameAgain", x.get("name"));
+		assertEquals(6, x.size());
+		assertNotNull(x.get("name"));
+		assertNotNull(x.get("cats"));
+		assertNotNull(x.get("bounds"));
+		assertNotNull(x.get("right"));
+		assertNotNull(x.get("phones"));
+		assertEquals("Walter Smith", ((NSOFString) x.get("name")).getValue());
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		NSOFEncoder encoder = new NSOFEncoder();
@@ -121,6 +128,7 @@ public class NSOFExample extends SFTestCase {
 		out.close();
 
 		byte[] buf = out.toByteArray();
+		System.out.println(buf);
 		assertNotNull(buf);
 		assertEquals(nsof, buf);
 	}

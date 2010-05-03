@@ -138,6 +138,15 @@ public class NSOFImmediate extends NSOFObject {
 		return getValue();
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof NSOFImmediate) {
+			NSOFImmediate that = (NSOFImmediate) obj;
+			return (this.getType() == that.getType()) && (this.getValue() == that.getValue());
+		}
+		return super.equals(obj);
+	}
+
 	/**
 	 * Get the type.
 	 * 

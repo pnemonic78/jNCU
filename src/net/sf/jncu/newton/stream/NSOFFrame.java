@@ -3,8 +3,8 @@ package net.sf.jncu.newton.stream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Newton Streamed Object Format - Frame.
@@ -15,7 +15,7 @@ public class NSOFFrame extends NSOFObject implements Precedent {
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("frame");
 
-	protected final SortedMap<NSOFSymbol, NSOFObject> slots = new TreeMap<NSOFSymbol, NSOFObject>();
+	protected final Map<NSOFSymbol, NSOFObject> slots = new LinkedHashMap<NSOFSymbol, NSOFObject>();
 
 	/**
 	 * Constructs a new frame.
@@ -70,7 +70,9 @@ public class NSOFFrame extends NSOFObject implements Precedent {
 		}
 
 		// Slot values in ascending order (objects)
-		for (NSOFObject slot : slots.values()) {
+		NSOFObject slot;
+		for (NSOFSymbol sym : slots.keySet()) {
+			slot = slots.get(sym);
 			encoder.encode(slot, out);
 		}
 	}
@@ -117,7 +119,7 @@ public class NSOFFrame extends NSOFObject implements Precedent {
 	 *            the slot value.
 	 */
 	public void put(String key, NSOFObject value) {
-		slots.put(new NSOFSymbol(key), value);
+		put(new NSOFSymbol(key), value);
 	}
 
 	/**
@@ -139,7 +141,7 @@ public class NSOFFrame extends NSOFObject implements Precedent {
 	 * @return the slot value - <tt>null</tt> otherwise.
 	 */
 	public NSOFObject get(String key) {
-		return slots.get(new NSOFSymbol(key));
+		return get(new NSOFSymbol(key));
 	}
 
 	/**
@@ -156,6 +158,15 @@ public class NSOFFrame extends NSOFObject implements Precedent {
 	@Override
 	public String toString() {
 		return slots.toString();
+	}
+
+	/**
+	 * Get the number of slots.
+	 * 
+	 * @return the size.
+	 */
+	public int size() {
+		return slots.size();
 	}
 
 }

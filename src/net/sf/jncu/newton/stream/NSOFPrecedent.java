@@ -94,6 +94,14 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 	}
 
 	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof NSOFPrecedent) {
+			return this.getId() == ((NSOFPrecedent) obj).getId();
+		}
+		return super.equals(obj);
+	}
+
+	@Override
 	public String toString() {
 		return String.valueOf(getId());
 	}

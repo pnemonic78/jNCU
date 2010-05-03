@@ -93,6 +93,14 @@ public class NSOFCharacter extends NSOFObject {
 		return value;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof NSOFCharacter) {
+			return this.getValue() == ((NSOFCharacter) obj).getValue();
+		}
+		return super.equals(obj);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()

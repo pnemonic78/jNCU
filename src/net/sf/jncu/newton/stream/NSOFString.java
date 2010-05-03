@@ -33,7 +33,7 @@ public class NSOFString extends NSOFObject implements Comparable<NSOFString>, Pr
 	 *            the value.
 	 */
 	public NSOFString(String value) {
-		super();
+		this();
 		setValue(value);
 	}
 
@@ -163,6 +163,14 @@ public class NSOFString extends NSOFObject implements Comparable<NSOFString>, Pr
 			return (valThat == null) ? 0 : -1;
 		}
 		return valThis.compareTo(valThat);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof NSOFString) {
+			return compareTo((NSOFString) obj) == 0;
+		}
+		return super.equals(obj);
 	}
 
 }
