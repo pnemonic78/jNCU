@@ -1,5 +1,8 @@
 package net.sf.jncu.newton.stream;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import net.sf.junit.SFTestCase;
 
 /**
@@ -9,8 +12,8 @@ import net.sf.junit.SFTestCase;
  *       bounds: {left: 10, top: 14, right: 40, bottom: 100},
  *       right: $\u2022,
  *       phones: ["408-996-1010", nil]};
- *       x.phones[1] := SetClass("408-974-9094", 'faxPhone);
- *       x.nameAgain := x.name;
+ * x.phones[1] := SetClass("408-974-9094", 'faxPhone);
+ * x.nameAgain := x.name;
  * </pre>
  * 
  * <pre>
@@ -31,6 +34,7 @@ import net.sf.junit.SFTestCase;
  * 65003400300038002D003900370034002D003900300039003400000907</tt>
  * <p>
  * This streamed representation translates as:
+ * 
  * <pre>
  * 02—version number
  * 06—kFrame [ID 0]
@@ -88,9 +92,31 @@ public class NSOFExample extends SFTestCase {
 
 	/**
 	 * Test encoding.
+	 * 
+	 * @throws IOException
 	 */
-	public void testEncode() {
-		// TODO implement me!
+	public void testEncode() throws IOException {
+		NSOFObject[] phones = new NSOFObject[2];
+		phones[0] = new NSOFString("408-996-1010");
+		phones[1] = new NSOFString("408-974-9094");
+		phones[1].setClass("faxPhone");
+
+		NSOFFrame x = new NSOFFrame();
+		assertNotNull(x);
+		x.put("name", new NSOFString("Walter Smith"));
+		x.put("cats", new NSOFInteger(2));
+		x.put("bounds", new NSOFSmallRect(14, 10, 100, 40));
+		x.put("right", new NSOFUnicodeCharacter('\u2022'));
+		x.put("phones", new NSOFArray(phones));
+		x.put("nameAgain", x.get("name"));
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		x.encode(out);
+		out.close();
+
+		byte[] buf = out.toByteArray();
+		assertNotNull(buf);
+		assertEquals(nsof, buf);
 	}
 
 	/**
