@@ -82,6 +82,14 @@ public class NSOFFrame extends NSOFObject implements Precedent {
 		return slots.hashCode();
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof NSOFFrame) {
+			return this.slots.equals(((NSOFFrame) obj).slots);
+		}
+		return super.equals(obj);
+	}
+
 	/**
 	 * Is the frame empty?
 	 * 

@@ -111,4 +111,12 @@ public class NSOFArray extends NSOFObject implements Precedent {
 		return (value == null) ? null : value.hashCode();
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof NSOFArray) {
+			return this.getValue().equals(((NSOFArray) obj).getValue());
+		}
+		return super.equals(obj);
+	}
+
 }
