@@ -1,7 +1,9 @@
 package net.sf.jncu.newton.stream;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import net.sf.junit.SFTestCase;
 
@@ -128,15 +130,32 @@ public class NSOFExample extends SFTestCase {
 		out.close();
 
 		byte[] buf = out.toByteArray();
-		//print(buf);
+		// print(buf);
 		assertNotNull(buf);
 		assertEquals(nsof, buf);
 	}
 
 	/**
 	 * Test decoding.
+	 * 
+	 * @throws IOException
 	 */
-	public void testDecode() {
+	public void testDecode() throws IOException {
+		InputStream in = new ByteArrayInputStream(nsof);
+		NSOFDecoder decoder = new NSOFDecoder();
+		NSOFObject o = decoder.decode(in);
+		assertNotNull(o);
+		assertTrue(o instanceof NSOFFrame);
+		NSOFFrame x = (NSOFFrame) o;
+		assertEquals(6, x.size());
+		assertNotNull(x.get("name"));
+		assertNotNull(x.get("cats"));
+		assertNotNull(x.get("bounds"));
+		assertNotNull(x.get("uchar"));
+		assertNotNull(x.get("phones"));
+		assertNotNull(x.get("nameAgain"));
+		assertSame(x.get("name"), x.get("nameAgain"));
+
 		// TODO implement me!
 	}
 

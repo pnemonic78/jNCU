@@ -46,8 +46,7 @@ public class NSOFArray extends NSOFObject implements Precedent {
 		NSOFObject[] slots = new NSOFObject[length];
 
 		// Class (object)
-		NSOFSymbol symbol = (NSOFSymbol) decoder.decode(in);
-		setNSClass(symbol);
+		setNSClass((NSOFSymbol) decoder.decode(in));
 
 		// Slot values in ascending order (objects)
 		for (int i = 0; i < length; i++) {

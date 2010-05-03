@@ -44,11 +44,8 @@ public class NSOFFrame extends NSOFObject implements Precedent {
 		}
 
 		// Slot values in ascending order (objects)
-		NSOFObject slot;
 		for (int i = 0; i < length; i++) {
-			slot = decoder.decode(in);
-			slot.decode(in, decoder);
-			put(symbols[i], slot);
+			put(symbols[i], decoder.decode(in));
 		}
 	}
 

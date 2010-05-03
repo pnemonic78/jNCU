@@ -4,8 +4,8 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidObjectException;
+import java.util.Hashtable;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Newton Streamed Object Format decoder.
@@ -14,9 +14,12 @@ import java.util.TreeMap;
  */
 public class NSOFDecoder {
 
-	private final Map<Integer, Precedent> precedents = new TreeMap<Integer, Precedent>();
+	private final Map<NSOFPrecedent, Precedent> precedents = new Hashtable<NSOFPrecedent, Precedent>();
 
-	private int id = 0;
+	/** <tt>0</tt> is a legal ID. */
+	private int idMax = 0;
+	/** Written version header? */
+	private boolean versioned = false;
 
 	/**
 	 * Constructs a new decoder.
@@ -26,74 +29,85 @@ public class NSOFDecoder {
 	}
 
 	/**
+	 * Decode the NewtonScript object, recursively.
+	 * 
 	 * @param in
-	 * @return
+	 *            the input.
+	 * @return the decoded object.
 	 * @throws IOException
+	 *             if a decoding error occurs.
 	 */
 	public NSOFObject decode(InputStream in) throws IOException {
-		NSOFObject nsof = null;
+		if (!versioned) {
+			int version = in.read();
+			if (version != NewtonStreamedObjectFormat.VERSION) {
+				throw new IllegalArgumentException("unknown protocol version: " + version);
+			}
+			versioned = true;
+		}
 		int dataType = in.read();
 		if (dataType == -1) {
 			throw new EOFException();
 		}
+		NSOFObject object = null;
 
 		switch (dataType) {
 		case NewtonStreamedObjectFormat.ARRAY:
-			nsof = new NSOFArray();
+			object = new NSOFArray();
 			break;
 		case NewtonStreamedObjectFormat.BINARY_OBJECT:
-			nsof = new NSOFBinaryObject();
+			object = new NSOFBinaryObject();
 			break;
 		case NewtonStreamedObjectFormat.CHARACTER:
-			nsof = new NSOFCharacter();
+			object = new NSOFCharacter();
 		case NewtonStreamedObjectFormat.FRAME:
-			nsof = new NSOFFrame();
+			object = new NSOFFrame();
 			break;
 		case NewtonStreamedObjectFormat.IMMEDIATE:
-			nsof = new NSOFImmediate();
+			object = new NSOFImmediate();
 			break;
 		case NewtonStreamedObjectFormat.LARGE_BINARY:
-			nsof = new NSOFLargeBinary();
+			object = new NSOFLargeBinary();
 			break;
 		case NewtonStreamedObjectFormat.NIL:
-			nsof = new NSOFNil();
+			object = new NSOFNil();
 			break;
 		case NewtonStreamedObjectFormat.PLAIN_ARRAY:
-			nsof = new NSOFPlainArray();
+			object = new NSOFPlainArray();
 			break;
 		case NewtonStreamedObjectFormat.PRECEDENT:
-			nsof = new NSOFPrecedent();
+			object = new NSOFPrecedent();
 			break;
 		case NewtonStreamedObjectFormat.SMALL_RECT:
-			nsof = new NSOFSmallRect();
+			object = new NSOFSmallRect();
 			break;
 		case NewtonStreamedObjectFormat.STRING:
-			nsof = new NSOFString();
+			object = new NSOFString();
 			break;
 		case NewtonStreamedObjectFormat.SYMBOL:
-			nsof = new NSOFSymbol();
+			object = new NSOFSymbol();
 			break;
 		case NewtonStreamedObjectFormat.UNICODE_CHARACTER:
-			nsof = new NSOFUnicodeCharacter();
+			object = new NSOFUnicodeCharacter();
 			break;
 		}
-		if (nsof == null) {
+		if (object == null) {
 			throw new InvalidObjectException("unknown data type " + dataType);
 		}
-		// TODO nsof.setId(id++);
-		nsof.decode(in, this);
-		if (nsof instanceof Precedent) {
-			precedents.put(id, (Precedent) nsof);
+		if (object instanceof Precedent) {
+			Precedent p = (Precedent) object;
+			NSOFPrecedent id = new NSOFPrecedent(this.idMax);
+			precedents.put(id, p);
+			this.idMax++;
+		}
+		object.decode(in, this);
+		if (dataType == NewtonStreamedObjectFormat.PRECEDENT) {
+			NSOFPrecedent id = (NSOFPrecedent) object;
+			Precedent p = precedents.get(id);
+			object = (NSOFObject) p;
 		}
 
-		return nsof;
+		return object;
 	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	public Precedent getPrecedent(int id) {
-		return precedents.get(id);
-	}
 }
