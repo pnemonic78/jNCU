@@ -23,6 +23,17 @@ public class NSOFArray extends NSOFObject {
 		setNSClass(NS_CLASS);
 	}
 
+	/**
+	 * Constructs a new array.
+	 * 
+	 * @param value
+	 *            the value.
+	 */
+	public NSOFArray(NSOFObject[] value) {
+		this();
+		setValue(value);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see
