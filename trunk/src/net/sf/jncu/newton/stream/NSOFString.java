@@ -143,15 +143,11 @@ public class NSOFString extends NSOFObject implements Comparable<NSOFString> {
 					} else if (c == '"') {
 						buf.append("\\\"");
 					} else {
-						char hex12 = HEX.charAt((c >>> 12) & 0x000F);
-						char hex8 = HEX.charAt((c >>> 8) & 0x000F);
-						char hex4 = HEX.charAt((c >>> 4) & 0x000F);
-						char hex0 = HEX.charAt((c >>> 0) & 0x000F);
 						buf.append("\\u");
-						buf.append(hex12);
-						buf.append(hex8);
-						buf.append(hex4);
-						buf.append(hex0);
+						buf.append(HEX.charAt((c >>> 12) & 0x000F));
+						buf.append(HEX.charAt((c >>> 8) & 0x000F));
+						buf.append(HEX.charAt((c >>> 4) & 0x000F));
+						buf.append(HEX.charAt((c >>> 0) & 0x000F));
 					}
 				}
 				toString = "\"" + value + "\"";
@@ -160,7 +156,6 @@ public class NSOFString extends NSOFObject implements Comparable<NSOFString> {
 		return toString;
 	}
 
-	@Override
 	public int compareTo(NSOFString that) {
 		String valThis = this.getValue();
 		String valThat = that.getValue();
