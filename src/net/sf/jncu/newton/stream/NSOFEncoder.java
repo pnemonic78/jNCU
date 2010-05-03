@@ -2,6 +2,8 @@ package net.sf.jncu.newton.stream;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Newton Streamed Object Format encoder.
@@ -9,6 +11,10 @@ import java.io.OutputStream;
  * @author moshew
  */
 public class NSOFEncoder {
+
+	private final Map<Integer, Precedent> precedents = new TreeMap<Integer, Precedent>();
+
+	private int id = 0;
 
 	/**
 	 * Creates a new encoder.

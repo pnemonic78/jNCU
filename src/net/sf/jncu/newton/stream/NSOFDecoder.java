@@ -14,7 +14,7 @@ import java.util.TreeMap;
  */
 public class NSOFDecoder {
 
-	private final Map<Integer, NewtonStreamedObjectFormat> precedents = new TreeMap<Integer, NewtonStreamedObjectFormat>();
+	private final Map<Integer, Precedent> precedents = new TreeMap<Integer, Precedent>();
 
 	private int id = 0;
 
@@ -82,7 +82,9 @@ public class NSOFDecoder {
 		}
 		nsof.setId(id++);
 		nsof.decode(in, this);
-		precedents.put(id, nsof);
+		if (nsof instanceof Precedent) {
+			precedents.put(id, (Precedent) nsof);
+		}
 
 		return nsof;
 	}
@@ -91,7 +93,7 @@ public class NSOFDecoder {
 	 * @param id
 	 * @return
 	 */
-	public NewtonStreamedObjectFormat getPrecedent(int id) {
+	public Precedent getPrecedent(int id) {
 		return precedents.get(id);
 	}
 }
