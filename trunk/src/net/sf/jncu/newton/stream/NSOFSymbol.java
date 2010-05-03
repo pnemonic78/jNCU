@@ -28,7 +28,8 @@ public class NSOFSymbol extends NSOFString {
 	 *            the symbol name.
 	 */
 	public NSOFSymbol(String name) {
-		super(name);
+		this();
+		setValue(name);
 	}
 
 	/*
