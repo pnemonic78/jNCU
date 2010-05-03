@@ -26,6 +26,17 @@ public class NSOFCharacter extends NSOFObject {
 		setNSClass(NS_CLASS);
 	}
 
+	/**
+	 * Constructs a new character.
+	 * 
+	 * @param value
+	 *            the character.
+	 */
+	public NSOFCharacter(char value) {
+		this();
+		setValue(value);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see

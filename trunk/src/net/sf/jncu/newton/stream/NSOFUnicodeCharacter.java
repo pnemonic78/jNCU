@@ -22,6 +22,17 @@ public class NSOFUnicodeCharacter extends NSOFCharacter {
 		setNSClass(NS_CLASS);
 	}
 
+	/**
+	 * Constructs a new Unicode character.
+	 * 
+	 * @param value
+	 *            the character.
+	 */
+	public NSOFUnicodeCharacter(char value) {
+		this();
+		setValue(value);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see

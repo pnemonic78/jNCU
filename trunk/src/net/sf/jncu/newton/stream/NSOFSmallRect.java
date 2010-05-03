@@ -27,6 +27,46 @@ public class NSOFSmallRect extends NSOFObject {
 		setNSClass(NS_CLASS);
 	}
 
+	/**
+	 * Constructs a new small rectangle.
+	 * 
+	 * @param top
+	 *            the top co-ordinate.
+	 * @param left
+	 *            the left co-ordinate.
+	 * @param bottom
+	 *            the bottom co-ordinate.
+	 * @param right
+	 *            the right co-ordinate.
+	 */
+	public NSOFSmallRect(int top, int left, int bottom, int right) {
+		this();
+		setTop(top);
+		setLeft(left);
+		setBottom(bottom);
+		setRight(right);
+	}
+
+	/**
+	 * Constructs a new small rectangle.
+	 * 
+	 * @param top
+	 *            the top co-ordinate.
+	 * @param left
+	 *            the left co-ordinate.
+	 * @param bottom
+	 *            the bottom co-ordinate.
+	 * @param right
+	 *            the right co-ordinate.
+	 */
+	public NSOFSmallRect(byte top, byte left, byte bottom, byte right) {
+		this();
+		setTop(top);
+		setLeft(left);
+		setBottom(bottom);
+		setRight(right);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see
