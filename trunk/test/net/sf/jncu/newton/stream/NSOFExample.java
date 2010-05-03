@@ -111,6 +111,7 @@ public class NSOFExample extends SFTestCase {
 		x.put("nameAgain", x.get("name"));
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		out.write(NewtonStreamedObjectFormat.VERSION);
 		x.encode(out);
 		out.close();
 
