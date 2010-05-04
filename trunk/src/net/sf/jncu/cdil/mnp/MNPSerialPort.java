@@ -108,7 +108,6 @@ public class MNPSerialPort {
 		}
 		reader = null;
 		writer = null;
-		ser.removeEventListener();
 		ser.close();
 	}
 
