@@ -34,9 +34,9 @@ public class CommPorts {
 	public List<CommPortIdentifier> getPortIdentifiers(int portType) throws NoSuchPortException {
 		List<CommPortIdentifier> portIdentifiers = new ArrayList<CommPortIdentifier>();
 
-		Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
+		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
 		while (portEnum.hasMoreElements()) {
-			CommPortIdentifier portIdentifier = portEnum.nextElement();
+			CommPortIdentifier portIdentifier = (CommPortIdentifier) portEnum.nextElement();
 			if (portIdentifier.getPortType() == portType) {
 				portIdentifiers.add(portIdentifier);
 			}
