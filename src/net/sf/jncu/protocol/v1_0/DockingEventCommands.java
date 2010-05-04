@@ -599,18 +599,6 @@ public class DockingEventCommands {
 		 */
 		public static final String kDGetInheritance = "ginh";
 		/**
-		 * This command sets the timeout for the connection (the time the Newton
-		 * will wait to receive data for it disconnects). This time is usually
-		 * set to 30 seconds.
-		 * 
-		 * <pre>
-		 * 'stim' 
-		 * length
-		 * timeout in seconds
-		 * </pre>
-		 */
-		public static final String kDSetTimeout = "stim";
-		/**
 		 * Get patches.
 		 * 
 		 * <pre>

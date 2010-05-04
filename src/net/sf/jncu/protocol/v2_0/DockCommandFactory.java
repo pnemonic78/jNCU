@@ -7,6 +7,7 @@ import net.sf.jncu.protocol.v2_0.session.DCmdInitiateDocking;
 import net.sf.jncu.protocol.v2_0.session.DCmdNewtonInfo;
 import net.sf.jncu.protocol.v2_0.session.DCmdNewtonName;
 import net.sf.jncu.protocol.v2_0.session.DCmdRequestToDock;
+import net.sf.jncu.protocol.v2_0.session.DCmdSetTimeout;
 import net.sf.jncu.protocol.v2_0.session.DCmdWhichIcons;
 
 /**
@@ -73,6 +74,9 @@ public class DockCommandFactory {
 		}
 		if (DCmdResult.COMMAND.equals(cmdName)) {
 			return new DCmdResult();
+		}
+		if (DCmdSetTimeout.COMMAND.equals(cmdName)) {
+			return new DCmdSetTimeout();
 		}
 		if (DCmdWhichIcons.COMMAND.equals(cmdName)) {
 			return new DCmdWhichIcons();
