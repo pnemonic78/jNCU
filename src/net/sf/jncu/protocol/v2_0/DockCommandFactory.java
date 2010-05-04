@@ -1,10 +1,13 @@
 package net.sf.jncu.protocol.v2_0;
 
 import net.sf.jncu.protocol.DockCommand;
+import net.sf.jncu.protocol.v1_0.DCmdResult;
 import net.sf.jncu.protocol.v2_0.session.DCmdDesktopInfo;
 import net.sf.jncu.protocol.v2_0.session.DCmdInitiateDocking;
+import net.sf.jncu.protocol.v2_0.session.DCmdNewtonInfo;
 import net.sf.jncu.protocol.v2_0.session.DCmdNewtonName;
 import net.sf.jncu.protocol.v2_0.session.DCmdRequestToDock;
+import net.sf.jncu.protocol.v2_0.session.DCmdWhichIcons;
 
 /**
  * Docking command factory.
@@ -59,11 +62,20 @@ public class DockCommandFactory {
 		if (DCmdInitiateDocking.COMMAND.equals(cmdName)) {
 			return new DCmdInitiateDocking();
 		}
+		if (DCmdNewtonInfo.COMMAND.equals(cmdName)) {
+			return new DCmdNewtonInfo();
+		}
 		if (DCmdNewtonName.COMMAND.equals(cmdName)) {
 			return new DCmdNewtonName();
 		}
 		if (DCmdRequestToDock.COMMAND.equals(cmdName)) {
 			return new DCmdRequestToDock();
+		}
+		if (DCmdResult.COMMAND.equals(cmdName)) {
+			return new DCmdResult();
+		}
+		if (DCmdWhichIcons.COMMAND.equals(cmdName)) {
+			return new DCmdWhichIcons();
 		}
 		return null;
 	}
