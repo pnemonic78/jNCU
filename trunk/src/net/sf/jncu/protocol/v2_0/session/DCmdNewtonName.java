@@ -117,8 +117,16 @@ public class DCmdNewtonName extends DockCommandFromNewton {
 	 * @param name
 	 *            the name.
 	 */
-	public void setName(String name) {
+	protected void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * Get the Newton information.
+	 * 
+	 * @return the information.
+	 */
+	public NewtonInfo getInformation() {
+		return info;
+	}
 }

@@ -742,18 +742,6 @@ public class DockingEventCommands {
 		 */
 		public static final String kDChangedIDs = "cids";
 		/**
-		 * This command is sent in response to any of the commands from the
-		 * desktop that don't request data. It lets the desktop know that things
-		 * are still proceeding OK.
-		 * 
-		 * <pre>
-		 * 'dres'
-		 * length
-		 * error code
-		 * </pre>
-		 */
-		public static final String kDResult = "dres";
-		/**
 		 * This command is sent in response to a <tt>kDAddEntry</tt> command
 		 * from the desktop. It returns the ID that the entry was given when it
 		 * was added to the current soup.
