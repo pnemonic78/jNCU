@@ -9,7 +9,6 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.TooManyListenersException;
 
-
 /**
  * NCU serial port reader.
  * 
@@ -49,6 +48,11 @@ public class MNPSerialPortReader extends Thread implements Closeable {
 		if (listener != null) {
 			listener.close();
 			listener = null;
+			try {
+				port.removeEventListener();
+			} catch (NullPointerException npe) {
+				// consume
+			}
 		}
 		if (in != null) {
 			try {
