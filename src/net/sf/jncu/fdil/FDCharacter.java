@@ -8,7 +8,7 @@ package net.sf.jncu.fdil;
  */
 public class FDCharacter extends FDImmediate {
 
-	protected static final String HEX = "0123456789ABDEF";
+	protected static final char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 	private final char value;
 
@@ -58,10 +58,10 @@ public class FDCharacter extends FDImmediate {
 	 */
 	@Override
 	public String toString() {
-		char hex0 = HEX.charAt(value & 0x000F);
-		char hex1 = HEX.charAt((value >> 4) & 0x000F);
-		char hex2 = HEX.charAt((value >> 8) & 0x000F);
-		char hex3 = HEX.charAt((value >> 12) & 0x000F);
+		char hex0 = HEX[value & 0x000F];
+		char hex1 = HEX[(value >> 4) & 0x000F];
+		char hex2 = HEX[(value >> 8) & 0x000F];
+		char hex3 = HEX[(value >> 12) & 0x000F];
 		return "$\\" + hex3 + hex2 + hex1 + hex0;
 	}
 }

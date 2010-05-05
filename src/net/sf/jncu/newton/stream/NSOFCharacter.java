@@ -14,7 +14,7 @@ public class NSOFCharacter extends NSOFObject {
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("character");
 
-	protected static final String HEX = "0123456789ABDEF";
+	protected static final char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 	private char value;
 
@@ -108,9 +108,6 @@ public class NSOFCharacter extends NSOFObject {
 	@Override
 	public String toString() {
 		int value = getValue();
-		char hex0 = HEX.charAt(value & 0x000F);
-		value >>= 4;
-		char hex1 = HEX.charAt(value & 0x000F);
-		return "$\\" + hex1 + hex0;
+		return "$\\" + HEX[value & 0x000F] + HEX[(value >> 4) & 0x000F];
 	}
 }

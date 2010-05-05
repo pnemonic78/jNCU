@@ -51,7 +51,7 @@ public class CommTrace implements SerialPortEventListener {
 
 	public static final char CHAR_DIRECTION_1TO2 = '>';
 	public static final char CHAR_DIRECTION_2TO1 = '<';
-	private static final String HEX = "0123456789ABCDEF";
+	private static final char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 	private SerialPort port1;
 	private SerialPort port2;
@@ -70,7 +70,7 @@ public class CommTrace implements SerialPortEventListener {
 	 * Main method.
 	 * 
 	 * @param args
-	 *          the array of arguments.
+	 *            the array of arguments.
 	 */
 	public static void main(String[] args) {
 		if ((args == null) || (args.length < 2)) {
@@ -151,8 +151,8 @@ public class CommTrace implements SerialPortEventListener {
 				do {
 					synchronized (logOut) {
 						logOut.print(direction);
-						logOut.print(HEX.charAt((b >> 4) & 0x0F));
-						logOut.print(HEX.charAt(b & 0x0F));
+						logOut.print(HEX[(b >> 4) & 0x0F]);
+						logOut.print(HEX[b & 0x0F]);
 						logWidth++;
 						if (logWidth >= 32) {
 							logOut.println();
@@ -172,9 +172,9 @@ public class CommTrace implements SerialPortEventListener {
 	 * Set the trace output.
 	 * 
 	 * @param file
-	 *          the output file.
+	 *            the output file.
 	 * @throws FileNotFoundException
-	 *           if file is not found.
+	 *             if file is not found.
 	 */
 	public void setOutput(File file) throws FileNotFoundException {
 		setOutput(new FileOutputStream(file));
@@ -184,7 +184,7 @@ public class CommTrace implements SerialPortEventListener {
 	 * Set the trace output.
 	 * 
 	 * @param out
-	 *          the output.
+	 *            the output.
 	 */
 	public void setOutput(OutputStream out) {
 		setOutput(new PrintStream(out));
@@ -194,7 +194,7 @@ public class CommTrace implements SerialPortEventListener {
 	 * Set the trace output.
 	 * 
 	 * @param out
-	 *          the output.
+	 *            the output.
 	 */
 	public void setOutput(PrintStream out) {
 		this.logOut = out;
@@ -204,7 +204,7 @@ public class CommTrace implements SerialPortEventListener {
 	 * Set the baud rate.
 	 * 
 	 * @param baud
-	 *          the baude rate.
+	 *            the baude rate.
 	 */
 	public void setBaud(int baud) {
 		this.baud = baud;
