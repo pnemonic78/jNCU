@@ -13,7 +13,7 @@ public class NSOFString extends NSOFObject implements Comparable<NSOFString>, Pr
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("string");
 
-	protected static final String HEX = "0123456789ABDEF";
+	protected static final char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 	private String value;
 	private String toString;
@@ -144,10 +144,10 @@ public class NSOFString extends NSOFObject implements Comparable<NSOFString>, Pr
 						buf.append("\\\"");
 					} else {
 						buf.append("\\u");
-						buf.append(HEX.charAt((c >>> 12) & 0x000F));
-						buf.append(HEX.charAt((c >>> 8) & 0x000F));
-						buf.append(HEX.charAt((c >>> 4) & 0x000F));
-						buf.append(HEX.charAt((c >>> 0) & 0x000F));
+						buf.append(HEX[(c >>> 12) & 0x000F]);
+						buf.append(HEX[(c >>> 8) & 0x000F]);
+						buf.append(HEX[(c >>> 4) & 0x000F]);
+						buf.append(HEX[(c >>> 0) & 0x000F]);
 					}
 				}
 				toString = "\"" + value + "\"";

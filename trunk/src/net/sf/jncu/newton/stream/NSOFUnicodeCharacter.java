@@ -74,13 +74,13 @@ public class NSOFUnicodeCharacter extends NSOFCharacter {
 	@Override
 	public String toString() {
 		int value = getValue();
-		char hex0 = HEX.charAt(value & 0x000F);
+		char hex0 = HEX[value & 0x000F];
 		value >>= 4;
-		char hex1 = HEX.charAt(value & 0x000F);
+		char hex1 = HEX[value & 0x000F];
 		value >>= 4;
-		char hex2 = HEX.charAt(value & 0x000F);
+		char hex2 = HEX[value & 0x000F];
 		value >>= 4;
-		char hex3 = HEX.charAt(value & 0x000F);
+		char hex3 = HEX[value & 0x000F];
 		return "$\\u" + hex3 + hex2 + hex1 + hex0;
 	}
 }
