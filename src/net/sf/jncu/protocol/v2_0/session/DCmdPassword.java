@@ -56,4 +56,9 @@ public class DCmdPassword extends DockCommandFromNewton {
 	protected void setEncryptedKey(long encryptedKey) {
 		this.encryptedKey = encryptedKey;
 	}
+
+	public boolean verify(long challenge) {
+		// TODO implement me!
+		return true;
+	}
 }

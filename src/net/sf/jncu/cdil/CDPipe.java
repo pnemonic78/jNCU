@@ -7,6 +7,9 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.concurrent.TimeoutException;
 
+import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
+
 /**
  * CDIL pipe.
  * 
@@ -18,6 +21,7 @@ public abstract class CDPipe extends Thread {
 	private PipedOutputStream pipeSource;
 	private PipedInputStream pipeSink;
 	private int timeout;
+	protected DockingProtocol docking;
 
 	/**
 	 * Creates a new pipe.
@@ -129,6 +133,7 @@ public abstract class CDPipe extends Thread {
 		if (getCDState() != CDState.DISCONNECTED) {
 			throw new BadPipeStateException();
 		}
+		this.docking = new DockingProtocol(this);
 		start();
 		layer.setState(CDState.LISTENING);
 	}
@@ -283,6 +288,27 @@ public abstract class CDPipe extends Thread {
 	}
 
 	/**
+	 * Sends the given command to the Newton device.<br>
+	 * 
+	 * @param cmd
+	 *            the command.
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
+	 * @throws BadPipeStateException
+	 *             if pipe is in an incorrect state.
+	 * @throws PipeDisconnectedException
+	 *             if the pipe is disconnected.
+	 * @throws TimeoutException
+	 *             if timeout occurs.
+	 */
+	public void write(DockCommandToNewton cmd) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
+			TimeoutException {
+		write(cmd.getPayload());
+	}
+
+	/**
 	 * Allows the CDIL to service an open connection.<br>
 	 * <tt>DIL_Error CD_Idle(CD_Handle pipe)</tt>
 	 * <p>
@@ -361,7 +387,7 @@ public abstract class CDPipe extends Thread {
 	 * 
 	 * @return the timeout in seconds.
 	 */
-	protected int getTimeout() {
+	public int getTimeout() {
 		return timeout;
 	}
 
