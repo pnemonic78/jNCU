@@ -8,72 +8,20 @@ package net.sf.jncu.protocol.v2_0.session;
 public class NewtonInfo {
 
 	private int newtonId;
-	/**
-	 * An integer indicating the manufacturer of the Newton device.
-	 */
 	private int manufacturerId;
-	/**
-	 * An integer indicating the hardware type this ROM was built for.
-	 */
 	private int machineType;
-	/**
-	 * An integer indicating the ROM version number.
-	 */
 	private int romVersion;
-	/**
-	 * An integer indicating the language (English, German, French) and the
-	 * stage of the ROM (alpha, beta, final).
-	 */
 	private int romStage;
-	/**
-	 * The amount of RAM on the Newton device.
-	 */
 	private int ramSize;
-	/**
-	 * An integer representing the height of the screen in pixels. The height
-	 * takes into account the current screen orientation.
-	 */
 	private int screenHeight;
-	/**
-	 * An integer representing the width of the screen in pixels. The width
-	 * takes into account the current screen orientation.
-	 */
 	private int screenWidth;
-	/**
-	 * This value is <tt>0</tt> on an unpatched Newton device, and non-zero on a
-	 * patched Newton.
-	 */
 	private int patchVersion;
-	/**
-	 * Newton Object System (NOS) version.<br>
-	 * The version of the NewtonScript interpreter.
-	 */
 	private int objectSystemVersion;
-	/**
-	 * The signature of the internal store. Note that this value is changed with
-	 * a hard reset.
-	 */
 	private int internalStoreSignature;
-	/** The number of horizontal pixels per inch. */
 	private int screenResolutionVertical;
-	/** The number of vertical pixels per inch. */
 	private int screenResolutionHorizontal;
-	/**
-	 * The number of bits per pixel.<br>
-	 * The bit depth of the LCD screen. For the MessagePad 120, the LCD supports
-	 * a monochrome screen depth of 1. The eMate 300 and MessagePad 200 have 4
-	 * bit depth LCD screens.
-	 */
 	private int screenDepth;
-	/**
-	 * An 8-byte object containing the unique hardware serial number of the
-	 * Newton device on those devices that contain this hardware.
-	 */
 	private long serialNumber;
-	/**
-	 * The version of the protocol used by the Dock application. On Newton 2.0
-	 * devices this is 9. On Newton 2.1 devices this is 11.
-	 */
 	private int targetProtocol;
 
 	/**
@@ -107,6 +55,8 @@ public class NewtonInfo {
 
 	/**
 	 * Get the manufacturer id.
+	 * <p>
+	 * An integer indicating the manufacturer of the Newton device.
 	 * 
 	 * @return the manufacturer id.
 	 */
@@ -126,6 +76,8 @@ public class NewtonInfo {
 
 	/**
 	 * Get the machine type.
+	 * <p>
+	 * An integer indicating the hardware type this ROM was built for.
 	 * 
 	 * @return the machine type.
 	 */
@@ -144,7 +96,7 @@ public class NewtonInfo {
 	}
 
 	/**
-	 * Get the major ROM version.
+	 * Get the major ROM version number.
 	 * 
 	 * @return the version.
 	 */
@@ -153,7 +105,7 @@ public class NewtonInfo {
 	}
 
 	/**
-	 * Get the minor ROM version.
+	 * Get the minor ROM version number.
 	 * 
 	 * @return the version.
 	 */
@@ -173,6 +125,9 @@ public class NewtonInfo {
 
 	/**
 	 * Get the ROM stage.
+	 * <p>
+	 * An integer indicating the language (English, German, French) and the
+	 * stage of the ROM (alpha, beta, final).
 	 * 
 	 * @return the ROM stage.
 	 */
@@ -192,6 +147,8 @@ public class NewtonInfo {
 
 	/**
 	 * Get the RAM size.
+	 * <p>
+	 * The amount of RAM on the Newton device.
 	 * 
 	 * @return the RAM size.
 	 */
@@ -211,6 +168,9 @@ public class NewtonInfo {
 
 	/**
 	 * Get the screen height.
+	 * <p>
+	 * An integer representing the height of the screen in pixels. The height
+	 * takes into account the current screen orientation.
 	 * 
 	 * @return the screen height.
 	 */
@@ -230,6 +190,9 @@ public class NewtonInfo {
 
 	/**
 	 * Get the screen width.
+	 * <p>
+	 * An integer representing the width of the screen in pixels. The width
+	 * takes into account the current screen orientation.
 	 * 
 	 * @return the screen width.
 	 */
@@ -258,6 +221,9 @@ public class NewtonInfo {
 
 	/**
 	 * Set the patch version.
+	 * <p>
+	 * This value is <tt>0</tt> on an unpatched Newton device, and non-zero on a
+	 * patched Newton.
 	 * 
 	 * @param patchVersion
 	 *            the patch version.
@@ -267,7 +233,11 @@ public class NewtonInfo {
 	}
 
 	/**
-	 * Get the NOS version.
+	 * Get the object system version.
+	 * <p>
+	 * Newton Object System (NOS) version, or Newton Streamed Object Format
+	 * (NSOF) version.<br>
+	 * The version of the NewtonScript interpreter.
 	 * 
 	 * @return the version.
 	 */
@@ -287,6 +257,9 @@ public class NewtonInfo {
 
 	/**
 	 * Get the internal store signature.
+	 * <p>
+	 * The signature of the internal store. Note that this value is changed with
+	 * a hard reset.
 	 * 
 	 * @return the signature.
 	 */
@@ -315,6 +288,8 @@ public class NewtonInfo {
 
 	/**
 	 * Set the vertical screen resolution.
+	 * <p>
+	 * The number of horizontal pixels per inch.
 	 * 
 	 * @param screenResolutionVertical
 	 *            the resolution.
@@ -334,6 +309,8 @@ public class NewtonInfo {
 
 	/**
 	 * Set the horizontal screen resolution.
+	 * <p>
+	 * The number of vertical pixels per inch.
 	 * 
 	 * @param screenResolutionHorizontal
 	 *            the resolution.
@@ -353,6 +330,11 @@ public class NewtonInfo {
 
 	/**
 	 * Set the screen depth.
+	 * <p>
+	 * The number of bits per pixel.<br>
+	 * The bit depth of the LCD screen. For the MessagePad 120, the LCD supports
+	 * a monochrome screen depth of 1. The eMate 300 and MessagePad 200 have 4
+	 * bit depth LCD screens.
 	 * 
 	 * @param screenDepth
 	 *            the depth.
@@ -372,6 +354,9 @@ public class NewtonInfo {
 
 	/**
 	 * Set the serial number.
+	 * <p>
+	 * An 8-byte object containing the unique hardware serial number of the
+	 * Newton device on those devices that contain this hardware.
 	 * 
 	 * @param serialNumber
 	 *            the serial number.
@@ -391,6 +376,9 @@ public class NewtonInfo {
 
 	/**
 	 * Set the target protocol.
+	 * <p>
+	 * The version of the protocol used by the Dock application. On Newton 2.0
+	 * devices this is <tt>9</tt>. On Newton 2.1 devices this is <tt>11</tt>.
 	 * 
 	 * @param targetProtocol
 	 *            the protocol.
