@@ -13,7 +13,7 @@ public class NSOFSymbol extends NSOFString {
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("symbol");
 
-	private static final String ENCODING = "MacRoman";
+	protected static final String ENCODING = "MacRoman";
 
 	/**
 	 * Constructs a new symbol.
