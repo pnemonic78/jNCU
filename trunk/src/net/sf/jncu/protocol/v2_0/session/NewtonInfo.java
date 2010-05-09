@@ -7,6 +7,13 @@ package net.sf.jncu.protocol.v2_0.session;
  */
 public class NewtonInfo {
 
+	/** English. */
+	public static final int ENGLISH = 0;
+	/** French. */
+	public static final int FRENCH = 1;
+	/** German. */
+	public static final int GERMAN = 2;
+
 	private int newtonId;
 	private int manufacturerId;
 	private int machineType;
@@ -100,7 +107,7 @@ public class NewtonInfo {
 	 * 
 	 * @return the version.
 	 */
-	public int getRomMajorVersion() {
+	public int getMajorVersion() {
 		return (romVersion >> 16) & 0xFFFF;
 	}
 
@@ -109,7 +116,7 @@ public class NewtonInfo {
 	 * 
 	 * @return the version.
 	 */
-	public int getRomMinorVersion() {
+	public int getMinorVersion() {
 		return romVersion & 0xFFFF;
 	}
 
@@ -124,15 +131,28 @@ public class NewtonInfo {
 	}
 
 	/**
+	 * Get the ROM language.
+	 * <p>
+	 * An integer indicating the language (English, German, French).
+	 * 
+	 * @return the ROM stage.
+	 * @see #ENGLISH
+	 * @see #FRENCH
+	 * @see #GERMAN
+	 */
+	public int getLanguage() {
+		return (romStage >> 16) & 0xFFFF;
+	}
+
+	/**
 	 * Get the ROM stage.
 	 * <p>
-	 * An integer indicating the language (English, German, French) and the
-	 * stage of the ROM (alpha, beta, final).
+	 * An integer indicating the stage of the ROM (alpha, beta, final).
 	 * 
 	 * @return the ROM stage.
 	 */
-	public int getRomStage() {
-		return romStage;
+	public int getStage() {
+		return romStage & 0xFFFF;
 	}
 
 	/**
