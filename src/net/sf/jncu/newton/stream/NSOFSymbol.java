@@ -13,6 +13,8 @@ public class NSOFSymbol extends NSOFString {
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("symbol");
 
+	private static final String ENCODING = "MacRoman";
+
 	/**
 	 * Constructs a new symbol.
 	 */
@@ -44,7 +46,7 @@ public class NSOFSymbol extends NSOFString {
 		// Name (bytes)
 		byte[] name = new byte[len];
 		in.read(name);
-		setValue(new String(name, "US-ASCII"));
+		setValue(new String(name, ENCODING));
 	}
 
 	/*
@@ -60,7 +62,7 @@ public class NSOFSymbol extends NSOFString {
 		// Number of characters in name (xlong)
 		XLong.encode(name.length(), out);
 		// Name (bytes)
-		out.write(name.getBytes("US-ASCII"));
+		out.write(name.getBytes(ENCODING));
 	}
 
 }
