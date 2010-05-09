@@ -139,7 +139,12 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 
 	private NewtonInfo info;
 	private int protocolVersion = DCmdDesktopInfo.PROTOCOL_VERSION;
-	private transient long password;
+	/** The password sent by the Desktop. */
+	private transient long challengeDesktop;
+	/** The password sent by the Newton. */
+	private transient long challengeNewton;
+	/** The ciphered password sent by the Newton. */
+	private transient long challengeNewtonCiphered;
 
 	/**
 	 * Creates a new MNP pipe.
@@ -397,13 +402,14 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		case HANDSHAKE_NAME_RECEIVED:
 			this.info = ((DCmdNewtonName) cmd).getInformation();
 			DCmdDesktopInfo cmdDesktopInfo = (DCmdDesktopInfo) DockCommandFactory.getInstance().create(DCmdDesktopInfo.COMMAND);
+			this.challengeDesktop = cmdDesktopInfo.getEncryptedKey();
 			setState(state, State.HANDSHAKE_DINFO_SENDING, null, cmd);
 			sendCommand(cmdDesktopInfo);
 			break;
 		case HANDSHAKE_NINFO_RECEIVED:
 			DCmdNewtonInfo cmdNewtonInfo = (DCmdNewtonInfo) cmd;
 			this.protocolVersion = cmdNewtonInfo.getProtocolVersion();
-			this.password = cmdNewtonInfo.getEncryptedKey();
+			this.challengeNewton = cmdNewtonInfo.getEncryptedKey();
 
 			DCmdWhichIcons cmdWhichIcons = (DCmdWhichIcons) DockCommandFactory.getInstance().create(DCmdWhichIcons.COMMAND);
 			cmdWhichIcons.setIcons(DCmdWhichIcons.kBackupIcon | DCmdWhichIcons.kInstallIcon | DCmdWhichIcons.kKeyboardIcon | DCmdWhichIcons.kRestoreIcon);

@@ -2,6 +2,7 @@ package net.sf.jncu.protocol.v2_0.session;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Random;
 
 import net.sf.jncu.newton.stream.NSOFArray;
 import net.sf.jncu.newton.stream.NSOFEncoder;
@@ -22,8 +23,9 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * talk the specified protocol or not.
  * <p>
  * The desktop type is a long that identifies the sender‚ <tt>0</tt> for the
- * Macintosh and <tt>1</tt> for Windows. The password key is used as part of the
- * password verification.
+ * Macintosh and <tt>1</tt> for Windows.
+ * <p>
+ * The password key is used as part of the password verification.
  * <p>
  * Session type will be the real session type and should override what was sent
  * in <tt>kDInitiateDocking</tt>. In fact, it will either be the same as was
@@ -85,6 +87,7 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 	private boolean selectiveSync;
 	private long encryptedKey;
 	private NSOFArray desktopApps;
+	protected static final Random rand = new Random();
 
 	/**
 	 * Creates a new command.
@@ -94,7 +97,7 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 		setSessionType(DCmdInitiateDocking.SESSION_SETTING_UP);
 		setDesktopType(System.getProperty("os.name").startsWith("Windows") ? kWindows : kMacintosh);
 		setSelectiveSync(true);
-		setEncryptedKey(0x6423ef02fbcdc5a5L);
+		setEncryptedKey(rand.nextLong());
 		setDesktopApps(null);
 	}
 

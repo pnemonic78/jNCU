@@ -60,32 +60,37 @@ public class DCmdNewtonName extends DockCommandFromNewton {
 	protected void decodeData(InputStream data) throws IOException {
 		int versionInfoLength = htonl(data);
 		info = new NewtonInfo();
-		info.newtonId = htonl(data);
-		info.manufacturerId = htonl(data);
-		info.machineType = htonl(data);
-		info.romVersion = htonl(data);
-		info.romStage = htonl(data);
-		info.ramSize = htonl(data);
-		info.screenHeight = htonl(data);
-		info.screenWidth = htonl(data);
-		info.patchVersion = htonl(data);
-		info.objectSystemVersion = htonl(data);
-		info.internalStoreSignature = htonl(data);
-		info.screenResolutionVertical = htonl(data);
-		info.screenResolutionHorizontal = htonl(data);
-		info.screenDepth = htonl(data);
+		info.setNewtonId(htonl(data)); // #1
+		info.setManufacturerId(htonl(data)); // #2
+		info.setMachineType(htonl(data)); // #3
+		info.setRomVersion(htonl(data)); // #4
+		info.setRomStage(htonl(data)); // #5
+		info.setRamSize(htonl(data)); // #6
+		info.setScreenHeight(htonl(data)); // #7
+		info.setScreenWidth(htonl(data)); // #8
+		info.setPatchVersion(htonl(data)); // #9
+		info.setObjectSystemVersion(htonl(data)); // #10
+		info.setInternalStoreSignature(htonl(data)); // #11
+		info.setScreenResolutionVertical(htonl(data)); // #12
+		info.setScreenResolutionHorizontal(htonl(data)); // #13
+		info.setScreenDepth(htonl(data)); // #14
 
 		final int versionSize = 14 * LENGTH_WORD;
 		if (versionInfoLength > versionSize) {
-			info.systemFlags = htonl(data);
+			/**
+			 * A bit field. The following two bits are defined:<br>
+			 * 1 = has serial number <br>
+			 * 2 = has target protocol
+			 */
+			int systemFlags = htonl(data);
 
-			if ((info.systemFlags & 0x1) == 0x1) {
+			if ((systemFlags & 0x1) == 0x1) {
 				long serHi = htonl(data) & 0xFFFFFFFFL;
 				long serLo = htonl(data) & 0xFFFFFFFFL;
-				info.serialNumber = (serHi << 32) | serLo;
+				info.setSerialNumber((serHi << 32) | serLo);
 			}
-			if ((info.systemFlags & 0x2) == 0x2) {
-				info.targetProtocol = htonl(data);
+			if ((systemFlags & 0x2) == 0x2) {
+				info.setTargetProtocol(htonl(data));
 			}
 		}
 
