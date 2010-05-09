@@ -7,10 +7,6 @@ package net.sf.jncu.protocol.v2_0.session;
  */
 public class NewtonInfo {
 
-	/**
-	 * An almost unique ID which represents a particular Newton. It is a random
-	 * number from a very large domain, so very close to unique.
-	 */
 	private int newtonId;
 	/**
 	 * An integer indicating the manufacturer of the Newton device.
@@ -44,11 +40,12 @@ public class NewtonInfo {
 	 */
 	private int screenWidth;
 	/**
-	 * This value is 0 on an unpatched Newton device, and non-zero otherwise.
+	 * This value is <tt>0</tt> on an unpatched Newton device, and non-zero on a
+	 * patched Newton.
 	 */
 	private int patchVersion;
 	/**
-	 * Newton object system version.<br>
+	 * Newton Object System (NOS) version.<br>
 	 * The version of the NewtonScript interpreter.
 	 */
 	private int objectSystemVersion;
@@ -61,7 +58,12 @@ public class NewtonInfo {
 	private int screenResolutionVertical;
 	/** The number of vertical pixels per inch. */
 	private int screenResolutionHorizontal;
-	/** The number of bits per pixel. */
+	/**
+	 * The number of bits per pixel.<br>
+	 * The bit depth of the LCD screen. For the MessagePad 120, the LCD supports
+	 * a monochrome screen depth of 1. The eMate 300 and MessagePad 200 have 4
+	 * bit depth LCD screens.
+	 */
 	private int screenDepth;
 	/**
 	 * An 8-byte object containing the unique hardware serial number of the
@@ -75,247 +77,323 @@ public class NewtonInfo {
 	private int targetProtocol;
 
 	/**
-	 * Creates a new version information.
+	 * Creates a new Newton information.
 	 */
 	public NewtonInfo() {
 		super();
 	}
 
 	/**
-	 * @return the newtonId
+	 * Get the Newton id.
+	 * <p>
+	 * An almost unique ID which represents a particular Newton. It is a random
+	 * number from a very large domain, so very close to unique.
+	 * 
+	 * @return the Newton id.
 	 */
 	public int getNewtonId() {
 		return newtonId;
 	}
 
 	/**
+	 * Set the Newton id.
+	 * 
 	 * @param newtonId
-	 *            the newtonId to set
+	 *            the Newton id.
 	 */
 	public void setNewtonId(int newtonId) {
 		this.newtonId = newtonId;
 	}
 
 	/**
-	 * @return the manufacturerId
+	 * Get the manufacturer id.
+	 * 
+	 * @return the manufacturer id.
 	 */
 	public int getManufacturerId() {
 		return manufacturerId;
 	}
 
 	/**
+	 * Set the manufacturer id.
+	 * 
 	 * @param manufacturerId
-	 *            the manufacturerId to set
+	 *            the manufacturer id.
 	 */
 	public void setManufacturerId(int manufacturerId) {
 		this.manufacturerId = manufacturerId;
 	}
 
 	/**
-	 * @return the machineType
+	 * Get the machine type.
+	 * 
+	 * @return the machine type.
 	 */
 	public int getMachineType() {
 		return machineType;
 	}
 
 	/**
+	 * Set the machine type.
+	 * 
 	 * @param machineType
-	 *            the machineType to set
+	 *            the machine type.
 	 */
 	public void setMachineType(int machineType) {
 		this.machineType = machineType;
 	}
 
 	/**
-	 * @return the romVersion
+	 * Get the major ROM version.
+	 * 
+	 * @return the version.
 	 */
-	public int getRomVersion() {
-		return romVersion;
+	public int getRomMajorVersion() {
+		return (romVersion >> 16) & 0xFFFF;
 	}
 
 	/**
+	 * Get the minor ROM version.
+	 * 
+	 * @return the version.
+	 */
+	public int getRomMinorVersion() {
+		return romVersion & 0xFFFF;
+	}
+
+	/**
+	 * Set the ROM version.
+	 * 
 	 * @param romVersion
-	 *            the romVersion to set
+	 *            the version.
 	 */
 	public void setRomVersion(int romVersion) {
 		this.romVersion = romVersion;
 	}
 
 	/**
-	 * @return the romStage
+	 * Get the ROM stage.
+	 * 
+	 * @return the ROM stage.
 	 */
 	public int getRomStage() {
 		return romStage;
 	}
 
 	/**
+	 * Set the ROM stage.
+	 * 
 	 * @param romStage
-	 *            the romStage to set
+	 *            the ROM stage.
 	 */
 	public void setRomStage(int romStage) {
 		this.romStage = romStage;
 	}
 
 	/**
-	 * @return the ramSize
+	 * Get the RAM size.
+	 * 
+	 * @return the RAM size.
 	 */
 	public int getRamSize() {
 		return ramSize;
 	}
 
 	/**
+	 * Set the RAM size.
+	 * 
 	 * @param ramSize
-	 *            the ramSize to set
+	 *            the RAM size.
 	 */
 	public void setRamSize(int ramSize) {
 		this.ramSize = ramSize;
 	}
 
 	/**
-	 * @return the screenHeight
+	 * Get the screen height.
+	 * 
+	 * @return the screen height.
 	 */
 	public int getScreenHeight() {
 		return screenHeight;
 	}
 
 	/**
+	 * Set the screen height.
+	 * 
 	 * @param screenHeight
-	 *            the screenHeight to set
+	 *            the screen height.
 	 */
 	public void setScreenHeight(int screenHeight) {
 		this.screenHeight = screenHeight;
 	}
 
 	/**
-	 * @return the screenWidth
+	 * Get the screen width.
+	 * 
+	 * @return the screen width.
 	 */
 	public int getScreenWidth() {
 		return screenWidth;
 	}
 
 	/**
+	 * Set the screen width.
+	 * 
 	 * @param screenWidth
-	 *            the screenWidth to set
+	 *            the screen width.
 	 */
 	public void setScreenWidth(int screenWidth) {
 		this.screenWidth = screenWidth;
 	}
 
 	/**
-	 * @return the patchVersion
+	 * Get the patch version.
+	 * 
+	 * @return the patch version.
 	 */
 	public int getPatchVersion() {
 		return patchVersion;
 	}
 
 	/**
+	 * Set the patch version.
+	 * 
 	 * @param patchVersion
-	 *            the patchVersion to set
+	 *            the patch version.
 	 */
 	public void setPatchVersion(int patchVersion) {
 		this.patchVersion = patchVersion;
 	}
 
 	/**
-	 * @return the objectSystemVersion
+	 * Get the NOS version.
+	 * 
+	 * @return the version.
 	 */
 	public int getObjectSystemVersion() {
 		return objectSystemVersion;
 	}
 
 	/**
+	 * Set the NOS version.
+	 * 
 	 * @param objectSystemVersion
-	 *            the objectSystemVersion to set
+	 *            the version.
 	 */
 	public void setObjectSystemVersion(int objectSystemVersion) {
 		this.objectSystemVersion = objectSystemVersion;
 	}
 
 	/**
-	 * @return the internalStoreSignature
+	 * Get the internal store signature.
+	 * 
+	 * @return the signature.
 	 */
 	public int getInternalStoreSignature() {
 		return internalStoreSignature;
 	}
 
 	/**
+	 * Set the internal store signature.
+	 * 
 	 * @param internalStoreSignature
-	 *            the internalStoreSignature to set
+	 *            the signature.
 	 */
 	public void setInternalStoreSignature(int internalStoreSignature) {
 		this.internalStoreSignature = internalStoreSignature;
 	}
 
 	/**
-	 * @return the screenResolutionVertical
+	 * Get the vertical screen resolution.
+	 * 
+	 * @return the resolution.
 	 */
 	public int getScreenResolutionVertical() {
 		return screenResolutionVertical;
 	}
 
 	/**
+	 * Set the vertical screen resolution.
+	 * 
 	 * @param screenResolutionVertical
-	 *            the screenResolutionVertical to set
+	 *            the resolution.
 	 */
 	public void setScreenResolutionVertical(int screenResolutionVertical) {
 		this.screenResolutionVertical = screenResolutionVertical;
 	}
 
 	/**
-	 * @return the screenResolutionHorizontal
+	 * Get the horizontal screen resolution.
+	 * 
+	 * @return the resolution.
 	 */
 	public int getScreenResolutionHorizontal() {
 		return screenResolutionHorizontal;
 	}
 
 	/**
+	 * Set the horizontal screen resolution.
+	 * 
 	 * @param screenResolutionHorizontal
-	 *            the screenResolutionHorizontal to set
+	 *            the resolution.
 	 */
 	public void setScreenResolutionHorizontal(int screenResolutionHorizontal) {
 		this.screenResolutionHorizontal = screenResolutionHorizontal;
 	}
 
 	/**
-	 * @return the screenDepth
+	 * Get the screen depth.
+	 * 
+	 * @return the depth.
 	 */
 	public int getScreenDepth() {
 		return screenDepth;
 	}
 
 	/**
+	 * Set the screen depth.
+	 * 
 	 * @param screenDepth
-	 *            the screenDepth to set
+	 *            the depth.
 	 */
 	public void setScreenDepth(int screenDepth) {
 		this.screenDepth = screenDepth;
 	}
 
 	/**
-	 * @return the serialNumber
+	 * Get the serial number.
+	 * 
+	 * @return the serial number.
 	 */
 	public long getSerialNumber() {
 		return serialNumber;
 	}
 
 	/**
+	 * Set the serial number.
+	 * 
 	 * @param serialNumber
-	 *            the serialNumber to set
+	 *            the serial number.
 	 */
 	public void setSerialNumber(long serialNumber) {
 		this.serialNumber = serialNumber;
 	}
 
 	/**
-	 * @return the targetProtocol
+	 * Get the target protocol.
+	 * 
+	 * @return the protocol.
 	 */
 	public int getTargetProtocol() {
 		return targetProtocol;
 	}
 
 	/**
+	 * Set the target protocol.
+	 * 
 	 * @param targetProtocol
-	 *            the targetProtocol to set
+	 *            the protocol.
 	 */
 	public void setTargetProtocol(int targetProtocol) {
 		this.targetProtocol = targetProtocol;
