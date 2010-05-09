@@ -107,8 +107,9 @@ public class DockingProtocol {
 			break;
 		case HANDSHAKE_RTDK_RECEIVED:
 			if (DCmdRequestToDock.COMMAND.equals(cmd.getCommand())) {
-				commandReceived(cmd, state);
+				throw new BadPipeStateException("expected command " + DCmdRequestToDock.COMMAND);
 			}
+			commandReceived(cmd, state);
 			break;
 		case HANDSHAKE_DOCK_SENDING:
 			break;
@@ -127,8 +128,9 @@ public class DockingProtocol {
 			break;
 		case HANDSHAKE_NAME_RECEIVED:
 			if (DCmdNewtonName.COMMAND.equals(cmd.getCommand())) {
-				commandReceived(cmd, state);
+				throw new BadPipeStateException("expected command " + DCmdNewtonName.COMMAND);
 			}
+			commandReceived(cmd, state);
 			break;
 		case HANDSHAKE_DINFO_SENDING:
 			break;
@@ -147,8 +149,9 @@ public class DockingProtocol {
 			break;
 		case HANDSHAKE_NINFO_RECEIVED:
 			if (DCmdNewtonInfo.COMMAND.equals(cmd.getCommand())) {
-				commandReceived(cmd, state);
+				throw new BadPipeStateException("expected command " + DCmdNewtonInfo.COMMAND);
 			}
+			commandReceived(cmd, state);
 			break;
 		case HANDSHAKE_ICONS_SENDING:
 			break;
@@ -166,9 +169,10 @@ public class DockingProtocol {
 			setState(state, DockingState.HANDSHAKE_ICONS_RESULT_RECEIVED, data, cmd);
 			break;
 		case HANDSHAKE_ICONS_RESULT_RECEIVED:
-			if (DCmdResult.COMMAND.equals(cmd.getCommand())) {
-				commandReceived(cmd, state);
+			if (!DCmdResult.COMMAND.equals(cmd.getCommand())) {
+				throw new BadPipeStateException("expected command " + DCmdResult.COMMAND);
 			}
+			commandReceived(cmd, state);
 			break;
 		case HANDSHAKE_TIMEOUT_SENDING:
 			break;
@@ -186,9 +190,10 @@ public class DockingProtocol {
 			setState(state, DockingState.HANDSHAKE_PASS_RECEIVED, data, cmd);
 			break;
 		case HANDSHAKE_PASS_RECEIVED:
-			if (DCmdPassword.COMMAND.equals(cmd.getCommand())) {
-				commandReceived(cmd, state);
+			if (!DCmdPassword.COMMAND.equals(cmd.getCommand())) {
+				throw new BadPipeStateException("expected command " + DCmdPassword.COMMAND);
 			}
+			commandReceived(cmd, state);
 			break;
 		case HANDSHAKE_PASS_SENDING:
 			break;
@@ -205,6 +210,24 @@ public class DockingProtocol {
 		default:
 			throw new BadPipeStateException();
 		}
+	}
+
+	/**
+	 * Command has been received, and now process it.
+	 * 
+	 * @param cmd
+	 *            the command.
+	 * @throws PipeDisconnectedException
+	 *             if pipe disconnected.
+	 * @throws TimeoutException
+	 *             if timeout occurs.
+	 * @throws PlatformException
+	 * @throws CDILNotInitializedException
+	 * @throws BadPipeStateException
+	 */
+	public void commandReceived(DockCommandFromNewton cmd) throws PipeDisconnectedException, TimeoutException, BadPipeStateException,
+			CDILNotInitializedException, PlatformException {
+		commandReceived(cmd, state);
 	}
 
 	/**

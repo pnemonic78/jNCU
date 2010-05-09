@@ -18,8 +18,6 @@ import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.v1_0.DCmdResult;
-import net.sf.jncu.protocol.v2_0.session.DCmdNewtonInfo;
-import net.sf.jncu.protocol.v2_0.session.DCmdPassword;
 import net.sf.jncu.protocol.v2_0.session.DockingState;
 
 /**
@@ -51,8 +49,8 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		HANDSHAKE_LR_SENDING,
 		/** Newton sends LA (for LR in previous step). */
 		HANDSHAKE_LR_SENT,
-		/** Listen for LT (kDRequestToDock) from Newton. */
-		HANDSHAKE_RTDK_LISTEN,
+		/** Let the docking protocol continue handshaking. */
+		HANDSHAKE_DOCK,
 		/** Connect request accepted. */
 		ACCEPTED,
 		/** Idle. */
@@ -72,7 +70,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	/** Outgoing sequence. */
 	private byte sequence;
 	/** MNP handshaking state. */
-	protected MNPState mnpState = MNPState.HANDSHAKE_LR_LISTEN;
+	protected MNPState stateMNP = MNPState.HANDSHAKE_LR_LISTEN;
 
 	/**
 	 * Creates a new MNP pipe.
@@ -149,6 +147,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		port.close();
 		try {
 			docking.setState(DockingState.DISCONNECTED);
+			setState(MNPState.DISCONNECTED);
 		} catch (PipeDisconnectedException pde) {
 			// ignore - we are already disconnected
 		}
@@ -156,12 +155,12 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 
 	public void packetReceived(MNPPacket packet) {
 		byte packetType = packet.getType();
-		DockingState oldState = docking.getState();
-		DockingState newState = oldState;
+		MNPState oldState = stateMNP;
+		MNPState newState = oldState;
 
 		try {
 			if (packetType == MNPPacket.LR) {
-				newState = DockingState.HANDSHAKE_LR_LISTEN;
+				newState = MNPState.HANDSHAKE_LR_LISTEN;
 			} else if (packetType == MNPPacket.LT) {
 				MNPLinkTransferPacket lt = (MNPLinkTransferPacket) packet;
 				MNPLinkAcknowledgementPacket ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
@@ -169,7 +168,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 				ack.setCredit(CREDIT);
 				sendAndAcknowledge(ack);
 			} else if (packetType == MNPPacket.LD) {
-				newState = DockingState.DISCONNECTING;
+				newState = MNPState.DISCONNECTING;
 			}
 			setState(oldState, newState, packet, null);
 		} catch (PipeDisconnectedException pde) {
@@ -189,9 +188,9 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	@Override
 	protected void acceptImpl() throws PlatformException, PipeDisconnectedException, TimeoutException {
 		super.acceptImpl();
-		if (docking.getState() == DockingState.HANDSHAKE_DONE) {
-			docking.setState(DockingState.ACCEPTED);
+		if ((stateMNP == MNPState.HANDSHAKE_DOCK) && (docking.getState() == DockingState.HANDSHAKE_DONE)) {
 			layer.setState(this, CDState.CONNECTED);
+			setState(MNPState.ACCEPTED);
 		}
 	}
 
@@ -290,21 +289,13 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	 * @throws CDILNotInitializedException
 	 * @throws BadPipeStateException
 	 */
-	protected void commandReceived(DockCommandFromNewton cmd, DockingState state) throws PipeDisconnectedException, TimeoutException, BadPipeStateException,
+	protected void commandReceived(DockCommandFromNewton cmd, MNPState state) throws PipeDisconnectedException, TimeoutException, BadPipeStateException,
 			CDILNotInitializedException, PlatformException {
 		if (cmd == null) {
 			return;
 		}
 
 		switch (state) {
-		case HANDSHAKE_RTDK_RECEIVED:
-		case HANDSHAKE_NAME_RECEIVED:
-		case HANDSHAKE_NINFO_RECEIVED:
-		case HANDSHAKE_ICONS_RESULT_RECEIVED:
-		case HANDSHAKE_PASS_RECEIVED:
-		case HANDSHAKE_DONE:
-			docking.commandReceived(cmd, state);
-			break;
 		case ACCEPTED:
 		case IDLE:
 			// TODO process the command.
@@ -335,16 +326,16 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	 * @throws CDILNotInitializedException
 	 * @throws BadPipeStateException
 	 */
-	protected void setState(DockingState oldState, DockingState state, MNPPacket packet, DockCommandFromNewton cmd) throws PipeDisconnectedException,
-			TimeoutException, BadPipeStateException, CDILNotInitializedException, PlatformException {
+	protected void setState(MNPState oldState, MNPState state, MNPPacket packet, DockCommandFromNewton cmd) throws PipeDisconnectedException, TimeoutException,
+			BadPipeStateException, CDILNotInitializedException, PlatformException {
 		byte packetType = (packet == null) ? 0 : packet.getType();
-		MNPLinkTransferPacket lt;
 		byte[] data = null;
 
-		docking.setState(oldState, state, null, cmd);
+		// docking.setState(oldState, state, null, cmd);
+		setState(state);
 
 		if (packetType == MNPPacket.LT) {
-			lt = (MNPLinkTransferPacket) packet;
+			MNPLinkTransferPacket lt = (MNPLinkTransferPacket) packet;
 			data = lt.getData();
 			if (DockCommandFromNewton.isCommand(data)) {
 				cmd = DockCommandFromNewton.deserialize(data);
@@ -356,8 +347,9 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 			if (packetType == MNPPacket.LR) {
 				// Can start connecting again as long we are not busy
 				// handshaking.
-				if (state.compareTo(DockingState.HANDSHAKE_LR_RECEIVED) < 0) {
-					setState(state, DockingState.HANDSHAKE_LR_RECEIVED, packet, null);
+				if (state.compareTo(MNPState.HANDSHAKE_LR_RECEIVED) < 0) {
+					setState(state, MNPState.HANDSHAKE_LR_RECEIVED, packet, null);
+					docking.setState(docking.getState(), DockingState.HANDSHAKE_LR_RECEIVED, data, cmd);
 				}
 			}
 			break;
@@ -371,104 +363,62 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 				reply.setMaxInfoLength(lr.getMaxInfoLength());
 				reply.setMaxOutstanding(lr.getMaxOutstanding());
 				reply.setTransmitted(lr.getTransmitted());
-				setState(state, DockingState.HANDSHAKE_LR_SENDING, reply, null);
+				setState(state, MNPState.HANDSHAKE_LR_SENDING, reply, null);
+				docking.setState(docking.getState(), DockingState.HANDSHAKE_LR_SENDING, data, cmd);
 				sendAndAcknowledge(reply);
 			}
 			break;
 		case HANDSHAKE_LR_SENDING:
 			if (packetType == MNPPacket.LA) {
-				setState(state, DockingState.HANDSHAKE_LR_SENT, packet, null);
+				setState(state, MNPState.HANDSHAKE_LR_SENT, packet, null);
+				docking.setState(docking.getState(), DockingState.HANDSHAKE_LR_SENT, data, cmd);
 			}
 			break;
 		case HANDSHAKE_LR_SENT:
-			setState(state, DockingState.HANDSHAKE_RTDK_LISTEN, packet, null);
+			setState(state, MNPState.HANDSHAKE_DOCK, packet, null);
+			docking.setState(docking.getState(), DockingState.HANDSHAKE_RTDK_LISTEN, data, cmd);
 			break;
-		case HANDSHAKE_RTDK_LISTEN:
-			docking.setState(state, DockingState.HANDSHAKE_RTDK_RECEIVED, data, cmd);
-			break;
-		case HANDSHAKE_RTDK_RECEIVED:
-			docking.commandReceived(cmd, state);
-			break;
-		case HANDSHAKE_DOCK_SENDING:
-			if (packetType == MNPPacket.LA) {
-				setState(state, DockingState.HANDSHAKE_DOCK_SENT, packet, null);
+		case HANDSHAKE_DOCK:
+			DockingState stateDocking = docking.getState();
+
+			switch (stateDocking) {
+			case HANDSHAKE_DOCK_SENDING:
+				if (packetType == MNPPacket.LA) {
+					docking.setState(stateDocking, DockingState.HANDSHAKE_DOCK_SENT, data, cmd);
+				}
+				break;
+			case HANDSHAKE_DINFO_SENDING:
+				if (packetType == MNPPacket.LA) {
+					docking.setState(stateDocking, DockingState.HANDSHAKE_DINFO_SENT, data, cmd);
+				}
+				break;
+			case HANDSHAKE_ICONS_SENDING:
+				if (packetType == MNPPacket.LA) {
+					docking.setState(stateDocking, DockingState.HANDSHAKE_ICONS_SENT, data, cmd);
+				}
+				break;
+			case HANDSHAKE_TIMEOUT_SENDING:
+				if (packetType == MNPPacket.LA) {
+					docking.setState(stateDocking, DockingState.HANDSHAKE_TIMEOUT_SENT, data, cmd);
+				}
+				break;
+			case HANDSHAKE_PASS_SENDING:
+				if (packetType == MNPPacket.LA) {
+					docking.setState(stateDocking, DockingState.HANDSHAKE_PASS_SENT, data, cmd);
+				}
+				break;
 			}
+
+			docking.commandReceived(cmd);
 			break;
-		case HANDSHAKE_DOCK_SENT:
-			setState(state, DockingState.HANDSHAKE_NAME_LISTEN, packet, null);
-			break;
-		case HANDSHAKE_NAME_LISTEN:
-			docking.setState(state, DockingState.HANDSHAKE_NAME_RECEIVED, data, cmd);
-			break;
-		case HANDSHAKE_NAME_RECEIVED:
-			commandReceived(cmd, state);
-			break;
-		case HANDSHAKE_DINFO_SENDING:
-			if (packetType == MNPPacket.LA) {
-				setState(state, DockingState.HANDSHAKE_DINFO_SENT, packet, null);
-			}
-			break;
-		case HANDSHAKE_DINFO_SENT:
-			setState(state, DockingState.HANDSHAKE_NINFO_LISTEN, packet, null);
-			break;
-		case HANDSHAKE_NINFO_LISTEN:
-			docking.setState(state, DockingState.HANDSHAKE_NINFO_RECEIVED, data, cmd);
-			break;
-		case HANDSHAKE_NINFO_RECEIVED:
-			if (DCmdNewtonInfo.COMMAND.equals(cmd.getCommand())) {
-				commandReceived(cmd, state);
-			}
-			break;
-		case HANDSHAKE_ICONS_SENDING:
-			if (packetType == MNPPacket.LA) {
-				setState(state, DockingState.HANDSHAKE_ICONS_SENT, packet, null);
-			}
-			break;
-		case HANDSHAKE_ICONS_SENT:
-			setState(state, DockingState.HANDSHAKE_ICONS_RESULT_LISTEN, packet, null);
-			break;
-		case HANDSHAKE_ICONS_RESULT_LISTEN:
-			docking.setState(state, DockingState.HANDSHAKE_ICONS_RESULT_RECEIVED, data, cmd);
-			break;
-		case HANDSHAKE_ICONS_RESULT_RECEIVED:
-			if (DCmdResult.COMMAND.equals(cmd.getCommand())) {
-				commandReceived(cmd, state);
-			}
-			break;
-		case HANDSHAKE_TIMEOUT_SENDING:
-			if (packetType == MNPPacket.LA) {
-				setState(state, DockingState.HANDSHAKE_TIMEOUT_SENT, packet, null);
-			}
-			break;
-		case HANDSHAKE_TIMEOUT_SENT:
-			setState(state, DockingState.HANDSHAKE_PASS_LISTEN, packet, null);
-			break;
-		case HANDSHAKE_PASS_LISTEN:
-			docking.setState(state, DockingState.HANDSHAKE_PASS_RECEIVED, data, cmd);
-			break;
-		case HANDSHAKE_PASS_RECEIVED:
-			if (DCmdPassword.COMMAND.equals(cmd.getCommand())) {
-				commandReceived(cmd, state);
-			}
-			break;
-		case HANDSHAKE_PASS_SENDING:
-			if (packetType == MNPPacket.LA) {
-				setState(state, DockingState.HANDSHAKE_PASS_SENT, packet, null);
-			}
-			break;
-		case HANDSHAKE_PASS_SENT:
-			setState(state, DockingState.HANDSHAKE_DONE, packet, null);
-			break;
-		case HANDSHAKE_DONE:
 		case ACCEPTED:
 		case IDLE:
 			if (packetType == MNPPacket.LT) {
-				lt = (MNPLinkTransferPacket) packet;
-				data = lt.getData();
-				if (DockCommandFromNewton.isCommand(data)) {
-					cmd = DockCommandFromNewton.deserialize(data);
-					commandReceived(cmd, state);
+				if (!DockCommandFromNewton.isCommand(data)) {
+					throw new BadPipeStateException("expected command " + DCmdResult.COMMAND);
 				}
+				cmd = DockCommandFromNewton.deserialize(data);
+				commandReceived(cmd, state);
 			}
 			break;
 		case DISCONNECTING:
@@ -479,5 +429,12 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		default:
 			throw new BadPipeStateException();
 		}
+	}
+
+	private void setState(MNPState state) throws PipeDisconnectedException {
+		if (this.stateMNP == MNPState.DISCONNECTED) {
+			throw new PipeDisconnectedException();
+		}
+		this.stateMNP = state;
 	}
 }
