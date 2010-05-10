@@ -1,4 +1,4 @@
-package net.sf.jncu.cdil.mnp;
+package net.sf.jncu.crypto;
 
 import net.sf.junit.SFTestCase;
 
