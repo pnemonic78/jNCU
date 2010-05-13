@@ -2,11 +2,6 @@ package net.sf.jncu.crypto;
 
 import java.security.Key;
 
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESKeySpec;
-
 /**
  * DATA ENCRYPTION STANDARD (DES), Electronic Codebook (ECB), no padding.
  * 
@@ -107,8 +102,7 @@ public class DESCrypt {
 	/** Key schedule block size * 2. */
 	private static final int KS_BLOCK_SIZE2 = KS_BLOCK_SIZE << 1;
 
-	private int[] key;
-	private boolean decrypting = false;
+	private long key;
 	// Let K be a block of 48 bits chosen from the 64-bit key.
 	private final int[] k1 = new int[KEY_BLOCK_SIZE];
 	private final int[] k2 = new int[KEY_BLOCK_SIZE];
@@ -128,29 +122,36 @@ public class DESCrypt {
 	private final int[] k16 = new int[KEY_BLOCK_SIZE];
 
 	/**
-	 * 
+	 * DES cryptography.
 	 */
 	public DESCrypt() {
 		super();
 	}
 
 	public void setKey(long key) {
-		this.key = toBits(key);
-		keySchedule(this.key);
+		this.key = key;
+		keySchedule(toBits(key));
 	}
 
 	public void setKey(Key key) {
 		setKey(toLong(key.getEncoded()));
 	}
 
-	public long encipher(long input) {
+	public long encrypt(long input) {
 		int[] in = toBits(input);
 		int[] out = new int[CIPHER_BLOCK_SIZE];
-		encipher(in, out);
+		cipher(in, out, false);
 		return fromBits(out);
 	}
 
-	private void encipher(int[] in, int[] out) {
+	public long decrypt(long input) {
+		int[] in = toBits(input);
+		int[] out = new int[CIPHER_BLOCK_SIZE];
+		cipher(in, out, true);
+		return fromBits(out);
+	}
+
+	private void cipher(int[] in, int[] out, boolean decrypting) {
 		// The 64 bits of the input block to be enciphered are first subjected
 		// to the following permutation, called the initial permutation IP.
 		// Let the 64 bits of the input block to an iteration consist of a 32
@@ -212,15 +213,6 @@ public class DESCrypt {
 			ip1 = IP_1[i] - 1;
 			out[i] = (ip1 < CF_BLOCK_SIZE) ? r16[ip1] : l16[ip1 - CF_BLOCK_SIZE];
 		}
-	}
-
-	private static long toLong(byte[] b) {
-		long l = 0;
-		for (int i = 0; i < 8; i++) {
-			l <<= 8;
-			l |= b[i] & 0xFFL;
-		}
-		return l;
 	}
 
 	/**
@@ -530,57 +522,13 @@ public class DESCrypt {
 		return x;
 	}
 
-	public static void main(String[] args) {
-		try {
-			long key = 0x0123456789abcdefL;
-			byte[] keyBytes = toBytes(key);
-			DESKeySpec keySpec = new DESKeySpec(keyBytes);
-			// assertNotNull(keySpec);
-
-			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
-			// assertNotNull(keyFactory);
-			SecretKey sk = keyFactory.generateSecret(keySpec);
-			// assertNotNull(sk);
-
-			Cipher cipherSun = Cipher.getInstance("DES");
-			// assertNotNull(cipherSun);
-			cipherSun.init(Cipher.ENCRYPT_MODE, sk);
-
-			DESCrypt cipherNcu = new DESCrypt();
-			// assertNotNull(cipherNcu);
-			cipherNcu.setKey(sk);
-
-			long plaintext = 0x4e6f772069732074L;
-			long ciphertext = 0x3fa40e8a984d4815L;
-			System.out.println(ciphertext);
-			byte[] data = toBytes(plaintext);
-			// assertNotNull(data);
-			byte[] encSun = cipherSun.doFinal(data);
-			// assertNotNull(encSun);
-			long encSunL = toLong(encSun);
-			System.out.println(encSunL);
-
-			long encNcuL = cipherNcu.encipher(plaintext);
-			System.out.println(encNcuL);
-			// assertNotNull(encNcu);
-
-			// System.out.println("encSun=" + toLong(encSun));
-			// System.out.println("encNcu=" + toLong(encNcu));
-			// assertEquals(encSun, encNcu);
-		} catch (Exception e) {
-			e.printStackTrace();
+	private static long toLong(byte[] b) {
+		long l = 0;
+		for (int i = 0; i < 8; i++) {
+			l <<= 8;
+			l |= b[i] & 0xFFL;
 		}
-	}
-
-	private static byte[] toBytes(long l) {
-		byte[] b = new byte[8];
-		// assertNotNull(b);
-		// assertEquals(8, b.length);
-		for (int i = 7; i >= 0; i--, l >>>= 8) {
-			b[i] = (byte) (l & 0xFF);
-		}
-		// assertEquals(0L, l);
-		return b;
+		return l;
 	}
 
 	/**
@@ -589,7 +537,7 @@ public class DESCrypt {
 	 * @param b
 	 * @return
 	 */
-	private static long fromBits(int[] b) {
+	private long fromBits(int[] b) {
 		long l = 0;
 		for (int i = 0; i < CIPHER_BLOCK_SIZE; i++) {
 			l <<= 1;
@@ -604,7 +552,7 @@ public class DESCrypt {
 	 * @param l
 	 * @return
 	 */
-	private static int[] toBits(long l) {
+	private int[] toBits(long l) {
 		int[] b = new int[CIPHER_BLOCK_SIZE];
 		for (int i = CIPHER_BLOCK_SIZE - 1; i >= 0; i--) {
 			b[i] = (int) (l & 0x1L);
