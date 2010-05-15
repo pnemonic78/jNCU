@@ -99,8 +99,6 @@ public class DESCrypt {
 	private static final int KEY_BLOCK_SIZE = 48;
 	/** Key schedule block size. */
 	private static final int KS_BLOCK_SIZE = 28;
-	/** Key schedule block size * 2. */
-	private static final int KS_BLOCK_SIZE2 = KS_BLOCK_SIZE << 1;
 
 	private long key;
 	// Let K be a block of 48 bits chosen from the 64-bit key.
@@ -130,7 +128,7 @@ public class DESCrypt {
 
 	public void setKey(long key) {
 		this.key = key;
-		keySchedule(toBits(key));
+		keySchedule(toBitsBE(this.key));
 	}
 
 	public void setKey(Key key) {
@@ -138,17 +136,17 @@ public class DESCrypt {
 	}
 
 	public long encrypt(long input) {
-		int[] in = toBits(input);
+		int[] in = toBitsBE(input);
 		int[] out = new int[CIPHER_BLOCK_SIZE];
 		cipher(in, out, false);
-		return fromBits(out);
+		return fromBitsBE(out);
 	}
 
 	public long decrypt(long input) {
-		int[] in = toBits(input);
+		int[] in = toBitsBE(input);
 		int[] out = new int[CIPHER_BLOCK_SIZE];
 		cipher(in, out, true);
-		return fromBits(out);
+		return fromBitsBE(out);
 	}
 
 	private void cipher(int[] in, int[] out, boolean decrypting) {
@@ -532,12 +530,14 @@ public class DESCrypt {
 	}
 
 	/**
+	 * Convert 64 bits to a 64-bit Big Endian number.<br>
 	 * Bit 0 is at index <tt>n - 1</tt>.
 	 * 
 	 * @param b
-	 * @return
+	 *            the array of bits.
+	 * @return the number.
 	 */
-	private long fromBits(int[] b) {
+	private long fromBitsBE(int[] b) {
 		long l = 0;
 		for (int i = 0; i < CIPHER_BLOCK_SIZE; i++) {
 			l <<= 1;
@@ -547,12 +547,14 @@ public class DESCrypt {
 	}
 
 	/**
+	 * Convert a 64-bit Big Endian number to 64 separate bits.<br>
 	 * Bit 0 is at index <tt>n - 1</tt>.
 	 * 
 	 * @param l
-	 * @return
+	 *            the number.
+	 * @return the array of bits.
 	 */
-	private int[] toBits(long l) {
+	private int[] toBitsBE(long l) {
 		int[] b = new int[CIPHER_BLOCK_SIZE];
 		for (int i = CIPHER_BLOCK_SIZE - 1; i >= 0; i--) {
 			b[i] = (int) (l & 0x1L);
