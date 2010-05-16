@@ -2,6 +2,8 @@ package net.sf.jncu.crypto;
 
 import java.security.Key;
 
+import javax.crypto.spec.DESKeySpec;
+
 /**
  * DATA ENCRYPTION STANDARD (DES), Electronic Codebook (ECB), no padding.
  * 
@@ -135,6 +137,10 @@ public class DESCrypt {
 		setKey(toLong(key.getEncoded()));
 	}
 
+	public void setKey(DESKeySpec key) {
+		setKey(toLong(key.getKey()));
+	}
+
 	public long encrypt(long input) {
 		int[] in = toBitsBE(input);
 		int[] out = new int[CIPHER_BLOCK_SIZE];
@@ -229,11 +235,13 @@ public class DESCrypt {
 	}
 
 	/**
+	 * Odd parity.<br>
 	 * <em>Bits 8, 16,..., 64 are for use in assuring that each byte is of odd parity.</em>
 	 * 
 	 * @param n
+	 *            the array of bits.
 	 */
-	private void oddParity(int[] n) {
+	protected void oddParity(int[] n) {
 		int parity;
 		for (int p = 0; p < 64;) {
 			parity = 1;
@@ -531,13 +539,13 @@ public class DESCrypt {
 
 	/**
 	 * Convert 64 bits to a 64-bit Big Endian number.<br>
-	 * Bit 0 is at index <tt>n - 1</tt>.
+	 * MSB is at index <tt>0</tt>.
 	 * 
 	 * @param b
 	 *            the array of bits.
 	 * @return the number.
 	 */
-	private long fromBitsBE(int[] b) {
+	protected long fromBitsBE(int[] b) {
 		long l = 0;
 		for (int i = 0; i < CIPHER_BLOCK_SIZE; i++) {
 			l <<= 1;
@@ -548,13 +556,13 @@ public class DESCrypt {
 
 	/**
 	 * Convert a 64-bit Big Endian number to 64 separate bits.<br>
-	 * Bit 0 is at index <tt>n - 1</tt>.
+	 * MSB is at index <tt>0</tt>.
 	 * 
 	 * @param l
 	 *            the number.
 	 * @return the array of bits.
 	 */
-	private int[] toBitsBE(long l) {
+	protected int[] toBitsBE(long l) {
 		int[] b = new int[CIPHER_BLOCK_SIZE];
 		for (int i = CIPHER_BLOCK_SIZE - 1; i >= 0; i--) {
 			b[i] = (int) (l & 0x1L);
