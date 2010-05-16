@@ -528,7 +528,7 @@ public class DESCrypt {
 		return x;
 	}
 
-	private static long toLong(byte[] b) {
+	protected long toLong(byte[] b) {
 		long l = 0;
 		for (int i = 0; i < 8; i++) {
 			l <<= 8;
