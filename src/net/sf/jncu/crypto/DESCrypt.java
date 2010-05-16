@@ -138,18 +138,18 @@ public class DESCrypt {
 	public long encrypt(long input) {
 		int[] in = toBitsBE(input);
 		int[] out = new int[CIPHER_BLOCK_SIZE];
-		cipher(in, out, false);
+		cipher(in, out, true);
 		return fromBitsBE(out);
 	}
 
 	public long decrypt(long input) {
 		int[] in = toBitsBE(input);
 		int[] out = new int[CIPHER_BLOCK_SIZE];
-		cipher(in, out, true);
+		cipher(in, out, false);
 		return fromBitsBE(out);
 	}
 
-	private void cipher(int[] in, int[] out, boolean decrypting) {
+	private void cipher(int[] in, int[] out, boolean encrypting) {
 		// The 64 bits of the input block to be enciphered are first subjected
 		// to the following permutation, called the initial permutation IP.
 		// Let the 64 bits of the input block to an iteration consist of a 32
@@ -165,37 +165,37 @@ public class DESCrypt {
 		// Ln = Rn-1
 		// Rnn = Ln-1(+)f(Rn-1,Kn)
 		int[] l1 = r0;
-		int[] r1 = xor(l0, f(r0, k1));
+		int[] r1 = xor(l0, f(r0, encrypting ? k1 : k16));
 		int[] l2 = r1;
-		int[] r2 = xor(l1, f(r1, k2));
+		int[] r2 = xor(l1, f(r1, encrypting ? k2 : k15));
 		int[] l3 = r2;
-		int[] r3 = xor(l2, f(r2, k3));
+		int[] r3 = xor(l2, f(r2, encrypting ? k3 : k14));
 		int[] l4 = r3;
-		int[] r4 = xor(l3, f(r3, k4));
+		int[] r4 = xor(l3, f(r3, encrypting ? k4 : k13));
 		int[] l5 = r4;
-		int[] r5 = xor(l4, f(r4, k5));
+		int[] r5 = xor(l4, f(r4, encrypting ? k5 : k12));
 		int[] l6 = r5;
-		int[] r6 = xor(l5, f(r5, k6));
+		int[] r6 = xor(l5, f(r5, encrypting ? k6 : k11));
 		int[] l7 = r6;
-		int[] r7 = xor(l6, f(r6, k7));
+		int[] r7 = xor(l6, f(r6, encrypting ? k7 : k10));
 		int[] l8 = r7;
-		int[] r8 = xor(l7, f(r7, k8));
+		int[] r8 = xor(l7, f(r7, encrypting ? k8 : k9));
 		int[] l9 = r8;
-		int[] r9 = xor(l8, f(r8, k9));
+		int[] r9 = xor(l8, f(r8, encrypting ? k9 : k8));
 		int[] l10 = r9;
-		int[] r10 = xor(l9, f(r9, k10));
+		int[] r10 = xor(l9, f(r9, encrypting ? k10 : k7));
 		int[] l11 = r10;
-		int[] r11 = xor(l10, f(r10, k11));
+		int[] r11 = xor(l10, f(r10, encrypting ? k11 : k6));
 		int[] l12 = r11;
-		int[] r12 = xor(l11, f(r11, k12));
+		int[] r12 = xor(l11, f(r11, encrypting ? k12 : k5));
 		int[] l13 = r12;
-		int[] r13 = xor(l12, f(r12, k13));
+		int[] r13 = xor(l12, f(r12, encrypting ? k13 : k4));
 		int[] l14 = r13;
-		int[] r14 = xor(l13, f(r13, k14));
+		int[] r14 = xor(l13, f(r13, encrypting ? k14 : k3));
 		int[] l15 = r14;
-		int[] r15 = xor(l14, f(r14, k15));
+		int[] r15 = xor(l14, f(r14, encrypting ? k15 : k2));
 		int[] l16 = r15;
-		int[] r16 = xor(l15, f(r15, k16));
+		int[] r16 = xor(l15, f(r15, encrypting ? k16 : k1));
 
 		// The computation which uses the permuted input block as its input to
 		// produce the preoutput block consists, but for a final interchange of
