@@ -29,6 +29,7 @@ public class DESNewton {
 
 	private SecretKeyFactory keyFactory;
 	private Cipher cipher;
+	private transient long key;
 
 	/**
 	 * Creates a new DES for Newton.
@@ -77,6 +78,7 @@ public class DESNewton {
 			keyBytes = DESUtils.toBytes(key);
 			keySpec = new DESKeySpec(keyBytes);
 			skey = keyFactory.generateSecret(keySpec);
+			this.key = DESUtils.toLong(skey.getEncoded());
 			cipher.init(opmode, skey);
 		} catch (NoSuchPaddingException nspe) {
 			nspe.printStackTrace();

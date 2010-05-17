@@ -330,7 +330,6 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	 */
 	protected void setState(MNPState oldState, MNPState state, MNPPacket packet, DockCommandFromNewton cmd) throws PipeDisconnectedException, TimeoutException,
 			BadPipeStateException, CDILNotInitializedException, PlatformException {
-		System.out.println("p o=" + oldState + " s=" + state + " p=" + packet + " c=" + cmd);// $$$
 		byte packetType = (packet == null) ? 0 : packet.getType();
 		byte[] data = null;
 

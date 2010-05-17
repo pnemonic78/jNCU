@@ -31,6 +31,8 @@ public class DockingProtocol {
 	private int protocolVersion = DCmdDesktopInfo.PROTOCOL_VERSION;
 	/** The password sent by the Desktop. */
 	private transient long challengeDesktop;
+	/** The ciphered password sent by the Desktop. */
+	private transient long challengeDesktopCiphered;
 	/** The password sent by the Newton. */
 	private transient long challengeNewton;
 	/** The ciphered password sent by the Newton. */
@@ -94,8 +96,6 @@ public class DockingProtocol {
 	 */
 	public void setState(DockingState oldDockingState, DockingState state, byte[] data, DockCommandFromNewton cmd) throws PipeDisconnectedException,
 			TimeoutException, BadPipeStateException, CDILNotInitializedException, PlatformException {
-		System.out.println("d o=" + oldDockingState + " s=" + state + " d=" + data + " c=" + cmd);// $$$
-
 		// Only move the previous state to the next state.
 		int compare = state.compareTo(oldDockingState);
 		if (compare != 1) {
@@ -307,6 +307,7 @@ public class DockingProtocol {
 			this.info = ((DCmdNewtonName) cmd).getInformation();
 			DCmdDesktopInfo cmdDesktopInfo = (DCmdDesktopInfo) DockCommandFactory.getInstance().create(DCmdDesktopInfo.COMMAND);
 			this.challengeDesktop = cmdDesktopInfo.getEncryptedKey();
+			this.challengeDesktopCiphered = crypto.cipher(challengeDesktop);
 			setState(state, DockingState.HANDSHAKE_DINFO_SENDING, null, cmd);
 			pipe.write(cmdDesktopInfo);
 			break;
@@ -348,9 +349,8 @@ public class DockingProtocol {
 		case HANDSHAKE_PASS_RECEIVED:
 			DCmdPassword cmdPassword = (DCmdPassword) cmd;
 
-			if (cmdPassword.verify(challengeDesktop)) {
+			if (cmdPassword.getEncryptedKey() == challengeDesktopCiphered) {
 				DCmdPasswordReply cmdPasswordReply = new DCmdPasswordReply();
-				long challengeNewtonCiphered = crypto.cipher(challengeNewton);
 				cmdPasswordReply.setEncryptedKey(challengeNewtonCiphered);
 				setState(state, DockingState.HANDSHAKE_PASS_SENDING, null, cmdPassword);
 				pipe.write(cmdPasswordReply);
