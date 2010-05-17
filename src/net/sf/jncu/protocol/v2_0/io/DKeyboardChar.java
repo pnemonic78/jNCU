@@ -22,7 +22,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DCmdKeyboardChar extends DockCommandToNewton {
+public class DKeyboardChar extends DockCommandToNewton {
 
 	public static final String COMMAND = "kbdc";
 
@@ -35,7 +35,7 @@ public class DCmdKeyboardChar extends DockCommandToNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DCmdKeyboardChar() {
+	public DKeyboardChar() {
 		super(COMMAND);
 	}
 

@@ -17,7 +17,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * session type
  * </pre>
  */
-public class DCmdInitiateDocking extends DockCommandToNewton {
+public class DInitiateDocking extends DockCommandToNewton {
 
 	public static final String COMMAND = "dock";
 
@@ -35,7 +35,7 @@ public class DCmdInitiateDocking extends DockCommandToNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DCmdInitiateDocking() {
+	public DInitiateDocking() {
 		super(COMMAND);
 	}
 

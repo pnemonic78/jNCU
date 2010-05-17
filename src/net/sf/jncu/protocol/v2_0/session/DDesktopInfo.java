@@ -65,7 +65,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * @see #kMacintosh
  * @see #kWindows
  */
-public class DCmdDesktopInfo extends DockCommandToNewton {
+public class DDesktopInfo extends DockCommandToNewton {
 
 	public static final String COMMAND = "dinf";
 
@@ -92,9 +92,9 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DCmdDesktopInfo() {
+	public DDesktopInfo() {
 		super(COMMAND);
-		setSessionType(DCmdInitiateDocking.SESSION_SETTING_UP);
+		setSessionType(DInitiateDocking.SESSION_SETTING_UP);
 		setDesktopType(System.getProperty("os.name").startsWith("Windows") ? kWindows : kMacintosh);
 		setSelectiveSync(true);
 		setEncryptedKey(rand.nextLong());
@@ -128,7 +128,7 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 	 * 
 	 * @param sessionType
 	 *            the session type.
-	 * @see DCmdInitiateDocking
+	 * @see DInitiateDocking
 	 */
 	public void setSessionType(int sessionType) {
 		this.sessionType = sessionType;

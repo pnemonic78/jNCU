@@ -42,7 +42,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * name
  * </pre>
  */
-public class DCmdNewtonName extends DockCommandFromNewton {
+public class DNewtonName extends DockCommandFromNewton {
 
 	public static final String COMMAND = "name";
 
@@ -52,7 +52,7 @@ public class DCmdNewtonName extends DockCommandFromNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DCmdNewtonName() {
+	public DNewtonName() {
 		super(COMMAND);
 	}
 

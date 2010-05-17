@@ -1,4 +1,4 @@
-package net.sf.jncu.protocol.v2_0.session;
+package net.sf.jncu.protocol.v1_0;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,22 +6,23 @@ import java.io.InputStream;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDOpCanceledAck</tt><br>
- * This command is sent in response to a <tt>kDOperationCanceled</tt>.
+ * <tt>kDHello</tt><br>
+ * This command is sent during long operations to let the Newton or desktop know
+ * that the connection hasn't been dropped.
  * 
  * <pre>
- * 'ocaa'
+ * 'helo'
  * length = 0
  * </pre>
  */
-public class DCmdOperationCanceledAck extends DockCommandFromNewton {
+public class DHello extends DockCommandFromNewton {
 
-	public static final String COMMAND = "ocaa";
+	public static final String COMMAND = "helo";
 
 	/**
 	 * Creates a new command.
 	 */
-	public DCmdOperationCanceledAck() {
+	public DHello() {
 		super(COMMAND);
 	}
 

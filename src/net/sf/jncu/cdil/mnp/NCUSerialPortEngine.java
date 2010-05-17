@@ -16,7 +16,7 @@ import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockingFrame;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
-import net.sf.jncu.protocol.v2_0.session.DCmdInitiateDocking;
+import net.sf.jncu.protocol.v2_0.session.DInitiateDocking;
 
 /**
  * NCU serial port engine.
@@ -160,7 +160,7 @@ public class NCUSerialPortEngine extends Thread {
 		InputStream in = port.getInputStream();
 		OutputStream out = port.getOutputStream();
 		DockCommandFromNewton cmdFromNewton;
-		DCmdInitiateDocking cmdInitiateDocking;
+		DInitiateDocking cmdInitiateDocking;
 		DockCommandFactory factory = DockCommandFactory.getInstance();
 		state = CDState.CONNECTED;
 		do {
@@ -168,9 +168,9 @@ public class NCUSerialPortEngine extends Thread {
 			docking.send(out, DockingFrame.PAYLOAD_DTN_HANDSHAKE_1);
 			do {
 				cmdFromNewton = docking.receiveCommand(in);
-			} while (!DCmdInitiateDocking.COMMAND.equals(cmdFromNewton.getCommand()));
+			} while (!DInitiateDocking.COMMAND.equals(cmdFromNewton.getCommand()));
 			docking.send(out, DockingFrame.PAYLOAD_DTN_LA);
-			cmdInitiateDocking = (DCmdInitiateDocking) factory.create(DCmdInitiateDocking.COMMAND);
+			cmdInitiateDocking = (DInitiateDocking) factory.create(DInitiateDocking.COMMAND);
 			cmdInitiateDocking.setSession(0);
 			docking.sendCommand(out, cmdInitiateDocking);
 			docking.waitForType(in, MNPPacket.LA);

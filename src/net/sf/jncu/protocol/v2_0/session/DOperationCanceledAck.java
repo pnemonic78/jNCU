@@ -1,4 +1,4 @@
-package net.sf.jncu.protocol.v1_0;
+package net.sf.jncu.protocol.v2_0.session;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,23 +6,22 @@ import java.io.InputStream;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDOperationCanceled</tt><br>
- * This command is sent when the user cancels an operation. Usually no action is
- * required on the receivers part except to return to the "ready" state.
+ * <tt>kDOpCanceledAck</tt><br>
+ * This command is sent in response to a <tt>kDOperationCanceled</tt>.
  * 
  * <pre>
- * 'opca'
+ * 'ocaa'
  * length = 0
  * </pre>
  */
-public class DCmdOperationCanceled extends DockCommandFromNewton {
+public class DOperationCanceledAck extends DockCommandFromNewton {
 
-	public static final String COMMAND = "opca";
+	public static final String COMMAND = "ocaa";
 
 	/**
 	 * Creates a new command.
 	 */
-	public DCmdOperationCanceled() {
+	public DOperationCanceledAck() {
 		super(COMMAND);
 	}
 

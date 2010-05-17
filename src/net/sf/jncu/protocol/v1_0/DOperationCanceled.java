@@ -6,23 +6,23 @@ import java.io.InputStream;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDHello</tt><br>
- * This command is sent during long operations to let the Newton or desktop know
- * that the connection hasn't been dropped.
+ * <tt>kDOperationCanceled</tt><br>
+ * This command is sent when the user cancels an operation. Usually no action is
+ * required on the receivers part except to return to the "ready" state.
  * 
  * <pre>
- * 'helo'
+ * 'opca'
  * length = 0
  * </pre>
  */
-public class DCmdHello extends DockCommandFromNewton {
+public class DOperationCanceled extends DockCommandFromNewton {
 
-	public static final String COMMAND = "helo";
+	public static final String COMMAND = "opca";
 
 	/**
 	 * Creates a new command.
 	 */
-	public DCmdHello() {
+	public DOperationCanceled() {
 		super(COMMAND);
 	}
 

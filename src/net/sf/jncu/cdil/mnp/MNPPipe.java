@@ -17,8 +17,8 @@ import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 import net.sf.jncu.protocol.DockCommandFromNewton;
-import net.sf.jncu.protocol.v1_0.DCmdDisconnect;
-import net.sf.jncu.protocol.v1_0.DCmdHello;
+import net.sf.jncu.protocol.v1_0.DDisconnect;
+import net.sf.jncu.protocol.v1_0.DHello;
 import net.sf.jncu.protocol.v2_0.session.DockingState;
 
 /**
@@ -302,10 +302,10 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		case MNP_ACCEPTED:
 		case MNP_IDLE:
 			// Process the command.
-			if (DCmdHello.COMMAND.equals(cmd.getCommand())) {
+			if (DHello.COMMAND.equals(cmd.getCommand())) {
 				break;
 			}
-			if (DCmdDisconnect.COMMAND.equals(cmd.getCommand())) {
+			if (DDisconnect.COMMAND.equals(cmd.getCommand())) {
 				disconnect();
 			} else {
 				System.out.println(cmd.getCommand());

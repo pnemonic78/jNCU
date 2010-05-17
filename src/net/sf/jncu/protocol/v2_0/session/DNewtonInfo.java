@@ -18,7 +18,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * encrypted key
  * </pre>
  */
-public class DCmdNewtonInfo extends DockCommandFromNewton {
+public class DNewtonInfo extends DockCommandFromNewton {
 
 	public static final String COMMAND = "ninf";
 
@@ -28,7 +28,7 @@ public class DCmdNewtonInfo extends DockCommandFromNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DCmdNewtonInfo() {
+	public DNewtonInfo() {
 		super(COMMAND);
 	}
 

@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import net.sf.jncu.protocol.DockCommandToNewton;
-import net.sf.jncu.protocol.v1_0.DCmdResult;
+import net.sf.jncu.protocol.v1_0.DResult;
 
 /**
  * <tt>kdResult</tt><br>
@@ -18,12 +18,12 @@ import net.sf.jncu.protocol.v1_0.DCmdResult;
  * error code
  * </pre>
  * 
- * @see DCmdResult
+ * @see DResult
  * @author moshew
  */
 public class DCmdReply extends DockCommandToNewton {
 
-	public static final String COMMAND = DCmdResult.COMMAND;
+	public static final String COMMAND = DResult.COMMAND;
 
 	private int errorCode;
 
