@@ -6,6 +6,7 @@ import java.io.InputStream;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
+ * <tt>kDResult</tt><br>
  * This command is sent in response to any of the commands from the desktop that
  * don't request data. It lets the desktop know that things are still proceeding
  * OK.

@@ -1,6 +1,8 @@
 package net.sf.jncu.protocol.v2_0;
 
 import net.sf.jncu.protocol.DockCommand;
+import net.sf.jncu.protocol.v1_0.DCmdDisconnect;
+import net.sf.jncu.protocol.v1_0.DCmdHello;
 import net.sf.jncu.protocol.v1_0.DCmdResult;
 import net.sf.jncu.protocol.v2_0.session.DCmdDesktopInfo;
 import net.sf.jncu.protocol.v2_0.session.DCmdInitiateDocking;
@@ -60,6 +62,12 @@ public class DockCommandFactory {
 	public DockCommand create(String cmdName) {
 		if (DCmdDesktopInfo.COMMAND.equals(cmdName)) {
 			return new DCmdDesktopInfo();
+		}
+		if (DCmdDisconnect.COMMAND.equals(cmdName)) {
+			return new DCmdDisconnect();
+		}
+		if (DCmdHello.COMMAND.equals(cmdName)) {
+			return new DCmdHello();
 		}
 		if (DCmdInitiateDocking.COMMAND.equals(cmdName)) {
 			return new DCmdInitiateDocking();

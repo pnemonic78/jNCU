@@ -355,17 +355,17 @@ public class DockingProtocol {
 				setState(state, DockingState.HANDSHAKE_PASS_SENDING, null, cmdPassword);
 				pipe.write(cmdPasswordReply);
 			} else {
-				int error = -1;
+				int error = DCmdPassword.ERROR_BAD_PASSWORD;
 				challengePasswordAttempt++;
 				if (challengePasswordAttempt < MAX_PASSWORD_ATTEMPTS) {
 					error = DCmdPassword.ERROR_RETRY_PASSWORD;
-				} else {
-					error = DCmdPassword.ERROR_BAD_PASSWORD;
 				}
 				DCmdReply cmdError = new DCmdReply();
 				cmdError.setErrorCode(error);
 				pipe.write(cmdError);
 			}
+			break;
+		case HANDSHAKE_DONE:
 			break;
 		case DISCONNECTED:
 			throw new PipeDisconnectedException();

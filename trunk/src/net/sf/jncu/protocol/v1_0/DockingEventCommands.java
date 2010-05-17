@@ -552,16 +552,6 @@ public class DockingEventCommands {
 		 */
 		public static final String kDBackupPackages = "bpkg";
 		/**
-		 * This command is sent to the Newton when the docking operation is
-		 * complete.
-		 * 
-		 * <pre>
-		 * 'disc'
-		 * length = 0
-		 * </pre>
-		 */
-		public static final String kDDisconnect = "disc";
-		/**
 		 * Delete all packages.
 		 * 
 		 * <pre>
@@ -846,16 +836,6 @@ public class DockingEventCommands {
 	 * </pre>
 	 */
 	public static final String kDTest = "test";
-	/**
-	 * This command is sent during long operations to let the Newton or desktop
-	 * know that the connection hasn't been dropped.
-	 * 
-	 * <pre>
-	 * 'helo'
-	 * length = 0
-	 * </pre>
-	 */
-	public static final String kDHello = "helo";
 	/**
 	 * This command is used to send a soup info frame. When received the info
 	 * for the current soup is set to the specified frame.

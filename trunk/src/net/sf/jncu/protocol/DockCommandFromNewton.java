@@ -95,7 +95,7 @@ public abstract class DockCommandFromNewton extends DockCommand {
 	protected void decode(InputStream frame) throws IOException {
 		int length = htonl(frame);
 		setLength(length);
-		if ((frame.available() < length) && (length != 0x0010000)) {
+		if (frame.available() < length) {
 			throw new ArrayIndexOutOfBoundsException();
 		}
 		decodeData(frame);
