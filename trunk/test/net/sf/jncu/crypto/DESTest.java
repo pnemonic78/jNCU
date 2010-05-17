@@ -1,9 +1,6 @@
 package net.sf.jncu.crypto;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.DESKeySpec;
 
 import net.sf.junit.SFTestCase;
 
@@ -22,38 +19,6 @@ public class DESTest extends SFTestCase {
 	 */
 	public DESTest() {
 		super();
-	}
-
-	public void testDES() throws Exception {
-		KeyGenerator generator = KeyGenerator.getInstance("DES");
-		assertNotNull(generator);
-		SecretKey sk = generator.generateKey();
-		assertNotNull(sk);
-		byte[] skEnc = sk.getEncoded();
-		assertNotNull(skEnc);
-		assertEquals(DESKeySpec.DES_KEY_LEN, skEnc.length);
-
-		Cipher cipherSun = Cipher.getInstance("DES");
-		assertNotNull(cipherSun);
-		cipherSun.init(Cipher.ENCRYPT_MODE, sk);
-
-		DESCrypt cipherNcu = new DESCrypt();
-		assertNotNull(cipherNcu);
-		// cipherNcu.init(Cipher.ENCRYPT_MODE, sk);
-		cipherNcu.setKey(sk);
-
-		byte[] data = toBytes(0x123456789ABCDEFL);
-		assertNotNull(data);
-		byte[] encSun = cipherSun.doFinal(data);
-		assertNotNull(encSun);
-		long encSunL = toLong(encSun);
-
-		long dataL = toLong(data);
-		long encNcuL = cipherNcu.encrypt(dataL);
-		byte[] encNcu = toBytes(encNcuL);
-		assertNotNull(encNcu);
-
-		assertEquals(encSunL, encNcuL);
 	}
 
 	public void testNewtonCipher() throws Exception {
