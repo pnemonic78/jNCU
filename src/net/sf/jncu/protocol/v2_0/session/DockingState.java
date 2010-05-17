@@ -65,16 +65,8 @@ public enum DockingState {
 	HANDSHAKE_PASS_SENDING,
 	/** Newton sends LA. */
 	HANDSHAKE_PASS_SENT,
-	/** Password mismatch. */
-	HANDSHAKE_PASS_FAILED,
 	/** Finished handshaking. */
 	HANDSHAKE_DONE,
-	/** Connect request accepted. */
-	@Deprecated
-	ACCEPTED,
-	/** Idle. */
-	@Deprecated
-	IDLE,
 	/** Disconnecting. */
 	DISCONNECTING,
 	/** Disconnected. */

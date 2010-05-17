@@ -17,7 +17,8 @@ import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 import net.sf.jncu.protocol.DockCommandFromNewton;
-import net.sf.jncu.protocol.v1_0.DCmdResult;
+import net.sf.jncu.protocol.v1_0.DCmdDisconnect;
+import net.sf.jncu.protocol.v1_0.DCmdHello;
 import net.sf.jncu.protocol.v2_0.session.DockingState;
 
 /**
@@ -300,7 +301,15 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		switch (state) {
 		case MNP_ACCEPTED:
 		case MNP_IDLE:
-			// TODO process the command.
+			// Process the command.
+			if (DCmdHello.COMMAND.equals(cmd.getCommand())) {
+				break;
+			}
+			if (DCmdDisconnect.COMMAND.equals(cmd.getCommand())) {
+				disconnect();
+			} else {
+				System.out.println(cmd.getCommand());
+			}
 			break;
 		case MNP_DISCONNECTED:
 			throw new PipeDisconnectedException();
@@ -335,7 +344,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 
 		// Only move the previous state to the next state, or to its own state.
 		int compare = state.compareTo(oldState);
-		if ((compare != 0) && (compare != 1)) {
+		if ((compare != 0) && (compare != 1) && (state != MNPState.MNP_DISCONNECTING)) {
 			throw new BadPipeStateException("bad state from " + oldState + " to " + state);
 		}
 
@@ -411,6 +420,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 			case HANDSHAKE_PASS_SENDING:
 				if (packetType == MNPPacket.LA) {
 					docking.setState(stateDocking, DockingState.HANDSHAKE_PASS_SENT, data, cmd);
+					notifyConnect();
 				}
 				break;
 			}
@@ -423,9 +433,12 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		case MNP_IDLE:
 			if (packetType == MNPPacket.LT) {
 				if (!DockCommandFromNewton.isCommand(data)) {
-					throw new BadPipeStateException("expected command " + DCmdResult.COMMAND);
+					throw new BadPipeStateException("expected command");
 				}
 				cmd = DockCommandFromNewton.deserialize(data);
+				if (cmd == null) {
+					System.err.println(data);
+				}
 				commandReceived(cmd, state);
 			}
 			break;
