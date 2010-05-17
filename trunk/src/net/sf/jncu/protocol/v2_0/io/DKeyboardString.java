@@ -19,7 +19,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DCmdKeyboardString extends DockCommandToNewton {
+public class DKeyboardString extends DockCommandToNewton {
 
 	public static final String COMMAND = "kbds";
 
@@ -28,7 +28,7 @@ public class DCmdKeyboardString extends DockCommandToNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DCmdKeyboardString() {
+	public DKeyboardString() {
 		super(COMMAND);
 	}
 

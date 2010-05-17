@@ -24,12 +24,8 @@ public class DESNewton {
 	/** Default Newton key. */
 	public static final long NEWTON_DEFAULT_KEY = 0x57406860626D7464L;
 
-	/** Cipher block size. */
-	private static final int CIPHER_BLOCK_SIZE = 64;
-
 	private SecretKeyFactory keyFactory;
 	private Cipher cipher;
-	private transient long key;
 
 	/**
 	 * Creates a new DES for Newton.
@@ -78,7 +74,6 @@ public class DESNewton {
 			keyBytes = DESUtils.toBytes(key);
 			keySpec = new DESKeySpec(keyBytes);
 			skey = keyFactory.generateSecret(keySpec);
-			this.key = DESUtils.toLong(skey.getEncoded());
 			cipher.init(opmode, skey);
 		} catch (NoSuchPaddingException nspe) {
 			nspe.printStackTrace();
@@ -121,7 +116,7 @@ public class DESNewton {
 	 * @throws IllegalBlockSizeException
 	 * @throws NoSuchPaddingException
 	 */
-	private void init(int opmode, KeySpec keySpec) throws InvalidKeyException, InvalidKeySpecException, NoSuchAlgorithmException, IllegalBlockSizeException,
+	public void init(int opmode, KeySpec keySpec) throws InvalidKeyException, InvalidKeySpecException, NoSuchAlgorithmException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchPaddingException {
 		SecretKey skey = getKeyFactory().generateSecret(keySpec);
 		init(opmode, skey);

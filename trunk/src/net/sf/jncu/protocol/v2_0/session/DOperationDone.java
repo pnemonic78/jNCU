@@ -15,14 +15,14 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * length = 0
  * </pre>
  */
-public class DCmdOperationDone extends DockCommandToNewton {
+public class DOperationDone extends DockCommandToNewton {
 
 	public static final String COMMAND = "opdn";
 
 	/**
 	 * Creates a new command.
 	 */
-	public DCmdOperationDone() {
+	public DOperationDone() {
 		super(COMMAND);
 	}
 

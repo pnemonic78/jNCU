@@ -16,16 +16,16 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DCmdPasswordReply extends DockCommandToNewton {
+public class DPasswordReply extends DockCommandToNewton {
 
-	public static final String COMMAND = DCmdPassword.COMMAND;
+	public static final String COMMAND = DPassword.COMMAND;
 
 	private long encryptedKey;
 
 	/**
 	 * Creates a new command.
 	 */
-	public DCmdPasswordReply() {
+	public DPasswordReply() {
 		super(COMMAND);
 	}
 

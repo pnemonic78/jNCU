@@ -4,22 +4,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sf.jncu.protocol.DockCommand;
-import net.sf.jncu.protocol.v1_0.DCmdDisconnect;
-import net.sf.jncu.protocol.v1_0.DCmdHello;
-import net.sf.jncu.protocol.v1_0.DCmdResult;
-import net.sf.jncu.protocol.v2_0.io.DCmdKeyboardChar;
-import net.sf.jncu.protocol.v2_0.io.DCmdKeyboardString;
-import net.sf.jncu.protocol.v2_0.session.DCmdDesktopInfo;
-import net.sf.jncu.protocol.v2_0.session.DCmdInitiateDocking;
-import net.sf.jncu.protocol.v2_0.session.DCmdNewtonInfo;
-import net.sf.jncu.protocol.v2_0.session.DCmdNewtonName;
-import net.sf.jncu.protocol.v2_0.session.DCmdOperationCanceled;
-import net.sf.jncu.protocol.v2_0.session.DCmdOperationCanceledAck;
-import net.sf.jncu.protocol.v2_0.session.DCmdOperationDone;
-import net.sf.jncu.protocol.v2_0.session.DCmdPassword;
-import net.sf.jncu.protocol.v2_0.session.DCmdRequestToDock;
-import net.sf.jncu.protocol.v2_0.session.DCmdSetTimeout;
-import net.sf.jncu.protocol.v2_0.session.DCmdWhichIcons;
+import net.sf.jncu.protocol.v1_0.DDisconnect;
+import net.sf.jncu.protocol.v1_0.DHello;
+import net.sf.jncu.protocol.v1_0.DResult;
+import net.sf.jncu.protocol.v2_0.io.DKeyboardChar;
+import net.sf.jncu.protocol.v2_0.io.DKeyboardString;
+import net.sf.jncu.protocol.v2_0.session.DDesktopInfo;
+import net.sf.jncu.protocol.v2_0.session.DInitiateDocking;
+import net.sf.jncu.protocol.v2_0.session.DNewtonInfo;
+import net.sf.jncu.protocol.v2_0.session.DNewtonName;
+import net.sf.jncu.protocol.v2_0.session.DOperationCanceled;
+import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
+import net.sf.jncu.protocol.v2_0.session.DOperationDone;
+import net.sf.jncu.protocol.v2_0.session.DPassword;
+import net.sf.jncu.protocol.v2_0.session.DRequestToDock;
+import net.sf.jncu.protocol.v2_0.session.DSetTimeout;
+import net.sf.jncu.protocol.v2_0.session.DWhichIcons;
 
 /**
  * Docking command factory.
@@ -38,23 +38,23 @@ public class DockCommandFactory {
 		super();
 
 		if (registry.isEmpty()) {
-			registry.put(DCmdDesktopInfo.COMMAND, DCmdDesktopInfo.class);
-			registry.put(DCmdDisconnect.COMMAND, DCmdDisconnect.class);
-			registry.put(DCmdHello.COMMAND, DCmdHello.class);
-			registry.put(DCmdInitiateDocking.COMMAND, DCmdInitiateDocking.class);
-			registry.put(DCmdKeyboardChar.COMMAND, DCmdKeyboardChar.class);
-			registry.put(DCmdKeyboardString.COMMAND, DCmdKeyboardString.class);
-			registry.put(DCmdNewtonInfo.COMMAND, DCmdNewtonInfo.class);
-			registry.put(DCmdNewtonName.COMMAND, DCmdNewtonName.class);
-			registry.put(net.sf.jncu.protocol.v1_0.DCmdOperationCanceled.COMMAND, net.sf.jncu.protocol.v1_0.DCmdOperationCanceled.class);
-			registry.put(DCmdOperationCanceled.COMMAND, DCmdOperationCanceled.class);
-			registry.put(DCmdOperationCanceledAck.COMMAND, DCmdOperationCanceledAck.class);
-			registry.put(DCmdOperationDone.COMMAND, DCmdOperationDone.class);
-			registry.put(DCmdPassword.COMMAND, DCmdPassword.class);
-			registry.put(DCmdRequestToDock.COMMAND, DCmdRequestToDock.class);
-			registry.put(DCmdResult.COMMAND, DCmdResult.class);
-			registry.put(DCmdSetTimeout.COMMAND, DCmdSetTimeout.class);
-			registry.put(DCmdWhichIcons.COMMAND, DCmdWhichIcons.class);
+			registry.put(DDesktopInfo.COMMAND, DDesktopInfo.class);
+			registry.put(DDisconnect.COMMAND, DDisconnect.class);
+			registry.put(DHello.COMMAND, DHello.class);
+			registry.put(DInitiateDocking.COMMAND, DInitiateDocking.class);
+			registry.put(DKeyboardChar.COMMAND, DKeyboardChar.class);
+			registry.put(DKeyboardString.COMMAND, DKeyboardString.class);
+			registry.put(DNewtonInfo.COMMAND, DNewtonInfo.class);
+			registry.put(DNewtonName.COMMAND, DNewtonName.class);
+			registry.put(net.sf.jncu.protocol.v1_0.DOperationCanceled.COMMAND, net.sf.jncu.protocol.v1_0.DOperationCanceled.class);
+			registry.put(DOperationCanceled.COMMAND, DOperationCanceled.class);
+			registry.put(DOperationCanceledAck.COMMAND, DOperationCanceledAck.class);
+			registry.put(DOperationDone.COMMAND, DOperationDone.class);
+			registry.put(DPassword.COMMAND, DPassword.class);
+			registry.put(DRequestToDock.COMMAND, DRequestToDock.class);
+			registry.put(DResult.COMMAND, DResult.class);
+			registry.put(DSetTimeout.COMMAND, DSetTimeout.class);
+			registry.put(DWhichIcons.COMMAND, DWhichIcons.class);
 		}
 	}
 

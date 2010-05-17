@@ -19,7 +19,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DCmdSetTimeout extends DockCommandToNewton {
+public class DSetTimeout extends DockCommandToNewton {
 
 	public static final String COMMAND = "stim";
 
@@ -28,7 +28,7 @@ public class DCmdSetTimeout extends DockCommandToNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DCmdSetTimeout() {
+	public DSetTimeout() {
 		super(COMMAND);
 	}
 

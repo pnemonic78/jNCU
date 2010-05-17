@@ -36,7 +36,7 @@ public class DESTest extends SFTestCase {
 		assertEquals(ciphertext, encL);
 	}
 
-	private byte[] toBytes(long l) {
+	protected byte[] toBytes(long l) {
 		byte[] b = new byte[8];
 		assertNotNull(b);
 		assertEquals(8, b.length);
@@ -47,7 +47,7 @@ public class DESTest extends SFTestCase {
 		return b;
 	}
 
-	private long toLong(byte[] b) {
+	protected long toLong(byte[] b) {
 		assertNotNull(b);
 		assertTrue(8 <= b.length);
 		long l = 0;
@@ -58,7 +58,7 @@ public class DESTest extends SFTestCase {
 		return l;
 	}
 
-	private String toHex(long l) {
+	protected String toHex(long l) {
 		StringBuffer s = new StringBuffer(16);
 		int hi = (int) ((l >> 32) & 0xFFFFFFFFL);
 		int lo = (int) ((l >> 0) & 0xFFFFFFFFL);

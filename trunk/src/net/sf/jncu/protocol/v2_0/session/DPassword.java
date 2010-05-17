@@ -18,7 +18,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DCmdPassword extends DockCommandFromNewton {
+public class DPassword extends DockCommandFromNewton {
 
 	public static final String COMMAND = "pass";
 
@@ -32,7 +32,7 @@ public class DCmdPassword extends DockCommandFromNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DCmdPassword() {
+	public DPassword() {
 		super(COMMAND);
 	}
 

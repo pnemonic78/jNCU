@@ -19,7 +19,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DCmdResult extends DockCommandFromNewton {
+public class DResult extends DockCommandFromNewton {
 
 	public static final String COMMAND = "dres";
 
@@ -28,7 +28,7 @@ public class DCmdResult extends DockCommandFromNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DCmdResult() {
+	public DResult() {
 		super(COMMAND);
 	}
 

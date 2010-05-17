@@ -18,14 +18,14 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DCmdKeyboardPassthrough extends DockCommandFromNewton {
+public class DKeyboardPassthrough extends DockCommandFromNewton {
 
 	public static final String COMMAND = "kybd";
 
 	/**
 	 * Creates a new command.
 	 */
-	public DCmdKeyboardPassthrough() {
+	public DKeyboardPassthrough() {
 		super(COMMAND);
 	}
 

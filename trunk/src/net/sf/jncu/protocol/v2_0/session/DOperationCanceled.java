@@ -1,4 +1,4 @@
-package net.sf.jncu.protocol.v1_0;
+package net.sf.jncu.protocol.v2_0.session;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,22 +6,23 @@ import java.io.InputStream;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDDisconnect</tt><br>
- * This command is sent to the Newton when the docking operation is complete.
+ * <tt>kDOperationCanceled</tt><br>
+ * This command is sent when the user cancels an operation. Usually no action is
+ * required on the receivers part except to return to the "ready" state.
  * 
  * <pre>
- * 'disc'
+ * 'opcn'
  * length = 0
  * </pre>
  */
-public class DCmdDisconnect extends DockCommandFromNewton {
+public class DOperationCanceled extends DockCommandFromNewton {
 
-	public static final String COMMAND = "disc";
+	public static final String COMMAND = "opcn";
 
 	/**
 	 * Creates a new command.
 	 */
-	public DCmdDisconnect() {
+	public DOperationCanceled() {
 		super(COMMAND);
 	}
 

@@ -20,7 +20,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * protocol version = 9
  * </pre>
  */
-public class DCmdRequestToDock extends DockCommandFromNewton {
+public class DRequestToDock extends DockCommandFromNewton {
 
 	public static final String COMMAND = "rtdk";
 
@@ -32,7 +32,7 @@ public class DCmdRequestToDock extends DockCommandFromNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DCmdRequestToDock() {
+	public DRequestToDock() {
 		super(COMMAND);
 	}
 

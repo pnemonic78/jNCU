@@ -29,7 +29,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DCmdWhichIcons extends DockCommandToNewton {
+public class DWhichIcons extends DockCommandToNewton {
 
 	public static final String COMMAND = "wicn";
 
@@ -51,7 +51,7 @@ public class DCmdWhichIcons extends DockCommandToNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DCmdWhichIcons() {
+	public DWhichIcons() {
 		super(COMMAND);
 	}
 
