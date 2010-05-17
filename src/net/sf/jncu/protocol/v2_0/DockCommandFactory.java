@@ -1,13 +1,21 @@
 package net.sf.jncu.protocol.v2_0;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.sf.jncu.protocol.DockCommand;
 import net.sf.jncu.protocol.v1_0.DCmdDisconnect;
 import net.sf.jncu.protocol.v1_0.DCmdHello;
 import net.sf.jncu.protocol.v1_0.DCmdResult;
+import net.sf.jncu.protocol.v2_0.io.DCmdKeyboardChar;
+import net.sf.jncu.protocol.v2_0.io.DCmdKeyboardString;
 import net.sf.jncu.protocol.v2_0.session.DCmdDesktopInfo;
 import net.sf.jncu.protocol.v2_0.session.DCmdInitiateDocking;
 import net.sf.jncu.protocol.v2_0.session.DCmdNewtonInfo;
 import net.sf.jncu.protocol.v2_0.session.DCmdNewtonName;
+import net.sf.jncu.protocol.v2_0.session.DCmdOperationCanceled;
+import net.sf.jncu.protocol.v2_0.session.DCmdOperationCanceledAck;
+import net.sf.jncu.protocol.v2_0.session.DCmdOperationDone;
 import net.sf.jncu.protocol.v2_0.session.DCmdPassword;
 import net.sf.jncu.protocol.v2_0.session.DCmdRequestToDock;
 import net.sf.jncu.protocol.v2_0.session.DCmdSetTimeout;
@@ -21,12 +29,33 @@ import net.sf.jncu.protocol.v2_0.session.DCmdWhichIcons;
 public class DockCommandFactory {
 
 	private static DockCommandFactory instance;
+	private static final Map<String, Class<? extends DockCommand>> registry = new HashMap<String, Class<? extends DockCommand>>();
 
 	/**
 	 * Creates a new command factory.
 	 */
 	protected DockCommandFactory() {
 		super();
+
+		if (registry.isEmpty()) {
+			registry.put(DCmdDesktopInfo.COMMAND, DCmdDesktopInfo.class);
+			registry.put(DCmdDisconnect.COMMAND, DCmdDisconnect.class);
+			registry.put(DCmdHello.COMMAND, DCmdHello.class);
+			registry.put(DCmdInitiateDocking.COMMAND, DCmdInitiateDocking.class);
+			registry.put(DCmdKeyboardChar.COMMAND, DCmdKeyboardChar.class);
+			registry.put(DCmdKeyboardString.COMMAND, DCmdKeyboardString.class);
+			registry.put(DCmdNewtonInfo.COMMAND, DCmdNewtonInfo.class);
+			registry.put(DCmdNewtonName.COMMAND, DCmdNewtonName.class);
+			registry.put(net.sf.jncu.protocol.v1_0.DCmdOperationCanceled.COMMAND, net.sf.jncu.protocol.v1_0.DCmdOperationCanceled.class);
+			registry.put(DCmdOperationCanceled.COMMAND, DCmdOperationCanceled.class);
+			registry.put(DCmdOperationCanceledAck.COMMAND, DCmdOperationCanceledAck.class);
+			registry.put(DCmdOperationDone.COMMAND, DCmdOperationDone.class);
+			registry.put(DCmdPassword.COMMAND, DCmdPassword.class);
+			registry.put(DCmdRequestToDock.COMMAND, DCmdRequestToDock.class);
+			registry.put(DCmdResult.COMMAND, DCmdResult.class);
+			registry.put(DCmdSetTimeout.COMMAND, DCmdSetTimeout.class);
+			registry.put(DCmdWhichIcons.COMMAND, DCmdWhichIcons.class);
+		}
 	}
 
 	/**
@@ -60,39 +89,20 @@ public class DockCommandFactory {
 	 * @return the command - <tt>null</tt> otherwise.
 	 */
 	public DockCommand create(String cmdName) {
-		if (DCmdDesktopInfo.COMMAND.equals(cmdName)) {
-			return new DCmdDesktopInfo();
+		Class<? extends DockCommand> clazz = registry.get(cmdName);
+
+		if (clazz != null) {
+			DockCommand cmd = null;
+			try {
+				cmd = clazz.newInstance();
+			} catch (InstantiationException ie) {
+				ie.printStackTrace();
+			} catch (IllegalAccessException iae) {
+				iae.printStackTrace();
+			}
+			return cmd;
 		}
-		if (DCmdDisconnect.COMMAND.equals(cmdName)) {
-			return new DCmdDisconnect();
-		}
-		if (DCmdHello.COMMAND.equals(cmdName)) {
-			return new DCmdHello();
-		}
-		if (DCmdInitiateDocking.COMMAND.equals(cmdName)) {
-			return new DCmdInitiateDocking();
-		}
-		if (DCmdNewtonInfo.COMMAND.equals(cmdName)) {
-			return new DCmdNewtonInfo();
-		}
-		if (DCmdNewtonName.COMMAND.equals(cmdName)) {
-			return new DCmdNewtonName();
-		}
-		if (DCmdPassword.COMMAND.equals(cmdName)) {
-			return new DCmdPassword();
-		}
-		if (DCmdRequestToDock.COMMAND.equals(cmdName)) {
-			return new DCmdRequestToDock();
-		}
-		if (DCmdResult.COMMAND.equals(cmdName)) {
-			return new DCmdResult();
-		}
-		if (DCmdSetTimeout.COMMAND.equals(cmdName)) {
-			return new DCmdSetTimeout();
-		}
-		if (DCmdWhichIcons.COMMAND.equals(cmdName)) {
-			return new DCmdWhichIcons();
-		}
+
 		return null;
 	}
 }

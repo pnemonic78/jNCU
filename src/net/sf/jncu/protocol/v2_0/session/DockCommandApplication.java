@@ -123,39 +123,6 @@ public class DockCommandApplication extends DockCommandSession {
 	}
 
 	/**
-	 * This command is sent in response to a <tt>kDOperationCanceled</tt>.
-	 * 
-	 * <pre>
-	 * 'ocaa'
-	 * length = 0
-	 * </pre>
-	 */
-	public static final String kDOpCanceledAck = "ocaa";
-	/**
-	 * This command is sent when the user cancels an operation. Usually no
-	 * action is required on the receivers part except to return to the "ready"
-	 * state.
-	 * 
-	 * <pre>
-	 * 'opcn'
-	 * length = 0
-	 * </pre>
-	 */
-	public static final String kDOperationCanceled = "opcn";
-	/**
-	 * This command is sent when an operation is completed. It's only sent in
-	 * situations where there might be some ambiguity. Currently, there are two
-	 * situations where this is sent. When the desktop finishes a restore it
-	 * sends this command. When a sync is finished and there are no sync results
-	 * (conflicts) to send to the Newton the desktop sends this command.
-	 * 
-	 * <pre>
-	 * 'opdn'
-	 * length = 0
-	 * </pre>
-	 */
-	public static final String kDOperationDone = "opdn";
-	/**
 	 * This command is first sent from the desktop to the Newton. The Newton
 	 * immediately echos the object back to the desktop. The object can be any
 	 * NewtonScript object (anything that can be sent through the object
