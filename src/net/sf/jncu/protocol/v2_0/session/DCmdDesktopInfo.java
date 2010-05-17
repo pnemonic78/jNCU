@@ -2,12 +2,8 @@ package net.sf.jncu.protocol.v2_0.session;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
+import java.util.Random;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-
-import net.sf.jncu.crypto.DESUtils;
 import net.sf.jncu.newton.stream.NSOFArray;
 import net.sf.jncu.newton.stream.NSOFEncoder;
 import net.sf.jncu.newton.stream.NSOFFrame;
@@ -91,6 +87,7 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 	private boolean selectiveSync;
 	private long encryptedKey;
 	private NSOFArray desktopApps;
+	private static final Random rand = new Random();
 
 	/**
 	 * Creates a new command.
@@ -100,14 +97,8 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 		setSessionType(DCmdInitiateDocking.SESSION_SETTING_UP);
 		setDesktopType(System.getProperty("os.name").startsWith("Windows") ? kWindows : kMacintosh);
 		setSelectiveSync(true);
+		setEncryptedKey(rand.nextLong());
 		setDesktopApps(null);
-
-		try {
-			KeyGenerator keyGen = KeyGenerator.getInstance("DES");
-			setEncryptedKey(keyGen.generateKey());
-		} catch (NoSuchAlgorithmException nsae) {
-			throw new IllegalArgumentException(nsae);
-		}
 	}
 
 	@Override
@@ -226,16 +217,6 @@ public class DCmdDesktopInfo extends DockCommandToNewton {
 	 */
 	public void setEncryptedKey(long encryptedKey) {
 		this.encryptedKey = encryptedKey;
-	}
-
-	/**
-	 * Set the encrypted key.
-	 * 
-	 * @param encryptedKey
-	 *            the key.
-	 */
-	public void setEncryptedKey(SecretKey encryptedKey) {
-		setEncryptedKey(DESUtils.toLong(encryptedKey.getEncoded()));
 	}
 
 }
