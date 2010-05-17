@@ -21,6 +21,9 @@ import javax.crypto.spec.DESKeySpec;
  */
 public class DESNewton {
 
+	/** Default Newton key. */
+	public static final long NEWTON_DEFAULT_KEY = 0x57406860626D7464L;
+
 	/** Cipher block size. */
 	private static final int CIPHER_BLOCK_SIZE = 64;
 
@@ -50,37 +53,44 @@ public class DESNewton {
 	 *            the operation mode of this cipher.
 	 * @param key
 	 *            the key.
-	 * @throws InvalidKeyException
-	 * @throws NoSuchAlgorithmException
-	 * @throws InvalidKeySpecException
-	 * @throws BadPaddingException
-	 * @throws IllegalBlockSizeException
-	 * @throws NoSuchPaddingException
 	 */
-	public void init(int opmode, long key) throws InvalidKeyException, InvalidKeySpecException, NoSuchAlgorithmException, IllegalBlockSizeException,
-			BadPaddingException, NoSuchPaddingException {
-		if (cipher == null) {
-			cipher = Cipher.getInstance("DES");
+	public void init(int opmode, long key) {
+		try {
+			if (cipher == null) {
+				cipher = Cipher.getInstance("DES");
+			}
+
+			key <<= 1;
+			byte[] keyBytes = DESUtils.toBytes(key);
+			DESKeySpec keySpec = new DESKeySpec(keyBytes);
+			SecretKey skey = getKeyFactory().generateSecret(keySpec);
+			cipher.init(opmode, skey);
+
+			byte[] zero = DESUtils.toBytes(0L);
+			byte[] tmpKeyBytes = cipher.doFinal(zero);
+			long tmpKey = DESUtils.toLong(tmpKeyBytes);
+			byte[] tmpKeyBits = DESUtils.toBits(tmpKey);
+			DESUtils.oddParity(tmpKeyBits);
+			key = tmpKey | DESUtils.fromBits(tmpKeyBits);
+
+			key <<= 1;
+			keyBytes = DESUtils.toBytes(key);
+			keySpec = new DESKeySpec(keyBytes);
+			skey = keyFactory.generateSecret(keySpec);
+			cipher.init(opmode, skey);
+		} catch (NoSuchPaddingException nspe) {
+			nspe.printStackTrace();
+		} catch (BadPaddingException bpe) {
+			bpe.printStackTrace();
+		} catch (NoSuchAlgorithmException nsae) {
+			nsae.printStackTrace();
+		} catch (InvalidKeyException ike) {
+			ike.printStackTrace();
+		} catch (InvalidKeySpecException ikse) {
+			ikse.printStackTrace();
+		} catch (IllegalBlockSizeException ibse) {
+			ibse.printStackTrace();
 		}
-
-		key <<= 1;
-		byte[] keyBytes = toBytesBE(key);
-		DESKeySpec keySpec = new DESKeySpec(keyBytes);
-		SecretKey skey = getKeyFactory().generateSecret(keySpec);
-		cipher.init(opmode, skey);
-
-		byte[] zero = toBytesBE(0L);
-		byte[] tmpKeyBytes = cipher.doFinal(zero);
-		long tmpKey = toLongBE(tmpKeyBytes);
-		int[] tmpKeyBits = toBitsBE(tmpKey);
-		oddParity(tmpKeyBits);
-		key = tmpKey | fromBitsBE(tmpKeyBits);
-
-		key <<= 1;
-		keyBytes = toBytesBE(key);
-		keySpec = new DESKeySpec(keyBytes);
-		skey = keyFactory.generateSecret(keySpec);
-		cipher.init(opmode, skey);
 	}
 
 	/**
@@ -90,18 +100,9 @@ public class DESNewton {
 	 *            the operation mode of this cipher.
 	 * @param key
 	 *            the key.
-	 * @throws InvalidKeyException
-	 * @throws NoSuchAlgorithmException
-	 * @throws InvalidKeySpecException
-	 * @throws BadPaddingException
-	 * @throws IllegalBlockSizeException
-	 * @throws NoSuchPaddingException
 	 */
-	public void init(int opmode, Key key) throws InvalidKeyException, InvalidKeySpecException, NoSuchAlgorithmException, IllegalBlockSizeException,
-			BadPaddingException, NoSuchPaddingException {
-		byte[] keyBytes = key.getEncoded();
-		long keyAsLong = toLongBE(keyBytes);
-		init(opmode, keyAsLong);
+	public void init(int opmode, Key key) {
+		init(opmode, DESUtils.toLong(key.getEncoded()));
 	}
 
 	/**
@@ -138,105 +139,13 @@ public class DESNewton {
 	}
 
 	/**
-	 * Convert the 64-bit number of an array of bytes arranged in Big Endian
-	 * order.
+	 * Cipher the data.
 	 * 
-	 * @param l
-	 *            the number.
-	 * @return the array of 8 bytes.
+	 * @param data
+	 *            the plain-text.
+	 * @return the cipher-text.
 	 */
-	private byte[] toBytesBE(long l) {
-		byte[] buf = new byte[8];
-		for (int i = 7; i >= 0; i--, l >>>= 8) {
-			buf[i] = (byte) (l & 0xFF);
-		}
-		return buf;
-	}
-
-	/**
-	 * Convert the array of bytes to a 64-bit number arranged in Big Endian
-	 * order.
-	 * 
-	 * @param b
-	 *            the array of 8 bytes.
-	 * @return the 64-bit number.
-	 */
-	private long toLongBE(byte[] b) {
-		long l = 0;
-		for (int i = 0; i < 8; i++) {
-			l <<= 8;
-			l |= (b[i] & 0xFFL);
-		}
-		return l;
-	}
-
-	/**
-	 * Convert a 64-bit Big Endian number to 64 separate bits.<br>
-	 * MSB is at index <tt>0</tt>.
-	 * 
-	 * @param l
-	 *            the number.
-	 * @return the array of bits.
-	 */
-	private int[] toBitsBE(long l) {
-		int[] b = new int[CIPHER_BLOCK_SIZE];
-		for (int i = CIPHER_BLOCK_SIZE - 1; i >= 0; i--) {
-			b[i] = (int) (l & 0x1L);
-			l >>= 1;
-		}
-		return b;
-	}
-
-	/**
-	 * Convert 64 bits to a 64-bit Big Endian number.<br>
-	 * MSB is at index <tt>0</tt>.
-	 * 
-	 * @param b
-	 *            the array of bits.
-	 * @return the number.
-	 */
-	private long fromBitsBE(int[] b) {
-		long l = 0;
-		for (int i = 0; i < CIPHER_BLOCK_SIZE; i++) {
-			l <<= 1;
-			l |= b[i] & 0x1L;
-		}
-		return l;
-	}
-
-	/**
-	 * Odd parity.<br>
-	 * <em>Bits 8, 16,..., 64 are for use in assuring that each byte is of odd parity.</em>
-	 * 
-	 * @param n
-	 *            the array of bits.
-	 */
-	private void oddParity(int[] n) {
-		int parity;
-		for (int p = 0; p < 64;) {
-			parity = 1;
-			if (n[p++] != 0) {
-				parity++;
-			}
-			if (n[p++] != 0) {
-				parity++;
-			}
-			if (n[p++] != 0) {
-				parity++;
-			}
-			if (n[p++] != 0) {
-				parity++;
-			}
-			if (n[p++] != 0) {
-				parity++;
-			}
-			if (n[p++] != 0) {
-				parity++;
-			}
-			if (n[p++] != 0) {
-				parity++;
-			}
-			n[p++] = parity & 1;
-		}
+	public long cipher(long data) {
+		return DESUtils.toLong(cipher.update(DESUtils.toBytes(data)));
 	}
 }
