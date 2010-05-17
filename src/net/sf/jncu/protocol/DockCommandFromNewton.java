@@ -42,6 +42,9 @@ public abstract class DockCommandFromNewton extends DockCommand {
 	 *         otherwise.
 	 */
 	public static boolean isCommand(byte[] data) {
+		if ((data == null) || (data.length < kDNewtonDockLength)) {
+			return false;
+		}
 		for (int i = 0; i < kDNewtonDockLength; i++) {
 			if (kDNewtonDockBytes[i] != data[i]) {
 				return false;
