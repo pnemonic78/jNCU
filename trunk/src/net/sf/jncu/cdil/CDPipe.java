@@ -282,8 +282,9 @@ public abstract class CDPipe extends Thread {
 	public void write(byte[] b, int offset, int count) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
 			TimeoutException {
 		layer.checkInitialized();
-		if (getCDState() != CDState.CONNECTED) {
-			throw new BadPipeStateException();
+		CDState state = getCDState();
+		if (state != CDState.CONNECTED) {
+			throw new BadPipeStateException("state " + state);
 		}
 	}
 

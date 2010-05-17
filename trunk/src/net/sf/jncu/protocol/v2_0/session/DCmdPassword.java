@@ -22,6 +22,11 @@ public class DCmdPassword extends DockCommandFromNewton {
 
 	public static final String COMMAND = "pass";
 
+	/** <tt>kDBadPassword</tt>. */
+	public static final int ERROR_BAD_PASSWORD = -28022;
+	/** <tt>kDPWWrong</tt>. */
+	public static final int ERROR_RETRY_PASSWORD = -28023;
+
 	private long encryptedKey;
 
 	/**
