@@ -123,6 +123,16 @@ public class DESNewton {
 	}
 
 	/**
+	 * Initializes this cipher with the default Newton key.
+	 * 
+	 * @param opmode
+	 *            the operation mode of this cipher.
+	 */
+	public void init(int opmode) {
+		init(opmode, NEWTON_DEFAULT_KEY);
+	}
+
+	/**
 	 * Get the secret key factory instance.
 	 * 
 	 * @return the key factory.

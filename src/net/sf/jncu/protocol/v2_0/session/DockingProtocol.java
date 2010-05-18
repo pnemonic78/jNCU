@@ -56,7 +56,7 @@ public class DockingProtocol {
 		super();
 		this.pipe = pipe;
 		this.crypto = new DESNewton();
-		crypto.init(Cipher.ENCRYPT_MODE, DESNewton.NEWTON_DEFAULT_KEY);
+		crypto.init(Cipher.ENCRYPT_MODE);
 	}
 
 	/**

@@ -21,12 +21,9 @@ public class DESTest extends SFTestCase {
 	}
 
 	public void testNewtonCipher() throws Exception {
-		final long NEWTON_DEFAULT_KEY = 0x57406860626D7464L;
-		long key = NEWTON_DEFAULT_KEY;
-
 		DESNewton newt = new DESNewton();
 		assertNotNull(newt);
-		newt.init(Cipher.ENCRYPT_MODE, key);
+		newt.init(Cipher.ENCRYPT_MODE);
 		Cipher cipher = newt.getCipher();
 		assertNotNull(cipher);
 
