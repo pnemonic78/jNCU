@@ -1,9 +1,12 @@
 package net.sf.jncu.protocol.v1_0;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.IDockCommandToNewton;
 
 /**
  * <tt>kDResult</tt><br>
@@ -19,7 +22,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DResult extends DockCommandFromNewton {
+public class DResult extends DockCommandFromNewton implements IDockCommandToNewton {
 
 	public static final String COMMAND = "dres";
 
@@ -43,6 +46,19 @@ public class DResult extends DockCommandFromNewton {
 		setErrorCode(htonl(data));
 	}
 
+	@Override
+	public byte[] getPayload() {
+		IDockCommandToNewton cmd = new DockCommandToNewton(COMMAND) {
+			@Override
+			protected ByteArrayOutputStream getCommandData() throws IOException {
+				ByteArrayOutputStream data = new ByteArrayOutputStream();
+				ntohl(getErrorCode(), data);
+				return data;
+			}
+		};
+		return cmd.getPayload();
+	}
+
 	/**
 	 * Get the error code.
 	 * 
@@ -58,7 +74,7 @@ public class DResult extends DockCommandFromNewton {
 	 * @param errorCode
 	 *            the error code.
 	 */
-	protected void setErrorCode(int errorCode) {
+	public void setErrorCode(int errorCode) {
 		this.errorCode = errorCode;
 	}
 

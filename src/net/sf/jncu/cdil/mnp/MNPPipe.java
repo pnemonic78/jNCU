@@ -17,6 +17,7 @@ import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.v1_0.DDisconnect;
 import net.sf.jncu.protocol.v1_0.DHello;
 import net.sf.jncu.protocol.v2_0.session.DockingState;
@@ -276,7 +277,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	 * @throws CDILNotInitializedException
 	 * @throws BadPipeStateException
 	 */
-	protected void commandReceived(DockCommandFromNewton cmd, MNPState state) throws PipeDisconnectedException, TimeoutException, BadPipeStateException,
+	protected void commandReceived(IDockCommandFromNewton cmd, MNPState state) throws PipeDisconnectedException, TimeoutException, BadPipeStateException,
 			CDILNotInitializedException, PlatformException {
 		if (cmd == null) {
 			return;
@@ -322,7 +323,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	 * @throws CDILNotInitializedException
 	 * @throws BadPipeStateException
 	 */
-	protected void setState(MNPState oldState, MNPState state, MNPPacket packet, DockCommandFromNewton cmd) throws PipeDisconnectedException, TimeoutException,
+	protected void setState(MNPState oldState, MNPState state, MNPPacket packet, IDockCommandFromNewton cmd) throws PipeDisconnectedException, TimeoutException,
 			BadPipeStateException, CDILNotInitializedException, PlatformException {
 		byte packetType = (packet == null) ? 0 : packet.getType();
 		byte[] data = null;

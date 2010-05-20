@@ -11,9 +11,9 @@ import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.crypto.DESNewton;
 import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.NewtonInfo;
 import net.sf.jncu.protocol.v1_0.DResult;
-import net.sf.jncu.protocol.v2_0.DReply;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 
 /**
@@ -95,7 +95,7 @@ public class DockingProtocol {
 	 * @throws CDILNotInitializedException
 	 * @throws BadPipeStateException
 	 */
-	public void setState(DockingState oldDockingState, DockingState state, byte[] data, DockCommandFromNewton cmd) throws PipeDisconnectedException,
+	public void setState(DockingState oldDockingState, DockingState state, byte[] data, IDockCommandFromNewton cmd) throws PipeDisconnectedException,
 			TimeoutException, BadPipeStateException, CDILNotInitializedException, PlatformException {
 		// Only move the previous state to the next state.
 		int compare = state.compareTo(oldDockingState);
@@ -265,7 +265,7 @@ public class DockingProtocol {
 	 * @throws CDILNotInitializedException
 	 * @throws BadPipeStateException
 	 */
-	public void commandReceived(DockCommandFromNewton cmd) throws PipeDisconnectedException, TimeoutException, BadPipeStateException,
+	public void commandReceived(IDockCommandFromNewton cmd) throws PipeDisconnectedException, TimeoutException, BadPipeStateException,
 			CDILNotInitializedException, PlatformException {
 		commandReceived(cmd, state);
 	}
@@ -285,7 +285,7 @@ public class DockingProtocol {
 	 * @throws CDILNotInitializedException
 	 * @throws BadPipeStateException
 	 */
-	public void commandReceived(DockCommandFromNewton cmd, DockingState state) throws PipeDisconnectedException, TimeoutException, BadPipeStateException,
+	public void commandReceived(IDockCommandFromNewton cmd, DockingState state) throws PipeDisconnectedException, TimeoutException, BadPipeStateException,
 			CDILNotInitializedException, PlatformException {
 		if (cmd == null) {
 			throw new IllegalArgumentException("command expected");
@@ -362,7 +362,7 @@ public class DockingProtocol {
 				if (challengePasswordAttempt < MAX_PASSWORD_ATTEMPTS) {
 					error = DPassword.ERROR_RETRY_PASSWORD;
 				}
-				DReply cmdError = new DReply();
+				DResult cmdError = new DResult();
 				cmdError.setErrorCode(error);
 				pipe.write(cmdError);
 			}
