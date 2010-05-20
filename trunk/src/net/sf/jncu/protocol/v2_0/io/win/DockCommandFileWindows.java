@@ -1,4 +1,6 @@
-package net.sf.jncu.protocol.v2_0.io;
+package net.sf.jncu.protocol.v2_0.io.win;
+
+import net.sf.jncu.protocol.v2_0.io.DockCommandFile;
 
 public class DockCommandFileWindows {
 

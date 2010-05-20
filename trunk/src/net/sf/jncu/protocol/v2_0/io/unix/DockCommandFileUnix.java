@@ -1,6 +1,8 @@
-package net.sf.jncu.protocol.v2_0.io;
+package net.sf.jncu.protocol.v2_0.io.unix;
 
-public class DockCommandFileMacintosh {
+import net.sf.jncu.protocol.v2_0.io.DockCommandFile;
+
+public class DockCommandFileUnix {
 
 	/** Desktop to Newton. */
 	public static class DesktopToNewton extends DockCommandFile.DesktopToNewton {
