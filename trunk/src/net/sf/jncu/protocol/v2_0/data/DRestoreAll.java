@@ -25,6 +25,8 @@ public class DRestoreAll extends DockCommandFromNewton {
 
 	public static final String COMMAND = "rall";
 
+	private boolean merge;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -40,7 +42,26 @@ public class DRestoreAll extends DockCommandFromNewton {
 	 */
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
+		setMerge(htonl(data) == 1);
+	}
+
+	/**
+	 * Is merge?
+	 * 
+	 * @return merge?
+	 */
+	public boolean isMerge() {
+		return merge;
+	}
+
+	/**
+	 * Set merge.
+	 * 
+	 * @param merge
+	 *            merge?
+	 */
+	public void setMerge(boolean merge) {
+		this.merge = merge;
 	}
 
 }

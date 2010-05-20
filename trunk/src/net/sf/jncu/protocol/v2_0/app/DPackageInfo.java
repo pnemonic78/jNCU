@@ -1,9 +1,6 @@
 package net.sf.jncu.protocol.v2_0.app;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
  * <tt>kDPackageInfo</tt><br>
@@ -35,7 +32,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author Moshe
  */
-public class DPackageInfo extends DockCommandFromNewton {
+public class DPackageInfo extends DockCommandFromNewtonScript {
 
 	public static final String COMMAND = "pinf";
 
@@ -44,11 +41,6 @@ public class DPackageInfo extends DockCommandFromNewton {
 	 */
 	public DPackageInfo() {
 		super(COMMAND);
-	}
-
-	@Override
-	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
 	}
 
 }

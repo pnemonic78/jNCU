@@ -3,10 +3,7 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
  * <tt>kDCallResult</tt><br>
@@ -22,7 +19,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DCallResult extends DockCommandFromNewton {
+public class DCallResult extends DockCommandFromNewtonScript {
 
 	public static final String COMMAND = "cres";
 
@@ -31,17 +28,6 @@ public class DCallResult extends DockCommandFromNewton {
 	 */
 	public DCallResult() {
 		super(COMMAND);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * net.sf.jncu.protocol.DockCommandFromNewton#decodeData(java.io.InputStream
-	 * )
-	 */
-	@Override
-	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
 	}
 
 }

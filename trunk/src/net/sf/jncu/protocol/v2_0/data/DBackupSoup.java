@@ -3,6 +3,9 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
@@ -83,6 +86,8 @@ public class DBackupSoup extends DockCommandToNewton {
 
 	public static final String COMMAND = "bksp";
 
+	private int id;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -90,4 +95,29 @@ public class DBackupSoup extends DockCommandToNewton {
 		super(COMMAND);
 	}
 
+	/**
+	 * Get the last unique id.
+	 * 
+	 * @return the id.
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * Set the last unique id.
+	 * 
+	 * @param id
+	 *            the id.
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	@Override
+	protected ByteArrayOutputStream getCommandData() throws IOException {
+		ByteArrayOutputStream data = new ByteArrayOutputStream();
+		ntohl(getId(), data);
+		return data;
+	}
 }

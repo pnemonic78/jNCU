@@ -116,4 +116,25 @@ public abstract class DockCommandToNewton extends DockCommand {
 		ntohl((int) ((n >> 32) & 0xFFFFFFFFL), out);
 		ntohl((int) ((n >> 0) & 0xFFFFFFFFL), out);
 	}
+
+	/**
+	 * Write a <tt>C</tt>-style Unicode string (UTF-16, null-terminated).
+	 * 
+	 * @param s
+	 *            the string.
+	 * @param out
+	 *            the output.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected void writeString(String s, OutputStream out) throws IOException {
+		if ((s != null) && (s.length() > 0)) {
+			byte[] utf16 = s.getBytes("UTF-16");
+			// The 1st and 2nd bytes are UTF-16 header 0xFE and 0xFF.
+			out.write(utf16, 2, utf16.length - 2);
+		}
+		// Null-terminated string.
+		out.write(0);
+		out.write(0);
+	}
 }

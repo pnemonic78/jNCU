@@ -6,7 +6,7 @@ package net.sf.jncu.protocol.v2_0.data;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
  * <tt>kDSyncOptions</tt><br>
@@ -49,7 +49,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DSyncOptions extends DockCommandFromNewton {
+public class DSyncOptions extends DockCommandFromNewtonScript {
 
 	public static final String COMMAND = "sopt";
 

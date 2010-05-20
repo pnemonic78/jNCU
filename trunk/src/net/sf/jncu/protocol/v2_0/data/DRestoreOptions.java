@@ -3,7 +3,7 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
  * <tt>kDRestoreOptions</tt><br>
@@ -26,7 +26,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DRestoreOptions extends DockCommandToNewton {
+public class DRestoreOptions extends DockCommandToNewtonScript {
 
 	public static final String COMMAND = "ropt";
 

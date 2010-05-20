@@ -5,6 +5,8 @@ package net.sf.jncu.protocol.v2_0.data;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
@@ -51,7 +53,25 @@ public class DBackupIDs extends DockCommandFromNewton {
 	 */
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
+		List<Short> ids = new ArrayList<Short>();
+		short id = htons(data);
+		short idPrev = -1;
+
+		while (id != 0x8000) {
+			if (id >= 0) {
+				ids.add(id);
+			} else if (idPrev >= 0) {
+				int contiguous = -id;
+				id = idPrev;
+				for (int i = 0; i < contiguous; i++) {
+					id++;
+					ids.add(id);
+				}
+			}
+
+			idPrev = id;
+			id = htons(data);
+		}
 	}
 
 }

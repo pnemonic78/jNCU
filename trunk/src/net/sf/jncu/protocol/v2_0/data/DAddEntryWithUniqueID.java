@@ -3,7 +3,7 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
  * <tt>kDAddEntryWithUniqueID</tt><br>
@@ -21,7 +21,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DAddEntryWithUniqueID extends DockCommandToNewton {
+public class DAddEntryWithUniqueID extends DockCommandToNewtonScript {
 
 	public static final String COMMAND = "auni";
 

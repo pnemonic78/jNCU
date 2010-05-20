@@ -1,9 +1,6 @@
 package net.sf.jncu.protocol.v2_0.app;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
  * <tt>kDAppNames</tt><br>
@@ -30,7 +27,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author Moshe
  */
-public class DAppNames extends DockCommandFromNewton {
+public class DAppNames extends DockCommandFromNewtonScript {
 
 	public static final String COMMAND = "appn";
 
@@ -39,11 +36,6 @@ public class DAppNames extends DockCommandFromNewton {
 	 */
 	public DAppNames() {
 		super(COMMAND);
-	}
-
-	@Override
-	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
 	}
 
 }

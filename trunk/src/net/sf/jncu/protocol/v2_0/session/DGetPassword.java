@@ -3,7 +3,7 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
  * <tt>kDGetPassword</tt><br>
@@ -19,7 +19,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DGetPassword extends DockCommandToNewton {
+public class DGetPassword extends DockCommandToNewtonScript {
 
 	public static final String COMMAND = "gpwd";
 
