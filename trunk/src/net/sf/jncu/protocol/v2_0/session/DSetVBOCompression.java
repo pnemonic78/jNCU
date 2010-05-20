@@ -3,6 +3,9 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
@@ -38,11 +41,39 @@ public class DSetVBOCompression extends DockCommandToNewton {
 	 */
 	public static final int eCompressedVBOs = 2;
 
+	private int compression;
+
 	/**
 	 * Creates a new command.
 	 */
 	public DSetVBOCompression() {
 		super(COMMAND);
+	}
+
+	/**
+	 * Get the compression.
+	 * 
+	 * @return the compression.
+	 */
+	public int getCompression() {
+		return compression;
+	}
+
+	/**
+	 * Set the compression.
+	 * 
+	 * @param compression
+	 *            the compression.
+	 */
+	public void setCompression(int compression) {
+		this.compression = compression;
+	}
+	
+	@Override
+	protected ByteArrayOutputStream getCommandData() throws IOException {
+		ByteArrayOutputStream data = new ByteArrayOutputStream();
+		ntohl(getCompression(), data);
+		return data;
 	}
 
 }
