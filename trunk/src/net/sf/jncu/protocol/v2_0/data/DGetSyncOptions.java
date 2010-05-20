@@ -3,7 +3,7 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
  * <tt>kDGetSyncOptions</tt><br>
@@ -17,7 +17,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DGetSyncOptions extends DockCommandToNewton {
+public class DGetSyncOptions extends DockCommandToNewtonBlank {
 
 	public static final String COMMAND = "gsyn";
 

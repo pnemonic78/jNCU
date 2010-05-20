@@ -1,9 +1,6 @@
 package net.sf.jncu.protocol.v2_0.session;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
 
 /**
  * <tt>kDOperationCanceled</tt><br>
@@ -15,7 +12,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * length = 0
  * </pre>
  */
-public class DOperationCanceled extends DockCommandFromNewton {
+public class DOperationCanceled extends DockCommandFromNewtonBlank {
 
 	public static final String COMMAND = "opcn";
 
@@ -24,16 +21,6 @@ public class DOperationCanceled extends DockCommandFromNewton {
 	 */
 	public DOperationCanceled() {
 		super(COMMAND);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * net.sf.jncu.protocol.DockCommandFromNewton#decodeData(java.io.InputStream
-	 * )
-	 */
-	@Override
-	protected void decodeData(InputStream data) throws IOException {
 	}
 
 }
