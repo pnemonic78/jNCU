@@ -266,44 +266,7 @@ public class DockingEventCommands {
 	}
 
 	public static class NewtonToDesktop {
-		/**
-		 * Ask desktop to start docking process.<br>
-		 * This command is sent to a docker that the junior wishes to connect
-		 * with (on the network, serial, etc.). The Newt expects a
-		 * <tt>kDInitiateDocking</tt> command in response. The protocol version
-		 * is the version of the messaging protocol that's being used.
-		 * 
-		 * <pre>
-		 * 'rtdk'
-		 * length
-		 * protocol version
-		 * </pre>
-		 */
-		public static final String kDRequestToDock = "rtdk";
-		/**
-		 * The name of the Newton.<br>
-		 * This command is sent in response to a correct kDInitiateDocking
-		 * command from the docker. The Newton's name is used to locate the
-		 * proper synchronise file. The version info includes things like
-		 * machine type (e.g. J1), ROM version, etc.
-		 * 
-		 * <pre>
-		 * 'name'
-		 * length
-		 * version info
-		 * name
-		 * </pre>
-		 */
-		public static final String kDNewtonName = "name";
-		/**
-		 * The current time on the Newton.
-		 * 
-		 * <pre>
-		 * 'time'
-		 * length = 0
-		 * </pre>
-		 */
-		public static final String kDCurrentTime = "time";
+
 		/**
 		 * This command is sent in response to a <tt>kDGetStoreNames</tt>
 		 * command. It returns information about all the stores on the Newton.

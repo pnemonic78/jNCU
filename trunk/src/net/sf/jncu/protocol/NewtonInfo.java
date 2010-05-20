@@ -1,4 +1,4 @@
-package net.sf.jncu.protocol.v2_0.session;
+package net.sf.jncu.protocol;
 
 /**
  * Newton version information.
