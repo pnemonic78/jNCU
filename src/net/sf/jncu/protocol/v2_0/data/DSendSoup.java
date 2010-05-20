@@ -3,7 +3,7 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
  * <tt>kDSendSoup</tt><br>
@@ -24,7 +24,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DSendSoup extends DockCommandToNewton {
+public class DSendSoup extends DockCommandToNewtonBlank {
 
 	public static final String COMMAND = "snds";
 

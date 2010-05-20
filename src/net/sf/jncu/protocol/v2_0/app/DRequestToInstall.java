@@ -1,6 +1,6 @@
 package net.sf.jncu.protocol.v2_0.app;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
  * <tt>kDRequestToInstall</tt><br>
@@ -15,7 +15,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author Moshe
  */
-public class DRequestToInstall extends DockCommandToNewton {
+public class DRequestToInstall extends DockCommandToNewtonBlank {
 
 	public static final String COMMAND = "rins";
 

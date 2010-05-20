@@ -3,7 +3,7 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
  * <tt>kDRequestToRestore</tt><br>
@@ -18,7 +18,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DRequestToRestore extends DockCommandToNewton {
+public class DRequestToRestore extends DockCommandToNewtonBlank {
 
 	public static final String COMMAND = "rrst";
 

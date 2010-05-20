@@ -1,9 +1,6 @@
 package net.sf.jncu.protocol.v1_0;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
 
 /**
  * <tt>kDDisconnect</tt><br>
@@ -14,7 +11,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * length = 0
  * </pre>
  */
-public class DDisconnect extends DockCommandFromNewton {
+public class DDisconnect extends DockCommandFromNewtonBlank {
 
 	public static final String COMMAND = "disc";
 
@@ -23,16 +20,6 @@ public class DDisconnect extends DockCommandFromNewton {
 	 */
 	public DDisconnect() {
 		super(COMMAND);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * net.sf.jncu.protocol.DockCommandFromNewton#decodeData(java.io.InputStream
-	 * )
-	 */
-	@Override
-	protected void decodeData(InputStream data) throws IOException {
 	}
 
 }

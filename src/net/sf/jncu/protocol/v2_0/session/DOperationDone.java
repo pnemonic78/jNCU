@@ -1,6 +1,6 @@
 package net.sf.jncu.protocol.v2_0.session;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
  * <tt>kDOperationDone</tt><br>
@@ -15,7 +15,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * length = 0
  * </pre>
  */
-public class DOperationDone extends DockCommandToNewton {
+public class DOperationDone extends DockCommandToNewtonBlank {
 
 	public static final String COMMAND = "opdn";
 

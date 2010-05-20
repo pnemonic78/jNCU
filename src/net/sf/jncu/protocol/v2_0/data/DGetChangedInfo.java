@@ -3,7 +3,7 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
  * <tt>kDGetChangedInfo</tt><br>
@@ -19,7 +19,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DGetChangedInfo extends DockCommandToNewton {
+public class DGetChangedInfo extends DockCommandToNewtonBlank {
 
 	public static final String COMMAND = "cinf";
 
