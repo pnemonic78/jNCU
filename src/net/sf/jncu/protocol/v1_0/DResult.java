@@ -46,7 +46,6 @@ public class DResult extends DockCommandFromNewton implements IDockCommandToNewt
 		setErrorCode(htonl(data));
 	}
 
-	@Override
 	public byte[] getPayload() {
 		IDockCommandToNewton cmd = new DockCommandToNewton(COMMAND) {
 			@Override

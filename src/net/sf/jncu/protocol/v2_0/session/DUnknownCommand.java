@@ -70,7 +70,6 @@ public class DUnknownCommand extends DockCommandToNewton implements IDockCommand
 		return data;
 	}
 
-	@Override
 	public void decode(InputStream frame) throws IOException {
 		int length = DockCommandFromNewton.htonl(frame);
 		setLength(length);
