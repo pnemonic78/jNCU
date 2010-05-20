@@ -7,6 +7,7 @@ import java.io.InputStream;
 
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 import net.sf.jncu.protocol.v2_0.session.DDesktopInfo;
 import net.sf.jncu.protocol.v2_0.session.DNewtonName;
@@ -72,7 +73,7 @@ public class MNPPacketLayerTest extends SFTestCase {
 				0, 0, 0, 3, 0, 0, 0, 0, 1, -66, 82, -52, 0, 0, 0, 11, 0, 77, 0, 111, 0, 115, 0, 104, 0, 101, 0, 32, 0, 77, 0, 105, 0, 99, 0, 104, 0, 97, 0,
 				101, 0, 108, 0, 32, 0, 87, 0, 97, 0, 105, 0, 115, 0, 98, 0, 101, 0, 114, 0, 103, 0, 0, 0, 0 };
 
-		DockCommandFromNewton cmd = DockCommandFromNewton.deserialize(data);
+		IDockCommandFromNewton cmd = DockCommandFromNewton.deserialize(data);
 		assertNotNull(cmd);
 		assertTrue(DockCommandFromNewton.isCommand(data));
 		assertEquals(DNewtonName.COMMAND, cmd.getCommand());
