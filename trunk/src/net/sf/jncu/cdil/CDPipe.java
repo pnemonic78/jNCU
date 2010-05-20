@@ -5,8 +5,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.util.Timer;
 import java.util.concurrent.TimeoutException;
 
+import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
 
@@ -22,6 +24,8 @@ public abstract class CDPipe extends Thread {
 	private PipedInputStream pipeSink;
 	private int timeout;
 	protected DockingProtocol docking;
+	private static final Timer timer = new Timer();
+	protected CDTimeout timeoutTask;
 
 	/**
 	 * Creates a new pipe.
@@ -97,6 +101,7 @@ public abstract class CDPipe extends Thread {
 		layer.setState(CDState.DISCONNECT_PENDING);
 		disconnectImpl();
 		layer.setState(CDState.DISCONNECTED);
+		notifyDisconnected();
 	}
 
 	/**
@@ -108,6 +113,25 @@ public abstract class CDPipe extends Thread {
 	 *             if timeout occurs.
 	 */
 	protected void disconnectImpl() throws PlatformException, TimeoutException {
+		if (timeoutTask != null) {
+			timeoutTask.cancel();
+		}
+	}
+
+	public void disconnectQuiet() {
+		try {
+			disconnect();
+		} catch (BadPipeStateException bpse) {
+			// ignore
+		} catch (CDILNotInitializedException cnie) {
+			// ignore
+		} catch (PlatformException pe) {
+			// ignore
+		} catch (PipeDisconnectedException pde) {
+			// ignore
+		} catch (TimeoutException te) {
+			// ignore
+		}
 	}
 
 	/**
@@ -404,16 +428,7 @@ public abstract class CDPipe extends Thread {
 	 * @throws BadPipeStateException
 	 *             if pipe is in an incorrect state.
 	 */
-	protected void notifyDisconnect() throws BadPipeStateException, CDILNotInitializedException, PlatformException, TimeoutException {
-		if (getCDState() == CDState.CONNECTED) {
-			layer.setState(CDState.DISCONNECT_PENDING);
-		} else {
-			try {
-				disconnect();
-			} catch (PipeDisconnectedException pde) {
-				// OK, we are already disconnected.
-			}
-		}
+	protected void notifyDisconnected() throws BadPipeStateException, CDILNotInitializedException, PlatformException, TimeoutException {
 	}
 
 	/**
@@ -430,11 +445,13 @@ public abstract class CDPipe extends Thread {
 	 * @throws BadPipeStateException
 	 *             if pipe is in an incorrect state.
 	 */
-	protected void notifyConnect() throws BadPipeStateException, CDILNotInitializedException, PlatformException, TimeoutException {
+	protected void notifyConnected() throws BadPipeStateException, CDILNotInitializedException, PlatformException, TimeoutException {
 		if (getCDState() != CDState.LISTENING) {
 			throw new BadPipeStateException();
 		}
 		layer.setState(CDState.CONNECT_PENDING);
+		this.docking = null;
+		restartTimeout();
 	}
 
 	protected CDState getCDState() {
@@ -443,5 +460,29 @@ public abstract class CDPipe extends Thread {
 
 	protected void setCDState(CDState state) {
 		layer.setState(this, state);
+	}
+
+	/**
+	 * Restart the timeout.
+	 */
+	protected void restartTimeout() {
+		if (timeoutTask != null) {
+			timeoutTask.cancel();
+		}
+		this.timeoutTask = new CDTimeout(this);
+		timer.schedule(timeoutTask, timeout);
+	}
+
+	/**
+	 * Command has been received, and now process it.
+	 * 
+	 * @param cmd
+	 *            the command.
+	 */
+	protected void commandReceived(DockCommandFromNewton cmd) {
+		if (cmd == null) {
+			return;
+		}
+		restartTimeout();
 	}
 }
