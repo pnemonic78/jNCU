@@ -1,6 +1,5 @@
 package net.sf.jncu.protocol;
 
-import net.sf.jncu.protocol.v2_0.session.DockCommandSession;
 
 /**
  * Docking Command.
@@ -19,7 +18,9 @@ public abstract class DockCommand {
 	/** True. */
 	public static final int TRUE = 1;
 
-	protected static final byte[] kDNewtonDockBytes = DockCommandSession.kDNewtonDock.getBytes();
+	/** Command prefix. */
+	public static final String kDNewtonDock = "newtdock";
+	protected static final byte[] kDNewtonDockBytes = kDNewtonDock.getBytes();
 	protected static final int kDNewtonDockLength = kDNewtonDockBytes.length;
 
 	protected final String command;
