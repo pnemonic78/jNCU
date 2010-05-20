@@ -261,22 +261,6 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		}
 	}
 
-	protected void disconnectQuiet() {
-		try {
-			disconnect();
-		} catch (BadPipeStateException bpse) {
-			// ignore
-		} catch (CDILNotInitializedException cnie) {
-			// ignore
-		} catch (PlatformException pe) {
-			// ignore
-		} catch (PipeDisconnectedException pde) {
-			// ignore
-		} catch (TimeoutException te) {
-			// ignore
-		}
-	}
-
 	/**
 	 * Command has been received, and now process it.
 	 * 
@@ -297,6 +281,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		if (cmd == null) {
 			return;
 		}
+		super.commandReceived(cmd);
 
 		switch (state) {
 		case MNP_ACCEPTED:
@@ -308,13 +293,13 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 			if (DDisconnect.COMMAND.equals(cmd.getCommand())) {
 				disconnect();
 			} else {
-				System.out.println(cmd.getCommand());
+				System.err.println(cmd.getCommand());
 			}
 			break;
 		case MNP_DISCONNECTED:
 			throw new PipeDisconnectedException();
 		default:
-			throw new BadPipeStateException();
+			throw new BadPipeStateException("bad state " + state);
 		}
 	}
 
@@ -420,7 +405,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 			case HANDSHAKE_PASS_SENDING:
 				if (packetType == MNPPacket.LA) {
 					docking.setState(stateDocking, DockingState.HANDSHAKE_PASS_SENT, data, cmd);
-					notifyConnect();
+					notifyConnected();
 				}
 				break;
 			}
