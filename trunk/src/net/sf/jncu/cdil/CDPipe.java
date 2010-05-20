@@ -8,8 +8,8 @@ import java.io.PipedOutputStream;
 import java.util.Timer;
 import java.util.concurrent.TimeoutException;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.IDockCommandFromNewton;
+import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
 
 /**
@@ -328,7 +328,7 @@ public abstract class CDPipe extends Thread {
 	 * @throws TimeoutException
 	 *             if timeout occurs.
 	 */
-	public void write(DockCommandToNewton cmd) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
+	public void write(IDockCommandToNewton cmd) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
 			TimeoutException {
 		write(cmd.getPayload());
 	}
@@ -479,7 +479,7 @@ public abstract class CDPipe extends Thread {
 	 * @param cmd
 	 *            the command.
 	 */
-	protected void commandReceived(DockCommandFromNewton cmd) {
+	protected void commandReceived(IDockCommandFromNewton cmd) {
 		if (cmd == null) {
 			return;
 		}

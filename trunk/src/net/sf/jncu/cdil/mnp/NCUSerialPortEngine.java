@@ -15,6 +15,7 @@ import net.sf.jncu.NCUComm;
 import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockingFrame;
+import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 import net.sf.jncu.protocol.v2_0.session.DInitiateDocking;
 
@@ -159,7 +160,7 @@ public class NCUSerialPortEngine extends Thread {
 		DockingFrame docking = new DockingFrame();
 		InputStream in = port.getInputStream();
 		OutputStream out = port.getOutputStream();
-		DockCommandFromNewton cmdFromNewton;
+		IDockCommandFromNewton cmdFromNewton;
 		DInitiateDocking cmdInitiateDocking;
 		DockCommandFactory factory = DockCommandFactory.getInstance();
 		state = CDState.CONNECTED;
