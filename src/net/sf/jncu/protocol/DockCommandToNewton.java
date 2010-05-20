@@ -9,7 +9,7 @@ import java.io.OutputStream;
  * 
  * @author moshew
  */
-public abstract class DockCommandToNewton extends DockCommand {
+public abstract class DockCommandToNewton extends DockCommand implements IDockCommandToNewton {
 
 	/**
 	 * Creates a new docking command from Newton.
@@ -95,7 +95,7 @@ public abstract class DockCommandToNewton extends DockCommand {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected void ntohl(int n, OutputStream out) throws IOException {
+	public static void ntohl(int n, OutputStream out) throws IOException {
 		out.write((n >> 24) & 0xFF);
 		out.write((n >> 16) & 0xFF);
 		out.write((n >> 8) & 0xFF);
@@ -112,7 +112,7 @@ public abstract class DockCommandToNewton extends DockCommand {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected void ntohl(long n, OutputStream out) throws IOException {
+	public static void ntohl(long n, OutputStream out) throws IOException {
 		ntohl((int) ((n >> 32) & 0xFFFFFFFFL), out);
 		ntohl((int) ((n >> 0) & 0xFFFFFFFFL), out);
 	}
@@ -127,7 +127,7 @@ public abstract class DockCommandToNewton extends DockCommand {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected void writeString(String s, OutputStream out) throws IOException {
+	public static void writeString(String s, OutputStream out) throws IOException {
 		if ((s != null) && (s.length() > 0)) {
 			byte[] utf16 = s.getBytes("UTF-16");
 			// The 1st and 2nd bytes are UTF-16 header 0xFE and 0xFF.

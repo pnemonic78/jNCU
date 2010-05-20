@@ -264,12 +264,12 @@ public class DockingFrame {
 	 *             if the expected frame is not a command.
 	 * @return the command - <tt>null</tt> otherwise.
 	 */
-	public DockCommandFromNewton receiveCommand(InputStream in) throws IOException, ProtocolException {
+	public IDockCommandFromNewton receiveCommand(InputStream in) throws IOException, ProtocolException {
 		byte[] frame = waitForType(in, MNPPacket.LT);
 		if (!DockCommandFromNewton.isCommand(frame)) {
 			throw new ProtocolException(ERROR_NOT_COMMAND);
 		}
-		DockCommandFromNewton cmd = DockCommandFromNewton.deserialize(frame);
+		IDockCommandFromNewton cmd = DockCommandFromNewton.deserialize(frame);
 		if (cmd == null) {
 			throw new ProtocolException(ERROR_NOT_COMMAND);
 		}

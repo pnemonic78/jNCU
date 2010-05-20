@@ -11,7 +11,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandFactory;
  * 
  * @author moshew
  */
-public abstract class DockCommandFromNewton extends DockCommand {
+public abstract class DockCommandFromNewton extends DockCommand implements IDockCommandFromNewton {
 
 	/**
 	 * Creates a new docking command from Newton.
@@ -60,7 +60,7 @@ public abstract class DockCommandFromNewton extends DockCommand {
 	 *            the data.
 	 * @return the command.
 	 */
-	public static DockCommandFromNewton deserialize(byte[] data) {
+	public static IDockCommandFromNewton deserialize(byte[] data) {
 		if ((data == null) || (data.length < 16)) {
 			return null;
 		}
@@ -69,7 +69,7 @@ public abstract class DockCommandFromNewton extends DockCommand {
 		System.arraycopy(data, kDNewtonDockLength, cmdName, offset, COMMAND_LENGTH);
 		offset += kDNewtonDockLength;
 		DockCommandFactory factory = DockCommandFactory.getInstance();
-		DockCommandFromNewton cmd = (DockCommandFromNewton) factory.create(cmdName);
+		IDockCommandFromNewton cmd = (IDockCommandFromNewton) factory.create(cmdName);
 		offset += COMMAND_LENGTH;
 		if (cmd != null) {
 			byte[] dataBytes = new byte[data.length - offset];
@@ -92,7 +92,7 @@ public abstract class DockCommandFromNewton extends DockCommand {
 	 * @throws IOException
 	 *             if read past data buffer.
 	 */
-	protected void decode(InputStream frame) throws IOException {
+	public void decode(InputStream frame) throws IOException {
 		int length = htonl(frame);
 		setLength(length);
 		if ((length != -1) && (frame.available() < length)) {
@@ -120,7 +120,7 @@ public abstract class DockCommandFromNewton extends DockCommand {
 	 * @throws IOException
 	 *             if read past buffer.
 	 */
-	protected int htonl(InputStream in) throws IOException {
+	public static int htonl(InputStream in) throws IOException {
 		int n24 = (in.read() & 0xFF) << 24;
 		int n16 = (in.read() & 0xFF) << 16;
 		int n08 = (in.read() & 0xFF) << 8;
@@ -138,7 +138,7 @@ public abstract class DockCommandFromNewton extends DockCommand {
 	 * @throws IOException
 	 *             if read past buffer.
 	 */
-	protected short htons(InputStream in) throws IOException {
+	public static short htons(InputStream in) throws IOException {
 		int n08 = (in.read() & 0xFF) << 8;
 		int n00 = (in.read() & 0xFF) << 0;
 
