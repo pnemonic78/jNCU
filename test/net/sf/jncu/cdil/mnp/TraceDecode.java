@@ -9,8 +9,8 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.Reader;
 
-import net.sf.jncu.protocol.DockCommand;
 import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.IDockCommandFromNewton;
 
 /**
  * Decode trace dumps.
@@ -217,7 +217,7 @@ public class TraceDecode {
 				return;
 			}
 			if (DockCommandFromNewton.isCommand(data)) {
-				DockCommand cmd = null;
+				IDockCommandFromNewton cmd = null;
 				if (direction == DIRECTION_1TO2) {
 					cmd = DockCommandFromNewton.deserialize(data);
 					System.out.println(direction + "\tcmd:" + cmd);
