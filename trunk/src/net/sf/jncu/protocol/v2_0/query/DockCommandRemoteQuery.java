@@ -3,18 +3,12 @@ package net.sf.jncu.protocol.v2_0.query;
 import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 
 /**
- * <h1>Remote query commands</h1>
- * <p>
- * All of the commands in this section are based on the NewtonScript query
- * functions. Please see the Newton Programmer's Guide (NPG) for details about
- * the functions performed by the commands. The query command returns a long
- * representing the queries' cursor. Each of the other commands take this cursor
- * as a parameter. Entries are returned with the <tt>kDEntry</tt> command.
+ * 
  */
 public class DockCommandRemoteQuery extends DockingEventCommands {
 
 	/** Desktop to Newton. */
-	public static class DesktopToNewton extends DockingEventCommands.DesktopToNewton {
+	public static class DesktopToNewton {
 		/**
 		 * The parameter frame must contain a <tt>queryspec</tt> slot and may
 		 * contain a <tt>soupname</tt> slot. Performs the specified query on the
@@ -149,7 +143,8 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 		 */
 		public static final String kDCursorWhichEnd = "whch";
 		/**
-		 * Disposes the cursor and returns a <tt>kDRes</tt> with a <tt>0</tt> or error.
+		 * Disposes the cursor and returns a <tt>kDRes</tt> with a <tt>0</tt> or
+		 * error.
 		 * 
 		 * <pre>
 		 * 'cfre'
@@ -161,7 +156,7 @@ public class DockCommandRemoteQuery extends DockingEventCommands {
 	}
 
 	/** Newton to Desktop. */
-	public static class NewtonToDesktop extends DockingEventCommands.NewtonToDesktop {
+	public static class NewtonToDesktop {
 		/**
 		 * Newton returns a long value. The interpretation of the data depends
 		 * on the command which prompted the return of the long value.
