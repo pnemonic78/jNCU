@@ -1,9 +1,8 @@
 package net.sf.jncu.protocol.v2_0.session;
 
-/**
- * <h1>Application commands</h1>
- */
-public class DockCommandApplication extends DockCommandSession {
+import net.sf.jncu.protocol.v2_0.DockingEventCommands;
+
+public class DockCommandApplication extends DockingEventCommands {
 
 	/**
 	 * This command is sent when a message is received that is unknown. When the
