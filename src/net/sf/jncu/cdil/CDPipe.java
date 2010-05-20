@@ -450,7 +450,7 @@ public abstract class CDPipe extends Thread {
 			throw new BadPipeStateException();
 		}
 		layer.setState(CDState.CONNECT_PENDING);
-		this.docking = null;
+		//this.docking = null;
 		restartTimeout();
 	}
 
