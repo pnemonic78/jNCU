@@ -3,6 +3,11 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import net.sf.jncu.newton.stream.NSOFEncoder;
+import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
@@ -25,6 +30,9 @@ public class DResultString extends DockCommandToNewton {
 
 	public static final String COMMAND = "ress";
 
+	private int errorNumber;
+	private String errorString;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -32,4 +40,50 @@ public class DResultString extends DockCommandToNewton {
 		super(COMMAND);
 	}
 
+	/**
+	 * Get the error number.
+	 * 
+	 * @return the error.
+	 */
+	public int getErrorNumber() {
+		return errorNumber;
+	}
+
+	/**
+	 * Set the error number.
+	 * 
+	 * @param errorNumber
+	 *            the error.
+	 */
+	public void setErrorNumber(int errorNumber) {
+		this.errorNumber = errorNumber;
+	}
+
+	/**
+	 * Get the error string.
+	 * 
+	 * @return the error.
+	 */
+	public String getErrorString() {
+		return errorString;
+	}
+
+	/**
+	 * Set the error string.
+	 * 
+	 * @param errorString
+	 *            the error.
+	 */
+	public void setErrorString(String errorString) {
+		this.errorString = errorString;
+	}
+
+	@Override
+	protected ByteArrayOutputStream getCommandData() throws IOException {
+		ByteArrayOutputStream data = new ByteArrayOutputStream();
+		ntohl(getErrorNumber(), data);
+		NSOFEncoder encoder = new NSOFEncoder();
+		encoder.encode(new NSOFString(getErrorString()), data);
+		return data;
+	}
 }

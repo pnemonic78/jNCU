@@ -3,7 +3,7 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
  * <tt>kDRefTest</tt><br>
@@ -23,7 +23,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DRefTest extends DockCommandToNewton {
+public class DRefTest extends DockCommandToNewtonScript {
 
 	public static final String COMMAND = "rtst";
 
