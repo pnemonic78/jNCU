@@ -1,12 +1,11 @@
 package net.sf.jncu.protocol;
 
-
 /**
  * Docking Command.
  * 
  * @author moshew
  */
-public abstract class DockCommand {
+public abstract class DockCommand implements IDockCommand {
 
 	/** Number of bytes for a word. */
 	protected static final int LENGTH_WORD = 4;
@@ -57,19 +56,17 @@ public abstract class DockCommand {
 		this.command = new String(commandBytes);
 	}
 
-	/**
-	 * Get the command.
-	 * 
-	 * @return the command.
+	/*
+	 * (non-Javadoc)
+	 * @see net.sf.jncu.protocol.IDockCommand#getCommand()
 	 */
 	public String getCommand() {
 		return command;
 	}
 
-	/**
-	 * Get the length.
-	 * 
-	 * @return the length. Default value is <tt>0</tt>.
+	/*
+	 * (non-Javadoc)
+	 * @see net.sf.jncu.protocol.IDockCommand#getLength()
 	 */
 	public int getLength() {
 		return length;
