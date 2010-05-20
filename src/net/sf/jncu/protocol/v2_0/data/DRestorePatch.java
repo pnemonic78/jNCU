@@ -3,6 +3,9 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
@@ -24,11 +27,39 @@ public class DRestorePatch extends DockCommandToNewton {
 
 	public static final String COMMAND = "rpat";
 
+	private int patch;
+
 	/**
 	 * Creates a new command.
 	 */
 	public DRestorePatch() {
 		super(COMMAND);
+	}
+
+	/**
+	 * Get the patch.
+	 * 
+	 * @return the patch.
+	 */
+	public int getPatch() {
+		return patch;
+	}
+
+	/**
+	 * Set the patch.
+	 * 
+	 * @param patch
+	 *            the patch.
+	 */
+	public void setPatch(int patch) {
+		this.patch = patch;
+	}
+
+	@Override
+	protected ByteArrayOutputStream getCommandData() throws IOException {
+		ByteArrayOutputStream data = new ByteArrayOutputStream();
+		ntohl(getPatch(), data);
+		return data;
 	}
 
 }

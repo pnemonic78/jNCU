@@ -16,7 +16,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * <pre>
  * 'sync'
  * length
-		 * </pre>
+ * </pre>
  * 
  * @author moshew
  */
@@ -39,7 +39,6 @@ public class DSynchronize extends DockCommandFromNewton {
 	 */
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
 	}
 
 }

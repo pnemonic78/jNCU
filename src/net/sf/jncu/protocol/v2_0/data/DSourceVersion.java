@@ -3,6 +3,9 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
@@ -47,6 +50,10 @@ public class DSourceVersion extends DockCommandToNewton {
 		eTwoPointXData
 	}
 
+	private eSourceVersion version;
+	private int manufacturerId;
+	private int machineType;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -54,4 +61,73 @@ public class DSourceVersion extends DockCommandToNewton {
 		super(COMMAND);
 	}
 
+	/**
+	 * Get the version.
+	 * 
+	 * @return the version.
+	 */
+	public eSourceVersion getVersion() {
+		return version;
+	}
+
+	/**
+	 * Set the version.
+	 * 
+	 * @param version
+	 *            the version.
+	 */
+	public void setVersion(eSourceVersion version) {
+		this.version = version;
+	}
+
+	/**
+	 * Get the manufacturer id.
+	 * <p>
+	 * An integer indicating the manufacturer of the Newton device.
+	 * 
+	 * @return the manufacturer id.
+	 */
+	public int getManufacturerId() {
+		return manufacturerId;
+	}
+
+	/**
+	 * Set the manufacturer id.
+	 * 
+	 * @param manufacturerId
+	 *            the manufacturer id.
+	 */
+	public void setManufacturerId(int manufacturerId) {
+		this.manufacturerId = manufacturerId;
+	}
+
+	/**
+	 * Get the machine type.
+	 * <p>
+	 * An integer indicating the hardware type this ROM was built for.
+	 * 
+	 * @return the machine type.
+	 */
+	public int getMachineType() {
+		return machineType;
+	}
+
+	/**
+	 * Set the machine type.
+	 * 
+	 * @param machineType
+	 *            the machine type.
+	 */
+	public void setMachineType(int machineType) {
+		this.machineType = machineType;
+	}
+
+	@Override
+	protected ByteArrayOutputStream getCommandData() throws IOException {
+		ByteArrayOutputStream data = new ByteArrayOutputStream();
+		ntohl(getVersion().ordinal(), data);
+		ntohl(getManufacturerId(), data);
+		ntohl(getMachineType(), data);
+		return data;
+	}
 }

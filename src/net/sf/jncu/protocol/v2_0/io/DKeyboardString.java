@@ -35,15 +35,7 @@ public class DKeyboardString extends DockCommandToNewton {
 	@Override
 	protected ByteArrayOutputStream getCommandData() throws IOException {
 		ByteArrayOutputStream data = new ByteArrayOutputStream();
-		String s = getString();
-		if (s != null) {
-			byte[] utf16 = s.getBytes("UTF-16");
-			// The 1st and 2nd bytes are UTF-16 header 0xFE and 0xFF.
-			data.write(utf16, 2, utf16.length - 2);
-		}
-		// Null-terminated strings.
-		data.write(0);
-		data.write(0);
+		writeString(getString(), data);
 		return data;
 	}
 

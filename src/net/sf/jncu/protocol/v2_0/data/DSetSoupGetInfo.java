@@ -3,6 +3,9 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
@@ -24,11 +27,39 @@ public class DSetSoupGetInfo extends DockCommandToNewton {
 
 	public static final String COMMAND = "ssgi";
 
+	private String name;
+
 	/**
 	 * Creates a new command.
 	 */
 	public DSetSoupGetInfo() {
 		super(COMMAND);
+	}
+
+	/**
+	 * Get the soup name.
+	 * 
+	 * @return the name.
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Set the soup name.
+	 * 
+	 * @param name
+	 *            the name.
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	@Override
+	protected ByteArrayOutputStream getCommandData() throws IOException {
+		ByteArrayOutputStream data = new ByteArrayOutputStream();
+		writeString(getName(), data);
+		return data;
 	}
 
 }

@@ -1,5 +1,8 @@
 package net.sf.jncu.protocol.v2_0.app;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
@@ -27,6 +30,17 @@ public class DGetAppNames extends DockCommandToNewton {
 
 	public static final String COMMAND = "gapp";
 
+	/** Return names and soups for all stores. */
+	public static final int NAMES_AND_SOUPS_ALL = 0;
+	/** Return names and soups for current store. */
+	public static final int NAMES_AND_SOUPS_CURRENT = 1;
+	/** Return just names for all stores. */
+	public static final int NAMES_ALL = 2;
+	/** Return just names for current store. */
+	public static final int NAMES_CURRENT = 3;
+
+	private int what = NAMES_AND_SOUPS_ALL;
+
 	/**
 	 * Constructs a new command.
 	 */
@@ -34,4 +48,29 @@ public class DGetAppNames extends DockCommandToNewton {
 		super(COMMAND);
 	}
 
+	/**
+	 * Set what to return.
+	 * 
+	 * @param what
+	 *            return what?
+	 */
+	public void setWhat(int what) {
+		this.what = what;
+	}
+
+	/**
+	 * Get what to return.
+	 * 
+	 * @return what?
+	 */
+	public int getWhat() {
+		return what;
+	}
+
+	@Override
+	protected ByteArrayOutputStream getCommandData() throws IOException {
+		ByteArrayOutputStream data = new ByteArrayOutputStream();
+		ntohl(getWhat(), data);
+		return data;
+	}
 }

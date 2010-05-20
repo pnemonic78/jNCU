@@ -3,7 +3,7 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
  * <tt>kDRestorePackage</tt><br>
@@ -22,7 +22,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DRestorePackage extends DockCommandToNewton {
+public class DRestorePackage extends DockCommandToNewtonScript {
 
 	public static final String COMMAND = "rpkg";
 

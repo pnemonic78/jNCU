@@ -21,7 +21,7 @@ import net.sf.jncu.protocol.v1_0.DResult;
  * @see DResult
  * @author moshew
  */
-public class DCmdReply extends DockCommandToNewton {
+public class DReply extends DockCommandToNewton {
 
 	public static final String COMMAND = DResult.COMMAND;
 
@@ -30,7 +30,7 @@ public class DCmdReply extends DockCommandToNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DCmdReply() {
+	public DReply() {
 		super(COMMAND);
 	}
 

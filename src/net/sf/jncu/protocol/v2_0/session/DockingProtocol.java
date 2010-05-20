@@ -13,7 +13,7 @@ import net.sf.jncu.crypto.DESNewton;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.NewtonInfo;
 import net.sf.jncu.protocol.v1_0.DResult;
-import net.sf.jncu.protocol.v2_0.DCmdReply;
+import net.sf.jncu.protocol.v2_0.DReply;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 
 /**
@@ -362,7 +362,7 @@ public class DockingProtocol {
 				if (challengePasswordAttempt < MAX_PASSWORD_ATTEMPTS) {
 					error = DPassword.ERROR_RETRY_PASSWORD;
 				}
-				DCmdReply cmdError = new DCmdReply();
+				DReply cmdError = new DReply();
 				cmdError.setErrorCode(error);
 				pipe.write(cmdError);
 			}

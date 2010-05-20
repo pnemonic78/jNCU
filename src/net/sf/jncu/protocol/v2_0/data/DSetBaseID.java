@@ -12,8 +12,8 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * <tt>kDSetBaseID</tt><br>
  * This command sets a new base id for the ids sent with subsequent
  * <tt>kDBackupIDs</tt> commands. The new base is a long which should be added
- * to every id in all kDBackupIDs commands until a <tt>kDBackupSoupDone</tt>
- * command is received.
+ * to every id in all <tt>kDBackupIDs</tt> commands until a
+ * <tt>kDBackupSoupDone</tt> command is received.
  * 
  * <pre>
  * 'base'
@@ -26,6 +26,8 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
 public class DSetBaseID extends DockCommandFromNewton {
 
 	public static final String COMMAND = "base";
+
+	private int id;
 
 	/**
 	 * Creates a new command.
@@ -42,7 +44,26 @@ public class DSetBaseID extends DockCommandFromNewton {
 	 */
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
+		setId(htonl(data));
+	}
+
+	/**
+	 * Get the base id.
+	 * 
+	 * @return the id.
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * Set the base id.
+	 * 
+	 * @param id
+	 *            the id.
+	 */
+	protected void setId(int id) {
+		this.id = id;
 	}
 
 }

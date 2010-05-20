@@ -3,10 +3,7 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
  * <tt>kDRestoreFile</tt><br>
@@ -23,7 +20,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DRestoreFile extends DockCommandFromNewton {
+public class DRestoreFile extends DockCommandFromNewtonScript {
 
 	public static final String COMMAND = "rsfl";
 
@@ -32,17 +29,6 @@ public class DRestoreFile extends DockCommandFromNewton {
 	 */
 	public DRestoreFile() {
 		super(COMMAND);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * net.sf.jncu.protocol.DockCommandFromNewton#decodeData(java.io.InputStream
-	 * )
-	 */
-	@Override
-	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
 	}
 
 }
