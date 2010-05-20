@@ -321,7 +321,8 @@ public class DockingProtocol {
 			this.challengeNewtonCiphered = crypto.cipher(challengeNewton);
 
 			DWhichIcons cmdWhichIcons = (DWhichIcons) DockCommandFactory.getInstance().create(DWhichIcons.COMMAND);
-			cmdWhichIcons.setIcons(DWhichIcons.kBackupIcon | DWhichIcons.kInstallIcon | DWhichIcons.kKeyboardIcon | DWhichIcons.kRestoreIcon);
+			cmdWhichIcons.setIcons(DWhichIcons.kBackupIcon | DWhichIcons.kImportIcon | DWhichIcons.kInstallIcon | DWhichIcons.kKeyboardIcon
+					| DWhichIcons.kRestoreIcon | DWhichIcons.kSyncIcon);
 			setState(state, DockingState.HANDSHAKE_ICONS_SENDING, null, cmd);
 			pipe.write(cmdWhichIcons);
 			break;
