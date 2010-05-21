@@ -81,9 +81,7 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected ByteArrayOutputStream getCommandData() throws IOException {
-		return null;
-	}
+	protected abstract ByteArrayOutputStream getCommandData() throws IOException;
 
 	/**
 	 * Write 4 bytes as an unsigned integer in network byte order (Big Endian).
