@@ -3,265 +3,265 @@
 I/O commands.
 
 <h2>Keyboard commands</h2>
-<br>
+<br />
 Desktop initiated keyboard pass-through would look like this:
 <table>
-<tr>
-<th>Desktop</th>
-<th><-></th>
-<th>Newton</th>
-</tr>
-<tr>
-<td>kDStartKeyboardPassthrough</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-</td>
-<td>kDStartKeyboardPassthrough</td>
-</tr>
-<tr>
-<td>kDKeyboardString</td>
-<td>-></td>
-</tr>
-<tr>
-<td>kDKeyboardString</td>
-<td>-></td>
-<td></td>
-</tr>
-<tr>
-<td>kDOperationCanceled</td>
-<td>-></td>
-<td>( from either side)</td>
-</tr>
-<tr>
-<td></td>
-<td><-</td>
-<td>kDOpCanceledAck</td>
-</tr>
+	<tr>
+		<th>Desktop</th>
+		<th><-></th>
+		<th>Newton</th>
+	</tr>
+	<tr>
+		<td>kDStartKeyboardPassthrough</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-</td>
+		<td>kDStartKeyboardPassthrough</td>
+	</tr>
+	<tr>
+		<td>kDKeyboardString</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td>kDKeyboardString</td>
+		<td>-></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>kDOperationCanceled</td>
+		<td>-></td>
+		<td>( from either side)</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-</td>
+		<td>kDOpCanceledAck</td>
+	</tr>
 </table>
-<br>
+<br />
 Newton initiated keyboard pass-through would look like this:
 <table>
-<tr>
-<th>Desktop</th>
-<th><-></th>
-<th>Newton</th>
-</tr>
-<tr>
-<td></td>
-<td><-</td>
-<td>kDStartKeyboardPassthrough</td>
-</tr>
-<tr>
-<td>kDKeyboardString</td>
-<td>-></td>
-<td></td>
-</tr>
-<tr>
-<td>kDKeyboardString</td>
-<td>-></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td><-</td>
-<td>kDOperationCanceled</td>
-</tr>
-<tr>
-<td>kDOpCanceledAck</td>
-<td>-></td>
-<td></td>
-</tr>
+	<tr>
+		<th>Desktop</th>
+		<th><-></th>
+		<th>Newton</th>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-</td>
+		<td>kDStartKeyboardPassthrough</td>
+	</tr>
+	<tr>
+		<td>kDKeyboardString</td>
+		<td>-></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>kDKeyboardString</td>
+		<td>-></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-</td>
+		<td>kDOperationCanceled</td>
+	</tr>
+	<tr>
+		<td>kDOpCanceledAck</td>
+		<td>-></td>
+		<td></td>
+	</tr>
 </table>
-<p>
-<h2>File browsing</h2> <br>
-File browsing will use the same protocol described above with the following
-additions. For synchronise, the process is completely driven from the desktop
-side. For file browsing/importing, however, the process is driven from the
-Newton.
-<p>
+<p />
+<h2>File browsing</h2>
+<br />
+File browsing will use the same protocol described above with the
+following additions. For synchronise, the process is completely driven
+from the desktop side. For file browsing/importing, however, the process
+is driven from the Newton.
+<p />
 <h4>Examples</h4>
-<br>
+<br />
 After the session has started (see above) these commands would be sent:
 <table>
-<tr>
-<th>Desktop</th>
-<th><-></th>
-<th>Newton</th>
-<th width=50%></th>
-</tr>
-<tr>
-<td></td>
-<td><-</td>
-<td>kDRequestToBrowse</td>
-</tr>
-<tr>
-<td>kDGetInternalStore</td>
-<td>-></td>
-<td>// optional</td>
-</tr>
-<tr>
-<td></td>
-<td><-</td>
-<td>kDInternalStore // optional</td>
-</tr>
-<tr>
-<td>kDResult</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-</td>
-<td>kDGetDevices // Only for Windows</td>
-</tr>
-<tr>
-<td>kDDevices</td>
-<td>-></td>
-<td>// Only for Windows</td>
-</tr>
-<tr>
-<td></td>
-<td><-</td>
-<td>kDGetFilters // Windows only</td>
-</tr>
-<tr>
-<td>kDFilters</td>
-<td>-></td>
-<td>// Windows only</td>
-</tr>
-<tr>
-<td></td>
-<td><-</td>
-<td>kDGetDefaultPath</td>
-</tr>
-<tr>
-<td>kDPath</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-</td>
-<td>kDGetFilesAndFolders</td>
-</tr>
-<tr>
-<td>kDFilesAndFolders</td>
-<td>-></td>
-</tr>
-<tr>
-<td colspan=4>
-<p>
-Note that we must start the transaction with a requestToDock to force 1.0 and
-2.0 versions of Connection to display the correct message.
-<p>
-When the user changes the path by tapping on a folder, picking a new level
-from the path popup, or picking a new drive on the drive popup:
-</td>
-</tr>
-<tr>
-<td></td>
-<td><-</td>
-<td>kDSetPath</td>
-</tr>
-<tr>
-<td>kDFilesAndFolders</td>
-<td>-></td>
-</tr>
-<tr>
-<td colspan=4>
-<p>
-When the user changes the drive by picking a drive on the drive pop-up
-(Windows only), the desktop will change the drive and set the directory to
-the current directory for that drive, and return the new path to the Newton:
-</td>
-</tr>
-<tr>
-<td></td>
-<td><-</td>
-<td>kDSetDrive</td>
-</tr>
-<tr>
-<td>kDPath</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-</td>
-<td>kDGetFilesAndFolders</td>
-</tr>
-<tr>
-<td>kDFilesAndFolders</td>
-<td>-></td>
-</tr>
-<tr>
-<td colspan=4>
-<p>
-If the folder is an alias, it's like this (Macintosh only):</td>
-</tr>
-<tr>
-<td></td>
-<td><-</td>
-<td>kDSetPath</td>
-</tr>
-<tr>
-<td>kDPath</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-</td>
-<td>kDGetFilesAndFolders</td>
-</tr>
-<tr>
-<td>kDFilesAndFolders</td>
-<td>-></td>
-</tr>
-<tr>
-<td colspan=4>
-<p>
-<tr>
-<td>When the user taps on the File Info button:</td>
-</tr>
-<tr>
-<td></td>
-<td><-</td>
-<td>kDGetFileInfo</td>
-</tr>
-<tr>
-<td>kDFileInfo</td>
-<td>-></td>
-</tr>
-<tr>
-<td colspan=4>
-<p>
-If the selected item is an alias (Macintosh only), before doing import,
-getfileinfo, or setpath:
-</td>
-</tr>
-<tr>
-<td></td>
-<td><-</td>
-<td>kDResolveAlias // name of alias</td>
-</tr>
-<tr>
-<td>kDAliasResolved</td>
-<td>-></td>
-<td>// 0 or 1, 0=can't resolve</td>
-</tr>
-<tr>
-<td colspan=4>
-<p>
-If the Windows user picks a new filter from the list:</td>
-</tr>
-<tr>
-<td></td>
-<td><-</td>
-<td>kDSetFilter</td>
-</tr>
-<tr>
-<td>kDFilesAndFolders</td>
-<td>-></td>
-</tr>
+	<tr>
+		<th>Desktop</th>
+		<th><-></th>
+		<th>Newton</th>
+		<th width=50%></th>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-</td>
+		<td>kDRequestToBrowse</td>
+	</tr>
+	<tr>
+		<td>kDGetInternalStore</td>
+		<td>-></td>
+		<td>// optional</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-</td>
+		<td>kDInternalStore // optional</td>
+	</tr>
+	<tr>
+		<td>kDResult</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-</td>
+		<td>kDGetDevices // Only for Windows</td>
+	</tr>
+	<tr>
+		<td>kDDevices</td>
+		<td>-></td>
+		<td>// Only for Windows</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-</td>
+		<td>kDGetFilters // Windows only</td>
+	</tr>
+	<tr>
+		<td>kDFilters</td>
+		<td>-></td>
+		<td>// Windows only</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-</td>
+		<td>kDGetDefaultPath</td>
+	</tr>
+	<tr>
+		<td>kDPath</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-</td>
+		<td>kDGetFilesAndFolders</td>
+	</tr>
+	<tr>
+		<td>kDFilesAndFolders</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td colspan=4>
+		<p />Note that we must start the transaction with a requestToDock to
+		force 1.0 and 2.0 versions of Connection to display the correct
+		message.
+		<p />When the user changes the path by tapping on a folder, picking a
+		new level from the path popup, or picking a new drive on the drive
+		popup:
+		</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-</td>
+		<td>kDSetPath</td>
+	</tr>
+	<tr>
+		<td>kDFilesAndFolders</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td colspan=4>
+		<p />When the user changes the drive by picking a drive on the drive
+		pop-up (Windows only), the desktop will change the drive and set the
+		directory to the current directory for that drive, and return the new
+		path to the Newton:
+		</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-</td>
+		<td>kDSetDrive</td>
+	</tr>
+	<tr>
+		<td>kDPath</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-</td>
+		<td>kDGetFilesAndFolders</td>
+	</tr>
+	<tr>
+		<td>kDFilesAndFolders</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td colspan=4>
+		<p />If the folder is an alias, it's like this (Macintosh only):
+		</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-</td>
+		<td>kDSetPath</td>
+	</tr>
+	<tr>
+		<td>kDPath</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-</td>
+		<td>kDGetFilesAndFolders</td>
+	</tr>
+	<tr>
+		<td>kDFilesAndFolders</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td colspan=4>
+		<p />
+	<tr>
+		<td>When the user taps on the File Info button:</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-</td>
+		<td>kDGetFileInfo</td>
+	</tr>
+	<tr>
+		<td>kDFileInfo</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td colspan=4>
+		<p />If the selected item is an alias (Macintosh only), before doing
+		import, getfileinfo, or setpath:
+		</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-</td>
+		<td>kDResolveAlias // name of alias</td>
+	</tr>
+	<tr>
+		<td>kDAliasResolved</td>
+		<td>-></td>
+		<td>// 0 or 1, 0=can't resolve</td>
+	</tr>
+	<tr>
+		<td colspan=4>
+		<p />If the Windows user picks a new filter from the list:
+		</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-</td>
+		<td>kDSetFilter</td>
+	</tr>
+	<tr>
+		<td>kDFilesAndFolders</td>
+		<td>-></td>
+	</tr>
 </table>
 </body>
 </html>
