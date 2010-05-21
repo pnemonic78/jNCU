@@ -3,19 +3,18 @@
 Newton Docking Protocol.
 
 <h2>Newton Docking Protocol</h2>
-<br>
-Newton Docking Protocol event commands for 1.0 Newton ROM Extensions.<br>
-Newton communicates with the desktop by exchanging Newton event commands.
-<p>
-In the commands below, all data is padded with nulls to 4 byte boundaries.
-The length associated with each command is the length (in bytes) of the data
-following the length field. All strings are C strings unless otherwise
-specified.
-<p>
-All commands begin with the sequence -- '<tt>newt</tt>', '<tt>dock</tt>'.<br>
-Newton communicates with the desktop by exchanging Newton event commands. The
-general command structure looks like this:
-
+<br />
+Newton Docking Protocol event commands for 1.0 Newton ROM Extensions.
+<br />
+Newton communicates with the desktop by exchanging Newton event
+commands.
+<p />In the commands below, all data is padded with nulls to 4 byte
+boundaries. The length associated with each command is the length (in
+bytes) of the data following the length field. All strings are C strings
+unless otherwise specified.
+<p />All commands begin with the sequence -- '<tt>newt</tt>', '<tt>dock</tt>'.<br />
+Newton communicates with the desktop by exchanging Newton event
+commands. The general command structure looks like this:
 <pre>
 'newt'
 'dock'
@@ -23,334 +22,331 @@ general command structure looks like this:
 length   // the length of the following command
 data     // data, if any
 </pre>
-<p>
+<p />
 <h4>Examples</h4>
-<br>
+<br />
 Every session starts like this:
 <table>
-<tr>
-<th>Desktop</th>
-<th><-></th>
-<th>Newton</th>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDRequestToDock</td>
-</tr>
-<tr>
-<td>kDInitiateDocking</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDNewtonName</td>
-</tr>
-<tr>
-<td>kDSetTimeout</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDResult</td>
-</tr>
+	<tr>
+		<th>Desktop</th>
+		<th><-></th>
+		<th>Newton</th>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDRequestToDock</td>
+	</tr>
+	<tr>
+		<td>kDInitiateDocking</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDNewtonName</td>
+	</tr>
+	<tr>
+		<td>kDSetTimeout</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDResult</td>
+	</tr>
 </table>
-No matter what the intent of the desktop or the Newton, these commands must
-always start a session (the desktop can substitute a kDResult for the
-kDSetTimeout if it doesn't want to set the timeout).
-<p>
-A typical synchronise session might continue like this:
+No matter what the intent of the desktop or the Newton, these commands
+must always start a session (the desktop can substitute a kDResult for
+the kDSetTimeout if it doesn't want to set the timeout).
+<p />A typical synchronise session might continue like this:
 <table>
-<tr>
-<th>Desktop</th>
-<th><-></th>
-<th>Newton</th>
-</tr>
-<tr>
-<td>kDGetStoreNames</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDStoreNames</td>
-</tr>
-<tr>
-<td>kDLastSyncTime</td>
-<td>-></td>
-<td>// This ones fake just to get the Newton time</td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDCurrentTime</td>
-</tr>
-<tr>
-<td>kDSetCurrentStore</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDResult</td>
-</tr>
-<tr>
-<td>kDLastSyncTIme</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDCurrentTime</td>
-</tr>
-<tr>
-<td>kDGetPatches</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDPatches</td>
-</tr>
-<tr>
-<td>kDGetPackageIDs</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDPackageIDList</td>
-</tr>
-<tr>
-<td>kDBackupPackages</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDPackage</td>
-</tr>
-<tr>
-<td>kDBackupPackages</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDPackage</td>
-</tr>
-<tr>
-<td>kDBackupPackages</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDResult</td>
-</tr>
-<tr>
-<td>kDGetSoupNames</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDSoupNames</td>
-</tr>
-<tr>
-<td>kDGetInheritance</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDInheritance</td>
-</tr>
-<tr>
-<td>kDSetCurrentSoup</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDResult</td>
-</tr>
-<tr>
-<td>kDGetSoupInfo</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDSoupInfo</td>
-</tr>
-<tr>
-<td>kDGetSoupIDs</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDSoupIDs</td>
-</tr>
-<tr>
-<td>kdGetChangedIDs</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDChangedIDs</td>
-</tr>
-<tr>
-<td>kDDeleteEntries</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDResult</td>
-</tr>
-<tr>
-<td>kDAddEntry</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDAddedID</td>
-</tr>
-<tr>
-<td>kDReturnEntry</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDEntry</td>
-</tr>
-<tr>
-<td>kDDisconnect</td>
-<td>-></td>
-</tr>
+	<tr>
+		<th>Desktop</th>
+		<th><-></th>
+		<th>Newton</th>
+	</tr>
+	<tr>
+		<td>kDGetStoreNames</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDStoreNames</td>
+	</tr>
+	<tr>
+		<td>kDLastSyncTime</td>
+		<td>-></td>
+		<td>// This ones fake just to get the Newton time</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDCurrentTime</td>
+	</tr>
+	<tr>
+		<td>kDSetCurrentStore</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDResult</td>
+	</tr>
+	<tr>
+		<td>kDLastSyncTIme</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDCurrentTime</td>
+	</tr>
+	<tr>
+		<td>kDGetPatches</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDPatches</td>
+	</tr>
+	<tr>
+		<td>kDGetPackageIDs</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDPackageIDList</td>
+	</tr>
+	<tr>
+		<td>kDBackupPackages</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDPackage</td>
+	</tr>
+	<tr>
+		<td>kDBackupPackages</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDPackage</td>
+	</tr>
+	<tr>
+		<td>kDBackupPackages</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDResult</td>
+	</tr>
+	<tr>
+		<td>kDGetSoupNames</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDSoupNames</td>
+	</tr>
+	<tr>
+		<td>kDGetInheritance</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDInheritance</td>
+	</tr>
+	<tr>
+		<td>kDSetCurrentSoup</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDResult</td>
+	</tr>
+	<tr>
+		<td>kDGetSoupInfo</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDSoupInfo</td>
+	</tr>
+	<tr>
+		<td>kDGetSoupIDs</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDSoupIDs</td>
+	</tr>
+	<tr>
+		<td>kdGetChangedIDs</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDChangedIDs</td>
+	</tr>
+	<tr>
+		<td>kDDeleteEntries</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDResult</td>
+	</tr>
+	<tr>
+		<td>kDAddEntry</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDAddedID</td>
+	</tr>
+	<tr>
+		<td>kDReturnEntry</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDEntry</td>
+	</tr>
+	<tr>
+		<td>kDDisconnect</td>
+		<td>-></td>
+	</tr>
 </table>
-<p>
-A restore session would look like this:
+<p />A restore session would look like this:
 <table>
-<tr>
-<th>Desktop</th>
-<th><-></th>
-<th>Newton</th>
-</tr>
-<tr>
-<td>kDGetStoreNames</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDStoreNames</td>
-</tr>
-<tr>
-<td>kDSetCurrentStore</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDResult</td>
-</tr>
-<tr>
-<td>kDDeleteAllPackages</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDResult</td>
-</tr>
-<tr>
-<td>kDGetSoupNames</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDSoupNames</td>
-</tr>
-<tr>
-<td>kDSetCurrentSoup</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDResult</td>
-</tr>
-<tr>
-<td>kDEmptySoup</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDResult</td>
-</tr>
-<tr>
-<td>kDAddEntry</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDResult</td>
-</tr>
-<tr>
-<td>kDDeletePkgDir</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDResult</td>
-</tr>
-<tr>
-<td>kDLoadPackage</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDResult</td>
-</tr>
-<tr>
-<td>kDDisconnect</td>
-<td>-></td>
-</tr>
+	<tr>
+		<th>Desktop</th>
+		<th><-></th>
+		<th>Newton</th>
+	</tr>
+	<tr>
+		<td>kDGetStoreNames</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDStoreNames</td>
+	</tr>
+	<tr>
+		<td>kDSetCurrentStore</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDResult</td>
+	</tr>
+	<tr>
+		<td>kDDeleteAllPackages</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDResult</td>
+	</tr>
+	<tr>
+		<td>kDGetSoupNames</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDSoupNames</td>
+	</tr>
+	<tr>
+		<td>kDSetCurrentSoup</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDResult</td>
+	</tr>
+	<tr>
+		<td>kDEmptySoup</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDResult</td>
+	</tr>
+	<tr>
+		<td>kDAddEntry</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDResult</td>
+	</tr>
+	<tr>
+		<td>kDDeletePkgDir</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDResult</td>
+	</tr>
+	<tr>
+		<td>kDLoadPackage</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDResult</td>
+	</tr>
+	<tr>
+		<td>kDDisconnect</td>
+		<td>-></td>
+	</tr>
 </table>
-<p>
-A load package session would look like this:
+<p />A load package session would look like this:
 <table>
-<tr>
-<th>Desktop</th>
-<th><-></th>
-<th>Newton</th>
-</tr>
-<tr>
-<td>kDLoadPackage</td>
-<td>-></td>
-</tr>
-<tr>
-<td></td>
-<td><-
-<td>kDResult</td>
-</tr>
-<tr>
-<td>kDDisconnect</td>
-<td>-></td>
-</tr>
+	<tr>
+		<th>Desktop</th>
+		<th><-></th>
+		<th>Newton</th>
+	</tr>
+	<tr>
+		<td>kDLoadPackage</td>
+		<td>-></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><-
+		<td>kDResult</td>
+	</tr>
+	<tr>
+		<td>kDDisconnect</td>
+		<td>-></td>
+	</tr>
 </table>
 </body>
 </html>
