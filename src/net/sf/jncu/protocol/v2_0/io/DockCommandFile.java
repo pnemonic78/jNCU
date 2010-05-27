@@ -349,20 +349,7 @@ public class DockCommandFile extends DockingEventCommands {
 		 * </pre>
 		 */
 		public static final String kDResolveAlias = "rali";
-		/**
-		 * This command returns a store info frame describing the default store.
-		 * This frame contains the same info returned for all stores by the
-		 * <tt>kDStoreNames</tt> command except that it doesn't include the
-		 * store info. It contains the name, signature, total size, used size
-		 * and kind.
-		 * 
-		 * <pre>
-		 * 'dfst'
-		 * length
-		 * store frame
-		 * </pre>
-		 */
-		public static final String kDDefaultStore = "dfst";
+
 	}
 
 }
