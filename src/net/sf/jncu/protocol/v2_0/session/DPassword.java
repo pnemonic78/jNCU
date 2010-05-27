@@ -1,9 +1,12 @@
 package net.sf.jncu.protocol.v2_0.session;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.IDockCommandToNewton;
 
 /**
  * <tt>kDPassword</tt><br>
@@ -18,7 +21,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DPassword extends DockCommandFromNewton {
+public class DPassword extends DockCommandFromNewton implements IDockCommandToNewton {
 
 	public static final String COMMAND = "pass";
 
@@ -62,4 +65,17 @@ public class DPassword extends DockCommandFromNewton {
 		this.encryptedKey = encryptedKey;
 	}
 
+	@Override
+	public byte[] getPayload() {
+		IDockCommandToNewton cmd = new DockCommandToNewton(COMMAND) {
+
+			@Override
+			protected ByteArrayOutputStream getCommandData() throws IOException {
+				ByteArrayOutputStream data = new ByteArrayOutputStream();
+				ntohl(getEncryptedKey(), data);
+				return data;
+			}
+		};
+		return cmd.getPayload();
+	}
 }

@@ -352,7 +352,7 @@ public class DockingProtocol {
 			DPassword cmdPassword = (DPassword) cmd;
 
 			if (cmdPassword.getEncryptedKey() == challengeDesktopCiphered) {
-				DPasswordReply cmdPasswordReply = new DPasswordReply();
+				DPassword cmdPasswordReply = new DPassword();
 				cmdPasswordReply.setEncryptedKey(challengeNewtonCiphered);
 				setState(state, DockingState.HANDSHAKE_PASS_SENDING, null, cmdPassword);
 				pipe.write(cmdPasswordReply);
