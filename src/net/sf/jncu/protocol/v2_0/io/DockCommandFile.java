@@ -2,11 +2,11 @@ package net.sf.jncu.protocol.v2_0.io;
 
 import net.sf.jncu.protocol.v2_0.DockingEventCommands;
 
-/**
- */
+@Deprecated
 public class DockCommandFile extends DockingEventCommands {
 
 	/** Desktop to Newton. */
+	@Deprecated
 	public static class DesktopToNewton {
 		/**
 		 * This command returns the initial strings for the folder pop-up in the
@@ -241,6 +241,7 @@ public class DockCommandFile extends DockingEventCommands {
 	}
 
 	/** Newton to Desktop. */
+	@Deprecated
 	public static class NewtonToDesktop {
 		/**
 		 * This command is sent to a desktop that the Newton wishes to browse

@@ -1,0 +1,71 @@
+/**
+ * 
+ */
+package net.sf.jncu.protocol.v2_0.io;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import net.sf.jncu.newton.stream.NSOFDecoder;
+import net.sf.jncu.newton.stream.NSOFObject;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+
+/**
+ * <tt>kDImportFile</tt><br>
+ * This command asks the desktop to import the file specified by the last path
+ * command and the filename string. The response to this can be either a list of
+ * translators (if there is more than one applicable translator) or an
+ * indication that importing is in progress. If the selected item is at the
+ * Desktop level, a frame <code>{Name: "Business", whichVol: -1}</code> is sent.
+ * Otherwise, a string is sent.
+ * 
+ * <pre>
+ * 'impt'
+ * length
+ * filename string
+ * </pre>
+ * 
+ * @author moshew
+ */
+public class DImportFile extends DockCommandFromNewton {
+
+	public static final String COMMAND = "impt";
+
+	private NSOFObject filename;
+
+	public DImportFile() {
+		super(COMMAND);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * net.sf.jncu.protocol.DockCommandFromNewton#decodeData(java.io.InputStream
+	 * )
+	 */
+	@Override
+	protected void decodeData(InputStream data) throws IOException {
+		NSOFDecoder decoder = new NSOFDecoder();
+		setFilename(decoder.decode(data));
+	}
+
+	/**
+	 * Get the file name.
+	 * 
+	 * @return the file name.
+	 */
+	public NSOFObject getFilename() {
+		return filename;
+	}
+
+	/**
+	 * Set the file name.
+	 * 
+	 * @param filename
+	 *            the file name.
+	 */
+	protected void setFilename(NSOFObject filename) {
+		this.filename = filename;
+	}
+
+}
