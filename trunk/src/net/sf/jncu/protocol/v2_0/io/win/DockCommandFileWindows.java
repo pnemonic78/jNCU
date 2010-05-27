@@ -2,9 +2,11 @@ package net.sf.jncu.protocol.v2_0.io.win;
 
 import net.sf.jncu.protocol.v2_0.io.DockCommandFile;
 
-public class DockCommandFileWindows {
+@Deprecated
+public class DockCommandFileWindows extends DockCommandFile {
 
 	/** Desktop to Newton. */
+	@Deprecated
 	public static class DesktopToNewton extends DockCommandFile.DesktopToNewton {
 		/**
 		 * This command returns an array of frames describing devices. These are
@@ -41,6 +43,7 @@ public class DockCommandFileWindows {
 	}
 
 	/** Newton to Desktop. */
+	@Deprecated
 	public static class NewtonToDesktop extends DockCommandFile.NewtonToDesktop {
 		/**
 		 * This command asks the desktop system to return an array of device
