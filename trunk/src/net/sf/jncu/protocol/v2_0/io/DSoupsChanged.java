@@ -39,6 +39,9 @@ public class DSoupsChanged extends DockCommandToNewton {
 
 	private final Set<Soup> soups = new TreeSet<Soup>();
 
+	private static final NSOFSymbol ENTRY_SOUP = new NSOFSymbol("soupName");
+	private static final NSOFSymbol ENTRY_COUNT = new NSOFSymbol("count");
+
 	/**
 	 * Constructs a new command.
 	 */
@@ -53,7 +56,7 @@ public class DSoupsChanged extends DockCommandToNewton {
 		NSOFObject[] items = new NSOFObject[soups.size()];
 		int i = 0;
 		for (Soup soup : soups) {
-			items[i++] = soup.frame;
+			items[i++] = soup.toFrame();
 		}
 		NSOFArray arr = new NSOFArray(items);
 		NSOFEncoder encoder = new NSOFEncoder();
@@ -73,10 +76,8 @@ public class DSoupsChanged extends DockCommandToNewton {
 
 	public static class Soup implements Comparable<Soup> {
 
-		private final NSOFFrame frame = new NSOFFrame();
-
-		private static final NSOFSymbol ENTRY_SOUP = new NSOFSymbol("soupName");
-		private static final NSOFSymbol ENTRY_COUNT = new NSOFSymbol("count");
+		private String soupName;
+		private int count;
 
 		/**
 		 * Creates a new soup frame.
@@ -90,18 +91,8 @@ public class DSoupsChanged extends DockCommandToNewton {
 		 * 
 		 * @return the soup name.
 		 */
-		public NSOFString getSoupName() {
-			return (NSOFString) frame.get(ENTRY_SOUP);
-		}
-
-		/**
-		 * Set the soup name.
-		 * 
-		 * @param soupName
-		 *            the soup name.
-		 */
-		public void setSoupName(NSOFString soupName) {
-			frame.put(ENTRY_SOUP, soupName);
+		public String getSoupName() {
+			return soupName;
 		}
 
 		/**
@@ -111,7 +102,7 @@ public class DSoupsChanged extends DockCommandToNewton {
 		 *            the soup name.
 		 */
 		public void setSoupName(String soupName) {
-			setSoupName(new NSOFString(soupName));
+			this.soupName = soupName;
 		}
 
 		/**
@@ -119,18 +110,8 @@ public class DSoupsChanged extends DockCommandToNewton {
 		 * 
 		 * @return the count.
 		 */
-		public NSOFInteger getCount() {
-			return (NSOFInteger) frame.get(ENTRY_COUNT);
-		}
-
-		/**
-		 * Set the count.
-		 * 
-		 * @param count
-		 *            the count.
-		 */
-		public void setCount(NSOFInteger count) {
-			frame.put(ENTRY_COUNT, count);
+		public int getCount() {
+			return count;
 		}
 
 		/**
@@ -140,12 +121,12 @@ public class DSoupsChanged extends DockCommandToNewton {
 		 *            the count.
 		 */
 		public void setCount(int count) {
-			setCount(new NSOFInteger(count));
+			this.count = count;
 		}
 
 		@Override
 		public int hashCode() {
-			return frame.hashCode();
+			return getSoupName().hashCode();
 		}
 
 		@Override
@@ -162,6 +143,19 @@ public class DSoupsChanged extends DockCommandToNewton {
 				return 1;
 			}
 			return this.getSoupName().compareTo(that.getSoupName());
+		}
+
+		/**
+		 * Get the frame.
+		 * 
+		 * @return the frame.
+		 */
+		public NSOFFrame toFrame() {
+			NSOFFrame frame;
+			frame = new NSOFFrame();
+			frame.put(ENTRY_SOUP, new NSOFString(getSoupName()));
+			frame.put(ENTRY_COUNT, new NSOFInteger(getCount()));
+			return frame;
 		}
 	}
 }
