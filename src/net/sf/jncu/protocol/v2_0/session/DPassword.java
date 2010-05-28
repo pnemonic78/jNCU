@@ -65,7 +65,6 @@ public class DPassword extends DockCommandFromNewton implements IDockCommandToNe
 		this.encryptedKey = encryptedKey;
 	}
 
-	@Override
 	public byte[] getPayload() {
 		IDockCommandToNewton cmd = new DockCommandToNewton(COMMAND) {
 
