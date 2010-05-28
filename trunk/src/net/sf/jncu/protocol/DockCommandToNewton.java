@@ -38,17 +38,14 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 	 */
 	public byte[] getPayload() {
 		ByteArrayOutputStream payload = new ByteArrayOutputStream();
-		ByteArrayOutputStream dataStream;
+		ByteArrayOutputStream data = null;
 		int length = 0;
-		byte[] data = null;
 
 		try {
-			dataStream = getCommandData();
-			if (dataStream != null) {
-				dataStream.flush();
-				dataStream.close();
-				data = dataStream.toByteArray();
-				length = data.length;
+			data = getCommandData();
+			if (data != null) {
+				data.flush();
+				length = data.size();
 			}
 			setLength(length);
 
@@ -56,7 +53,7 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 			payload.write(commandBytes);
 			ntohl(length, payload);
 			if (data != null) {
-				payload.write(data);
+				data.writeTo(payload);
 			}
 			// 4-byte align
 			switch (payload.size() & 3) {
@@ -68,9 +65,21 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 				payload.write(0);
 				break;
 			}
-			payload.close();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
+		} finally {
+			if (data != null) {
+				try {
+					data.close();
+				} catch (Exception e) {
+					// ignore
+				}
+			}
+			try {
+				payload.close();
+			} catch (Exception e) {
+				// ignore
+			}
 		}
 		return payload.toByteArray();
 	}
