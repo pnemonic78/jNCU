@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import net.sf.jncu.io.RewriteByteArrayOutputStream;
+
 /**
  * Docking command from desktop to Newton.
  * 
@@ -37,24 +39,29 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 	 * @return the payload.
 	 */
 	public byte[] getPayload() {
-		ByteArrayOutputStream payload = new ByteArrayOutputStream();
+		RewriteByteArrayOutputStream payload = new RewriteByteArrayOutputStream();
 		ByteArrayOutputStream data = null;
 		int length = 0;
+		int indexLength, indexData;
 
 		try {
 			data = getCommandData();
 			if (data != null) {
 				data.flush();
-				length = data.size();
 			}
-			setLength(length);
 
 			payload.write(kDNewtonDockBytes);
 			payload.write(commandBytes);
+			indexLength = payload.size();
 			ntohl(length, payload);
+			indexData = payload.size();
 			if (data != null) {
 				data.writeTo(payload);
 			}
+			length = payload.size() - indexData;
+			setLength(length);
+			payload.seek(indexLength);
+			ntohl(length, payload);
 			// 4-byte align
 			switch (payload.size() & 3) {
 			case 1:
