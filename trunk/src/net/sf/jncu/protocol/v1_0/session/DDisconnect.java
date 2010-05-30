@@ -1,6 +1,6 @@
-package net.sf.jncu.protocol.v1_0;
+package net.sf.jncu.protocol.v1_0.session;
 
-import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
+import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
  * <tt>kDDisconnect</tt><br>
@@ -11,7 +11,7 @@ import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
  * length = 0
  * </pre>
  */
-public class DDisconnect extends DockCommandFromNewtonBlank {
+public class DDisconnect extends DockCommandToNewtonBlank {
 
 	public static final String COMMAND = "disc";
 

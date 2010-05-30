@@ -1,4 +1,4 @@
-package net.sf.jncu.protocol.v1_0;
+package net.sf.jncu.protocol.v1_0.session;
 
 import java.io.IOException;
 import java.io.InputStream;

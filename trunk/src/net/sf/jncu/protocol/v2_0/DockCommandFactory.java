@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sf.jncu.protocol.DockCommand;
-import net.sf.jncu.protocol.v1_0.DDisconnect;
-import net.sf.jncu.protocol.v1_0.DHello;
-import net.sf.jncu.protocol.v1_0.DResult;
+import net.sf.jncu.protocol.v1_0.query.DResult;
+import net.sf.jncu.protocol.v1_0.session.DDisconnect;
+import net.sf.jncu.protocol.v1_0.session.DHello;
 import net.sf.jncu.protocol.v2_0.io.DKeyboardChar;
 import net.sf.jncu.protocol.v2_0.io.DKeyboardString;
 import net.sf.jncu.protocol.v2_0.session.DDesktopInfo;
@@ -46,7 +46,7 @@ public class DockCommandFactory {
 			registry.put(DKeyboardString.COMMAND, DKeyboardString.class);
 			registry.put(DNewtonInfo.COMMAND, DNewtonInfo.class);
 			registry.put(DNewtonName.COMMAND, DNewtonName.class);
-			registry.put(net.sf.jncu.protocol.v1_0.DOperationCanceled.COMMAND, net.sf.jncu.protocol.v1_0.DOperationCanceled.class);
+			registry.put(net.sf.jncu.protocol.v1_0.session.DOperationCanceled.COMMAND, net.sf.jncu.protocol.v1_0.session.DOperationCanceled.class);
 			registry.put(DOperationCanceled.COMMAND, DOperationCanceled.class);
 			registry.put(DOperationCanceledAck.COMMAND, DOperationCanceledAck.class);
 			registry.put(DOperationDone.COMMAND, DOperationDone.class);

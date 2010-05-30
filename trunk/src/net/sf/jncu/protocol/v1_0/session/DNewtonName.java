@@ -1,4 +1,4 @@
-package net.sf.jncu.protocol.v1_0;
+package net.sf.jncu.protocol.v1_0.session;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,10 +10,10 @@ import net.sf.jncu.protocol.NewtonInfo;
 /**
  * <tt>kDNewtonName</tt><br>
  * The name of the Newton.<br>
- * This command is sent in response to a correct kDInitiateDocking command from
- * the docker. The Newton's name is used to locate the proper synchronise file.
- * The version info includes things like machine type (e.g. J1), ROM version,
- * etc.
+ * This command is sent in response to a correct <tt>kDInitiateDocking</tt>
+ * command from the docker. The Newton's name is used to locate the proper
+ * synchronise file. The version info includes things like machine type (e.g.
+ * J1), ROM version, etc.
  * 
  * <pre>
  * 'name'
