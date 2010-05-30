@@ -55,14 +55,13 @@ public class DChangedEntry extends DockCommandFromNewton implements IDockCommand
 		// TODO Auto-generated method stub
 	}
 
-	@Override
 	public byte[] getPayload() {
 		IDockCommandToNewton cmd = new DockCommandToNewton(COMMAND) {
-			
+
 			@Override
 			protected void writeCommandData(OutputStream data) throws IOException {
 				// TODO Auto-generated method stub
-				
+
 			}
 		};
 		return cmd.getPayload();
