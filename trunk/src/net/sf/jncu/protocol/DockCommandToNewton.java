@@ -1,6 +1,5 @@
 package net.sf.jncu.protocol;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -40,28 +39,21 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 	 */
 	public byte[] getPayload() {
 		RewriteByteArrayOutputStream payload = new RewriteByteArrayOutputStream();
-		ByteArrayOutputStream data = null;
 		int length = 0;
 		int indexLength, indexData;
 
 		try {
-			data = getCommandData();
-			if (data != null) {
-				data.flush();
-			}
-
 			payload.write(kDNewtonDockBytes);
 			payload.write(commandBytes);
 			indexLength = payload.size();
 			ntohl(length, payload);
 			indexData = payload.size();
-			if (data != null) {
-				data.writeTo(payload);
-			}
+			writeCommandData(payload);
 			length = payload.size() - indexData;
 			setLength(length);
 			payload.seek(indexLength);
 			ntohl(length, payload);
+			payload.seekToEnd();
 			// 4-byte align
 			switch (payload.size() & 3) {
 			case 1:
@@ -75,13 +67,6 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		} finally {
-			if (data != null) {
-				try {
-					data.close();
-				} catch (Exception e) {
-					// ignore
-				}
-			}
 			try {
 				payload.close();
 			} catch (Exception e) {
@@ -94,10 +79,12 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 	/**
 	 * Encode the data to write.
 	 * 
+	 * @param data
+	 *            the data output stream.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected abstract ByteArrayOutputStream getCommandData() throws IOException;
+	protected abstract void writeCommandData(OutputStream data) throws IOException;
 
 	/**
 	 * Write 4 bytes as an unsigned integer in network byte order (Big Endian).

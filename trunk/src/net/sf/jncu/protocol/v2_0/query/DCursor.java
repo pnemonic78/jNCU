@@ -3,8 +3,8 @@
  */
 package net.sf.jncu.protocol.v2_0.query;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import net.sf.jncu.protocol.DockCommandToNewton;
 
@@ -32,10 +32,8 @@ public abstract class DCursor extends DockCommandToNewton {
 	 * @see net.sf.jncu.protocol.DockCommandToNewton#getCommandData()
 	 */
 	@Override
-	protected ByteArrayOutputStream getCommandData() throws IOException {
-		ByteArrayOutputStream data = new ByteArrayOutputStream();
+	protected void writeCommandData(OutputStream data) throws IOException {
 		ntohl(getCursorId(), data);
-		return data;
 	}
 
 	/**

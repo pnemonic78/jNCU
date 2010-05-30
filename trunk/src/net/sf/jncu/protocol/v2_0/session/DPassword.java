@@ -1,8 +1,8 @@
 package net.sf.jncu.protocol.v2_0.session;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandToNewton;
@@ -69,10 +69,8 @@ public class DPassword extends DockCommandFromNewton implements IDockCommandToNe
 		IDockCommandToNewton cmd = new DockCommandToNewton(COMMAND) {
 
 			@Override
-			protected ByteArrayOutputStream getCommandData() throws IOException {
-				ByteArrayOutputStream data = new ByteArrayOutputStream();
+			protected void writeCommandData(OutputStream data) throws IOException {
 				ntohl(getEncryptedKey(), data);
-				return data;
 			}
 		};
 		return cmd.getPayload();

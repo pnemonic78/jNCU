@@ -3,8 +3,8 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -50,9 +50,7 @@ public class DSoupsChanged extends DockCommandToNewton {
 	}
 
 	@Override
-	protected ByteArrayOutputStream getCommandData() throws IOException {
-		ByteArrayOutputStream data = new ByteArrayOutputStream();
-
+	protected void writeCommandData(OutputStream data) throws IOException {
 		NSOFObject[] items = new NSOFObject[soups.size()];
 		int i = 0;
 		for (Soup soup : soups) {
@@ -61,7 +59,6 @@ public class DSoupsChanged extends DockCommandToNewton {
 		NSOFArray arr = new NSOFArray(items);
 		NSOFEncoder encoder = new NSOFEncoder();
 		encoder.encode(arr, data);
-		return null;
 	}
 
 	/**

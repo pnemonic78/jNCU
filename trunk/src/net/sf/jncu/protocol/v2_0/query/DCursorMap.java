@@ -3,8 +3,8 @@
  */
 package net.sf.jncu.protocol.v2_0.query;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import net.sf.jncu.newton.stream.NSOFEncoder;
 import net.sf.jncu.newton.stream.NSOFObject;
@@ -42,11 +42,9 @@ public class DCursorMap extends DCursor {
 	 * @see net.sf.jncu.protocol.DockCommandToNewton#getCommandData()
 	 */
 	@Override
-	protected ByteArrayOutputStream getCommandData() throws IOException {
-		ByteArrayOutputStream data = super.getCommandData();
+	protected void writeCommandData(OutputStream data) throws IOException {
 		NSOFEncoder encoder = new NSOFEncoder();
 		encoder.encode(getFunction(), data);
-		return data;
 	}
 
 	/**

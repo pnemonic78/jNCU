@@ -1,7 +1,7 @@
 package net.sf.jncu.protocol.v2_0.session;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Random;
 
 import net.sf.jncu.newton.stream.NSOFArray;
@@ -102,8 +102,7 @@ public class DDesktopInfo extends DockCommandToNewton {
 	}
 
 	@Override
-	protected ByteArrayOutputStream getCommandData() throws IOException {
-		ByteArrayOutputStream data = new ByteArrayOutputStream();
+	protected void writeCommandData(OutputStream data) throws IOException {
 		ntohl(PROTOCOL_VERSION, data);
 		ntohl(getDesktopType(), data);
 		ntohl(getEncryptedKey(), data);
@@ -111,7 +110,6 @@ public class DDesktopInfo extends DockCommandToNewton {
 		ntohl(isSelectiveSync() ? TRUE : FALSE, data);
 		NSOFEncoder encoder = new NSOFEncoder();
 		encoder.encode(getDesktopApps(), data);
-		return data;
 	}
 
 	/**

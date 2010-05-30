@@ -1,8 +1,8 @@
 package net.sf.jncu.protocol.v1_0;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandToNewton;
@@ -49,10 +49,8 @@ public class DResult extends DockCommandFromNewton implements IDockCommandToNewt
 	public byte[] getPayload() {
 		IDockCommandToNewton cmd = new DockCommandToNewton(COMMAND) {
 			@Override
-			protected ByteArrayOutputStream getCommandData() throws IOException {
-				ByteArrayOutputStream data = new ByteArrayOutputStream();
+			protected void writeCommandData(OutputStream data) throws IOException {
 				ntohl(getErrorCode(), data);
-				return data;
 			}
 		};
 		return cmd.getPayload();
