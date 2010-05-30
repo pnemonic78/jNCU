@@ -9,7 +9,7 @@ import java.io.InputStream;
 import net.sf.jncu.newton.stream.NSOFDecoder;
 import net.sf.jncu.newton.stream.NSOFFrame;
 import net.sf.jncu.protocol.DockCommandFromNewton;
-import net.sf.jncu.protocol.v1_0.Store;
+import net.sf.jncu.protocol.v1_0.io.Store;
 
 /**
  * <tt>kDDefaultStore</tt><br>

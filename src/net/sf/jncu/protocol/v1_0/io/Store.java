@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.sf.jncu.protocol.v1_0;
+package net.sf.jncu.protocol.v1_0.io;
 
 import net.sf.jncu.newton.stream.NSOFFrame;
 import net.sf.jncu.newton.stream.NSOFImmediate;

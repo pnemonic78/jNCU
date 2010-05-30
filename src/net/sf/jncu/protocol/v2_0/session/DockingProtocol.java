@@ -13,7 +13,7 @@ import net.sf.jncu.crypto.DESNewton;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.NewtonInfo;
-import net.sf.jncu.protocol.v1_0.DResult;
+import net.sf.jncu.protocol.v1_0.query.DResult;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 
 /**

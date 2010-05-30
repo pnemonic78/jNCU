@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.sf.jncu.protocol.v1_0;
+package net.sf.jncu.protocol.v1_0.io;
 
 /**
  * Device information.

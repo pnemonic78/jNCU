@@ -1,9 +1,6 @@
 package net.sf.jncu.protocol.v2_0.io;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
  * <tt>kDGetDefaultStore</tt><br>
@@ -19,7 +16,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DGetDefaultStore extends DockCommandToNewton {
+public class DGetDefaultStore extends DockCommandToNewtonBlank {
 
 	public static final String COMMAND = "gdfs";
 
@@ -28,11 +25,6 @@ public class DGetDefaultStore extends DockCommandToNewton {
 	 */
 	public DGetDefaultStore() {
 		super(COMMAND);
-	}
-
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		// TODO implement me!
 	}
 
 }

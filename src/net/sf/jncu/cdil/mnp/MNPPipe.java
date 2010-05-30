@@ -18,8 +18,8 @@ import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.v1_0.DDisconnect;
-import net.sf.jncu.protocol.v1_0.DHello;
+import net.sf.jncu.protocol.v1_0.session.DDisconnect;
+import net.sf.jncu.protocol.v1_0.session.DHello;
 import net.sf.jncu.protocol.v2_0.session.DockingState;
 
 /**
