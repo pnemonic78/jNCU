@@ -57,7 +57,7 @@ public class DSetTranslator extends DockCommandFromNewton {
 	 */
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		setTranslatorIndex(htonl(data));
+		setTranslatorIndex(ntohl(data));
 	}
 
 	/**

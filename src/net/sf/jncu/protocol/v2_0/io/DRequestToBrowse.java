@@ -27,7 +27,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
 /**
  * <tt>kDRequestToBrowse</tt><br>
  * This command is sent to a desktop that the Newton wishes to browse files on.
- * File types can be 'import, 'packages, 'syncFiles' or an array of strings to
+ * File types can be 'import', 'packages', 'syncFiles' or an array of strings to
  * use for filtering.
  * 
  * <pre>

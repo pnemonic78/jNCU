@@ -70,7 +70,7 @@ public class DBackupIDs extends DockCommandFromNewton {
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
 		List<Short> ids = new ArrayList<Short>();
-		short id = htons(data);
+		short id = ntohs(data);
 		short idPrev = -1;
 
 		while (id != 0x8000) {
@@ -86,7 +86,7 @@ public class DBackupIDs extends DockCommandFromNewton {
 			}
 
 			idPrev = id;
-			id = htons(data);
+			id = ntohs(data);
 		}
 	}
 

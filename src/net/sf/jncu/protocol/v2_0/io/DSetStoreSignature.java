@@ -42,6 +42,8 @@ public class DSetStoreSignature extends DockCommandToNewton {
 
 	public static final String COMMAND = "ssig";
 
+	private int signature;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -49,9 +51,28 @@ public class DSetStoreSignature extends DockCommandToNewton {
 		super(COMMAND);
 	}
 
+	/**
+	 * Get the soup signature.
+	 * 
+	 * @return the signature.
+	 */
+	public int getSignature() {
+		return signature;
+	}
+
+	/**
+	 * Set the soup signature.
+	 * 
+	 * @param signature
+	 *            the signature.
+	 */
+	public void setSignature(int signature) {
+		this.signature = signature;
+	}
+
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		// TODO implement me!
+		htonl(getSignature(), data);
 	}
 
 }

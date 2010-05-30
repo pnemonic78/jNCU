@@ -19,10 +19,7 @@
  */
 package net.sf.jncu.protocol.v1_0.data;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
  * <tt>kDEntry</tt><br>
@@ -36,7 +33,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * entry  // binary data
  * </pre>
  */
-public class DEntry extends DockCommandFromNewton {
+public class DEntry extends DockCommandFromNewtonScript {
 
 	public static final String COMMAND = "entr";
 
@@ -45,11 +42,6 @@ public class DEntry extends DockCommandFromNewton {
 	 */
 	public DEntry() {
 		super(COMMAND);
-	}
-
-	@Override
-	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
 	}
 
 }

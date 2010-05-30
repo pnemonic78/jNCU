@@ -132,6 +132,6 @@ public class DBackupSoup extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		ntohl(getId(), data);
+		htonl(getId(), data);
 	}
 }

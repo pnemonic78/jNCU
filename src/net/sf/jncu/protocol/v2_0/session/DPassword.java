@@ -60,8 +60,8 @@ public class DPassword extends DockCommandFromNewton implements IDockCommandToNe
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		long keyHi = htonl(data) & 0xFFFFFFFFL;
-		long keyLo = htonl(data) & 0xFFFFFFFFL;
+		long keyHi = ntohl(data) & 0xFFFFFFFFL;
+		long keyLo = ntohl(data) & 0xFFFFFFFFL;
 		setEncryptedKey((keyHi << 32) | keyLo);
 	}
 
@@ -89,7 +89,7 @@ public class DPassword extends DockCommandFromNewton implements IDockCommandToNe
 
 			@Override
 			protected void writeCommandData(OutputStream data) throws IOException {
-				ntohl(getEncryptedKey(), data);
+				htonl(getEncryptedKey(), data);
 			}
 		};
 		return cmd.getPayload();

@@ -88,6 +88,6 @@ public class DGetAppNames extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		ntohl(getWhat(), data);
+		htonl(getWhat(), data);
 	}
 }

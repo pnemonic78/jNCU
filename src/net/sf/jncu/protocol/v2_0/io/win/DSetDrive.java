@@ -42,12 +42,34 @@ public class DSetDrive extends DockCommandFromNewton {
 
 	public static final String COMMAND = "sdrv";
 
+	private String drive;
+
 	public DSetDrive() {
 		super(COMMAND);
 	}
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
+		setDrive(readString(data));
 	}
+
+	/**
+	 * Get the drive.
+	 * 
+	 * @return the drive.
+	 */
+	public String getDrive() {
+		return drive;
+	}
+
+	/**
+	 * Set the drive.
+	 * 
+	 * @param drive
+	 *            the drive.
+	 */
+	protected void setDrive(String drive) {
+		this.drive = drive;
+	}
+
 }

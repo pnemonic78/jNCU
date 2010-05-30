@@ -21,7 +21,12 @@ package net.sf.jncu.protocol.v2_0.io.win;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
+import net.sf.jncu.newton.stream.NSOFEncoder;
+import net.sf.jncu.newton.stream.NSOFPlainArray;
+import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
@@ -43,6 +48,8 @@ public class DFilters extends DockCommandToNewton {
 
 	public static final String COMMAND = "filt";
 
+	private final List<String> filters = new ArrayList<String>();
+
 	/**
 	 * Creates a new command.
 	 */
@@ -52,7 +59,45 @@ public class DFilters extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		// TODO implement me!
+		if (filters.size() > 0) {
+			NSOFString[] entries = new NSOFString[filters.size()];
+			int i = 0;
+			for (String filter : filters) {
+				entries[i++] = new NSOFString(filter);
+			}
+			NSOFPlainArray parr = new NSOFPlainArray();
+			NSOFEncoder encoder = new NSOFEncoder();
+			encoder.encode(parr, data);
+		}
+	}
+
+	/**
+	 * Get the filters.
+	 * 
+	 * @return the filters.
+	 */
+	public List<String> getFilters() {
+		return filters;
+	}
+
+	/**
+	 * Set the filters.
+	 * 
+	 * @return the filters.
+	 */
+	public void setFilters(List<String> filters) {
+		this.filters.clear();
+		this.filters.addAll(filters);
+	}
+
+	/**
+	 * Add a filter.
+	 * 
+	 * @param filter
+	 *            the filter.
+	 */
+	public void addFilter(String filter) {
+		filters.add(filter);
 	}
 
 }

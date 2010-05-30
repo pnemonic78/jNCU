@@ -55,7 +55,7 @@ public class DCursorMove extends DCursor {
 	 */
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		ntohl(getCount(), data);
+		htonl(getCount(), data);
 	}
 
 	/**

@@ -53,9 +53,9 @@ public class DNewtonInfo extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		setProtocolVersion(htonl(data));
-		long keyHi = htonl(data) & 0xFFFFFFFFL;
-		long keyLo = htonl(data) & 0xFFFFFFFFL;
+		setProtocolVersion(ntohl(data));
+		long keyHi = ntohl(data) & 0xFFFFFFFFL;
+		long keyLo = ntohl(data) & 0xFFFFFFFFL;
 		setEncryptedKey((keyHi << 32) | keyLo);
 	}
 

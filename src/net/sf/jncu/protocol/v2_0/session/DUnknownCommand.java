@@ -85,7 +85,7 @@ public class DUnknownCommand extends DockCommandToNewton implements IDockCommand
 	}
 
 	public void decode(InputStream frame) throws IOException {
-		int length = DockCommandFromNewton.htonl(frame);
+		int length = DockCommandFromNewton.ntohl(frame);
 		setLength(length);
 		if ((length != -1) && (frame.available() < length)) {
 			throw new ArrayIndexOutOfBoundsException();

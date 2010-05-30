@@ -140,8 +140,8 @@ public class DSourceVersion extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		ntohl(getVersion().ordinal(), data);
-		ntohl(getManufacturerId(), data);
-		ntohl(getMachineType(), data);
+		htonl(getVersion().ordinal(), data);
+		htonl(getManufacturerId(), data);
+		htonl(getMachineType(), data);
 	}
 }

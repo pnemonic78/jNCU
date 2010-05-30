@@ -43,13 +43,34 @@ public class DSetFilter extends DockCommandFromNewton {
 
 	public static final String COMMAND = "sflt";
 
+	private int index;
+
 	public DSetFilter() {
 		super(COMMAND);
 	}
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
+		setIndex(ntohl(data));
+	}
+
+	/**
+	 * Get the filter index.
+	 * 
+	 * @return the index.
+	 */
+	public int getIndex() {
+		return index;
+	}
+
+	/**
+	 * Set the filter index.
+	 * 
+	 * @param index
+	 *            the index.
+	 */
+	protected void setIndex(int index) {
+		this.index = index;
 	}
 
 }

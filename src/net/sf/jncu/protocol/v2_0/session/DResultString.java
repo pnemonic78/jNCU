@@ -96,7 +96,7 @@ public class DResultString extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		ntohl(getErrorNumber(), data);
+		htonl(getErrorNumber(), data);
 		NSOFEncoder encoder = new NSOFEncoder();
 		encoder.encode(new NSOFString(getErrorString()), data);
 	}

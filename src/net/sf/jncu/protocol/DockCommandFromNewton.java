@@ -20,6 +20,7 @@
 package net.sf.jncu.protocol;
 
 import java.io.ByteArrayInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -65,7 +66,7 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 			return false;
 		}
 		for (int i = 0; i < kDNewtonDockLength; i++) {
-			if (kDNewtonDockBytes[i] != data[i]) {
+			if (COMMAND_PREFIX_BYTES[i] != data[i]) {
 				return false;
 			}
 		}
@@ -112,7 +113,7 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	 *             if read past data buffer.
 	 */
 	public void decode(InputStream frame) throws IOException {
-		int length = htonl(frame);
+		int length = ntohl(frame);
 		setLength(length);
 		if ((length != -1) && (frame.available() < length)) {
 			throw new ArrayIndexOutOfBoundsException();
@@ -131,6 +132,7 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	protected abstract void decodeData(InputStream data) throws IOException;
 
 	/**
+	 * Network-to-host long.<br>
 	 * Read 4 bytes as an unsigned integer in network byte order (Big Endian).
 	 * 
 	 * @param in
@@ -139,7 +141,7 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	 * @throws IOException
 	 *             if read past buffer.
 	 */
-	public static int htonl(InputStream in) throws IOException {
+	public static int ntohl(InputStream in) throws IOException {
 		int n24 = (in.read() & 0xFF) << 24;
 		int n16 = (in.read() & 0xFF) << 16;
 		int n08 = (in.read() & 0xFF) << 8;
@@ -149,6 +151,7 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	}
 
 	/**
+	 * Network-to-host short.<br>
 	 * Read 2 bytes as an unsigned integer in network byte order (Big Endian).
 	 * 
 	 * @param in
@@ -157,10 +160,45 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	 * @throws IOException
 	 *             if read past buffer.
 	 */
-	public static short htons(InputStream in) throws IOException {
+	public static short ntohs(InputStream in) throws IOException {
 		int n08 = (in.read() & 0xFF) << 8;
 		int n00 = (in.read() & 0xFF) << 0;
 
 		return (short) (n08 | n00);
+	}
+
+	/**
+	 * Read a <tt>C</tt>-style Unicode string (UTF-16, null-terminated).
+	 * 
+	 * @param in
+	 *            the input.
+	 * @return the string.
+	 * @throws IOException
+	 *             if read past buffer.
+	 */
+	public static String readString(InputStream in) throws IOException {
+		StringBuffer buf = new StringBuffer();
+		int hi = in.read();
+		if (hi == -1) {
+			throw new EOFException();
+		}
+		int lo = in.read();
+		if (lo == -1) {
+			throw new EOFException();
+		}
+		int c = ((hi & 0xFF) << 8) | (lo & 0xFF);
+		while (c != 0) {
+			buf.append((char) c);
+			hi = in.read();
+			if (hi == -1) {
+				throw new EOFException();
+			}
+			lo = in.read();
+			if (lo == -1) {
+				throw new EOFException();
+			}
+			c = ((hi & 0xFF) << 8) | (lo & 0xFF);
+		}
+		return buf.toString();
 	}
 }

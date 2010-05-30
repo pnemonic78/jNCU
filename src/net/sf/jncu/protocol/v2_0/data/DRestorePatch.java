@@ -73,7 +73,7 @@ public class DRestorePatch extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		ntohl(getPatch(), data);
+		htonl(getPatch(), data);
 	}
 
 }

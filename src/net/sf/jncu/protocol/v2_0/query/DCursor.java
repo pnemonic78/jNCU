@@ -49,7 +49,7 @@ public abstract class DCursor extends DockCommandToNewton {
 	 */
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		ntohl(getCursorId(), data);
+		htonl(getCursorId(), data);
 	}
 
 	/**

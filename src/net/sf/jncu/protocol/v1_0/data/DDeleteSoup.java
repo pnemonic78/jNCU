@@ -41,6 +41,8 @@ public class DDeleteSoup extends DockCommandToNewton {
 
 	public static final String COMMAND = "dsou";
 
+	private String name;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -48,9 +50,28 @@ public class DDeleteSoup extends DockCommandToNewton {
 		super(COMMAND);
 	}
 
+	/**
+	 * Get the soup name.
+	 * 
+	 * @return the name.
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Set the soup name.
+	 * 
+	 * @param name
+	 *            the name.
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		// TODO implement me!
+		writeString(getName(), data);
 	}
 
 }

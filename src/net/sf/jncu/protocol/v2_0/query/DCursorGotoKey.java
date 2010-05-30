@@ -55,7 +55,7 @@ public class DCursorGotoKey extends DCursor {
 	 */
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		ntohl(getKey(), data);
+		htonl(getKey(), data);
 	}
 
 	/**

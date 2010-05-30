@@ -62,14 +62,14 @@ public class DResult extends DockCommandFromNewton implements IDockCommandToNewt
 	 */
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		setErrorCode(htonl(data));
+		setErrorCode(ntohl(data));
 	}
 
 	public byte[] getPayload() {
 		IDockCommandToNewton cmd = new DockCommandToNewton(COMMAND) {
 			@Override
 			protected void writeCommandData(OutputStream data) throws IOException {
-				ntohl(getErrorCode(), data);
+				htonl(getErrorCode(), data);
 			}
 		};
 		return cmd.getPayload();

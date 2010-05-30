@@ -52,7 +52,7 @@ public class DLongData extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		setData(htonl(data));
+		setData(ntohl(data));
 	}
 
 	/**

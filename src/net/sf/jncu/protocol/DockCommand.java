@@ -36,10 +36,13 @@ public abstract class DockCommand implements IDockCommand {
 	/** True. */
 	public static final int TRUE = 1;
 
-	/** Command prefix. */
-	public static final String kDNewtonDock = "newtdock";
-	protected static final byte[] kDNewtonDockBytes = kDNewtonDock.getBytes();
-	protected static final int kDNewtonDockLength = kDNewtonDockBytes.length;
+	/**
+	 * <tt>kDNewtonDock</tt><br>
+	 * Command prefix.
+	 */
+	public static final String COMMAND_PREFIX = "newtdock";
+	protected static final byte[] COMMAND_PREFIX_BYTES = COMMAND_PREFIX.getBytes();
+	protected static final int kDNewtonDockLength = COMMAND_PREFIX_BYTES.length;
 
 	protected final String command;
 	protected final byte[] commandBytes;

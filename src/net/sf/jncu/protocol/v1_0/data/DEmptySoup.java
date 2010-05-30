@@ -41,6 +41,8 @@ public class DEmptySoup extends DockCommandToNewton {
 
 	public static final String COMMAND = "esou";
 
+	private String name;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -48,9 +50,28 @@ public class DEmptySoup extends DockCommandToNewton {
 		super(COMMAND);
 	}
 
+	/**
+	 * Get the soup name.
+	 * 
+	 * @return the name.
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Set the soup name.
+	 * 
+	 * @param name
+	 *            the name.
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		// TODO implement me!
+		writeString(getName(), data);
 	}
 
 }
