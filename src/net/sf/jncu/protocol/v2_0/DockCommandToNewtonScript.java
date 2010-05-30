@@ -1,7 +1,7 @@
 package net.sf.jncu.protocol.v2_0;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import net.sf.jncu.newton.stream.NSOFEncoder;
 import net.sf.jncu.newton.stream.NSOFObject;
@@ -46,10 +46,8 @@ public abstract class DockCommandToNewtonScript extends DockCommandToNewton {
 	}
 
 	@Override
-	protected ByteArrayOutputStream getCommandData() throws IOException {
-		ByteArrayOutputStream data = new ByteArrayOutputStream();
+	protected void writeCommandData(OutputStream data) throws IOException {
 		NSOFEncoder encoder = new NSOFEncoder();
 		encoder.encode(getObject(), data);
-		return data;
 	}
 }

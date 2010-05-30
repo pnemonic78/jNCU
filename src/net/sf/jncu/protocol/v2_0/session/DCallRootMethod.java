@@ -3,8 +3,8 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import net.sf.jncu.newton.stream.NSOFArray;
 import net.sf.jncu.newton.stream.NSOFEncoder;
@@ -89,11 +89,9 @@ public class DCallRootMethod extends DockCommandToNewton {
 	}
 
 	@Override
-	protected ByteArrayOutputStream getCommandData() throws IOException {
-		ByteArrayOutputStream data = new ByteArrayOutputStream();
+	protected void writeCommandData(OutputStream data) throws IOException {
 		NSOFEncoder encoder = new NSOFEncoder();
 		encoder.encode(getMethodName(), data);
 		encoder.encode(getArguments(), data);
-		return data;
 	}
 }

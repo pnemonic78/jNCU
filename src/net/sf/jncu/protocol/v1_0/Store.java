@@ -33,6 +33,8 @@ import net.sf.jncu.newton.stream.NSOFTrue;
  */
 public class Store {
 
+	public static final String KIND_INTERNAL = "Internal";
+
 	protected static final NSOFSymbol ENTRY_NAME = new NSOFSymbol("name");
 	protected static final NSOFSymbol ENTRY_SIGNATURE = new NSOFSymbol("signature");
 	protected static final NSOFSymbol ENTRY_TOTALSIZE = new NSOFSymbol("totalsize");

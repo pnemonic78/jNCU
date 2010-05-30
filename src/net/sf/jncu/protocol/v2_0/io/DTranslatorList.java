@@ -3,8 +3,8 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,8 +42,7 @@ public class DTranslatorList extends DockCommandToNewton {
 	}
 
 	@Override
-	protected ByteArrayOutputStream getCommandData() throws IOException {
-		ByteArrayOutputStream data = new ByteArrayOutputStream();
+	protected void writeCommandData(OutputStream data) throws IOException {
 		NSOFString[] items = new NSOFString[translators.size()];
 		int i = 0;
 		for (String translator : translators) {
@@ -52,7 +51,6 @@ public class DTranslatorList extends DockCommandToNewton {
 		NSOFPlainArray arr = new NSOFPlainArray(items);
 		NSOFEncoder encoder = new NSOFEncoder();
 		encoder.encode(arr, data);
-		return data;
 	}
 
 	/**

@@ -3,8 +3,8 @@
  */
 package net.sf.jncu.protocol;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Docking command to the Newton with no data.
@@ -24,8 +24,7 @@ public abstract class DockCommandToNewtonBlank extends DockCommandToNewton {
 	}
 
 	@Override
-	protected final ByteArrayOutputStream getCommandData() throws IOException {
-		return null;
+	protected final void writeCommandData(OutputStream data) throws IOException {
 	}
 
 }
