@@ -76,7 +76,7 @@ public class DWhichIcons extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		ntohl(getIcons(), data);
+		htonl(getIcons(), data);
 	}
 
 	/**

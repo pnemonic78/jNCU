@@ -122,11 +122,11 @@ public class DDesktopInfo extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		ntohl(PROTOCOL_VERSION, data);
-		ntohl(getDesktopType(), data);
-		ntohl(getEncryptedKey(), data);
-		ntohl(getSessionType(), data);
-		ntohl(isSelectiveSync() ? TRUE : FALSE, data);
+		htonl(PROTOCOL_VERSION, data);
+		htonl(getDesktopType(), data);
+		htonl(getEncryptedKey(), data);
+		htonl(getSessionType(), data);
+		htonl(isSelectiveSync() ? TRUE : FALSE, data);
 		NSOFEncoder encoder = new NSOFEncoder();
 		encoder.encode(getDesktopApps(), data);
 	}

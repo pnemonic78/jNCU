@@ -87,7 +87,7 @@ public class DSetVBOCompression extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		ntohl(getCompression(), data);
+		htonl(getCompression(), data);
 	}
 
 }

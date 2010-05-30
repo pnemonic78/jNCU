@@ -79,6 +79,6 @@ public class DInitiateDocking extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		ntohl(session, data);
+		htonl(session, data);
 	}
 }

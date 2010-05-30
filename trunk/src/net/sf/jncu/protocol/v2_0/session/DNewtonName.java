@@ -78,22 +78,22 @@ public class DNewtonName extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		int versionInfoLength = htonl(data);
+		int versionInfoLength = ntohl(data);
 		info = new NewtonInfo();
-		info.setNewtonId(htonl(data)); // #1
-		info.setManufacturerId(htonl(data)); // #2
-		info.setMachineType(htonl(data)); // #3
-		info.setRomVersion(htonl(data)); // #4
-		info.setRomStage(htonl(data)); // #5
-		info.setRamSize(htonl(data)); // #6
-		info.setScreenHeight(htonl(data)); // #7
-		info.setScreenWidth(htonl(data)); // #8
-		info.setPatchVersion(htonl(data)); // #9
-		info.setObjectSystemVersion(htonl(data)); // #10
-		info.setInternalStoreSignature(htonl(data)); // #11
-		info.setScreenResolutionVertical(htonl(data)); // #12
-		info.setScreenResolutionHorizontal(htonl(data)); // #13
-		info.setScreenDepth(htonl(data)); // #14
+		info.setNewtonId(ntohl(data)); // #1
+		info.setManufacturerId(ntohl(data)); // #2
+		info.setMachineType(ntohl(data)); // #3
+		info.setRomVersion(ntohl(data)); // #4
+		info.setRomStage(ntohl(data)); // #5
+		info.setRamSize(ntohl(data)); // #6
+		info.setScreenHeight(ntohl(data)); // #7
+		info.setScreenWidth(ntohl(data)); // #8
+		info.setPatchVersion(ntohl(data)); // #9
+		info.setObjectSystemVersion(ntohl(data)); // #10
+		info.setInternalStoreSignature(ntohl(data)); // #11
+		info.setScreenResolutionVertical(ntohl(data)); // #12
+		info.setScreenResolutionHorizontal(ntohl(data)); // #13
+		info.setScreenDepth(ntohl(data)); // #14
 
 		final int versionSize = 14 * LENGTH_WORD;
 		if (versionInfoLength > versionSize) {
@@ -102,15 +102,15 @@ public class DNewtonName extends DockCommandFromNewton {
 			 * 1 = has serial number <br>
 			 * 2 = has target protocol
 			 */
-			int systemFlags = htonl(data);
+			int systemFlags = ntohl(data);
 
 			if ((systemFlags & 0x1) == 0x1) {
-				long serHi = htonl(data) & 0xFFFFFFFFL;
-				long serLo = htonl(data) & 0xFFFFFFFFL;
+				long serHi = ntohl(data) & 0xFFFFFFFFL;
+				long serLo = ntohl(data) & 0xFFFFFFFFL;
 				info.setSerialNumber((serHi << 32) | serLo);
 			}
 			if ((systemFlags & 0x2) == 0x2) {
-				info.setTargetProtocol(htonl(data));
+				info.setTargetProtocol(ntohl(data));
 			}
 		}
 

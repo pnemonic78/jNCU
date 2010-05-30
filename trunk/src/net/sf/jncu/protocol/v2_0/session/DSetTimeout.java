@@ -72,7 +72,7 @@ public class DSetTimeout extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		ntohl(getTimeout(), data);
+		htonl(getTimeout(), data);
 	}
 
 }

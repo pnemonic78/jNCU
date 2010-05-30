@@ -40,6 +40,8 @@ public class DAddedID extends DockCommandFromNewton {
 
 	public static final String COMMAND = "adid";
 
+	private int id;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -49,7 +51,26 @@ public class DAddedID extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
+		setId(ntohl(data));
+	}
+
+	/**
+	 * Get the entry id.
+	 * 
+	 * @return the id.
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * Set the entry id.
+	 * 
+	 * @param id
+	 *            the id.
+	 */
+	protected void setId(int id) {
+		this.id = id;
 	}
 
 }

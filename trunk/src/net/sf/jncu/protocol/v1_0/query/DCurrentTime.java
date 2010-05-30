@@ -59,7 +59,7 @@ public class DCurrentTime extends DockCommandFromNewton {
 	 */
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		setTime(htonl(data));
+		setTime(ntohl(data));
 	}
 
 	/**

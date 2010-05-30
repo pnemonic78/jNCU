@@ -72,6 +72,7 @@ public class DCreateSoup extends DockCommandToNewton {
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
 		writeString(getName(), data);
+		// TODO write index description
 	}
 
 }

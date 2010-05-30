@@ -27,8 +27,9 @@ import net.sf.jncu.protocol.DockCommandToNewton;
 /**
  * <tt>kDAliasResolved</tt><br>
  * This command is sent by the desktop in response to the
- * <tt>kDResolveAlias</tt> command. If the value is 0, the alias can't be
- * resolved. If the data is <tt>1</tt> (or non-zero) the alias can be resolved.
+ * <tt>kDResolveAlias</tt> command. If the value is <tt>0</tt>, the alias can't
+ * be resolved. If the data is <tt>1</tt> (or non-zero) the alias can be
+ * resolved.
  * 
  * <pre>
  * 'alir'
@@ -42,6 +43,8 @@ public class DAliasResolved extends DockCommandToNewton {
 
 	public static final String COMMAND = "alir";
 
+	private boolean resolved;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -51,7 +54,26 @@ public class DAliasResolved extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		// TODO implement me!
+		htonl(isResolved() ? 1 : 0, data);
+	}
+
+	/**
+	 * Is alias resolved?
+	 * 
+	 * @return true if resolved?
+	 */
+	public boolean isResolved() {
+		return resolved;
+	}
+
+	/**
+	 * Set alias resolved.
+	 * 
+	 * @param resolved
+	 *            resolved?
+	 */
+	public void setResolved(boolean resolved) {
+		this.resolved = resolved;
 	}
 
 }

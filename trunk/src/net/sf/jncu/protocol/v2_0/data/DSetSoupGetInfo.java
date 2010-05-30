@@ -70,7 +70,7 @@ public class DSetSoupGetInfo extends DockCommandToNewton {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
 		writeString(getName(), data);

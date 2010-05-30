@@ -62,16 +62,16 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 		int indexLength, indexData;
 
 		try {
-			payload.write(kDNewtonDockBytes);
+			payload.write(COMMAND_PREFIX_BYTES);
 			payload.write(commandBytes);
 			indexLength = payload.size();
-			ntohl(length, payload);
+			htonl(length, payload);
 			indexData = payload.size();
 			writeCommandData(payload);
 			length = payload.size() - indexData;
 			setLength(length);
 			payload.seek(indexLength);
-			ntohl(length, payload);
+			htonl(length, payload);
 			payload.seekToEnd();
 			// 4-byte align
 			switch (payload.size() & 3) {
@@ -106,6 +106,7 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 	protected abstract void writeCommandData(OutputStream data) throws IOException;
 
 	/**
+	 * Host-to-network long.<br>
 	 * Write 4 bytes as an unsigned integer in network byte order (Big Endian).
 	 * 
 	 * @param out
@@ -115,7 +116,7 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public static void ntohl(int n, OutputStream out) throws IOException {
+	public static void htonl(int n, OutputStream out) throws IOException {
 		out.write((n >> 24) & 0xFF);
 		out.write((n >> 16) & 0xFF);
 		out.write((n >> 8) & 0xFF);
@@ -123,6 +124,7 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 	}
 
 	/**
+	 * Host-to-network long.<br>
 	 * Write 4 bytes as an unsigned integer in network byte order (Big Endian).
 	 * 
 	 * @param out
@@ -132,9 +134,9 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public static void ntohl(long n, OutputStream out) throws IOException {
-		ntohl((int) ((n >> 32) & 0xFFFFFFFFL), out);
-		ntohl((int) ((n >> 0) & 0xFFFFFFFFL), out);
+	public static void htonl(long n, OutputStream out) throws IOException {
+		htonl((int) ((n >> 32) & 0xFFFFFFFFL), out);
+		htonl((int) ((n >> 0) & 0xFFFFFFFFL), out);
 	}
 
 	/**

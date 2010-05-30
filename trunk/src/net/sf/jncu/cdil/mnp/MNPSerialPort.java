@@ -64,7 +64,7 @@ public class MNPSerialPort {
 	 * @throws PortInUseException
 	 *             if port is not found.
 	 * @throws UnsupportedCommOperationException
-	 *             TODO comment me!
+	 *             if operation unsupported.
 	 */
 	public MNPSerialPort(CommPortIdentifier portId, int baud, int timeout) throws TooManyListenersException, IOException, PortInUseException,
 			UnsupportedCommOperationException {
@@ -83,7 +83,7 @@ public class MNPSerialPort {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 * @throws UnsupportedCommOperationException
-	 *             TODO comment me!
+	 *             if operation unsupported.
 	 */
 	public MNPSerialPort(SerialPort port, int baud) throws TooManyListenersException, IOException, UnsupportedCommOperationException {
 		super();
@@ -105,7 +105,7 @@ public class MNPSerialPort {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 * @throws UnsupportedCommOperationException
-	 *             TODO comment me!
+	 *             if operation unsupported.
 	 */
 	public MNPSerialPort(SerialPort port) throws TooManyListenersException, IOException, UnsupportedCommOperationException {
 		this(port, BAUD_38400);
