@@ -41,6 +41,8 @@ public class DReturnEntry extends DockCommandToNewton {
 
 	public static final String COMMAND = "rete";
 
+	private int id;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -50,7 +52,25 @@ public class DReturnEntry extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		// TODO implement me!
+		htonl(getId(), data);
 	}
 
+	/**
+	 * Get the entry id.
+	 * 
+	 * @return the id.
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * Set the entry id.
+	 * 
+	 * @param id
+	 *            the id.
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
 }

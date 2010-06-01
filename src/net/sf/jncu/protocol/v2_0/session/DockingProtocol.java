@@ -341,8 +341,8 @@ public class DockingProtocol {
 			this.challengeNewtonCiphered = crypto.cipher(challengeNewton);
 
 			DWhichIcons cmdWhichIcons = (DWhichIcons) DockCommandFactory.getInstance().create(DWhichIcons.COMMAND);
-			cmdWhichIcons.setIcons(DWhichIcons.kBackupIcon | DWhichIcons.kImportIcon | DWhichIcons.kInstallIcon | DWhichIcons.kKeyboardIcon
-					| DWhichIcons.kRestoreIcon | DWhichIcons.kSyncIcon);
+			cmdWhichIcons.setIcons(DWhichIcons.BACKUP | DWhichIcons.IMPORT | DWhichIcons.INSTALL | DWhichIcons.KEYBOARD | DWhichIcons.RESTORE
+					| DWhichIcons.SYNC);
 			setState(state, DockingState.HANDSHAKE_ICONS_SENDING, null, cmd);
 			pipe.write(cmdWhichIcons);
 			break;
@@ -359,7 +359,7 @@ public class DockingProtocol {
 			} else {
 				// Was problem, so try send again with less icons?
 				cmdWhichIcons = (DWhichIcons) DockCommandFactory.getInstance().create(DWhichIcons.COMMAND);
-				cmdWhichIcons.setIcons(DWhichIcons.kInstallIcon | DWhichIcons.kKeyboardIcon);
+				cmdWhichIcons.setIcons(DWhichIcons.INSTALL | DWhichIcons.KEYBOARD);
 				setState(state, DockingState.HANDSHAKE_ICONS_SENDING, null, cmd);
 				pipe.write(cmdWhichIcons);
 			}

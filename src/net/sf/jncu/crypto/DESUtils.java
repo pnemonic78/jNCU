@@ -27,39 +27,6 @@ package net.sf.jncu.crypto;
 public class DESUtils {
 
 	/**
-	 * Convert the array of bytes to a 64-bit number arranged in Big Endian
-	 * order.
-	 * 
-	 * @param b
-	 *            the array of 8 bytes.
-	 * @return the 64-bit number.
-	 */
-	public static long toLong(byte[] b) {
-		long l = 0;
-		for (int i = 0; i < 8; i++) {
-			l <<= 8;
-			l |= (b[i] & 0xFFL);
-		}
-		return l;
-	}
-
-	/**
-	 * Convert the 64-bit number of an array of bytes arranged in Big Endian
-	 * order.
-	 * 
-	 * @param l
-	 *            the number.
-	 * @return the array of 8 bytes.
-	 */
-	public static byte[] toBytes(long l) {
-		byte[] buf = new byte[8];
-		for (int i = 7; i >= 0; i--, l >>>= 8) {
-			buf[i] = (byte) (l & 0xFF);
-		}
-		return buf;
-	}
-
-	/**
 	 * Convert a 64-bit Big Endian number to 64 separate bits.<br>
 	 * MSB is at index <tt>0</tt>.
 	 * 

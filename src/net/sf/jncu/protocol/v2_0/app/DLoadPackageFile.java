@@ -43,6 +43,8 @@ public class DLoadPackageFile extends DockCommandFromNewton {
 
 	public static final String COMMAND = "lpfl";
 
+	private String filename;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -52,7 +54,26 @@ public class DLoadPackageFile extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
+		setFilename(readString(data));
+	}
+
+	/**
+	 * Get the file name.
+	 * 
+	 * @return the file name.
+	 */
+	public String getFilename() {
+		return filename;
+	}
+
+	/**
+	 * Set the file name.
+	 * 
+	 * @param filename
+	 *            the file name.
+	 */
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 
 }

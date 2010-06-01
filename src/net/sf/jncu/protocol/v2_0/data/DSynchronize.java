@@ -19,10 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
 
 /**
  * <tt>kDSynchronize</tt><br>
@@ -36,7 +33,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DSynchronize extends DockCommandFromNewton {
+public class DSynchronize extends DockCommandFromNewtonBlank {
 
 	public static final String COMMAND = "sync";
 
@@ -45,16 +42,6 @@ public class DSynchronize extends DockCommandFromNewton {
 	 */
 	public DSynchronize(String cmd) {
 		super(COMMAND);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * net.sf.jncu.protocol.DockCommandFromNewton#decodeData(java.io.InputStream
-	 * )
-	 */
-	@Override
-	protected void decodeData(InputStream data) throws IOException {
 	}
 
 }

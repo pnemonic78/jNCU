@@ -58,7 +58,7 @@ public class DRestoreAll extends DockCommandFromNewton {
 	 */
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		setMerge(ntohl(data) == 1);
+		setMerge(ntohl(data) != FALSE);
 	}
 
 	/**

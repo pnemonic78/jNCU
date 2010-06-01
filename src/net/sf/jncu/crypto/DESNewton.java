@@ -33,6 +33,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
+import net.sf.jncu.util.NumberUtils;
+
 /**
  * Newton DES cryptography.
  * 
@@ -77,20 +79,20 @@ public class DESNewton {
 			}
 
 			key <<= 1;
-			byte[] keyBytes = DESUtils.toBytes(key);
+			byte[] keyBytes = NumberUtils.toBytes(key);
 			DESKeySpec keySpec = new DESKeySpec(keyBytes);
 			SecretKey skey = getKeyFactory().generateSecret(keySpec);
 			cipher.init(opmode, skey);
 
-			byte[] zero = DESUtils.toBytes(0L);
+			byte[] zero = NumberUtils.toBytes(0L);
 			byte[] tmpKeyBytes = cipher.doFinal(zero);
-			long tmpKey = DESUtils.toLong(tmpKeyBytes);
+			long tmpKey = NumberUtils.toLong(tmpKeyBytes);
 			byte[] tmpKeyBits = DESUtils.toBits(tmpKey);
 			DESUtils.oddParity(tmpKeyBits);
 			key = tmpKey | DESUtils.fromBits(tmpKeyBits);
 
 			key <<= 1;
-			keyBytes = DESUtils.toBytes(key);
+			keyBytes = NumberUtils.toBytes(key);
 			keySpec = new DESKeySpec(keyBytes);
 			skey = keyFactory.generateSecret(keySpec);
 			cipher.init(opmode, skey);
@@ -118,7 +120,7 @@ public class DESNewton {
 	 *            the key.
 	 */
 	public void init(int opmode, Key key) {
-		init(opmode, DESUtils.toLong(key.getEncoded()));
+		init(opmode, NumberUtils.toLong(key.getEncoded()));
 	}
 
 	/**
@@ -172,6 +174,6 @@ public class DESNewton {
 	 * @return the cipher-text.
 	 */
 	public long cipher(long data) {
-		return DESUtils.toLong(cipher.update(DESUtils.toBytes(data)));
+		return NumberUtils.toLong(cipher.update(NumberUtils.toBytes(data)));
 	}
 }

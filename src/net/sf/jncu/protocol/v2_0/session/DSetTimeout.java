@@ -42,7 +42,7 @@ public class DSetTimeout extends DockCommandToNewton {
 
 	public static final String COMMAND = "stim";
 
-	private int timeout = 30000;
+	private int timeout = 30;
 
 	/**
 	 * Creates a new command.

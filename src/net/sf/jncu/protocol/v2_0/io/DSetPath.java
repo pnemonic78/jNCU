@@ -19,9 +19,14 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import net.sf.jncu.newton.stream.NSOFArray;
+import net.sf.jncu.newton.stream.NSOFDecoder;
+import net.sf.jncu.newton.stream.NSOFObject;
+import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
@@ -58,6 +63,8 @@ public class DSetPath extends DockCommandFromNewton {
 
 	public static final String COMMAND = "spth";
 
+	private File path;
+
 	public DSetPath() {
 		super(COMMAND);
 	}
@@ -70,7 +77,35 @@ public class DSetPath extends DockCommandFromNewton {
 	 */
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		// TODO implement me!
+		NSOFDecoder decoder = new NSOFDecoder();
+		NSOFArray arr = (NSOFArray) decoder.decode(data);
+		NSOFObject[] entries = arr.getValue();
+		NSOFString path = (NSOFString) entries[0];
+		File file = new File(path.getValue());
+		for (int i = 1; i < entries.length; i++) {
+			path = (NSOFString) entries[i];
+			file = new File(file, path.getValue());
+		}
+		setPath(file);
+	}
+
+	/**
+	 * Get the file path.
+	 * 
+	 * @return the path.
+	 */
+	public File getPath() {
+		return path;
+	}
+
+	/**
+	 * Set the file path.
+	 * 
+	 * @param path
+	 *            the path.
+	 */
+	protected void setPath(File path) {
+		this.path = path;
 	}
 
 }

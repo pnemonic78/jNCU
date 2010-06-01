@@ -21,6 +21,8 @@ package net.sf.jncu.protocol.v1_0.data;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Set;
+import java.util.TreeSet;
 
 import net.sf.jncu.protocol.DockCommandToNewton;
 
@@ -41,6 +43,8 @@ public class DDeleteEntries extends DockCommandToNewton {
 
 	public static final String COMMAND = "dele";
 
+	private final Set<Integer> ids = new TreeSet<Integer>();
+
 	/**
 	 * Creates a new command.
 	 */
@@ -50,7 +54,39 @@ public class DDeleteEntries extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		// TODO implement me!
+		htonl(getIDs().size(), data);
+		for (Integer id : getIDs()) {
+			htonl(id, data);
+		}
 	}
 
+	/**
+	 * Get the IDs to delete.
+	 * 
+	 * @return the IDs.
+	 */
+	public Set<Integer> getIDs() {
+		return ids;
+	}
+
+	/**
+	 * Set the IDs to delete.
+	 * 
+	 * @param ids
+	 *            the IDs.
+	 */
+	protected void setIDs(Set<Integer> ids) {
+		this.ids.clear();
+		this.ids.addAll(ids);
+	}
+
+	/**
+	 * Add an ID to delete.
+	 * 
+	 * @param id
+	 *            the ID.
+	 */
+	protected void addID(Integer id) {
+		this.ids.add(id);
+	}
 }
