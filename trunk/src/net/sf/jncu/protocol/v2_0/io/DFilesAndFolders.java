@@ -85,7 +85,7 @@ public class DFilesAndFolders extends DockCommandToNewton {
 
 	public static final String COMMAND = "file";
 
-	private List<File> files;
+	private File folder;
 
 	/**
 	 * Creates a new command.
@@ -96,14 +96,16 @@ public class DFilesAndFolders extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		List<File> files = getFiles();
+		File[] files = getFolder().listFiles();
 		List<Device> devices = new ArrayList<Device>();
 
 		if (files != null) {
 			Device device;
 			for (File file : files) {
-				device = new Device(file);
-				devices.add(device);
+				if (!file.isHidden()) {
+					device = new Device(file);
+					devices.add(device);
+				}
 			}
 		}
 
@@ -118,22 +120,22 @@ public class DFilesAndFolders extends DockCommandToNewton {
 	}
 
 	/**
-	 * Get the files and folders.
+	 * Get the root folder.
 	 * 
-	 * @return the files.
+	 * @return the folder.
 	 */
-	public List<File> getFiles() {
-		return files;
+	public File getFolder() {
+		return folder;
 	}
 
 	/**
-	 * Set the files and folders.
+	 * Set the root folder.
 	 * 
-	 * @param files
-	 *            the files.
+	 * @param folder
+	 *            the folder.
 	 */
-	public void setFiles(List<File> files) {
-		this.files = files;
+	public void setFolder(File folder) {
+		this.folder = folder;
 	}
 
 }
