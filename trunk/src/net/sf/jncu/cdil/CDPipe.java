@@ -41,7 +41,7 @@ public abstract class CDPipe extends Thread {
 	protected final CDLayer layer;
 	private PipedOutputStream pipeSource;
 	private PipedInputStream pipeSink;
-	private int timeout;
+	private int timeout = 30;
 	protected DockingProtocol docking;
 	private static final Timer timer = new Timer();
 	protected CDTimeout timeoutTask;
@@ -469,7 +469,7 @@ public abstract class CDPipe extends Thread {
 			throw new BadPipeStateException();
 		}
 		layer.setState(CDState.CONNECT_PENDING);
-		//this.docking = null;
+		// this.docking = null;
 		restartTimeout();
 	}
 
@@ -489,7 +489,7 @@ public abstract class CDPipe extends Thread {
 			timeoutTask.cancel();
 		}
 		this.timeoutTask = new CDTimeout(this);
-		timer.schedule(timeoutTask, timeout);
+		timer.schedule(timeoutTask, timeout * 1000L);
 	}
 
 	/**

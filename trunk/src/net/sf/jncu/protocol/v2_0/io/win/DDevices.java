@@ -19,10 +19,18 @@
  */
 package net.sf.jncu.protocol.v2_0.io.win;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
+import net.sf.jncu.newton.stream.NSOFArray;
+import net.sf.jncu.newton.stream.NSOFEncoder;
+import net.sf.jncu.newton.stream.NSOFObject;
+import net.sf.jncu.newton.stream.NSOFPlainArray;
 import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.v1_0.io.Device;
 
 /**
  * <tt>kDDevices</tt><br>
@@ -30,7 +38,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * devices which will appear in the devices pop-up in the Windows file browsing
  * dialog. Each frame in the array should look like this:<br>
  * <code>{<br>
- * &nbsp;&nbsp;name: "c:mydisk",<br>
+ * &nbsp;&nbsp;name: "c: mydisk",<br>
  * &nbsp;&nbsp;disktype: 1<br>
  * }</code><br>
  * where (floppy = 0, hardDrive = 1, cdRom = 2, netDrive = 3). The icon is
@@ -58,7 +66,27 @@ public class DDevices extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		// TODO implement me!
+		File[] drives = File.listRoots();
+		List<Device> devices = new ArrayList<Device>();
+
+		if (drives != null) {
+			Device device;
+			for (File file : drives) {
+				device = new Device(file);
+				// TODO prepend the drive name to the device name for DSetDrive
+				// - "Local Disk (C:)" to "C: Local Disk (C:)"
+				devices.add(device);
+			}
+		}
+
+		NSOFObject[] paths = new NSOFObject[devices.size()];
+		int i = 0;
+		for (Device device : devices) {
+			paths[i++] = device.toFrame();
+		}
+		NSOFArray arr = new NSOFPlainArray(paths);
+		NSOFEncoder encoder = new NSOFEncoder();
+		encoder.encode(arr, data);
 	}
 
 }

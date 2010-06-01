@@ -21,7 +21,13 @@ package net.sf.jncu.protocol.v1_0.io;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
+import net.sf.jncu.newton.stream.NSOFArray;
+import net.sf.jncu.newton.stream.NSOFDecoder;
+import net.sf.jncu.newton.stream.NSOFFrame;
+import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
@@ -52,6 +58,8 @@ public class DStoreNames extends DockCommandFromNewton {
 
 	public static final String COMMAND = "stor";
 
+	private List<Store> stores;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -61,7 +69,35 @@ public class DStoreNames extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
+		NSOFDecoder decoder = new NSOFDecoder();
+		NSOFArray arr = (NSOFArray) decoder.decode(data);
+		List<Store> stores = new ArrayList<Store>();
+		Store store;
+		for (NSOFObject o : arr.getValue()) {
+			store = new Store();
+			store.decodeFrame((NSOFFrame) o);
+			stores.add(store);
+		}
+		setStores(stores);
+	}
+
+	/**
+	 * Get the stores.
+	 * 
+	 * @return the stores.
+	 */
+	public List<Store> getStores() {
+		return stores;
+	}
+
+	/**
+	 * Set the stores.
+	 * 
+	 * @param stores
+	 *            the stores.
+	 */
+	protected void setStores(List<Store> stores) {
+		this.stores = stores;
 	}
 
 }

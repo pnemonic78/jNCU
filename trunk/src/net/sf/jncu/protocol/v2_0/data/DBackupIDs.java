@@ -21,8 +21,8 @@ package net.sf.jncu.protocol.v2_0.data;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
@@ -54,6 +54,8 @@ public class DBackupIDs extends DockCommandFromNewton {
 
 	public static final String COMMAND = "bids";
 
+	private Set<Short> ids;
+
 	/**
 	 *Creates a new command.
 	 */
@@ -69,7 +71,7 @@ public class DBackupIDs extends DockCommandFromNewton {
 	 */
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		List<Short> ids = new ArrayList<Short>();
+		Set<Short> ids = new TreeSet<Short>();
 		short id = ntohs(data);
 		short idPrev = -1;
 
@@ -88,6 +90,26 @@ public class DBackupIDs extends DockCommandFromNewton {
 			idPrev = id;
 			id = ntohs(data);
 		}
+		setIds(ids);
+	}
+
+	/**
+	 * Get the offset IDs.
+	 * 
+	 * @return the IDs.
+	 */
+	public Set<Short> getIds() {
+		return ids;
+	}
+
+	/**
+	 * Set the offset IDs.
+	 * 
+	 * @param ids
+	 *            the IDs.
+	 */
+	protected void setIds(Set<Short> ids) {
+		this.ids = ids;
 	}
 
 }

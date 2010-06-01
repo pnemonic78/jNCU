@@ -21,15 +21,17 @@ package net.sf.jncu.protocol.v1_0.data;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Set;
+import java.util.TreeSet;
 
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
  * <tt>kDChangedIDs</tt><br>
  * This command is sent in response to a <tt>kDGetChangedIDs</tt> command. It
- * returns all the ids with <tt>mod</tt> time > the last sync time. If the last
- * sync time is 0, no changed entries are returned (this would happen on the
- * first sync).
+ * returns all the ids with <tt>mod</tt> time &gt; the <tt>last sync</tt> time.
+ * If the last sync time is <tt>0</tt>, no changed entries are returned (this
+ * would happen on the first sync).
  * 
  * <pre>
  * 'cids'
@@ -42,6 +44,8 @@ public class DChangedIDs extends DockCommandFromNewton {
 
 	public static final String COMMAND = "cids";
 
+	private final Set<Integer> ids = new TreeSet<Integer>();
+
 	/**
 	 * Creates a new command.
 	 */
@@ -51,7 +55,40 @@ public class DChangedIDs extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
+		ids.clear();
+		int count = ntohl(data);
+		for (int i = 0; i < count; i++) {
+			addID(ntohl(data));
+		}
 	}
 
+	/**
+	 * Get the changed IDs.
+	 * 
+	 * @return the IDs.
+	 */
+	public Set<Integer> getIDs() {
+		return ids;
+	}
+
+	/**
+	 * Set the changed IDs.
+	 * 
+	 * @param ids
+	 *            the IDs.
+	 */
+	protected void setIDs(Set<Integer> ids) {
+		this.ids.clear();
+		this.ids.addAll(ids);
+	}
+
+	/**
+	 * Add a changed ID.
+	 * 
+	 * @param id
+	 *            the ID.
+	 */
+	protected void addID(Integer id) {
+		this.ids.add(id);
+	}
 }

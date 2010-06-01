@@ -19,7 +19,12 @@
  */
 package net.sf.jncu.protocol.v1_0.data;
 
-import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
+import java.io.IOException;
+import java.io.InputStream;
+
+import net.sf.jncu.newton.stream.NSOFDecoder;
+import net.sf.jncu.newton.stream.NSOFFrame;
+import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
  * <tt>kDSoupInfo</tt><br>
@@ -32,15 +37,48 @@ import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
  * soup info frame
  * </pre>
  */
-public class DSoupInfo extends DockCommandFromNewtonBlank {
+public class DSoupInfo extends DockCommandFromNewtonScript {
 
 	public static final String COMMAND = "sinf";
+
+	private Soup soup;
 
 	/**
 	 * Creates a new command.
 	 */
 	public DSoupInfo() {
 		super(COMMAND);
+	}
+
+	/**
+	 * Get the soup.
+	 * 
+	 * @return the soup.
+	 */
+	public Soup getSoup() {
+		return soup;
+	}
+
+	/**
+	 * Set the soup.
+	 * 
+	 * @param soup
+	 *            the soup.
+	 */
+	protected void setSoup(Soup soup) {
+		this.soup = soup;
+	}
+
+	@Override
+	protected void decodeData(InputStream data) throws IOException {
+		NSOFDecoder decoder = new NSOFDecoder();
+		NSOFFrame frame = (NSOFFrame) decoder.decode(data);
+		Soup soup = null;
+		if (frame != null) {
+			soup = new Soup();
+			soup.decodeFrame(frame);
+		}
+		setSoup(soup);
 	}
 
 }

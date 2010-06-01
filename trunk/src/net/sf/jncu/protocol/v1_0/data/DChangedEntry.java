@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import net.sf.jncu.newton.stream.NSOFDecoder;
+import net.sf.jncu.newton.stream.NSOFEncoder;
+import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
@@ -43,6 +46,8 @@ public class DChangedEntry extends DockCommandFromNewton implements IDockCommand
 
 	public static final String COMMAND = "cent";
 
+	private NSOFObject entry;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -52,7 +57,8 @@ public class DChangedEntry extends DockCommandFromNewton implements IDockCommand
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
+		NSOFDecoder decoder = new NSOFDecoder();
+		setEntry(decoder.decode(data));
 	}
 
 	public byte[] getPayload() {
@@ -60,10 +66,29 @@ public class DChangedEntry extends DockCommandFromNewton implements IDockCommand
 
 			@Override
 			protected void writeCommandData(OutputStream data) throws IOException {
-				// TODO Auto-generated method stub
-
+				NSOFEncoder encoder = new NSOFEncoder();
+				encoder.encode(getEntry(), data);
 			}
 		};
 		return cmd.getPayload();
+	}
+
+	/**
+	 * Get the entry.
+	 * 
+	 * @return the entry.
+	 */
+	public NSOFObject getEntry() {
+		return entry;
+	}
+
+	/**
+	 * Set the entry.
+	 * 
+	 * @param entry
+	 *            the entry.
+	 */
+	public void setEntry(NSOFObject entry) {
+		this.entry = entry;
 	}
 }

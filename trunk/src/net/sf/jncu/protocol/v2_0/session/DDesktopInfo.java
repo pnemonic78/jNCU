@@ -27,6 +27,7 @@ import net.sf.jncu.newton.stream.NSOFArray;
 import net.sf.jncu.newton.stream.NSOFEncoder;
 import net.sf.jncu.newton.stream.NSOFFrame;
 import net.sf.jncu.newton.stream.NSOFInteger;
+import net.sf.jncu.newton.stream.NSOFPlainArray;
 import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
@@ -91,10 +92,16 @@ public class DDesktopInfo extends DockCommandToNewton {
 	/** The protocol version. */
 	public static final int PROTOCOL_VERSION = 11;
 
-	/** Newton Backup Utility. */
-	public static final int kNBU = 1;
-	/** Newton Connection Utilities. */
-	public static final int kNCU = 2;
+	/**
+	 * <tt>kNBU</tt><br>
+	 * Newton Backup Utility.
+	 */
+	public static final int NBU = 1;
+	/**
+	 * <tt>kNCU</tt><br>
+	 * Newton Connection Utilities.
+	 */
+	public static final int NCU = 2;
 
 	/** Apple Macintosh desktop type. */
 	public static final int kMacintosh = 0;
@@ -197,11 +204,11 @@ public class DDesktopInfo extends DockCommandToNewton {
 	public NSOFArray getDesktopApps() {
 		if (desktopApps == null) {
 			NSOFFrame app = new NSOFFrame();
-			app.put("id", new NSOFInteger(kNCU));
+			app.put("id", new NSOFInteger(NCU));
 			app.put("name", new NSOFString("Newton Connection Utilities"));
 			app.put("version", new NSOFInteger(1));
 
-			this.desktopApps = new NSOFArray();
+			this.desktopApps = new NSOFPlainArray();
 			desktopApps.setValue(new NSOFFrame[] { app });
 		}
 		return desktopApps;

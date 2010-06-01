@@ -54,18 +54,36 @@ public class DWhichIcons extends DockCommandToNewton {
 
 	private int icons;
 
-	/** "Backup" icon. */
-	public static final int kBackupIcon = 1;
-	/** "Restore" icon. */
-	public static final int kRestoreIcon = 2;
-	/** "Install package" icon. */
-	public static final int kInstallIcon = 4;
-	/** "Import" icon. */
-	public static final int kImportIcon = 8;
-	/** "Synchronise" icon. */
-	public static final int kSyncIcon = 16;
-	/** "Keyboard" icon. */
-	public static final int kKeyboardIcon = 32;
+	/**
+	 * <tt>kBackupIcon</tt><br>
+	 * "Backup" icon.
+	 */
+	public static final int BACKUP = 1;
+	/**
+	 * <tt>kRestoreIcon</tt><br>
+	 * "Restore" icon.
+	 */
+	public static final int RESTORE = 2;
+	/**
+	 * <tt>kInstallIcon</tt><br>
+	 * "Install package" icon.
+	 */
+	public static final int INSTALL = 4;
+	/**
+	 * <tt>kImportIcon</tt><br>
+	 * "Import" icon.
+	 */
+	public static final int IMPORT = 8;
+	/**
+	 * <tt>kSyncIcon</tt><br>
+	 * "Synchronise" icon.
+	 */
+	public static final int SYNC = 16;
+	/**
+	 * <tt>kKeyboardIcon</tt><br>
+	 * "Keyboard" icon.
+	 */
+	public static final int KEYBOARD = 32;
 
 	/**
 	 * Creates a new command.
@@ -100,12 +118,12 @@ public class DWhichIcons extends DockCommandToNewton {
 
 	public void addIcon(int icon) {
 		switch (icon) {
-		case kBackupIcon:
-		case kRestoreIcon:
-		case kInstallIcon:
-		case kImportIcon:
-		case kSyncIcon:
-		case kKeyboardIcon:
+		case BACKUP:
+		case RESTORE:
+		case INSTALL:
+		case IMPORT:
+		case SYNC:
+		case KEYBOARD:
 			icons |= icon;
 			break;
 		default:

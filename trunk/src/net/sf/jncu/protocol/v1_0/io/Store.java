@@ -19,11 +19,16 @@
  */
 package net.sf.jncu.protocol.v1_0.io;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.sf.jncu.newton.stream.NSOFArray;
 import net.sf.jncu.newton.stream.NSOFFrame;
 import net.sf.jncu.newton.stream.NSOFImmediate;
 import net.sf.jncu.newton.stream.NSOFInteger;
 import net.sf.jncu.newton.stream.NSOFNil;
 import net.sf.jncu.newton.stream.NSOFObject;
+import net.sf.jncu.newton.stream.NSOFPlainArray;
 import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.newton.stream.NSOFSymbol;
 import net.sf.jncu.newton.stream.NSOFTrue;
@@ -43,6 +48,8 @@ import net.sf.jncu.newton.stream.NSOFTrue;
  * &nbsp;&nbsp;readOnly: true,<br>
  * &nbsp;&nbsp;defaultStore: true,		// only for the default store<br>
  * &nbsp;&nbsp;storePassword: password  // only if a store password has been set<br>
+ * &nbsp;&nbsp;soups: [soup names],<br>
+ * &nbsp;&nbsp;signatures: [soup signatures]<br>
  * }</code>
  * 
  * @author moshew
@@ -51,15 +58,17 @@ public class Store {
 
 	public static final String KIND_INTERNAL = "Internal";
 
-	protected static final NSOFSymbol ENTRY_NAME = new NSOFSymbol("name");
-	protected static final NSOFSymbol ENTRY_SIGNATURE = new NSOFSymbol("signature");
-	protected static final NSOFSymbol ENTRY_TOTALSIZE = new NSOFSymbol("totalsize");
-	protected static final NSOFSymbol ENTRY_USEDSIZE = new NSOFSymbol("usedsize");
-	protected static final NSOFSymbol ENTRY_KIND = new NSOFSymbol("kind");
-	protected static final NSOFSymbol ENTRY_INFO = new NSOFSymbol("info");
-	protected static final NSOFSymbol ENTRY_READONLY = new NSOFSymbol("readOnly");
-	protected static final NSOFSymbol ENTRY_DEFAULT = new NSOFSymbol("defaultStore");
-	protected static final NSOFSymbol ENTRY_PASSWORD = new NSOFSymbol("storePassword");
+	protected static final NSOFSymbol SLOT_NAME = new NSOFSymbol("name");
+	protected static final NSOFSymbol SLOT_SIGNATURE = new NSOFSymbol("signature");
+	protected static final NSOFSymbol SLOT_TOTALSIZE = new NSOFSymbol("totalsize");
+	protected static final NSOFSymbol SLOT_USEDSIZE = new NSOFSymbol("usedsize");
+	protected static final NSOFSymbol SLOT_KIND = new NSOFSymbol("kind");
+	protected static final NSOFSymbol SLOT_INFO = new NSOFSymbol("info");
+	protected static final NSOFSymbol SLOT_READONLY = new NSOFSymbol("readOnly");
+	protected static final NSOFSymbol SLOT_DEFAULT = new NSOFSymbol("defaultStore");
+	protected static final NSOFSymbol SLOT_PASSWORD = new NSOFSymbol("storePassword");
+	protected static final NSOFSymbol SLOT_SOUPS = new NSOFSymbol("soups");
+	protected static final NSOFSymbol SLOT_SIGNATURES = new NSOFSymbol("signatures");
 
 	private String name;
 	private int signature;
@@ -70,6 +79,8 @@ public class Store {
 	private boolean readOnly;
 	private boolean defaultStore;
 	private int password;
+	private List<String> soups;
+	private List<Integer> soupSignatures;
 
 	/**
 	 * Creates a new store.
@@ -86,16 +97,34 @@ public class Store {
 	public NSOFFrame toFrame() {
 		NSOFFrame frame;
 		frame = new NSOFFrame();
-		frame.put(ENTRY_NAME, new NSOFString(getName()));
-		frame.put(ENTRY_SIGNATURE, new NSOFInteger(getSignature()));
-		frame.put(ENTRY_TOTALSIZE, new NSOFInteger(getTotalSize()));
-		frame.put(ENTRY_USEDSIZE, new NSOFInteger(getUsedSize()));
-		frame.put(ENTRY_KIND, new NSOFString(getKind()));
-		frame.put(ENTRY_INFO, getInfo());
-		frame.put(ENTRY_READONLY, isReadOnly() ? new NSOFTrue() : new NSOFNil());
-		frame.put(ENTRY_DEFAULT, isDefaultStore() ? new NSOFTrue() : new NSOFNil());
+		frame.put(SLOT_NAME, new NSOFString(getName()));
+		frame.put(SLOT_SIGNATURE, new NSOFInteger(getSignature()));
+		frame.put(SLOT_TOTALSIZE, new NSOFInteger(getTotalSize()));
+		frame.put(SLOT_USEDSIZE, new NSOFInteger(getUsedSize()));
+		frame.put(SLOT_KIND, new NSOFString(getKind()));
+		frame.put(SLOT_INFO, getInfo());
+		frame.put(SLOT_READONLY, isReadOnly() ? new NSOFTrue() : new NSOFNil());
+		frame.put(SLOT_DEFAULT, isDefaultStore() ? new NSOFTrue() : new NSOFNil());
 		if (getPassword() != 0) {
-			frame.put(ENTRY_PASSWORD, new NSOFInteger(getPassword()));
+			frame.put(SLOT_PASSWORD, new NSOFInteger(getPassword()));
+		}
+		if (getSoups() != null) {
+			List<String> soupNames = getSoups();
+			NSOFString[] entries = new NSOFString[soupNames.size()];
+			int i = 0;
+			for (String soup : soupNames) {
+				entries[i++] = new NSOFString(soup);
+			}
+			frame.put(SLOT_SOUPS, new NSOFPlainArray(entries));
+		}
+		if (getSoupSignatures() != null) {
+			List<Integer> soupIds = getSoupSignatures();
+			NSOFInteger[] entries = new NSOFInteger[soupIds.size()];
+			int i = 0;
+			for (Integer soup : soupIds) {
+				entries[i++] = new NSOFInteger(soup);
+			}
+			frame.put(SLOT_SIGNATURES, new NSOFPlainArray(entries));
 		}
 		return frame;
 	}
@@ -109,59 +138,83 @@ public class Store {
 	public void decodeFrame(NSOFFrame frame) {
 		NSOFObject value;
 
-		value = frame.get(ENTRY_DEFAULT);
+		value = frame.get(SLOT_DEFAULT);
 		setDefaultStore(false);
 		if (value != null) {
 			NSOFImmediate imm = (NSOFImmediate) value;
 			setDefaultStore(imm.isTrue());
 		}
 
-		value = frame.get(ENTRY_INFO);
+		value = frame.get(SLOT_INFO);
 		setInfo((NSOFFrame) value);
 
-		value = frame.get(ENTRY_KIND);
+		value = frame.get(SLOT_KIND);
 		setKind(null);
 		if (value != null) {
 			NSOFString s = (NSOFString) value;
 			setKind(s.getValue());
 		}
 
-		value = frame.get(ENTRY_NAME);
+		value = frame.get(SLOT_NAME);
 		setName(null);
 		if (value != null) {
 			NSOFString s = (NSOFString) value;
 			setName(s.getValue());
 		}
 
-		value = frame.get(ENTRY_PASSWORD);
+		value = frame.get(SLOT_PASSWORD);
 		setPassword(0);
 		if (value != null) {
 			NSOFImmediate imm = (NSOFImmediate) value;
 			setPassword(imm.getValue());
 		}
 
-		value = frame.get(ENTRY_READONLY);
+		value = frame.get(SLOT_READONLY);
 		setReadOnly(false);
 		if (value != null) {
 			NSOFImmediate imm = (NSOFImmediate) value;
 			setReadOnly(imm.isTrue());
 		}
 
-		value = frame.get(ENTRY_SIGNATURE);
+		value = frame.get(SLOT_SIGNATURE);
 		setSignature(0);
 		if (value != null) {
 			NSOFImmediate imm = (NSOFImmediate) value;
 			setSignature(imm.getValue());
 		}
 
-		value = frame.get(ENTRY_TOTALSIZE);
+		value = frame.get(SLOT_SIGNATURES);
+		setSoupSignatures(null);
+		if (value != null) {
+			NSOFArray arr = (NSOFArray) value;
+			List<Integer> soups = new ArrayList<Integer>();
+			NSOFObject[] entries = arr.getValue();
+			for (NSOFObject entry : entries) {
+				soups.add(((NSOFImmediate) entry).getValue());
+			}
+			setSoupSignatures(soups);
+		}
+
+		value = frame.get(SLOT_SOUPS);
+		setSoups(null);
+		if (value != null) {
+			NSOFArray arr = (NSOFArray) value;
+			List<String> soups = new ArrayList<String>();
+			NSOFObject[] entries = arr.getValue();
+			for (NSOFObject entry : entries) {
+				soups.add(((NSOFString) entry).getValue());
+			}
+			setSoups(soups);
+		}
+
+		value = frame.get(SLOT_TOTALSIZE);
 		setTotalSize(0);
 		if (value != null) {
 			NSOFImmediate imm = (NSOFImmediate) value;
 			setTotalSize(imm.getValue());
 		}
 
-		value = frame.get(ENTRY_USEDSIZE);
+		value = frame.get(SLOT_USEDSIZE);
 		setUsedSize(0);
 		if (value != null) {
 			NSOFImmediate imm = (NSOFImmediate) value;
@@ -338,6 +391,44 @@ public class Store {
 	 */
 	public void setPassword(int password) {
 		this.password = password;
+	}
+
+	/**
+	 * Get the soup names.
+	 * 
+	 * @return the soups.
+	 */
+	public List<String> getSoups() {
+		return soups;
+	}
+
+	/**
+	 * Set the soup names.
+	 * 
+	 * @param soups
+	 *            the soups.
+	 */
+	public void setSoups(List<String> soups) {
+		this.soups = soups;
+	}
+
+	/**
+	 * Get the soup signatures.
+	 * 
+	 * @return the signatures.
+	 */
+	public List<Integer> getSoupSignatures() {
+		return soupSignatures;
+	}
+
+	/**
+	 * Set the soup signatures.
+	 * 
+	 * @param soupSignatures
+	 *            the signatures.
+	 */
+	public void setSoupSignatures(List<Integer> soupSignatures) {
+		this.soupSignatures = soupSignatures;
 	}
 
 }

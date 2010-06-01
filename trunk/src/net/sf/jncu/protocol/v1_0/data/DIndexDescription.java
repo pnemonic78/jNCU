@@ -22,6 +22,8 @@ package net.sf.jncu.protocol.v1_0.data;
 import java.io.IOException;
 import java.io.InputStream;
 
+import net.sf.jncu.newton.stream.NSOFDecoder;
+import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
@@ -39,6 +41,8 @@ public class DIndexDescription extends DockCommandFromNewton {
 
 	public static final String COMMAND = "indx";
 
+	private NSOFObject indexes;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -48,7 +52,27 @@ public class DIndexDescription extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
+		NSOFDecoder decoder = new NSOFDecoder();
+		setIndexes(decoder.decode(data));
+	}
+
+	/**
+	 * Get the indexes.
+	 * 
+	 * @return the indexes.
+	 */
+	public NSOFObject getIndexes() {
+		return indexes;
+	}
+
+	/**
+	 * Set the indexes.
+	 * 
+	 * @param indexes
+	 *            the indexes.
+	 */
+	public void setIndexes(NSOFObject indexes) {
+		this.indexes = indexes;
 	}
 
 }

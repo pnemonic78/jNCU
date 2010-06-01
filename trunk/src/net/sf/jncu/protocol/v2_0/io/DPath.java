@@ -19,10 +19,18 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
+import net.sf.jncu.newton.stream.NSOFArray;
+import net.sf.jncu.newton.stream.NSOFEncoder;
+import net.sf.jncu.newton.stream.NSOFObject;
+import net.sf.jncu.newton.stream.NSOFPlainArray;
 import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.v1_0.io.Device;
 
 /**
  * <tt>kDPath</tt><br>
@@ -48,7 +56,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * For example, the Macintosh might send:<br>
  * <code>[{name: "desktop", type: desktop}, {name: "my hard disk", type: disk, disktype: harddrive, whichvol: 0}, {name: "business", type: folder}]</code>
  * <br>
- * or for some folder on the desktop it it might send:<br>
+ * or for some folder on the desktop it might send:<br>
  * <code>[{name: "desktop", type: desktop}, {name: "business", type: folder, whichvol: -1}, {name: "my folder", type: folder}]</code>
  * <p>
  * For Windows it might be: [{name: "c:\", type: 'folder}, {name: "business",
@@ -66,6 +74,8 @@ public class DPath extends DockCommandToNewton {
 
 	public static final String COMMAND = "path";
 
+	private File path;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -75,7 +85,45 @@ public class DPath extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		// TODO implement me!
+		File file = getPath();
+		List<Device> devices = new ArrayList<Device>();
+
+		if (file != null) {
+			Device device;
+			while (file != null) {
+				device = new Device(file);
+				devices.add(0, device);
+				file = file.getParentFile();
+			}
+		}
+
+		NSOFObject[] paths = new NSOFObject[devices.size()];
+		int i = 0;
+		for (Device device : devices) {
+			paths[i++] = device.toFrame();
+		}
+		NSOFArray arr = new NSOFPlainArray(paths);
+		NSOFEncoder encoder = new NSOFEncoder();
+		encoder.encode(arr, data);
+	}
+
+	/**
+	 * Get the initial path.
+	 * 
+	 * @return the path.
+	 */
+	public File getPath() {
+		return path;
+	}
+
+	/**
+	 * Set the initial path.
+	 * 
+	 * @param path
+	 *            the path.
+	 */
+	public void setPath(File path) {
+		this.path = path;
 	}
 
 }

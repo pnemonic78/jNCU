@@ -55,8 +55,8 @@ public class DSoupsChanged extends DockCommandToNewton {
 
 	private final Set<Soup> soups = new TreeSet<Soup>();
 
-	private static final NSOFSymbol ENTRY_SOUP = new NSOFSymbol("soupName");
-	private static final NSOFSymbol ENTRY_COUNT = new NSOFSymbol("count");
+	private static final NSOFSymbol SLOT_SOUP = new NSOFSymbol("soupName");
+	private static final NSOFSymbol SLOT_COUNT = new NSOFSymbol("count");
 
 	/**
 	 * Constructs a new command.
@@ -166,8 +166,8 @@ public class DSoupsChanged extends DockCommandToNewton {
 		public NSOFFrame toFrame() {
 			NSOFFrame frame;
 			frame = new NSOFFrame();
-			frame.put(ENTRY_SOUP, new NSOFString(getSoupName()));
-			frame.put(ENTRY_COUNT, new NSOFInteger(getCount()));
+			frame.put(SLOT_SOUP, new NSOFString(getSoupName()));
+			frame.put(SLOT_COUNT, new NSOFInteger(getCount()));
 			return frame;
 		}
 	}

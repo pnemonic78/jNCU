@@ -22,6 +22,8 @@ package net.sf.jncu.protocol.v1_0.data;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import net.sf.jncu.newton.stream.NSOFEncoder;
+import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
@@ -42,6 +44,7 @@ public class DCreateSoup extends DockCommandToNewton {
 	public static final String COMMAND = "csop";
 
 	private String name;
+	private NSOFObject index;
 
 	/**
 	 * Creates a new command.
@@ -69,10 +72,30 @@ public class DCreateSoup extends DockCommandToNewton {
 		this.name = name;
 	}
 
+	/**
+	 * Get the index description.
+	 * 
+	 * @return the index.
+	 */
+	public NSOFObject getIndex() {
+		return index;
+	}
+
+	/**
+	 * Set the index description.
+	 * 
+	 * @param index
+	 *            the index.
+	 */
+	public void setIndex(NSOFObject index) {
+		this.index = index;
+	}
+
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
 		writeString(getName(), data);
-		// TODO write index description
+		NSOFEncoder encoder = new NSOFEncoder();
+		encoder.encode(getIndex(), data);
 	}
 
 }

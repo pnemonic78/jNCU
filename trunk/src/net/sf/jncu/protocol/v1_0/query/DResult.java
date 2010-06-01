@@ -62,7 +62,11 @@ public class DResult extends DockCommandFromNewton implements IDockCommandToNewt
 	 */
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		setErrorCode(ntohl(data));
+		int result = ntohl(data);
+		if (result > 0x80000000) {
+			result = -(result ^ 0xffffffff) - 1;
+		}
+		setErrorCode(result);
 	}
 
 	public byte[] getPayload() {

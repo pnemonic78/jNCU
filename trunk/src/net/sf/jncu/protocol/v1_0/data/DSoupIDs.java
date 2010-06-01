@@ -21,6 +21,8 @@ package net.sf.jncu.protocol.v1_0.data;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Set;
+import java.util.TreeSet;
 
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
@@ -40,6 +42,8 @@ public class DSoupIDs extends DockCommandFromNewton {
 
 	public static final String COMMAND = "sids";
 
+	private final Set<Integer> ids = new TreeSet<Integer>();
+
 	/**
 	 * Creates a new command.
 	 */
@@ -49,7 +53,41 @@ public class DSoupIDs extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
+		ids.clear();
+		int count = ntohl(data);
+		for (int i = 0; i < count; i++) {
+			addID(ntohl(data));
+		}
+	}
+
+	/**
+	 * Get the entry IDs.
+	 * 
+	 * @return the IDs.
+	 */
+	public Set<Integer> getIDs() {
+		return ids;
+	}
+
+	/**
+	 * Set the entry IDs.
+	 * 
+	 * @param changedIDs
+	 *            the IDs.
+	 */
+	protected void setIDs(Set<Integer> changedIDs) {
+		this.ids.clear();
+		this.ids.addAll(changedIDs);
+	}
+
+	/**
+	 * Add an entry ID.
+	 * 
+	 * @param id
+	 *            the ID.
+	 */
+	protected void addID(Integer id) {
+		this.ids.add(id);
 	}
 
 }

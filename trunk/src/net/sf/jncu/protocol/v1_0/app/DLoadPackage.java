@@ -19,6 +19,8 @@
  */
 package net.sf.jncu.protocol.v1_0.app;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -42,6 +44,8 @@ public class DLoadPackage extends DockCommandToNewton {
 
 	public static final String COMMAND = "lpkg";
 
+	private File file;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -51,7 +55,43 @@ public class DLoadPackage extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		// TODO Auto-generated method stub
+		FileInputStream in = null;
+		try {
+			in = new FileInputStream(getFile());
+
+			int b = in.read();
+			while (b != -1) {
+				data.write(b);
+				b = in.read();
+			}
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (Exception e) {
+					// ignore
+				}
+			}
+		}
+	}
+
+	/**
+	 * Get the package file.
+	 * 
+	 * @return the file.
+	 */
+	public File getFile() {
+		return file;
+	}
+
+	/**
+	 * Set the package file.
+	 * 
+	 * @param file
+	 *            the file.
+	 */
+	public void setFile(File file) {
+		this.file = file;
 	}
 
 }

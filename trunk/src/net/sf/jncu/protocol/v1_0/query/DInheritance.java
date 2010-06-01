@@ -21,7 +21,12 @@ package net.sf.jncu.protocol.v1_0.query;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
+import net.sf.jncu.newton.stream.NSOFArray;
+import net.sf.jncu.newton.stream.NSOFDecoder;
+import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
@@ -38,6 +43,8 @@ public class DInheritance extends DockCommandFromNewton {
 
 	public static final String COMMAND = "dinh";
 
+	private List<NSOFObject> inheritances;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -47,7 +54,32 @@ public class DInheritance extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
+		List<NSOFObject> inheritances = new ArrayList<NSOFObject>();
+		NSOFDecoder decoder = new NSOFDecoder();
+		NSOFArray arr = (NSOFArray) decoder.decode(data);
+		for (NSOFObject entry : arr.getValue()) {
+			inheritances.add(entry);
+		}
+		setInheritances(inheritances);
+	}
+
+	/**
+	 * Get the inheritances.
+	 * 
+	 * @return the inheritances.
+	 */
+	public List<NSOFObject> getInheritances() {
+		return inheritances;
+	}
+
+	/**
+	 * Set the inheritances.
+	 * 
+	 * @param inheritances
+	 *            the inheritances.
+	 */
+	protected void setInheritances(List<NSOFObject> inheritances) {
+		this.inheritances = inheritances;
 	}
 
 }

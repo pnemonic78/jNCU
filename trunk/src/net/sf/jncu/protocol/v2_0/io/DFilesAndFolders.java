@@ -19,10 +19,18 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
+import net.sf.jncu.newton.stream.NSOFArray;
+import net.sf.jncu.newton.stream.NSOFEncoder;
+import net.sf.jncu.newton.stream.NSOFObject;
+import net.sf.jncu.newton.stream.NSOFPlainArray;
 import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.v1_0.io.Device;
 
 /**
  * <tt>kDFilesAndFolders</tt><br>
@@ -77,6 +85,8 @@ public class DFilesAndFolders extends DockCommandToNewton {
 
 	public static final String COMMAND = "file";
 
+	private List<File> files;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -86,7 +96,44 @@ public class DFilesAndFolders extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		// TODO implement me!
+		List<File> files = getFiles();
+		List<Device> devices = new ArrayList<Device>();
+
+		if (files != null) {
+			Device device;
+			for (File file : files) {
+				device = new Device(file);
+				devices.add(device);
+			}
+		}
+
+		NSOFObject[] paths = new NSOFObject[devices.size()];
+		int i = 0;
+		for (Device device : devices) {
+			paths[i++] = device.toFrame();
+		}
+		NSOFArray arr = new NSOFPlainArray(paths);
+		NSOFEncoder encoder = new NSOFEncoder();
+		encoder.encode(arr, data);
+	}
+
+	/**
+	 * Get the files and folders.
+	 * 
+	 * @return the files.
+	 */
+	public List<File> getFiles() {
+		return files;
+	}
+
+	/**
+	 * Set the files and folders.
+	 * 
+	 * @param files
+	 *            the files.
+	 */
+	public void setFiles(List<File> files) {
+		this.files = files;
 	}
 
 }

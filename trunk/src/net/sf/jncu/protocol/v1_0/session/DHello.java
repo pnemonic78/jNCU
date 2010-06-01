@@ -20,6 +20,8 @@
 package net.sf.jncu.protocol.v1_0.session;
 
 import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
+import net.sf.jncu.protocol.DockCommandToNewtonBlank;
+import net.sf.jncu.protocol.IDockCommandToNewton;
 
 /**
  * <tt>kDHello</tt><br>
@@ -31,7 +33,7 @@ import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
  * length = 0
  * </pre>
  */
-public class DHello extends DockCommandFromNewtonBlank {
+public class DHello extends DockCommandFromNewtonBlank implements IDockCommandToNewton {
 
 	public static final String COMMAND = "helo";
 
@@ -42,4 +44,11 @@ public class DHello extends DockCommandFromNewtonBlank {
 		super(COMMAND);
 	}
 
+	@Override
+	public byte[] getPayload() {
+		IDockCommandToNewton cmd = new DockCommandToNewtonBlank(COMMAND) {
+		};
+		return cmd.getPayload();
+	}
+	
 }

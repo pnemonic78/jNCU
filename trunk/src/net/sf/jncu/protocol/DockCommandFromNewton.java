@@ -118,7 +118,9 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 		if ((length != -1) && (frame.available() < length)) {
 			throw new ArrayIndexOutOfBoundsException();
 		}
-		decodeData(frame);
+		if (length > 0) {
+			decodeData(frame);
+		}
 	}
 
 	/**
