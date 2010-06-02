@@ -40,6 +40,9 @@ public class DPackage extends DockCommandFromNewton {
 
 	public static final String COMMAND = "apkg";
 
+	private int id;
+	private byte[] data;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -49,7 +52,48 @@ public class DPackage extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		// TODO Auto-generated method stub
+		setId(ntohl(data));
+		byte[] b = new byte[data.available()];
+		data.read(b);
+		setData(b);
+	}
+
+	/**
+	 * Get the package id.
+	 * 
+	 * @return the id.
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * Set the package id.
+	 * 
+	 * @param id
+	 *            the id.
+	 */
+	protected void setId(int id) {
+		this.id = id;
+	}
+
+	/**
+	 * Get the data.
+	 * 
+	 * @return the data.
+	 */
+	public byte[] getData() {
+		return data;
+	}
+
+	/**
+	 * Set the data.
+	 * 
+	 * @param data
+	 *            the data.
+	 */
+	protected void setData(byte[] data) {
+		this.data = data;
 	}
 
 }

@@ -17,7 +17,7 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu;
+package net.sf.jncu.ui;
 
 import gnu.io.CommPortIdentifier;
 
@@ -42,6 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 
+import net.sf.jncu.Settings;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
 
 /**

@@ -22,6 +22,8 @@ package net.sf.jncu.protocol.v2_0.io;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import net.sf.jncu.newton.stream.NSOFEncoder;
+import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
@@ -41,6 +43,8 @@ public class DSetStoreName extends DockCommandToNewton {
 
 	public static final String COMMAND = "ssna";
 
+	private String name;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -50,7 +54,28 @@ public class DSetStoreName extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		// TODO implement me!
+		NSOFString name = new NSOFString(getName());
+		NSOFEncoder encoder = new NSOFEncoder();
+		encoder.encode(name, data);
+	}
+
+	/**
+	 * Get the store name.
+	 * 
+	 * @return the name.
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Set the store name.
+	 * 
+	 * @param name
+	 *            the name.
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }
