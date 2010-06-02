@@ -395,4 +395,21 @@ public class DockingProtocol {
 		}
 	}
 
+	/**
+	 * Get the Newton information.
+	 * 
+	 * @return the info.
+	 */
+	public NewtonInfo getNewtonInfo() {
+		return info;
+	}
+
+	/**
+	 * Get the Newton's protocol version.
+	 * 
+	 * @return the version.
+	 */
+	public int getProtocolVersion() {
+		return protocolVersion;
+	}
 }
