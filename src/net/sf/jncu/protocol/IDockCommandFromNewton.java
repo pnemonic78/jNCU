@@ -32,10 +32,10 @@ public interface IDockCommandFromNewton extends IDockCommand {
 	/**
 	 * Decode the command.
 	 * 
-	 * @param frame
-	 *            the frame data.
+	 * @param data
+	 *            the command data.
 	 * @throws IOException
 	 *             if read past data buffer.
 	 */
-	public void decode(InputStream frame) throws IOException;
+	public void decode(InputStream data) throws IOException;
 }

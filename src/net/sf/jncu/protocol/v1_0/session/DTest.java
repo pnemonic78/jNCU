@@ -47,11 +47,10 @@ public class DTest extends DockCommandToNewtonScript implements IDockCommandFrom
 		super(COMMAND);
 	}
 
-	@Override
-	public void decode(InputStream frame) throws IOException {
+	public void decode(InputStream data) throws IOException {
 		DockCommandFromNewtonScript cmd = new DockCommandFromNewtonScript(COMMAND) {
 		};
-		cmd.decode(frame);
+		cmd.decode(data);
 		setLength(cmd.getLength());
 		setObject(cmd.getResult());
 	}
