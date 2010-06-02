@@ -28,7 +28,6 @@ import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDEntry</tt><br>
  * This command is sent in response to a <tt>kDReturnEntry</tt> command. The
  * entry in the current soup specified by the ID in the <tt>kDReturnEntry</tt>
  * command is returned.
@@ -41,6 +40,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DEntry extends DockCommandFromNewton {
 
+	/** <tt>kDEntry</tt> */
 	public static final String COMMAND = "entr";
 
 	private NSOFBinaryObject entry;

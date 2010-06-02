@@ -31,7 +31,6 @@ import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDStoreNames</tt><br>
  * This command is sent in response to a <tt>kDGetStoreNames</tt> command. It
  * returns information about all the stores on the Newton. Each array slot
  * contains the following information about a store:<br>
@@ -56,6 +55,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DStoreNames extends DockCommandFromNewton {
 
+	/** <tt>kDStoreNames</tt> */
 	public static final String COMMAND = "stor";
 
 	private List<Store> stores;
@@ -75,7 +75,7 @@ public class DStoreNames extends DockCommandFromNewton {
 		Store store;
 		for (NSOFObject o : arr.getValue()) {
 			store = new Store();
-			store.decodeFrame((NSOFFrame) o);
+			store.decode((NSOFFrame) o);
 			stores.add(store);
 		}
 		setStores(stores);

@@ -25,7 +25,6 @@ import java.io.InputStream;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDPackage</tt><br>
  * This command sends a package to the desktop. It's issued repeatedly in
  * response to a <tt>kDBackupPackages</tt> message.
  * 
@@ -38,6 +37,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DPackage extends DockCommandFromNewton {
 
+	/** <tt>kDPackage</tt> */
 	public static final String COMMAND = "apkg";
 
 	private int id;

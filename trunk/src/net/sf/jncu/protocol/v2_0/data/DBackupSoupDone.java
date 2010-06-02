@@ -25,7 +25,6 @@ import java.io.InputStream;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDBackupSoupDone</tt><br>
  * This command terminates the sequence of commands sent in response to a
  * <tt>kDBackupSoup</tt> command.
  * 
@@ -38,6 +37,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DBackupSoupDone extends DockCommandFromNewton {
 
+	/** <tt>kDBackupSoupDone</tt> */
 	public static final String COMMAND = "bsdn";
 
 	/**

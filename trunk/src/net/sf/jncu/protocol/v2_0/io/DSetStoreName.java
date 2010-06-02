@@ -27,7 +27,6 @@ import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDSetStoreName</tt><br>
  * This command requests that the name of the current store be set to the
  * specified name.
  * 
@@ -41,6 +40,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DSetStoreName extends DockCommandToNewton {
 
+	/** <tt>kDSetStoreName</tt> */
 	public static final String COMMAND = "ssna";
 
 	private String name;

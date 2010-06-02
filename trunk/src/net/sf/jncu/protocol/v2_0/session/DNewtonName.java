@@ -27,7 +27,6 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.NewtonInfo;
 
 /**
- * <tt>kDNewtonName</tt><br>
  * This command is sent in response to a correct <tt>kDInitiateDocking</tt>
  * command from the docker. The Newton's name is used to locate the proper
  * synchronise file. The version info includes things like machine type (e.g.
@@ -64,6 +63,7 @@ import net.sf.jncu.protocol.NewtonInfo;
  */
 public class DNewtonName extends DockCommandFromNewton {
 
+	/** <tt>kDNewtonName</tt> */
 	public static final String COMMAND = "name";
 
 	private String name;

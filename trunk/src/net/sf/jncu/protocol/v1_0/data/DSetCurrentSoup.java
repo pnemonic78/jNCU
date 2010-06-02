@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDSetCurrentSoup</tt><br>
  * This command sets the current soup. Most of the other commands pertain to
  * this soup so this command must precede any command that uses the current
  * soup. If the soup doesn't exist a <tt>kDSoupNotFound</tt> error is returned
@@ -42,6 +41,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DSetCurrentSoup extends DockCommandToNewton {
 
+	/** <tt>kDSetCurrentSoup</tt> */
 	public static final String COMMAND = "ssou";
 
 	private String name;

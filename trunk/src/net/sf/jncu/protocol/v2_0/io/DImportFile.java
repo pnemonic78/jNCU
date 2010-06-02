@@ -27,7 +27,6 @@ import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDImportFile</tt><br>
  * This command asks the desktop to import the file specified by the last path
  * command and the filename string. The response to this can be either a list of
  * translators (if there is more than one applicable translator) or an
@@ -45,6 +44,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DImportFile extends DockCommandFromNewton {
 
+	/** <tt>kDImportFile</tt> */
 	public static final String COMMAND = "impt";
 
 	private NSOFObject filename;

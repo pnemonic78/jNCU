@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v1_0.io;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * <tt>kDGetStoreNames</tt><br>
  * This command is sent when a list of store names is needed.
  * 
  * <pre>
@@ -34,6 +33,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  */
 public class DGetStoreNames extends DockCommandToNewtonBlank {
 
+	/** <tt>kDGetStoreNames</tt> */
 	public static final String COMMAND = "gsto";
 
 	/**

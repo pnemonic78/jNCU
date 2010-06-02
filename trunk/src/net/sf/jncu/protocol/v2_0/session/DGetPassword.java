@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.session;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
- * <tt>kDGetPassword</tt><br>
  * This command displays the password slip to let the user enter a password. The
  * string is displayed as the title of the slip. A <tt>kDPassword</tt> command
  * is returned.
@@ -37,6 +36,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  */
 public class DGetPassword extends DockCommandToNewtonScript {
 
+	/** <tt>kDGetPassword</tt> */
 	public static final String COMMAND = "gpwd";
 
 	/**

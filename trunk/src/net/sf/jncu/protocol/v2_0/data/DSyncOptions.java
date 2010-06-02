@@ -36,7 +36,6 @@ import net.sf.jncu.protocol.v1_0.io.Store;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
- * <tt>kDSyncOptions</tt><br>
  * This command is sent whenever the user on the Newton has selected selective
  * sync. The frame sent completely specifies which information is to be
  * synchronised.<br>
@@ -78,6 +77,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  */
 public class DSyncOptions extends DockCommandFromNewtonScript {
 
+	/** <tt>kDSyncOptions</tt> */
 	public static final String COMMAND = "sopt";
 
 	private SyncInfo syncInfo;
@@ -100,7 +100,7 @@ public class DSyncOptions extends DockCommandFromNewtonScript {
 		super.decodeData(data);
 		NSOFFrame frame = (NSOFFrame) getResult();
 		SyncInfo info = new SyncInfo();
-		info.decodeFrame(frame);
+		info.decode(frame);
 	}
 
 	/**
@@ -207,8 +207,7 @@ public class DSyncOptions extends DockCommandFromNewtonScript {
 		 * @return the frame.
 		 */
 		public NSOFFrame toFrame() {
-			NSOFFrame frame;
-			frame = new NSOFFrame();
+			NSOFFrame frame = new NSOFFrame();
 			frame.put(SLOT_PACKAGES, isPackages() ? new NSOFTrue() : new NSOFNil());
 			frame.put(SLOT_ALL, isSyncAll() ? new NSOFTrue() : new NSOFNil());
 			if (getStores() != null) {
@@ -229,7 +228,7 @@ public class DSyncOptions extends DockCommandFromNewtonScript {
 		 * @param frame
 		 *            the frame.
 		 */
-		public void decodeFrame(NSOFFrame frame) {
+		public void decode(NSOFFrame frame) {
 			NSOFObject value;
 
 			value = frame.get(SLOT_ALL);
@@ -255,7 +254,7 @@ public class DSyncOptions extends DockCommandFromNewtonScript {
 				Store store;
 				for (NSOFObject entry : entries) {
 					store = new Store();
-					store.decodeFrame((NSOFFrame) entry);
+					store.decode((NSOFFrame) entry);
 				}
 				setStores(stores);
 			}

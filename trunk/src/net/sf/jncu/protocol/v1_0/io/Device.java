@@ -144,8 +144,7 @@ public class Device {
 	 * @return the frame.
 	 */
 	public NSOFFrame toFrame() {
-		NSOFFrame frame;
-		frame = new NSOFFrame();
+		NSOFFrame frame = new NSOFFrame();
 		frame.put(SLOT_NAME, new NSOFString(getName()));
 		frame.put(SLOT_TYPE, new NSOFInteger(geType()));
 		if (getDiskType() == DISK) {
@@ -169,7 +168,7 @@ public class Device {
 	 * @param frame
 	 *            the frame.
 	 */
-	public void decodeFrame(NSOFFrame frame) {
+	public void decode(NSOFFrame frame) {
 		NSOFObject value;
 
 		value = frame.get(SLOT_ALIAS);

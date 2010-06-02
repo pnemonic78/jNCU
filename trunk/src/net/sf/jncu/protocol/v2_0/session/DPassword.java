@@ -28,7 +28,6 @@ import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 
 /**
- * <tt>kDPassword</tt><br>
  * This command returns the key received in the <tt>kDInitiateDocking</tt>
  * message encrypted using the password.
  * 
@@ -42,6 +41,7 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
  */
 public class DPassword extends DockCommandFromNewton implements IDockCommandToNewton {
 
+	/** <tt>kDPassword</tt> */
 	public static final String COMMAND = "pass";
 
 	/** <tt>kDBadPassword</tt>. */

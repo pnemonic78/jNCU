@@ -20,7 +20,6 @@
 package net.sf.jncu.protocol.v2_0.query;
 
 /**
- * <tt>kDCursorWhichEnd</tt><br>
  * Returns <tt>kDLongData</tt> with a <tt>0</tt> for unknown, <tt>1</tt> for
  * start and <tt>2</tt> for end.
  * 
@@ -34,6 +33,7 @@ package net.sf.jncu.protocol.v2_0.query;
  */
 public class DCursorWhichEnd extends DCursor {
 
+	/** <tt>kDCursorWhichEnd</tt> */
 	public static final String COMMAND = "whch";
 
 	public static enum eCursorWhichEnd {

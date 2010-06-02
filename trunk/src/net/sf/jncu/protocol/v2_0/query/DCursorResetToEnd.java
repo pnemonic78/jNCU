@@ -20,7 +20,6 @@
 package net.sf.jncu.protocol.v2_0.query;
 
 /**
- * <tt>kDCursorResetToEnd</tt><br>
  * Resets the cursor to the rightmost entry in the valid subset. A
  * <tt>kDRes</tt> of <tt>0</tt> is returned.
  * 
@@ -34,6 +33,7 @@ package net.sf.jncu.protocol.v2_0.query;
  */
 public class DCursorResetToEnd extends DCursor {
 
+	/** <tt>kDCursorResetToEnd</tt> */
 	public static final String COMMAND = "rend";
 
 	/**

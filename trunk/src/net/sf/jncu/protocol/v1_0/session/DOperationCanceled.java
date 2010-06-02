@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v1_0.session;
 import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
 
 /**
- * <tt>kDOperationCanceled</tt><br>
  * This command is sent when the user cancels an operation. Usually no action is
  * required on the receivers part except to return to the "ready" state.
  * 
@@ -33,6 +32,7 @@ import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
  */
 public class DOperationCanceled extends DockCommandFromNewtonBlank {
 
+	/** <tt>kDOperationCanceled</tt> */
 	public static final String COMMAND = "opca";
 
 	/**

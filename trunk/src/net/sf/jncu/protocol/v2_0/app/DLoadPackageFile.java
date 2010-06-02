@@ -25,7 +25,6 @@ import java.io.InputStream;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDLoadPackageFile</tt><br>
  * This command asks the desktop to load the package specified by the last path
  * command and the filename string. If the selected item is at the Desktop
  * level, a frame <code>{Name: "Business", whichVol: -1}</code> is sent.
@@ -41,6 +40,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DLoadPackageFile extends DockCommandFromNewton {
 
+	/** <tt>kDLoadPackageFile</tt> */
 	public static final String COMMAND = "lpfl";
 
 	private String filename;

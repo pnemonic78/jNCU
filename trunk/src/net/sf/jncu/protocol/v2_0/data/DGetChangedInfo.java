@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.data;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * <tt>kDGetChangedInfo</tt><br>
  * This command is like <tt>kDGetSoupInfo</tt> except that it only returns the
  * soup info if it has been changed since the time set by the
  * <tt>kDLastSyncTime</tt> command. If the info hasn't changed a <tt>kDRes</tt>
@@ -37,6 +36,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  */
 public class DGetChangedInfo extends DockCommandToNewtonBlank {
 
+	/** <tt>kDGetChangedInfo</tt> */
 	public static final String COMMAND = "cinf";
 
 	/**

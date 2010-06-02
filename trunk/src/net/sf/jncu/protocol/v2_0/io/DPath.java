@@ -33,7 +33,6 @@ import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.io.Device;
 
 /**
- * <tt>kDPath</tt><br>
  * This command returns the initial strings for the folder pop-up in the
  * Macintosh version of the window and for the directories list in the Windows
  * version. It is also returned after the user taps on a folder alias. In this
@@ -72,6 +71,7 @@ import net.sf.jncu.protocol.v1_0.io.Device;
  */
 public class DPath extends DockCommandToNewton {
 
+	/** <tt>kDPath</tt> */
 	public static final String COMMAND = "path";
 
 	private File path;

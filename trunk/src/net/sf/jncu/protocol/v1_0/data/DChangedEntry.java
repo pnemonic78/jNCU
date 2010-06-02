@@ -31,7 +31,6 @@ import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 
 /**
- * <tt>kDChangedEntry</tt><br>
  * This command is sent by the Newton in response to a
  * <tt>kDReturnChangedEntry</tt> command from the desktop. It can also be sent
  * by the desktop.
@@ -44,6 +43,7 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
  */
 public class DChangedEntry extends DockCommandFromNewton implements IDockCommandToNewton {
 
+	/** <tt>kDChangedEntry</tt> */
 	public static final String COMMAND = "cent";
 
 	private NSOFObject entry;

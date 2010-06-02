@@ -19,10 +19,15 @@
  */
 package net.sf.jncu.protocol.v2_0.app;
 
-import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
+import java.io.IOException;
+import java.io.InputStream;
+
+import net.sf.jncu.newton.stream.NSOFDecoder;
+import net.sf.jncu.newton.stream.NSOFFrame;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.v1_0.app.PackageInfo;
 
 /**
- * <tt>kDPackageInfo</tt><br>
  * This command is sent in response to a <tt>kDGetPackageInfo</tt> command. An
  * array is returned that contains a frame for each package with the specified
  * name (there may be more than one package with the same name but different
@@ -51,15 +56,41 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  * 
  * @author Moshe
  */
-public class DPackageInfo extends DockCommandFromNewtonScript {
+public class DPackageInfo extends DockCommandFromNewton {
 
+	/** <tt>kDPackageInfo</tt> */
 	public static final String COMMAND = "pinf";
+
+	private PackageInfo info;
 
 	/**
 	 * Creates a new command.
 	 */
 	public DPackageInfo() {
 		super(COMMAND);
+	}
+
+	@Override
+	protected void decodeData(InputStream data) throws IOException {
+		NSOFDecoder decoder = new NSOFDecoder();
+		PackageInfo pkg = new PackageInfo();
+		pkg.decode((NSOFFrame)decoder.decode(data));
+		setInfo(pkg);
+	}
+
+	/**
+	 * @return the info.
+	 */
+	public PackageInfo getInfo() {
+		return info;
+	}
+
+	/**
+	 * @param info
+	 *            the info.
+	 */
+	protected void setInfo(PackageInfo info) {
+		this.info = info;
 	}
 
 }

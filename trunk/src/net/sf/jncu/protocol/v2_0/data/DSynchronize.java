@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.data;
 import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
 
 /**
- * <tt>kDSynchronize</tt><br>
  * This command is sent to the desktop when the user taps the
  * <tt>Synchronize<tt> button on the Newton.
  * 
@@ -35,6 +34,7 @@ import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
  */
 public class DSynchronize extends DockCommandFromNewtonBlank {
 
+	/** <tt>kDSynchronize</tt> */
 	public static final String COMMAND = "sync";
 
 	/**

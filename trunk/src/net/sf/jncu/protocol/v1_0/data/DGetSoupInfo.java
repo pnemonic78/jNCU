@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v1_0.data;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * <tt>kDGetSoupInfo</tt><br>
  * Get soup information.
  * 
  * <pre>
@@ -34,6 +33,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  */
 public class DGetSoupInfo extends DockCommandToNewtonBlank {
 
+	/** <tt>kDGetSoupInfo</tt> */
 	public static final String COMMAND = "gsin";
 
 	/**

@@ -21,7 +21,6 @@ package net.sf.jncu.protocol.v2_0.io;
 
 
 /**
- * <tt>kDSetStoreGetNames</tt><br>
  * This command is the same as <tt>kDSetCurrentStore</tt> except that it returns
  * the names of the soups on the stores as if you'd send a
  * <tt>kDGetSoupNames</tt> command. It sets the current store on the Newton. A
@@ -45,6 +44,7 @@ package net.sf.jncu.protocol.v2_0.io;
  */
 public class DSetStoreGetNames extends DSetCurrentStore {
 
+	/** <tt>kDSetStoreGetNames</tt> */
 	public static final String COMMAND = "ssgn";
 
 	/**

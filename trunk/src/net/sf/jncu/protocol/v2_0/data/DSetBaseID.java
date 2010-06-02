@@ -25,7 +25,6 @@ import java.io.InputStream;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDSetBaseID</tt><br>
  * This command sets a new base id for the ids sent with subsequent
  * <tt>kDBackupIDs</tt> commands. The new base is a long which should be added
  * to every id in all <tt>kDBackupIDs</tt> commands until a
@@ -41,6 +40,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DSetBaseID extends DockCommandFromNewton {
 
+	/** <tt>kDSetBaseID</tt> */
 	public static final String COMMAND = "base";
 
 	private int id;

@@ -27,7 +27,6 @@ import net.sf.jncu.newton.stream.NSOFFrame;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
- * <tt>kDSoupInfo</tt><br>
  * This command is used to send a soup info frame. When received the info for
  * the current soup is set to the specified frame.
  * 
@@ -39,6 +38,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  */
 public class DSoupInfo extends DockCommandFromNewtonScript {
 
+	/** <tt>kDSoupInfo</tt> */
 	public static final String COMMAND = "sinf";
 
 	private Soup soup;

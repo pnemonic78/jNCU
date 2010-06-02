@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDSetVBOCompression</tt><br>
  * This command controls which VBOs are sent compressed to the desktop. VBO can
  * always be sent compressed, never compressed or only package VBOs sent
  * compressed.
@@ -36,26 +35,31 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * what
  * </pre>
  * 
- * @see eUncompressedVBOs
- * @see eCompressedPackagesOnly
- * @see eCompressedVBOs
+ * @see #UNCOMPRESSED
+ * @see #COMPRESSED_PACKAGES
+ * @see #COMPRESSED_VBO
  * @author moshew
  */
 public class DSetVBOCompression extends DockCommandToNewton {
 
+	/** <tt>kDSetVBOCompression</tt> */
 	public static final String COMMAND = "cvbo";
+
 	/**
+	 * <tt>eUncompressedVBOs</tt><br>
 	 * VBO sent uncompressed.
 	 */
-	public static final int eUncompressedVBOs = 0;
+	public static final int UNCOMPRESSED = 0;
 	/**
+	 * <tt>eCompressedPackagesOnly</tt><br>
 	 * Only package VBOs sent compressed.
 	 */
-	public static final int eCompressedPackagesOnly = 1;
+	public static final int COMPRESSED_PACKAGES = 1;
 	/**
+	 * <tt>eCompressedVBOs</tt><br>
 	 * VBO sent compressed.
 	 */
-	public static final int eCompressedVBOs = 2;
+	public static final int COMPRESSED_VBO = 2;
 
 	private int compression;
 

@@ -28,7 +28,6 @@ import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 
 /**
- * <tt>kDResult</tt><br>
  * This command is sent in response to any of the commands from the desktop that
  * don't request data. It lets the desktop know that things are still proceeding
  * OK.
@@ -43,6 +42,7 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
  */
 public class DResult extends DockCommandFromNewton implements IDockCommandToNewton {
 
+	/** <tt>kDResult</tt> */
 	public static final String COMMAND = "dres";
 
 	private int errorCode;

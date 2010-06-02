@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.data;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * <tt>kDGetSyncOptions</tt><br>
  * This command is sent when the desktop wants to get the selective sync or
  * selective restore info from the Newton.
  * 
@@ -35,6 +34,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  */
 public class DGetSyncOptions extends DockCommandToNewtonBlank {
 
+	/** <tt>kDGetSyncOptions</tt> */
 	public static final String COMMAND = "gsyn";
 
 	/**

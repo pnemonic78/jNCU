@@ -32,7 +32,6 @@ import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDSoupNames</tt><br>
  * This command is sent in response to a <tt>kDGetSoupNames</tt> command. It
  * returns the names and signatures of all the soups in the current store.
  * 
@@ -45,6 +44,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DSoupNames extends DockCommandFromNewton {
 
+	/** <tt>kDSoupNames</tt> */
 	public static final String COMMAND = "soup";
 
 	private List<String> names;

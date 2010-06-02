@@ -95,8 +95,7 @@ public class Store {
 	 * @return the frame.
 	 */
 	public NSOFFrame toFrame() {
-		NSOFFrame frame;
-		frame = new NSOFFrame();
+		NSOFFrame frame = new NSOFFrame();
 		frame.put(SLOT_NAME, new NSOFString(getName()));
 		frame.put(SLOT_SIGNATURE, new NSOFInteger(getSignature()));
 		frame.put(SLOT_TOTALSIZE, new NSOFInteger(getTotalSize()));
@@ -135,7 +134,7 @@ public class Store {
 	 * @param frame
 	 *            the frame.
 	 */
-	public void decodeFrame(NSOFFrame frame) {
+	public void decode(NSOFFrame frame) {
 		NSOFObject value;
 
 		value = frame.get(SLOT_DEFAULT);

@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDKeyboardChar</tt><br>
  * This command sends 1 character to the Newton for processing. The char is a 2
  * byte Unicode character + a 2 byte state. The state is defined as follows:
  * <ol>
@@ -43,6 +42,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DKeyboardChar extends DockCommandToNewton {
 
+	/** <tt>kDKeyboardChar</tt> */
 	public static final String COMMAND = "kbdc";
 
 	/** Command key down. */

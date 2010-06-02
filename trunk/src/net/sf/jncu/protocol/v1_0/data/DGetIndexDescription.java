@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v1_0.data;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * <tt>kDGetIndexDescription</tt><br>
  * This command requests the definition of the indexes that should be created
  * for the current soup.
  * 
@@ -35,6 +34,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  */
 public class DGetIndexDescription extends DockCommandToNewtonBlank {
 
+	/** <tt>kDGetIndexDescription</tt> */
 	public static final String COMMAND = "gind";
 
 	/**

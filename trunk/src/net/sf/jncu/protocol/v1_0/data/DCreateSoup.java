@@ -27,7 +27,6 @@ import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDCreateSoup</tt><br>
  * Create a soup.
  * 
  * <pre>
@@ -41,6 +40,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DCreateSoup extends DockCommandToNewton {
 
+	/** <tt>kDCreateSoup</tt> */
 	public static final String COMMAND = "csop";
 
 	private String name;

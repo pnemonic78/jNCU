@@ -32,7 +32,6 @@ import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDDesktopInfo</tt><br>
  * This command is used to negotiate the real protocol version. The protocol
  * version sent with the <tt>kDRequestToDock</tt> command is now fixed at
  * version 9 (the version used by the 1.0 ROMs) so we can support package
@@ -80,13 +79,14 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * desktopApps ref
  * </pre>
  * 
- * @see #kNBU
- * @see #kNCU
- * @see #kMacintosh
- * @see #kWindows
+ * @see #NBU
+ * @see #NCU
+ * @see #MACINTOSH
+ * @see #WINDOWS
  */
 public class DDesktopInfo extends DockCommandToNewton {
 
+	/** <tt>kDDesktopInfo</tt> */
 	public static final String COMMAND = "dinf";
 
 	/** The protocol version. */
@@ -103,10 +103,16 @@ public class DDesktopInfo extends DockCommandToNewton {
 	 */
 	public static final int NCU = 2;
 
-	/** Apple Macintosh desktop type. */
-	public static final int kMacintosh = 0;
-	/** Microsoft Windows desktop type. */
-	public static final int kWindows = 1;
+	/**
+	 * <tt>kMacintosh</tt><br>
+	 * Apple Macintosh desktop type.
+	 */
+	public static final int MACINTOSH = 0;
+	/**
+	 * <tt>kWindows</tt><br>
+	 * Microsoft Windows desktop type.
+	 */
+	public static final int WINDOWS = 1;
 
 	private int sessionType;
 	private int desktopType;
@@ -121,7 +127,7 @@ public class DDesktopInfo extends DockCommandToNewton {
 	public DDesktopInfo() {
 		super(COMMAND);
 		setSessionType(DInitiateDocking.SESSION_SETTING_UP);
-		setDesktopType(System.getProperty("os.name").startsWith("Windows") ? kWindows : kMacintosh);
+		setDesktopType(System.getProperty("os.name").startsWith("Windows") ? WINDOWS : MACINTOSH);
 		setSelectiveSync(true);
 		setEncryptedKey(rand.nextLong());
 		setDesktopApps(null);

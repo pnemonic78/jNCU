@@ -33,7 +33,6 @@ import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.io.Device;
 
 /**
- * <tt>kDFilesAndFolders</tt><br>
  * This command returns an array of information that's used to display a
  * standard file like dialog box on the Newton. Each element of the array is a
  * frame describing one file, folder or device. The individual frame would look
@@ -83,6 +82,7 @@ import net.sf.jncu.protocol.v1_0.io.Device;
  */
 public class DFilesAndFolders extends DockCommandToNewton {
 
+	/** <tt>kDFilesAndFolders</tt> */
 	public static final String COMMAND = "file";
 
 	private File folder;

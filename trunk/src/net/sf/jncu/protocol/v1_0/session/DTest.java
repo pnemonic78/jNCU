@@ -27,7 +27,6 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
- * <tt>kDTest</tt><br>
  * Test.
  * 
  * <pre>
@@ -38,6 +37,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  */
 public class DTest extends DockCommandToNewtonScript implements IDockCommandFromNewton {
 
+	/** <tt>kDTest</tt> */
 	public static final String COMMAND = "test";
 
 	/**

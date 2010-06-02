@@ -90,8 +90,7 @@ public class Soup {
 	 * @return the frame.
 	 */
 	public NSOFFrame toFrame() {
-		NSOFFrame frame;
-		frame = new NSOFFrame();
+		NSOFFrame frame = new NSOFFrame();
 		frame.put(SLOT_NAME, new NSOFString(getName()));
 		frame.put(SLOT_SIGNATURE, new NSOFInteger(getSignature()));
 		return frame;

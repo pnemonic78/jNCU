@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.data;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
- * <tt>kDRestoreOptions</tt><br>
  * This command is sent to the Newton to specify which applications and packages
  * can be restored. It is sent in response to a <tt>kDRestoreFile</tt> command
  * from the Newton. If the user elects to do a selective restore the Newton
@@ -44,6 +43,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  */
 public class DRestoreOptions extends DockCommandToNewtonScript {
 
+	/** <tt>kDRestoreOptions</tt> */
 	public static final String COMMAND = "ropt";
 
 	/**

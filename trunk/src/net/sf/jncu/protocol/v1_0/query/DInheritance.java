@@ -30,7 +30,6 @@ import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDInheritance</tt><br>
  * Inheritance. This is a response to a <tt>kDGetInheritance</tt> request.
  * 
  * <pre>
@@ -41,6 +40,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DInheritance extends DockCommandFromNewton {
 
+	/** <tt>kDInheritance</tt> */
 	public static final String COMMAND = "dinh";
 
 	private List<NSOFObject> inheritances;

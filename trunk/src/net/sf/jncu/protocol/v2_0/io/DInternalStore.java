@@ -28,7 +28,6 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.v1_0.io.Store;
 
 /**
- * <tt>kDInternalStore</tt><br>
  * This command returns information about the internal store. The info is in the
  * form of a frame that looks like this: <br>
  * <code>{<br>
@@ -51,6 +50,7 @@ import net.sf.jncu.protocol.v1_0.io.Store;
  */
 public class DInternalStore extends DockCommandFromNewton {
 
+	/** <tt>kDInternalStore</tt> */
 	public static final String COMMAND = "isto";
 
 	private Store store;
@@ -99,7 +99,7 @@ public class DInternalStore extends DockCommandFromNewton {
 	 */
 	protected void setStore(NSOFFrame frame) {
 		Store store = new Store();
-		store.decodeFrame(frame);
+		store.decode(frame);
 		setStore(store);
 	}
 

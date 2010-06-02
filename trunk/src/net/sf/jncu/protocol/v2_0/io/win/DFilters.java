@@ -30,7 +30,6 @@ import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDFilters</tt><br>
  * This command returns an array of filters to the Newton. It's sent in response
  * to a <tt>kDGetFilters</tt> command. The filter should be an array of strings
  * which are displayed in the filter pop-up. If the filter array is <tt>nil</tt>
@@ -46,6 +45,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DFilters extends DockCommandToNewton {
 
+	/** <tt>kDFilters</tt> */
 	public static final String COMMAND = "filt";
 
 	private final List<String> filters = new ArrayList<String>();

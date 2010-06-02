@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.session;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
- * <tt>kDRefTest</tt><br>
  * This command is first sent from the desktop to the Newton. The Newton
  * immediately echos the object back to the desktop. The object can be any
  * NewtonScript object (anything that can be sent through the object
@@ -41,6 +40,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  */
 public class DRefTest extends DockCommandToNewtonScript {
 
+	/** <tt>kDRefTest</tt> */
 	public static final String COMMAND = "rtst";
 
 	/**

@@ -26,7 +26,6 @@ import net.sf.jncu.newton.stream.NSOFEncoder;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDSetCurrentStore</tt><br>
  * This command sets the current store on the Newton. A store frame is sent to
  * uniquely identify the store to be set: <br>
  * <code>
@@ -46,6 +45,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DSetCurrentStore extends DockCommandToNewton {
 
+	/** <tt>kDSetCurrentStore</tt> */
 	public static final String COMMAND = "ssto";
 
 	private Store store;

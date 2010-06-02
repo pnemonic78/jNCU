@@ -26,7 +26,6 @@ import net.sf.jncu.newton.stream.NSOFEncoder;
 import net.sf.jncu.newton.stream.NSOFObject;
 
 /**
- * <tt>kDCursorMap</tt><br>
  * Applies the specified function to each of the cursor's entries in turn and
  * returns an array of the results. A <tt>kDRefResult</tt> is returned. See
  * MapCursor in NPG.
@@ -42,6 +41,7 @@ import net.sf.jncu.newton.stream.NSOFObject;
  */
 public class DCursorMap extends DCursor {
 
+	/** <tt>kDCursorMap</tt> */
 	public static final String COMMAND = "cmap";
 
 	private NSOFObject function;

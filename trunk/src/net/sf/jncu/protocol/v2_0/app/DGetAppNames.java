@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDGetAppNames</tt><br>
  * This command asks the Newton to send information about the applications
  * installed on the Newton. See the <tt>kDAppNames</tt> description above for
  * details of the information returned. The <tt>return what</tt> parameter
@@ -47,6 +46,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DGetAppNames extends DockCommandToNewton {
 
+	/** <tt>kDGetAppNames</tt> */
 	public static final String COMMAND = "gapp";
 
 	/** Return names and soups for all stores. */

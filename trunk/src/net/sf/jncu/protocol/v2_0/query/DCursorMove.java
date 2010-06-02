@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * <tt>kDCursorMove</tt><br>
  * Moves the cursor forward <tt>count</tt> entries from its current position and
  * returns that entry. Returns nil if the cursor is moved past the last entry.
  * 
@@ -38,6 +37,7 @@ import java.io.OutputStream;
  */
 public class DCursorMove extends DCursor {
 
+	/** <tt>kDCursorMove</tt> */
 	public static final String COMMAND = "move";
 
 	private int count;

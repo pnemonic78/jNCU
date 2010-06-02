@@ -24,7 +24,6 @@ import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
- * <tt>kDRemovePackage</tt><br>
  * This command tells the Newton to delete a package. It can be used during
  * selective restore or any other time.
  * 
@@ -38,6 +37,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  */
 public class DRemovePackage extends DockCommandToNewtonScript {
 
+	/** <tt>kDRemovePackage</tt> */
 	public static final String COMMAND = "rmvp";
 
 	/**

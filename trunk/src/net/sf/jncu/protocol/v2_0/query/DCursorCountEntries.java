@@ -20,7 +20,6 @@
 package net.sf.jncu.protocol.v2_0.query;
 
 /**
- * <tt>kDCursorCountEntries</tt><br>
  * Returns the count of the entries matching the query specification. A
  * <tt>kDLongData</tt> is returned.
  * 
@@ -34,6 +33,7 @@ package net.sf.jncu.protocol.v2_0.query;
  */
 public class DCursorCountEntries extends DCursor {
 
+	/** <tt>kDCursorCountEntries</tt> */
 	public static final String COMMAND = "cnt ";
 
 	/**

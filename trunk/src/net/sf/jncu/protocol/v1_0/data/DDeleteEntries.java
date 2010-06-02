@@ -27,7 +27,6 @@ import java.util.TreeSet;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDDeleteEntries</tt><br>
  * This command is sent to delete one or more entries from the current soup.
  * 
  * <pre>
@@ -41,6 +40,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DDeleteEntries extends DockCommandToNewton {
 
+	/** <tt>kDDeleteEntries</tt> */
 	public static final String COMMAND = "dele";
 
 	private final Set<Integer> ids = new TreeSet<Integer>();

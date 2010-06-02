@@ -28,7 +28,6 @@ import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDAddEntry</tt><br>
  * This command is sent when the desktop wants to add an entry to the current
  * soup.
  * 
@@ -42,6 +41,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DAddEntry extends DockCommandToNewton {
 
+	/** <tt>kDAddEntry</tt> */
 	public static final String COMMAND = "adde";
 
 	private NSOFBinaryObject entry;

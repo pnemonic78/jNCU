@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.io;
 import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
 
 /**
- * <tt>kDStartKeyboardPassthrough</tt><br>
  * This command is sent to enter keyboard pass-through mode. It can be followed
  * by <tt>kDKeyboardChar</tt>, <tt>kDKeyboardString</tt>, <tt>kDHello</tt> and
  * <tt>kDOperationComplete</tt> commands.
@@ -36,6 +35,7 @@ import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
  */
 public class DKeyboardPassthrough extends DockCommandFromNewtonBlank {
 
+	/** <tt>kDStartKeyboardPassthrough</tt> */
 	public static final String COMMAND = "kybd";
 
 	/**

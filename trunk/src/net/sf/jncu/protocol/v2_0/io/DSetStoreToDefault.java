@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.io;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * <tt>kDSetStoreToDefault</tt><br>
  * This command can be used instead of <tt>kDSetCurrentStore</tt>. It sets the
  * current store to the one the user has picked as the default store (internal
  * or card).
@@ -36,6 +35,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  */
 public class DSetStoreToDefault extends DockCommandToNewtonBlank {
 
+	/** <tt>kDSetStoreToDefault</tt> */
 	public static final String COMMAND = "sdef";
 
 	/**

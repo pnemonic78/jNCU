@@ -20,7 +20,6 @@
 package net.sf.jncu.protocol.v2_0.query;
 
 /**
- * <tt>kDCursorFree</tt><br>
  * Disposes the cursor and returns a <tt>kDRes</tt> with a <tt>0</tt> or error.
  * 
  * <pre>
@@ -33,6 +32,7 @@ package net.sf.jncu.protocol.v2_0.query;
  */
 public class DCursorFree extends DCursor {
 
+	/** <tt>kDCursorFree</tt> */
 	public static final String COMMAND = "cfre";
 
 	/**

@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.data;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
- * <tt>kDRestorePackage</tt><br>
  * This command sends all the entries associated with a package to the Newton in
  * a single array. Packages are made up of at least 2 entries: one for the
  * package info and one for each part in the package. All of these entries must
@@ -40,6 +39,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  */
 public class DRestorePackage extends DockCommandToNewtonScript {
 
+	/** <tt>kDRestorePackage</tt> */
 	public static final String COMMAND = "rpkg";
 
 	/**

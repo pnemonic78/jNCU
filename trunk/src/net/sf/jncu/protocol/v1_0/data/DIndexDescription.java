@@ -27,7 +27,6 @@ import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDIndexDescription</tt><br>
  * This command specifies the indexes that should be created for the current
  * soup.
  * 
@@ -39,6 +38,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DIndexDescription extends DockCommandFromNewton {
 
+	/** <tt>kDIndexDescription</tt> */
 	public static final String COMMAND = "indx";
 
 	private NSOFObject indexes;

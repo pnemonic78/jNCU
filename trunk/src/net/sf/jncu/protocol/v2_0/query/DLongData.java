@@ -25,7 +25,6 @@ import java.io.InputStream;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDLongData</tt><br>
  * Newton returns a long value. The interpretation of the data depends on the
  * command which prompted the return of the long value.
  * 
@@ -39,6 +38,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DLongData extends DockCommandFromNewton {
 
+	/** <tt>kDLongData</tt> */
 	public static final String COMMAND = "ldta";
 
 	private int data;

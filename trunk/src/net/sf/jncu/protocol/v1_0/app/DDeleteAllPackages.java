@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v1_0.app;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * <tt>kDDeleteAllPackages</tt><br>
  * Delete all packages.
  * 
  * <pre>
@@ -33,6 +32,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  */
 public class DDeleteAllPackages extends DockCommandToNewtonBlank {
 
+	/** <tt>kDDeleteAllPackages</tt> */
 	public static final String COMMAND = "dpkg";
 
 	/**

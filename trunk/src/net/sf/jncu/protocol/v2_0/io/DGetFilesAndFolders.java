@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.io;
 import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
 
 /**
- * <tt>kDGetFilesAndFolders</tt><br>
  * This command requests that the desktop system return the files and folders
  * necessary to open a standard file like dialog.
  * 
@@ -35,6 +34,7 @@ import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
  */
 public class DGetFilesAndFolders extends DockCommandFromNewtonBlank {
 
+	/** <tt>kDGetFilesAndFolders</tt> */
 	public static final String COMMAND = "gfil";
 
 	public DGetFilesAndFolders() {

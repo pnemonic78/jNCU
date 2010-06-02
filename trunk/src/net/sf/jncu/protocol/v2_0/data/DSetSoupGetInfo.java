@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDSetSoupGetInfo</tt><br>
  * This command is like a combination of <tt>kDSetCurrentSoup</tt> and
  * <tt>kDGetChangedInfo</tt>. It sets the current soup -- see
  * <tt>kDSetCurrentSoup</tt> for details. A <tt>kDSoupInfo</tt> or
@@ -41,6 +40,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DSetSoupGetInfo extends DockCommandToNewton {
 
+	/** <tt>kDSetSoupGetInfo</tt> */
 	public static final String COMMAND = "ssgi";
 
 	private String name;

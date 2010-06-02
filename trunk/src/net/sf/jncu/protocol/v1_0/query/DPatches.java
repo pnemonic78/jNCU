@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v1_0.query;
 import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
 
 /**
- * <tt>kDPatches</tt><br>
  * Patches.
  * 
  * <pre>
@@ -32,6 +31,7 @@ import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
  */
 public class DPatches extends DockCommandFromNewtonBlank {
 
+	/** <tt>kDPatches</tt> */
 	public static final String COMMAND = "patc";
 
 	/**

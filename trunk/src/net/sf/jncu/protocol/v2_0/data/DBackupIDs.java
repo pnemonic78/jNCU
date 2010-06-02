@@ -27,7 +27,6 @@ import java.util.TreeSet;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDBackupIDs</tt><br>
  * This command is sent in response to a <tt>kDBackupSoup</tt> command (see that
  * command for command sequence details). The length for this command is always
  * set to <tt>-1</tt> indicating that the length is unknown. The ids are
@@ -52,6 +51,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DBackupIDs extends DockCommandFromNewton {
 
+	/** <tt>kDBackupIDs</tt> */
 	public static final String COMMAND = "bids";
 
 	private Set<Short> ids;

@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.app;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
- * <tt>kDAppNames</tt><br>
  * This command returns the names of the applications present on the Newton. It
  * also, optionally, returns the names of the soups associated with each
  * application. The array looks like this:
@@ -48,6 +47,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  */
 public class DAppNames extends DockCommandFromNewtonScript {
 
+	/** <tt>kDAppNames</tt> */
 	public static final String COMMAND = "appn";
 
 	/**

@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDSetTimeout</tt><br>
  * This command sets the timeout for the connection (the time the Newton will
  * wait to receive data for it disconnects). This time is usually set to 30
  * seconds.
@@ -40,6 +39,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DSetTimeout extends DockCommandToNewton {
 
+	/** <tt>kDSetTimeout</tt> */
 	public static final String COMMAND = "stim";
 
 	private int timeout = 30;

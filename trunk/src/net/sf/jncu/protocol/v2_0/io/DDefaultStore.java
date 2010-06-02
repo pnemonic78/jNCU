@@ -28,7 +28,6 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.v1_0.io.Store;
 
 /**
- * <tt>kDDefaultStore</tt><br>
  * This command returns a store info frame describing the default store. This
  * frame contains the same info returned for all stores by the
  * <tt>kDStoreNames</tt> command except that it doesn't include the store info.
@@ -44,6 +43,7 @@ import net.sf.jncu.protocol.v1_0.io.Store;
  */
 public class DDefaultStore extends DockCommandFromNewton {
 
+	/** <tt>kDDefaultStore</tt> */
 	public static final String COMMAND = "dfst";
 
 	private Store store;
@@ -95,7 +95,7 @@ public class DDefaultStore extends DockCommandFromNewton {
 	 */
 	protected void setStore(NSOFFrame frame) {
 		Store store = new Store();
-		store.decodeFrame(frame);
+		store.decode(frame);
 		setStore(store);
 	}
 

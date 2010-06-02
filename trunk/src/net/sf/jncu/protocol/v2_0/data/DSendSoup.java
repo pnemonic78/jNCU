@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.data;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * <tt>kDSendSoup</tt><br>
  * This command requests that all of the entries in a soup be returned to the
  * desktop. The Newton responds with a series of <tt>kDEntry</tt> commands for
  * all the entries in the current soup followed by a <tt>kDBackupSoupDone</tt>
@@ -42,6 +41,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  */
 public class DSendSoup extends DockCommandToNewtonBlank {
 
+	/** <tt>kDSendSoup</tt> */
 	public static final String COMMAND = "snds";
 
 	/**
