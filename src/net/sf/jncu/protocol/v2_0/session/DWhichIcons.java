@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDWhichIcons</tt><br>
  * This command is used to customise the set of icons shown on the Newton. The
  * <tt>iconMask</tt> is a long that indicates which icons should be shown. For
  * example, to show all icons you would use this:
@@ -50,6 +49,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DWhichIcons extends DockCommandToNewton {
 
+	/** <tt>kDWhichIcons</tt> */
 	public static final String COMMAND = "wicn";
 
 	private int icons;

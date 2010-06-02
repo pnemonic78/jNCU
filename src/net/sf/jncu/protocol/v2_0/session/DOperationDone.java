@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.session;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * <tt>kDOperationDone</tt><br>
  * This command is sent when an operation is completed. It's only sent in
  * situations where there might be some ambiguity. Currently, there are two
  * situations where this is sent. When the desktop finishes a restore it sends
@@ -36,6 +35,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  */
 public class DOperationDone extends DockCommandToNewtonBlank {
 
+	/** <tt>kDOperationDone</tt> */
 	public static final String COMMAND = "opdn";
 
 	/**

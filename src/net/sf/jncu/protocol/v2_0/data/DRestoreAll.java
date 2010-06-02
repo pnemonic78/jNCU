@@ -25,7 +25,6 @@ import java.io.InputStream;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDRestoreAll</tt><br>
  * This command is sent to the desktop if the user elects to restore all
  * information. <tt>Merge</tt> is <tt>0</tt> to not merge, <tt>1</tt> to merge.
  * 
@@ -39,6 +38,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DRestoreAll extends DockCommandFromNewton {
 
+	/** <tt>kDRestoreAll</tt> */
 	public static final String COMMAND = "rall";
 
 	private boolean merge;

@@ -26,7 +26,6 @@ import java.net.ProtocolException;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDRequestToDock</tt><br>
  * This command is sent to the desktop after the connection is established using
  * AppleTalk, serial, etc. (when the user taps the "connect" button). The
  * protocol version is the version of the messaging protocol that's being used
@@ -41,6 +40,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DRequestToDock extends DockCommandFromNewton {
 
+	/** <tt>kDRequestToDock</tt> */
 	public static final String COMMAND = "rtdk";
 
 	/** The protocol version. */

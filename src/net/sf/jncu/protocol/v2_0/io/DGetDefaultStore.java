@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.io;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * <tt>kDGetDefaultStore</tt><br>
  * This command returns info about the default store. This info is the same as
  * the info returned by the <tt>kDGetStoreNames</tt> command (see
  * <tt>kDStoreNames</tt> for details). The default store is the one used by
@@ -37,6 +36,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  */
 public class DGetDefaultStore extends DockCommandToNewtonBlank {
 
+	/** <tt>kDGetDefaultStore</tt> */
 	public static final String COMMAND = "gdfs";
 
 	/**

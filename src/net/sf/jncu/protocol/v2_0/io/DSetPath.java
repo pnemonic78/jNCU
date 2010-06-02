@@ -30,7 +30,6 @@ import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDSetPath</tt><br>
  * This command tells the desktop that the user has changed the path. The
  * desktop responds with a new list of files and folders. The path is sent as an
  * array of strings rather than an array of frames as all of the other commands
@@ -61,6 +60,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DSetPath extends DockCommandFromNewton {
 
+	/** <tt>kDSetPath</tt> */
 	public static final String COMMAND = "spth";
 
 	private File path;

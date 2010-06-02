@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDCreateDefaultSoup</tt><br>
  * This command creates a soup on the current store. It uses a registered
  * <tt>soupdef</tt> to create the soup meaning that the indexes, etc. are
  * determined by the ROM. If no <tt>soupdef</tt> exists for the specified soup
@@ -41,6 +40,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DCreateDefaultSoup extends DockCommandToNewton {
 
+	/** <tt>kDCreateDefaultSoup</tt> */
 	public static final String COMMAND = "cdsp";
 
 	private String name;

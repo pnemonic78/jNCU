@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDSetSoupSignature</tt><br>
  * This commands sets the signature of the current soup to the specified value.
  * A <tt>kDResult</tt> with value <tt>0</tt> (or the error value if an error
  * occurred) is sent to the desktop in response.
@@ -40,6 +39,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DSetSoupSignature extends DockCommandToNewton {
 
+	/** <tt>kDSetSoupSignature</tt> */
 	public static final String COMMAND = "ssos";
 
 	private int signature;

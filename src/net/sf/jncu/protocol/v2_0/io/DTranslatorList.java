@@ -30,7 +30,6 @@ import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDTranslatorList</tt><br>
  * This command returns an array of translators that can be used with the
  * specified file. The list can include DataViz translators and tab templates.
  * The array should be in the order that the translators should be displayed in
@@ -46,6 +45,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DTranslatorList extends DockCommandToNewton {
 
+	/** <tt>kDTranslatorList</tt> */
 	public static final String COMMAND = "trnl";
 
 	private final List<String> translators = new ArrayList<String>();

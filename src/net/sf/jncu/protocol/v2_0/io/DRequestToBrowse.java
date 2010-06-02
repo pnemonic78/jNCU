@@ -31,7 +31,6 @@ import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDRequestToBrowse</tt><br>
  * This command is sent to a desktop that the Newton wishes to browse files on.
  * File types can be 'import', 'packages', 'syncFiles' or an array of strings to
  * use for filtering.
@@ -46,6 +45,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DRequestToBrowse extends DockCommandFromNewton {
 
+	/** <tt>kDRequestToBrowse</tt> */
 	public static final String COMMAND = "rtbr";
 
 	/** List of files to import. */

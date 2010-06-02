@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v1_0.session;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * <tt>kDDisconnect</tt><br>
  * This command is sent to the Newton when the docking operation is complete.
  * 
  * <pre>
@@ -32,6 +31,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  */
 public class DDisconnect extends DockCommandToNewtonBlank {
 
+	/** <tt>kDDisconnect</tt> */
 	public static final String COMMAND = "disc";
 
 	/**

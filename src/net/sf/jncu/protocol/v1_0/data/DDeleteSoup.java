@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDDeleteSoup</tt><br>
  * This command is used by restore to delete a soup if it exists on the Newton
  * but not on the desktop.
  * 
@@ -39,6 +38,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DDeleteSoup extends DockCommandToNewton {
 
+	/** <tt>kDDeleteSoup</tt> */
 	public static final String COMMAND = "dsou";
 
 	private String name;

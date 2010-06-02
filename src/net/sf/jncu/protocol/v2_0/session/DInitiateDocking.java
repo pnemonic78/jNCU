@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDInitiateDocking</tt><br>
  * Ask Newton to start docking process.<br>
  * This command should be sent to the Newton in response to a kDRequestToDock
  * command. Session type should be 4 to load a package.
@@ -38,6 +37,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DInitiateDocking extends DockCommandToNewton {
 
+	/** <tt>kDInitiateDocking</tt> */
 	public static final String COMMAND = "dock";
 
 	public static final int SESSION_NONE = 0;

@@ -25,7 +25,6 @@ import java.io.InputStream;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDNewtonInfo</tt><br>
  * This command is used to negotiate the real protocol version. See
  * <tt>kDDesktopInfo</tt> for more info. The password key is used as part of the
  * password verification.
@@ -39,6 +38,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DNewtonInfo extends DockCommandFromNewton {
 
+	/** <tt>kDNewtonInfo</tt> */
 	public static final String COMMAND = "ninf";
 
 	private int protocolVersion;

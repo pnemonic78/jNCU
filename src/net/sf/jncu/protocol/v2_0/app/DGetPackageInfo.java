@@ -19,12 +19,14 @@
  */
 package net.sf.jncu.protocol.v2_0.app;
 
-import net.sf.jncu.newton.stream.NSOFObject;
+import java.io.IOException;
+import java.io.OutputStream;
+
+import net.sf.jncu.newton.stream.NSOFEncoder;
 import net.sf.jncu.newton.stream.NSOFString;
-import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
+import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDGetPackageInfo</tt><br>
  * The package info for the specified package is returned. See the
  * <tt>kDPackageInfo</tt> command described below. Note that multiple packages
  * could be returned because there may be multiple packages with the same title
@@ -39,9 +41,12 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  * 
  * @author Moshe
  */
-public class DGetPackageInfo extends DockCommandToNewtonScript {
+public class DGetPackageInfo extends DockCommandToNewton {
 
+	/** <tt>kDGetPackageInfo</tt> */
 	public static final String COMMAND = "gpin";
+
+	private String title;
 
 	/**
 	 * Constructs a new command.
@@ -51,11 +56,28 @@ public class DGetPackageInfo extends DockCommandToNewtonScript {
 	}
 
 	@Override
-	public void setObject(NSOFObject object) {
-		if (!(object instanceof NSOFString)) {
-			throw new ClassCastException("title required");
-		}
-		super.setObject(object);
+	protected void writeCommandData(OutputStream data) throws IOException {
+		NSOFEncoder encoder = new NSOFEncoder();
+		encoder.encode(new NSOFString(getTitle()), data);
+	}
+
+	/**
+	 * Get the package title.
+	 * 
+	 * @return the title.
+	 */
+	public String getTitle() {
+		return title;
+	}
+
+	/**
+	 * Set the package title.
+	 * 
+	 * @param title
+	 *            the title.
+	 */
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 }

@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v1_0.app;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * <tt>kDDeletePkgDir</tt><br>
  * Delete package dir.
  * 
  * <pre>
@@ -34,6 +33,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  */
 public class DDeletePkgDir extends DockCommandToNewtonBlank {
 
+	/** <tt>kDDeletePkgDir</tt> */
 	public static final String COMMAND = "dpkd";
 
 	/**

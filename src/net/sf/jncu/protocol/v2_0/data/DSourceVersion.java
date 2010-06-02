@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDSourceVersion</tt><br>
  * Tells the Newton the version that the subsequent data is from. For example,
  * if a 1.x data file is being restored the desktop would tell the Newton that
  * version <tt>1</tt> data was coming. Same for importing a 1.x NTF file.
@@ -54,6 +53,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DSourceVersion extends DockCommandToNewton {
 
+	/** <tt>kDSourceVersion</tt> */
 	public static final String COMMAND = "sver";
 
 	/** Source versions. */

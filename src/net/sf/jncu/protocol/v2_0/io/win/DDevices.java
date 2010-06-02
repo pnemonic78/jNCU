@@ -33,7 +33,6 @@ import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.io.Device;
 
 /**
- * <tt>kDDevices</tt><br>
  * This command returns an array of frames describing devices. These are the
  * devices which will appear in the devices pop-up in the Windows file browsing
  * dialog. Each frame in the array should look like this:<br>
@@ -55,6 +54,7 @@ import net.sf.jncu.protocol.v1_0.io.Device;
  */
 public class DDevices extends DockCommandToNewton {
 
+	/** <tt>kDDevices</tt> */
 	public static final String COMMAND = "devs";
 
 	protected static final char driveChar = ':';

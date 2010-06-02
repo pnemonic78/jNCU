@@ -27,7 +27,6 @@ import java.util.TreeSet;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDSoupIDs</tt><br>
  * This command is sent in response to a <tt>kDGetSoupIDs</tt> command. It
  * returns all the IDs from the current soup.
  * 
@@ -40,6 +39,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DSoupIDs extends DockCommandFromNewton {
 
+	/** <tt>kDSoupIDs</tt> */
 	public static final String COMMAND = "sids";
 
 	private final Set<Integer> ids = new TreeSet<Integer>();

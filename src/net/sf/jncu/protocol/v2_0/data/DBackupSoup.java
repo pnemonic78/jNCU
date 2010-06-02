@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDBackupSoup</tt><br>
  * This command is used to backup a soup. The result is a series of commands
  * that includes all entries changed since the last sync time (set by a previous
  * command), all entries with a unique ID greater than the one specified, and
@@ -100,6 +99,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DBackupSoup extends DockCommandToNewton {
 
+	/** <tt>kDBackupSoup</tt> */
 	public static final String COMMAND = "bksp";
 
 	private int id;

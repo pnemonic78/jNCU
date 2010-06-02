@@ -34,7 +34,6 @@ import net.sf.jncu.newton.stream.NSOFSymbol;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDSoupsChanged</tt><br>
  * This command returns information about what was imported into the Newton.
  * Each array element specifies a soup and how many entries were added to it.
  * There will typically be only one frame in the array. The frame will look like
@@ -51,6 +50,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DSoupsChanged extends DockCommandToNewton {
 
+	/** <tt>kDSoupsChanged</tt> */
 	public static final String COMMAND = "schg";
 
 	private final Set<Soup> soups = new TreeSet<Soup>();
@@ -164,8 +164,7 @@ public class DSoupsChanged extends DockCommandToNewton {
 		 * @return the frame.
 		 */
 		public NSOFFrame toFrame() {
-			NSOFFrame frame;
-			frame = new NSOFFrame();
+			NSOFFrame frame = new NSOFFrame();
 			frame.put(SLOT_SOUP, new NSOFString(getSoupName()));
 			frame.put(SLOT_COUNT, new NSOFInteger(getCount()));
 			return frame;

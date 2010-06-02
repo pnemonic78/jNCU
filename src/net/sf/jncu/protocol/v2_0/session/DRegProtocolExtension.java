@@ -27,7 +27,6 @@ import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDRegProtocolExtension</tt><br>
  * This command installs a protocol extension into the Newton. The extension
  * lasts for the length of the current connection (in other words, you have to
  * install the extension every time you connect). The function is a Newton
@@ -47,6 +46,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DRegProtocolExtension extends DockCommandToNewton {
 
+	/** <tt>kDRegProtocolExtension</tt> */
 	public static final String COMMAND = "pext";
 
 	private String extension;

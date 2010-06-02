@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.io;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * <tt>kDGetInternalStore</tt><br>
  * This command requests the Newton to return info about the internal store. The
  * result is described with the <tt>KDInternalStore</tt> command.
  * 
@@ -35,6 +34,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  */
 public class DGetInternalStore extends DockCommandToNewtonBlank {
 
+	/** <tt>kDGetInternalStore</tt> */
 	public static final String COMMAND = "gist";
 
 	/**

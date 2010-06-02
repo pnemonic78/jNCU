@@ -25,7 +25,6 @@ import java.io.InputStream;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDAddedID</tt><br>
  * This command is sent in response to a <tt>kDAddEntry</tt> command from the
  * desktop. It returns the ID that the entry was given when it was added to the
  * current soup.
@@ -38,6 +37,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DAddedID extends DockCommandFromNewton {
 
+	/** <tt>kDAddedID</tt> */
 	public static final String COMMAND = "adid";
 
 	private int id;

@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v1_0.query;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * <tt>kDGetInheritance</tt><br>
  * Get inheritance.
  * 
  * <pre>
@@ -34,6 +33,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  */
 public class DGetInheritance extends DockCommandToNewtonBlank {
 
+	/** <tt>kDGetInheritance</tt> */
 	public static final String COMMAND = "ginh";
 
 	/**

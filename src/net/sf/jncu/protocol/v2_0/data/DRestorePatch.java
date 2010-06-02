@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDRestorePatch</tt><br>
  * This command is used to restore the patch backed up with
  * <tt>kDGetPatches</tt>. The Newton returns a <tt>kDResult</tt> of 0 (or an
  * error if appropriate) if the patch wasn't installed. If the patch was
@@ -41,6 +40,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DRestorePatch extends DockCommandToNewton {
 
+	/** <tt>kDRestorePatch</tt> */
 	public static final String COMMAND = "rpat";
 
 	private int patch;

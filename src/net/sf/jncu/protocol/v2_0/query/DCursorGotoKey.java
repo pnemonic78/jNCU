@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * <tt>kDCursorGotoKey</tt><br>
  * The entry at the specified key location is returned. <tt>Nil</tt> is returned
  * if there is no entry with the specified key.
  * 
@@ -38,6 +37,7 @@ import java.io.OutputStream;
  */
 public class DCursorGotoKey extends DCursor {
 
+	/** <tt>kDCursorGotoKey</tt> */
 	public static final String COMMAND = "goto";
 
 	private int key;

@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.data;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
- * <tt>kDRestoreFile</tt><br>
  * This command asks the desktop to restore the file specified by the last path
  * command and the filename. If the selected item is at the Desktop level, a
  * frame <code>{name: "Business", whichVol:-1}</code> is sent. Otherwise, a
@@ -38,6 +37,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  */
 public class DRestoreFile extends DockCommandFromNewtonScript {
 
+	/** <tt>kDRestoreFile</tt> */
 	public static final String COMMAND = "rsfl";
 
 	/**

@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.data;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
- * <tt>kDSyncResults</tt><br>
  * This command can optionally be sent at the end of synchronization. If it is
  * sent, the results are displayed on the Newton. The array looks like this: <br>
  * <code>[["store name", restored, "soup name", count, "soup name" count],<br>
@@ -43,6 +42,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  */
 public class DSyncResults extends DockCommandToNewtonScript {
 
+	/** <tt>kDSyncResults</tt> */
 	public static final String COMMAND = "sres";
 
 	/**

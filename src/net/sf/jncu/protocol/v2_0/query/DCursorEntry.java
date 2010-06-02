@@ -20,7 +20,6 @@
 package net.sf.jncu.protocol.v2_0.query;
 
 /**
- * <tt>kDCursorEntry</tt><br>
  * Returns the entry at the current cursor.
  * 
  * <pre>
@@ -33,6 +32,7 @@ package net.sf.jncu.protocol.v2_0.query;
  */
 public class DCursorEntry extends DCursor {
 
+	/** <tt>kDCursorEntry</tt> */
 	public static final String COMMAND = "crsr";
 
 	/**

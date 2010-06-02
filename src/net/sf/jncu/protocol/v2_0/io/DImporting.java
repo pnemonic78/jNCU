@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.io;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * <tt>kDImporting</tt><br>
  * This command is sent to let the Newton know that an import operation is
  * starting. The Newton will display an appropriate message after it gets this
  * message.
@@ -36,6 +35,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  */
 public class DImporting extends DockCommandToNewtonBlank {
 
+	/** <tt>kDImporting</tt> */
 	public static final String COMMAND = "dimp";
 
 	/**

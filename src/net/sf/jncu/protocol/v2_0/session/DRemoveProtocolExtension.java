@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDRemoveProtocolExtension</tt><br>
  * This command removes a previously installed protocol extension.
  * 
  * <pre>
@@ -38,6 +37,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DRemoveProtocolExtension extends DockCommandToNewton {
 
+	/** <tt>kDRemoveProtocolExtension</tt> */
 	public static final String COMMAND = "rpex";
 
 	private String extension;

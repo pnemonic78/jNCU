@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.query;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
- * <tt>kDRefResult</tt><br>
  * Reference result.
  * 
  * <pre>
@@ -35,6 +34,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  */
 public class DRefResult extends DockCommandFromNewtonScript {
 
+	/** <tt>kDRefResult</tt> */
 	public static final String COMMAND = "ref ";
 
 	/**

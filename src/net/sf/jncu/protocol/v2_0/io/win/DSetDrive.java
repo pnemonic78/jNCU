@@ -25,7 +25,6 @@ import java.io.InputStream;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDSetDrive</tt><br>
  * This command asks the desktop to change the drive on the desktop and set the
  * directory to the current directory for that drive. The string contains the
  * drive letter followed by a colon e.g. "<tt>C:</tt>". Windows only.
@@ -40,6 +39,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DSetDrive extends DockCommandFromNewton {
 
+	/** <tt>kDSetDrive</tt> */
 	public static final String COMMAND = "sdrv";
 
 	private String drive;

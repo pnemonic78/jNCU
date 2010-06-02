@@ -28,7 +28,6 @@ import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 
 /**
- * <tt>kDUnknownCommand</tt><br>
  * This command is sent when a message is received that is unknown. When the
  * desktop receives this command it can either install a protocol extension and
  * try again or return an error to the Newton. If the built-in Newton code
@@ -45,6 +44,7 @@ import net.sf.jncu.protocol.IDockCommandFromNewton;
  */
 public class DUnknownCommand extends DockCommandToNewton implements IDockCommandFromNewton {
 
+	/** <tt>kDUnknownCommand</tt> */
 	public static final String COMMAND = "unkn";
 
 	private String badCommand;

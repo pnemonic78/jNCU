@@ -28,7 +28,6 @@ import net.sf.jncu.newton.stream.NSOFSymbol;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDCallRootMethod</tt><br>
  * This command asks the Newton to call the specified root method. The return
  * value from the method is sent to the desktop with a <tt>kDCallResult</tt>
  * command.
@@ -44,6 +43,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DCallRootMethod extends DockCommandToNewton {
 
+	/** <tt>kDCallRootMethod</tt> */
 	public static final String COMMAND = "crmd";
 
 	private NSOFSymbol methodName;

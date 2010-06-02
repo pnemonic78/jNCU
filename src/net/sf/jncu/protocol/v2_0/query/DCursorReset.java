@@ -20,7 +20,6 @@
 package net.sf.jncu.protocol.v2_0.query;
 
 /**
- * <tt>kDCursorReset</tt><br>
  * Resets the cursor to its initial state. A <tt>kDRes</tt> of <tt>0</tt> is
  * returned.
  * 
@@ -34,6 +33,7 @@ package net.sf.jncu.protocol.v2_0.query;
  */
 public class DCursorReset extends DCursor {
 
+	/** <tt>kDCursorReset</tt> */
 	public static final String COMMAND = "rset";
 
 	/**

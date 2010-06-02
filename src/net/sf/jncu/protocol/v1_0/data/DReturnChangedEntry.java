@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDReturnChangedEntry</tt><br>
  * This command is sent when the desktop wants to retrieve a changed entry from
  * the current soup.
  * 
@@ -39,6 +38,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DReturnChangedEntry extends DockCommandToNewton {
 
+	/** <tt>kDReturnChangedEntry</tt> */
 	public static final String COMMAND = "rcen";
 
 	private int id;

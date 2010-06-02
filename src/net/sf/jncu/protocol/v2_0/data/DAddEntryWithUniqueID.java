@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.data;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
- * <tt>kDAddEntryWithUniqueID</tt><br>
  * This command is sent when the desktop wants to add an entry to the current
  * soup. The entry is added with the ID specified in the data frame. If the id
  * already exists an error is returned.
@@ -39,6 +38,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  */
 public class DAddEntryWithUniqueID extends DockCommandToNewtonScript {
 
+	/** <tt>kDAddEntryWithUniqueID</tt> */
 	public static final String COMMAND = "auni";
 
 	/**

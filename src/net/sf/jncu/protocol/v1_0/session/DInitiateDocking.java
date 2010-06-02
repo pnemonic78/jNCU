@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDInitiateDocking</tt><br>
  * This command is sent to the newt in response to a <tt>kDRequestToDock</tt>
  * command. Session type can be one of
  * <tt>{none, settingUp, synchronize, restore, loadPackage, testComm, loadPatch, updatingStores}</tt>
@@ -38,6 +37,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DInitiateDocking extends DockCommandToNewton {
 
+	/** <tt>kDInitiateDocking</tt> */
 	public static final String COMMAND = "dock";
 
 	public static final int SESSION_NONE = 0;

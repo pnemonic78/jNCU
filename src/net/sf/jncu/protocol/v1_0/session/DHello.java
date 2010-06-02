@@ -24,7 +24,6 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 
 /**
- * <tt>kDHello</tt><br>
  * This command is sent during long operations to let the Newton or desktop know
  * that the connection hasn't been dropped.
  * 
@@ -35,6 +34,7 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
  */
 public class DHello extends DockCommandFromNewtonBlank implements IDockCommandToNewton {
 
+	/** <tt>kDHello</tt> */
 	public static final String COMMAND = "helo";
 
 	/**

@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.data;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * <tt>kDGetChangedIndex</tt><br>
  * This command is like <tt>kDGetIndexDescription</tt> except that it only
  * returns the index description if it has been changed since the time set by
  * the <tt>kDLastSyncTime</tt> command. If the index hasn't changed a
@@ -37,6 +36,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  */
 public class DGetChangedIndex extends DockCommandToNewtonBlank {
 
+	/** <tt>kDGetChangedIndex</tt> */
 	public static final String COMMAND = "cidx";
 
 	/**

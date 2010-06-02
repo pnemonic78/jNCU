@@ -19,10 +19,10 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
+import net.sf.jncu.newton.stream.NSOFSymbol;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
- * <tt>kDImportParameterSlipResult</tt><br>
  * This command is sent after the user closes the slip displayed by
  * <tt>kDImportParametersSlip</tt>. The result is a frame containing the
  * following three slots:
@@ -50,7 +50,12 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  */
 public class DImportParametersSlipResult extends DockCommandFromNewtonScript {
 
+	/** <tt>kDImportParameterSlipResult</tt> */
 	public static final String COMMAND = "islr";
+
+	public static final NSOFSymbol SLOT_APPS = new NSOFSymbol("AppList");
+	public static final NSOFSymbol SLOT_CONFLICTS = new NSOFSymbol("Conflicts");
+	public static final NSOFSymbol SLOT_DATES = new NSOFSymbol("Dates");
 
 	/**
 	 * Creates a new command.

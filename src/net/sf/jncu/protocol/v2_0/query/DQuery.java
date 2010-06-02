@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDQuery</tt><br>
  * The parameter frame must contain a <tt>queryspec</tt> slot and may contain a
  * <tt>soupname</tt> slot. Performs the specified query on the current store.
  * The <tt>queryspec</tt> is a full <tt>queryspec</tt> including valid test,
@@ -45,6 +44,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DQuery extends DockCommandToNewton {
 
+	/** <tt>kDQuery</tt> */
 	public static final String COMMAND = "qury";
 
 	/**

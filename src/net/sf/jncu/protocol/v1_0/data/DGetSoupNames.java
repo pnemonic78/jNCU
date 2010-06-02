@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v1_0.data;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * <tt>kDGetSoupNames</tt><br>
  * This command is sent when a list of soup names is needed. It expects to
  * receive a <tt>kDSoupNames</tt> command in response.
  * 
@@ -35,6 +34,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  */
 public class DGetSoupNames extends DockCommandToNewtonBlank {
 
+	/** <tt>kDGetSoupNames</tt> */
 	public static final String COMMAND = "gets";
 
 	/**

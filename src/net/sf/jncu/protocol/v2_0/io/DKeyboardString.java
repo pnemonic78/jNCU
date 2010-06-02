@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDKeyboardString</tt><br>
  * This command sends a string of characters to the Newton for processing. The
  * characters are 2 byte Unicode characters. If there are an odd number of
  * characters the command should be padded, as usual.
@@ -40,6 +39,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DKeyboardString extends DockCommandToNewton {
 
+	/** <tt>kDKeyboardString</tt> */
 	public static final String COMMAND = "kbds";
 
 	private String s;

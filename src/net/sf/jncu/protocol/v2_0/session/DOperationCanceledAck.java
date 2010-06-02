@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.session;
 import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
 
 /**
- * <tt>kDOpCanceledAck</tt><br>
  * This command is sent in response to a <tt>kDOperationCanceled</tt>.
  * 
  * <pre>
@@ -32,6 +31,7 @@ import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
  */
 public class DOperationCanceledAck extends DockCommandFromNewtonBlank {
 
+	/** <tt>kDOpCanceledAck</tt> */
 	public static final String COMMAND = "ocaa";
 
 	/**

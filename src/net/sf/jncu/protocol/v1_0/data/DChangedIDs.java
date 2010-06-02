@@ -27,7 +27,6 @@ import java.util.TreeSet;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDChangedIDs</tt><br>
  * This command is sent in response to a <tt>kDGetChangedIDs</tt> command. It
  * returns all the ids with <tt>mod</tt> time &gt; the <tt>last sync</tt> time.
  * If the last sync time is <tt>0</tt>, no changed entries are returned (this
@@ -42,6 +41,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DChangedIDs extends DockCommandFromNewton {
 
+	/** <tt>kDChangedIDs</tt> */
 	public static final String COMMAND = "cids";
 
 	private final Set<Integer> ids = new TreeSet<Integer>();

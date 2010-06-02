@@ -25,7 +25,6 @@ import java.io.InputStream;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDGetRestoreOptions</tt><br>
  * This command is sent to the desktop if the user wants to do a selective
  * restore. The desktop should return a <tt>kDRestoreOptions</tt> command.
  * 
@@ -38,6 +37,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DGetRestoreOptions extends DockCommandFromNewton {
 
+	/** <tt>kDGetRestoreOptions</tt> */
 	public static final String COMMAND = "grop";
 
 	/**

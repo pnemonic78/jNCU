@@ -36,7 +36,6 @@ import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.util.NewtonDateUtils;
 
 /**
- * <tt>kDFileInfo</tt><br>
  * This command is sent in response to a <tt>kDGetFileInfo</tt> command. It
  * returns a frame that looks like this:<br>
  * <code>{<br>
@@ -66,6 +65,7 @@ import net.sf.jncu.util.NewtonDateUtils;
  */
 public class DFileInfo extends DockCommandToNewton {
 
+	/** <tt>kDFileInfo</tt> */
 	public static final String COMMAND = "finf";
 
 	protected static final NSOFSymbol SLOT_KIND = new NSOFSymbol("kind");

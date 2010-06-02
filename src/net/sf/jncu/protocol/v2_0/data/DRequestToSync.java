@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.data;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * <tt>kDRequestToSync</tt><br>
  * This command is sent from the desktop when the desktop wants to start a sync
  * operation, when both the Newton and the desktop were waiting for the user to
  * specify an operation.
@@ -36,6 +35,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  */
 public class DRequestToSync extends DockCommandToNewtonBlank {
 
+	/** <tt>kDRequestToSync</tt> */
 	public static final String COMMAND = "ssyn";
 
 	/**

@@ -25,7 +25,6 @@ import java.io.InputStream;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDSetFilter</tt><br>
  * This command changes the current filter being used. A
  * <tt>kDFilesAndFolders</tt> command is expected in return. The index is a long
  * indicating which item in the filters array sent from the desktop should be
@@ -41,6 +40,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DSetFilter extends DockCommandFromNewton {
 
+	/** <tt>kDSetFilter</tt> */
 	public static final String COMMAND = "sflt";
 
 	private int index;

@@ -25,7 +25,6 @@ import java.io.InputStream;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDSetTranslator</tt><br>
  * This command specifies which translator the desktop should use to import the
  * file. The translator index is the index into the translator list sent by the
  * desktop in the <tt>kDTranslatorList</tt> command. The desktop should
@@ -41,6 +40,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DSetTranslator extends DockCommandFromNewton {
 
+	/** <tt>kDSetTranslator</tt> */
 	public static final String COMMAND = "tran";
 
 	private int translatorIndex;

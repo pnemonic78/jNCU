@@ -27,7 +27,6 @@ import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDGetFileInfo</tt><br>
  * This command asks the desktop to return info about the specified file. See
  * <tt>kDFileInfo</tt> for info about what's returned.
  * <p>
@@ -45,6 +44,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DGetFileInfo extends DockCommandFromNewton {
 
+	/** <tt>kDGetFileInfo</tt> */
 	public static final String COMMAND = "gfin";
 
 	private NSOFObject filename;

@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.data;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
- * <tt>kDImportParametersSlip</tt><br>
  * The following is a possible example of what would be displayed on the Newton
  * following the <tt>kDImportParametersSlip</tt> command:
  * <p>
@@ -70,6 +69,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  */
 public class DImportParametersSlip extends DockCommandToNewtonScript {
 
+	/** <tt>kDImportParametersSlip</tt> */
 	public static final String COMMAND = "islp";
 
 	/**

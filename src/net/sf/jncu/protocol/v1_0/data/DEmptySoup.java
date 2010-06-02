@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
- * <tt>kDEmptySoup</tt><br>
  * This command is used by restore to remove all entries from a soup before the
  * soup data is restored.
  * 
@@ -39,6 +38,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  */
 public class DEmptySoup extends DockCommandToNewton {
 
+	/** <tt>kDEmptySoup</tt> */
 	public static final String COMMAND = "esou";
 
 	private String name;

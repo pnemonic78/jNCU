@@ -26,7 +26,6 @@ import java.net.ProtocolException;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * <tt>kDRequestToDock</tt><br>
  * Ask desktop to start docking process.<br>
  * This command is sent to a docker that the junior wishes to connect with (on
  * the network, serial, etc.). The Newt expects a <tt>kDInitiateDocking</tt>
@@ -41,6 +40,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  */
 public class DRequestToDock extends DockCommandFromNewton {
 
+	/** <tt>kDRequestToDock</tt> */
 	public static final String COMMAND = "rtdk";
 
 	/** The protocol version. */

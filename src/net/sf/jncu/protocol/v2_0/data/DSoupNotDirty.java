@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.data;
 import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
 
 /**
- * <tt>kDSoupNotDirty</tt><br>
  * This command is sent in response to a <tt>kDBackupSoup</tt> command if the
  * soup is unchanged from the last backup.
  * 
@@ -35,6 +34,7 @@ import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
  */
 public class DSoupNotDirty extends DockCommandFromNewtonBlank {
 
+	/** <tt>kDSoupNotDirty</tt> */
 	public static final String COMMAND = "ndir";
 
 	/**
