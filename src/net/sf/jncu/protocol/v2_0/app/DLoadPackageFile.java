@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.app;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -43,7 +44,7 @@ public class DLoadPackageFile extends DockCommandFromNewton {
 	/** <tt>kDLoadPackageFile</tt> */
 	public static final String COMMAND = "lpfl";
 
-	private String filename;
+	private File file;
 
 	/**
 	 * Creates a new command.
@@ -54,26 +55,26 @@ public class DLoadPackageFile extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		setFilename(readString(data));
+		setFile(new File(readString(data)));
 	}
 
 	/**
-	 * Get the file name.
+	 * Get the package file.
 	 * 
-	 * @return the file name.
+	 * @return the file.
 	 */
-	public String getFilename() {
-		return filename;
+	public File getFile() {
+		return file;
 	}
 
 	/**
-	 * Set the file name.
+	 * Set the package file.
 	 * 
-	 * @param filename
-	 *            the file name.
+	 * @param file
+	 *            the file.
 	 */
-	public void setFilename(String filename) {
-		this.filename = filename;
+	public void setFile(File file) {
+		this.file = file;
 	}
 
 }
