@@ -38,7 +38,7 @@ import net.sf.jncu.protocol.v1_0.io.Device;
  * devices which will appear in the devices pop-up in the Windows file browsing
  * dialog. Each frame in the array should look like this:<br>
  * <code>{<br>
- * &nbsp;&nbsp;name: "c: mydisk",<br>
+ * &nbsp;&nbsp;name: "c:mydisk",<br>
  * &nbsp;&nbsp;disktype: 1<br>
  * }</code><br>
  * where (floppy = 0, hardDrive = 1, cdRom = 2, netDrive = 3). The icon is
@@ -57,6 +57,8 @@ public class DDevices extends DockCommandToNewton {
 
 	public static final String COMMAND = "devs";
 
+	protected static final char driveChar = ':';
+
 	/**
 	 * Creates a new command.
 	 */
@@ -71,10 +73,21 @@ public class DDevices extends DockCommandToNewton {
 
 		if (drives != null) {
 			Device device;
+			String name;
 			for (File file : drives) {
 				device = new Device(file);
-				// TODO prepend the drive name to the device name for DSetDrive
-				// - "Local Disk (C:)" to "C: Local Disk (C:)"
+				name = device.getName();
+				// Prepend the drive name to the device name for DSetDrive
+				// - "Local Disk (C:)" to "C:Local Disk (C:)"
+				if (device.geType() == Device.DISK) {
+					String path = file.getPath();
+					if (path.charAt(1) == driveChar) {
+						path = path.substring(0, 2);
+						if (!name.startsWith(path)) {
+							device.setName(path + name);
+						}
+					}
+				}
 				devices.add(device);
 			}
 		}

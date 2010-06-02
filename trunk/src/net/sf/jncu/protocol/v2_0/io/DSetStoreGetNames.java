@@ -19,10 +19,6 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
  * <tt>kDSetStoreGetNames</tt><br>
@@ -47,7 +43,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DSetStoreGetNames extends DockCommandToNewton {
+public class DSetStoreGetNames extends DSetCurrentStore {
 
 	public static final String COMMAND = "ssgn";
 
@@ -56,11 +52,6 @@ public class DSetStoreGetNames extends DockCommandToNewton {
 	 */
 	public DSetStoreGetNames() {
 		super(COMMAND);
-	}
-
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		// TODO implement me!
 	}
 
 }

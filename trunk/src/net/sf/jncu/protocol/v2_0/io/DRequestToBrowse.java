@@ -21,7 +21,13 @@ package net.sf.jncu.protocol.v2_0.io;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
+import net.sf.jncu.newton.stream.NSOFArray;
+import net.sf.jncu.newton.stream.NSOFDecoder;
+import net.sf.jncu.newton.stream.NSOFObject;
+import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
@@ -42,6 +48,15 @@ public class DRequestToBrowse extends DockCommandFromNewton {
 
 	public static final String COMMAND = "rtbr";
 
+	/** List of files to import. */
+	public static final String IMPORT = "import";
+	/** List of packages. */
+	public static final String PACKAGES = "packages";
+	/** List of files to synchronise. */
+	public static final String SYNC_FILES = "syncFiles";
+
+	private final List<String> filters = new ArrayList<String>();
+
 	public DRequestToBrowse() {
 		super(COMMAND);
 	}
@@ -54,7 +69,24 @@ public class DRequestToBrowse extends DockCommandFromNewton {
 	 */
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		// TODO implement me!
+		filters.clear();
+		NSOFDecoder decoder = new NSOFDecoder();
+		NSOFArray arr = (NSOFArray) decoder.decode(data);
+		NSOFObject[] entries = arr.getValue();
+		NSOFString filter;
+		for (NSOFObject entry : entries) {
+			filter = (NSOFString) entry;
+			filters.add(filter.getValue());
+		}
+	}
+
+	/**
+	 * Get the file types for filtering.
+	 * 
+	 * @return the filter.
+	 */
+	public List<String> getFilters() {
+		return filters;
 	}
 
 }

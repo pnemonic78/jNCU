@@ -17,7 +17,7 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu;
+package net.sf.jncu.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -38,6 +38,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
+
+import net.sf.jncu.Settings;
 
 /**
  * Main NCU frame.
