@@ -91,6 +91,7 @@ public class DBackupIDs extends DockCommandFromNewton {
 			id = ntohs(data);
 		}
 		setIds(ids);
+		setLength(ids.size() << 2);
 	}
 
 	/**
