@@ -23,10 +23,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sf.jncu.protocol.DockCommand;
+import net.sf.jncu.protocol.v1_0.app.DPackage;
+import net.sf.jncu.protocol.v1_0.app.DPackageIDList;
+import net.sf.jncu.protocol.v1_0.data.DAddedID;
+import net.sf.jncu.protocol.v1_0.data.DChangedEntry;
+import net.sf.jncu.protocol.v1_0.data.DChangedIDs;
+import net.sf.jncu.protocol.v1_0.data.DEntry;
+import net.sf.jncu.protocol.v1_0.data.DIndexDescription;
+import net.sf.jncu.protocol.v1_0.data.DSoupIDs;
+import net.sf.jncu.protocol.v1_0.data.DSoupInfo;
+import net.sf.jncu.protocol.v1_0.data.DSoupNames;
+import net.sf.jncu.protocol.v1_0.io.DStoreNames;
+import net.sf.jncu.protocol.v1_0.query.DCurrentTime;
+import net.sf.jncu.protocol.v1_0.query.DInheritance;
+import net.sf.jncu.protocol.v1_0.query.DPatches;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v1_0.session.DHello;
+import net.sf.jncu.protocol.v1_0.session.DNewtonName;
 import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
+import net.sf.jncu.protocol.v1_0.session.DRequestToDock;
+import net.sf.jncu.protocol.v1_0.session.DTest;
 
 /**
  * Docking command factory.
@@ -60,15 +77,34 @@ public class DockCommandFactory {
 
 	/**
 	 * Register dock commands.
+	 * <p>
+	 * It's only really necessary to register "from Newton" commands.
 	 * 
 	 * @param registry
 	 *            the registry.
 	 */
 	protected void register(Map<String, Class<? extends DockCommand>> registry) {
+		registry.put(DAddedID.COMMAND, DAddedID.class);
+		registry.put(DChangedEntry.COMMAND, DChangedEntry.class);
+		registry.put(DChangedIDs.COMMAND, DChangedIDs.class);
+		registry.put(DCurrentTime.COMMAND, DCurrentTime.class);
 		registry.put(DDisconnect.COMMAND, DDisconnect.class);
+		registry.put(DEntry.COMMAND, DEntry.class);
 		registry.put(DHello.COMMAND, DHello.class);
+		registry.put(DIndexDescription.COMMAND, DIndexDescription.class);
+		registry.put(DInheritance.COMMAND, DInheritance.class);
+		registry.put(DNewtonName.COMMAND, DNewtonName.class);
 		registry.put(DOperationCanceled.COMMAND, DOperationCanceled.class);
+		registry.put(DPackage.COMMAND, DPackage.class);
+		registry.put(DPackageIDList.COMMAND, DPackageIDList.class);
+		registry.put(DPatches.COMMAND, DPatches.class);
+		registry.put(DRequestToDock.COMMAND, DRequestToDock.class);
 		registry.put(DResult.COMMAND, DResult.class);
+		registry.put(DSoupIDs.COMMAND, DSoupIDs.class);
+		registry.put(DSoupInfo.COMMAND, DSoupInfo.class);
+		registry.put(DSoupNames.COMMAND, DSoupNames.class);
+		registry.put(DStoreNames.COMMAND, DStoreNames.class);
+		registry.put(DTest.COMMAND, DTest.class);
 	}
 
 	/**
