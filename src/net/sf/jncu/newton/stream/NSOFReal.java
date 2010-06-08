@@ -45,6 +45,17 @@ public class NSOFReal extends NSOFBinaryObject {
 	}
 
 	/**
+	 * Creates a new real.
+	 * 
+	 * @param value
+	 *            the value.
+	 */
+	public NSOFReal(double value) {
+		this();
+		setReal(value);
+	}
+
+	/**
 	 * Get the value.
 	 * 
 	 * @return the value

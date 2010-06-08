@@ -126,7 +126,7 @@ public class NSOFArray extends NSOFObject implements Precedent {
 
 	@Override
 	public int hashCode() {
-		return (value == null) ? null : value.hashCode();
+		return (value == null) ? 0 : value.hashCode();
 	}
 
 	@Override

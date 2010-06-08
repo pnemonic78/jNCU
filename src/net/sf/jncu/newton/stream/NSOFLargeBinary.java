@@ -101,13 +101,13 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 		}
 		setCompressed(compressed != FLAG_UNCOMPRESSED);
 		// Number of bytes of data (long)
-		int numBytesData = htonl(in);
+		int numBytesData = ntohl(in);
 		// Number of characters in compander name (long)
-		int numBytesCompanderName = htonl(in);
+		int numBytesCompanderName = ntohl(in);
 		// Number of bytes of compander parameters (long)
-		int numBytesCompanderArgs = htonl(in);
+		int numBytesCompanderArgs = ntohl(in);
 		// Reserved (encode zero, ignore when decoding) (long)
-		htonl(in);
+		ntohl(in);
 		// Compander name (bytes)
 		if (numBytesCompanderName == 0) {
 			setCompanderName(null);

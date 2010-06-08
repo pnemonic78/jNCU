@@ -43,6 +43,17 @@ public class NSOFBinaryObject extends NSOFObject implements Precedent {
 		setNSClass(NS_CLASS);
 	}
 
+	/**
+	 * Constructs a new binary object.
+	 * 
+	 * @param value
+	 *            the value.
+	 */
+	public NSOFBinaryObject(byte[] value) {
+		this();
+		setValue(value);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see
