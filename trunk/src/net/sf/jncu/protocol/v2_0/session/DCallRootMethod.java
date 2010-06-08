@@ -22,7 +22,6 @@ package net.sf.jncu.protocol.v2_0.session;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import net.sf.jncu.newton.stream.NSOFArray;
 import net.sf.jncu.newton.stream.NSOFEncoder;
 import net.sf.jncu.newton.stream.NSOFSymbol;
 import net.sf.jncu.protocol.DockCommandToNewton;
@@ -46,8 +45,8 @@ public class DCallRootMethod extends DockCommandToNewton {
 	/** <tt>kDCallRootMethod</tt> */
 	public static final String COMMAND = "crmd";
 
-	private NSOFSymbol methodName;
-	private NSOFArray args;
+	private String methodName;
+	private Object[] args;
 
 	/**
 	 * Creates a new command.
@@ -61,7 +60,7 @@ public class DCallRootMethod extends DockCommandToNewton {
 	 * 
 	 * @return the method name.
 	 */
-	public NSOFSymbol getMethodName() {
+	public String getMethodName() {
 		return methodName;
 	}
 
@@ -71,18 +70,8 @@ public class DCallRootMethod extends DockCommandToNewton {
 	 * @param methodName
 	 *            the method name.
 	 */
-	public void setMethodName(NSOFSymbol methodName) {
-		this.methodName = methodName;
-	}
-
-	/**
-	 * Set the method name.
-	 * 
-	 * @param methodName
-	 *            the method name.
-	 */
 	public void setMethodName(String methodName) {
-		setMethodName(new NSOFSymbol(methodName));
+		this.methodName = methodName;
 	}
 
 	/**
@@ -90,7 +79,7 @@ public class DCallRootMethod extends DockCommandToNewton {
 	 * 
 	 * @return the arguments.
 	 */
-	public NSOFArray getArguments() {
+	public Object[] getArguments() {
 		return args;
 	}
 
@@ -100,14 +89,14 @@ public class DCallRootMethod extends DockCommandToNewton {
 	 * @param args
 	 *            the arguments.
 	 */
-	public void setArguments(NSOFArray args) {
+	public void setArguments(Object[] args) {
 		this.args = args;
 	}
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
 		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.encode(getMethodName(), data);
-		encoder.encode(getArguments(), data);
+		encoder.encode(new NSOFSymbol(getMethodName()), data);
+		encoder.encode(NSOFEncoder.toNS(getArguments()), data);
 	}
 }

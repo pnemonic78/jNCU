@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ProtocolException;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
-
 /**
  * This command is sent to the desktop after the connection is established using
  * AppleTalk, serial, etc. (when the user taps the "connect" button). The
@@ -38,47 +36,29 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * protocol version = 9
  * </pre>
  */
-public class DRequestToDock extends DockCommandFromNewton {
+public class DRequestToDock extends net.sf.jncu.protocol.v1_0.session.DRequestToDock {
 
 	/** <tt>kDRequestToDock</tt> */
-	public static final String COMMAND = "rtdk";
+	public static final String COMMAND = net.sf.jncu.protocol.v1_0.session.DRequestToDock.COMMAND;
 
-	/** The protocol version. */
-	public static final int kProtocolVersion = 9;
-
-	private int protocol;
+	/**
+	 * <tt>kProtocolVersion</tt><br>
+	 * The protocol version.
+	 */
+	public static final int PROTOCOL_VERSION = 9;
 
 	/**
 	 * Creates a new command.
 	 */
 	public DRequestToDock() {
-		super(COMMAND);
-	}
-
-	/**
-	 * Get the protocol version.
-	 * 
-	 * @return the protocol version.
-	 */
-	public int getProtocol() {
-		return protocol;
-	}
-
-	/**
-	 * Set the protocol version.
-	 * 
-	 * @param protocol
-	 *            the protocol version.
-	 */
-	protected void setProtocol(int protocol) {
-		this.protocol = protocol;
+		super();
 	}
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
 		int protocol = ntohl(data);
 		setProtocol(protocol);
-		if (protocol != kProtocolVersion) {
+		if (protocol != PROTOCOL_VERSION) {
 			throw new ProtocolException();
 		}
 	}

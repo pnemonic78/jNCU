@@ -33,7 +33,6 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.NewtonInfo;
 import net.sf.jncu.protocol.v1_0.query.DResult;
-import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 
 /**
  * Manage the docking protocol.
@@ -48,7 +47,7 @@ public class DockingProtocol {
 	/** Newton information. */
 	private NewtonInfo info;
 	/** Protocol version. */
-	private int protocolVersion = DDesktopInfo.PROTOCOL_VERSION;
+	private int protocolVersion = DRequestToDock.PROTOCOL_VERSION;
 	/** The password sent by the Desktop. */
 	private transient long challengeDesktop;
 	/** The ciphered password sent by the Desktop. */
@@ -315,7 +314,7 @@ public class DockingProtocol {
 			setState(state, DockingState.HANDSHAKE_RTDK_RECEIVED, null, cmd);
 			break;
 		case HANDSHAKE_RTDK_RECEIVED:
-			DInitiateDocking cmdInitiateDocking = (DInitiateDocking) DockCommandFactory.getInstance().create(DInitiateDocking.COMMAND);
+			DInitiateDocking cmdInitiateDocking = new DInitiateDocking();
 			cmdInitiateDocking.setSession(DInitiateDocking.SESSION_SETTING_UP);
 			setState(state, DockingState.HANDSHAKE_DOCK_SENDING, null, cmd);
 			pipe.write(cmdInitiateDocking);
@@ -325,7 +324,7 @@ public class DockingProtocol {
 			break;
 		case HANDSHAKE_NAME_RECEIVED:
 			this.info = ((DNewtonName) cmd).getInformation();
-			DDesktopInfo cmdDesktopInfo = (DDesktopInfo) DockCommandFactory.getInstance().create(DDesktopInfo.COMMAND);
+			DDesktopInfo cmdDesktopInfo = new DDesktopInfo();
 			this.challengeDesktop = cmdDesktopInfo.getEncryptedKey();
 			this.challengeDesktopCiphered = crypto.cipher(challengeDesktop);
 			setState(state, DockingState.HANDSHAKE_DINFO_SENDING, null, cmd);
@@ -340,7 +339,7 @@ public class DockingProtocol {
 			this.challengeNewton = cmdNewtonInfo.getEncryptedKey();
 			this.challengeNewtonCiphered = crypto.cipher(challengeNewton);
 
-			DWhichIcons cmdWhichIcons = (DWhichIcons) DockCommandFactory.getInstance().create(DWhichIcons.COMMAND);
+			DWhichIcons cmdWhichIcons = new DWhichIcons();
 			cmdWhichIcons.setIcons(DWhichIcons.BACKUP | DWhichIcons.IMPORT | DWhichIcons.INSTALL | DWhichIcons.KEYBOARD | DWhichIcons.RESTORE
 					| DWhichIcons.SYNC);
 			setState(state, DockingState.HANDSHAKE_ICONS_SENDING, null, cmd);
@@ -352,13 +351,13 @@ public class DockingProtocol {
 		case HANDSHAKE_ICONS_RESULT_RECEIVED:
 			DResult cmdResult = (DResult) cmd;
 			if (cmdResult.getErrorCode() == 0) {
-				DSetTimeout cmdSetTimeout = (DSetTimeout) DockCommandFactory.getInstance().create(DSetTimeout.COMMAND);
+				DSetTimeout cmdSetTimeout = new DSetTimeout();
 				cmdSetTimeout.setTimeout(pipe.getTimeout());
 				setState(state, DockingState.HANDSHAKE_TIMEOUT_SENDING, null, cmd);
 				pipe.write(cmdSetTimeout);
 			} else {
 				// Was problem, so try send again with less icons?
-				cmdWhichIcons = (DWhichIcons) DockCommandFactory.getInstance().create(DWhichIcons.COMMAND);
+				cmdWhichIcons = new DWhichIcons();
 				cmdWhichIcons.setIcons(DWhichIcons.INSTALL | DWhichIcons.KEYBOARD);
 				setState(state, DockingState.HANDSHAKE_ICONS_SENDING, null, cmd);
 				pipe.write(cmdWhichIcons);
