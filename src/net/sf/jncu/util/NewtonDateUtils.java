@@ -66,4 +66,28 @@ public class NewtonDateUtils {
 		return (int) ((millis - MINUTES_1904) / 60000L);
 	}
 
+	/**
+	 * Get the number of milliseconds since 1970 January 1, 00:00:00 UTC (GMT).
+	 * 
+	 * @param seconds
+	 *            the number of seconds since 1993 January 1, 00:00:00 UTC
+	 *            (GMT).
+	 * @return the Java date.
+	 */
+	public static long fromSeconds(int seconds) {
+		return (seconds * 1000L) + SECONDS_1993;
+	}
+
+	/**
+	 * Get the number of milliseconds since 1970 January 1, 00:00:00 UTC (GMT).
+	 * 
+	 * @param minutes
+	 *            the number of minutes since 1904 January 1, 00:00:00 UTC
+	 *            (GMT).
+	 * @return the Java date.
+	 */
+	public static long fromMinutes(int minutes) {
+		return (minutes * 60000L) + MINUTES_1904;
+	}
+
 }

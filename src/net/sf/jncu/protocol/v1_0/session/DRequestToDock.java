@@ -21,7 +21,6 @@ package net.sf.jncu.protocol.v1_0.session;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.ProtocolException;
 
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
@@ -42,9 +41,6 @@ public class DRequestToDock extends DockCommandFromNewton {
 
 	/** <tt>kDRequestToDock</tt> */
 	public static final String COMMAND = "rtdk";
-
-	/** The protocol version. */
-	public static final int kProtocolVersion = 9;
 
 	private int protocol;
 
@@ -78,9 +74,6 @@ public class DRequestToDock extends DockCommandFromNewton {
 	protected void decodeData(InputStream data) throws IOException {
 		int protocol = ntohl(data);
 		setProtocol(protocol);
-		if (protocol != kProtocolVersion) {
-			throw new ProtocolException();
-		}
 	}
 
 }

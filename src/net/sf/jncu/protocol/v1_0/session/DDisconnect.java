@@ -19,7 +19,11 @@
  */
 package net.sf.jncu.protocol.v1_0.session;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
+import net.sf.jncu.protocol.IDockCommandFromNewton;
 
 /**
  * This command is sent to the Newton when the docking operation is complete.
@@ -29,7 +33,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  * length = 0
  * </pre>
  */
-public class DDisconnect extends DockCommandToNewtonBlank {
+public class DDisconnect extends DockCommandToNewtonBlank implements IDockCommandFromNewton {
 
 	/** <tt>kDDisconnect</tt> */
 	public static final String COMMAND = "disc";
@@ -41,4 +45,9 @@ public class DDisconnect extends DockCommandToNewtonBlank {
 		super(COMMAND);
 	}
 
+	@Override
+	public void decode(InputStream data) throws IOException {
+		// nothing to decode.
+	}
+	
 }
