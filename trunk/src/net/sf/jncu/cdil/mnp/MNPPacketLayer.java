@@ -24,9 +24,9 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.ProtocolException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import net.sf.lang.ControlCharacter;
 import net.sf.util.zip.CRC16;
@@ -107,7 +107,8 @@ public class MNPPacketLayer {
 				buf.write(b);
 				crc.update(b);
 			} else {
-				throw new ProtocolException();
+				// throw new ProtocolException();
+				return null;
 			}
 		}
 		buf.close();
@@ -126,7 +127,8 @@ public class MNPPacketLayer {
 		}
 		crcWord = (b << 8) | crcWord;
 		if (crcWord != crc.getValue()) {
-			throw new ProtocolException();
+			// throw new ProtocolException("CRC error on input framing");
+			return null;
 		}
 
 		return payload;
@@ -195,8 +197,11 @@ public class MNPPacketLayer {
 	 * @return the packet.
 	 */
 	public MNPPacket receive(InputStream in) throws IOException {
-		byte[] payload = read(in);
-		return MNPPacketFactory.getInstance().createLinkPacket(payload);
+		MNPPacket packet = MNPPacketFactory.getInstance().createLinkPacket(read(in));
+		if (packet != null) {
+			firePacketReceived(packet);
+		}
+		return packet;
 	}
 
 	/**
@@ -243,7 +248,9 @@ public class MNPPacketLayer {
 	 *            the received packet.
 	 */
 	protected void firePacketReceived(MNPPacket packet) {
-		for (MNPPacketListener listener : listeners) {
+		// Make copy of listeners to avoid ConcurrentModificationException.
+		Collection<MNPPacketListener> listenersCopy = Collections.unmodifiableCollection(listeners);
+		for (MNPPacketListener listener : listenersCopy) {
 			listener.packetReceived(packet);
 		}
 	}
@@ -257,10 +264,10 @@ public class MNPPacketLayer {
 	 *             if an I/O error occurs.
 	 */
 	public void listen(InputStream in) throws IOException {
-		MNPPacket packet = receive(in);
-		while (packet != null) {
-			firePacketReceived(packet);
+		MNPPacket packet;
+		do {
 			packet = receive(in);
-		}
+		} while (packet != null);
 	}
+
 }
