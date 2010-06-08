@@ -116,7 +116,7 @@ public class XLong extends NewtonStreamedObjectFormat {
 	 *             if an encoding error occurs.
 	 */
 	public static void encode(int value, OutputStream out) throws IOException {
-		if (value < 0xFF) {
+		if ((value >= 0) && (value < 0xFF)) {
 			out.write(value & 0xFF);
 		} else {
 			out.write(0xFF);
@@ -154,7 +154,7 @@ public class XLong extends NewtonStreamedObjectFormat {
 			throw new EOFException();
 		}
 		if (l >= 0xFF) {
-			l = htonl(in);
+			l = ntohl(in);
 		}
 		return l;
 	}

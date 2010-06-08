@@ -19,8 +19,10 @@
  */
 package net.sf.jncu.newton.stream;
 
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -77,7 +79,7 @@ public class NSOFEncoder {
 	 */
 	protected void encodeImpl(NSOFObject object, OutputStream out) throws IOException {
 		if (object == null) {
-			NewtonStreamedObjectFormat.ntohl(0, out);
+			NewtonStreamedObjectFormat.htonl(0, out);
 		} else {
 			if (object instanceof Precedent) {
 				Precedent p = (Precedent) object;
@@ -92,5 +94,69 @@ public class NSOFEncoder {
 			}
 			object.encode(out, this);
 		}
+	}
+
+	/**
+	 * Convert the Java object to Newton Streamed Object Format.
+	 * 
+	 * @param o
+	 *            the object.
+	 * @return the NewtonScript object - <tt>null</tt> otherwise.
+	 */
+	public static NSOFObject toNS(Object o) {
+		if (o == null) {
+			return new NSOFNil();
+		}
+		if (o instanceof Boolean) {
+			if (((Boolean) o).booleanValue()) {
+				return new NSOFTrue();
+			}
+			return new NSOFNil();
+		}
+		if (o instanceof Character) {
+			return new NSOFUnicodeCharacter((Character) o);
+		}
+		if (o instanceof Double) {
+			return new NSOFReal((Double) o);
+		}
+		if (o instanceof Float) {
+			return new NSOFReal(((Float) o).doubleValue());
+		}
+		if (o instanceof Integer) {
+			return new NSOFInteger((Integer) o);
+		}
+		if (o instanceof Number) {
+			return new NSOFImmediate(((Number) o).intValue());
+		}
+		if (o instanceof Rectangle) {
+			Rectangle rect = (Rectangle) o;
+			return new NSOFSmallRect(rect.y, rect.x, rect.y + rect.height, rect.x + rect.width);
+		}
+		if (o instanceof String) {
+			return new NSOFString((String) o);
+		}
+		if (o.getClass().isArray()) {
+			if (o instanceof byte[]) {
+				return new NSOFBinaryObject((byte[]) o);
+			}
+			if (o instanceof Object[]) {
+				Object[] arr = (Object[]) o;
+				NSOFObject[] entries = new NSOFObject[arr.length];
+				for (int i = 0; i < arr.length; i++) {
+					entries[i] = toNS(arr[i]);
+				}
+				return new NSOFArray(entries);
+			}
+		}
+		if (o instanceof Collection) {
+			Collection coll = (Collection) o;
+			NSOFObject[] entries = new NSOFObject[coll.size()];
+			int i = 0;
+			for (Object entry : coll) {
+				entries[i++] = toNS(entry);
+			}
+			return new NSOFArray(entries);
+		}
+		return null;
 	}
 }

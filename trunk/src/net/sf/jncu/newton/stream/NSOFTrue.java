@@ -45,4 +45,9 @@ public class NSOFTrue extends NSOFImmediate {
 		out.write(IMMEDIATE);
 		XLong.encode(0x1A, out);
 	}
+	
+	@Override
+	public String toString() {
+		return Boolean.TRUE.toString();
+	}
 }
