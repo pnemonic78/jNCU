@@ -360,6 +360,21 @@ public class CDLayer {
 	}
 
 	/**
+	 * Check that CDIL is connected.
+	 * 
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
+	 */
+	protected final void checkConnected() throws CDILNotInitializedException, PlatformException {
+		checkInitialized();
+		if (state != CDState.CONNECTED) {
+			throw new BadPipeStateException("state " + state);
+		}
+	}
+
+	/**
 	 * Updates and returns the state of the pipe.<br>
 	 * <tt>CD_State CD_GetState(CD_Handle pipe)</tt>
 	 * <p>

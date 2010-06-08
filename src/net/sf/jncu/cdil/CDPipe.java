@@ -25,6 +25,8 @@ import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.Timer;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeoutException;
 
 import net.sf.jncu.protocol.IDockCommandFromNewton;
@@ -45,6 +47,7 @@ public abstract class CDPipe extends Thread {
 	protected DockingProtocol docking;
 	private static final Timer timer = new Timer();
 	protected CDTimeout timeoutTask;
+	protected final BlockingQueue<IDockCommandFromNewton> queueCommandFromNewton = new LinkedBlockingQueue<IDockCommandFromNewton>();
 
 	/**
 	 * Creates a new pipe.
@@ -87,6 +90,7 @@ public abstract class CDPipe extends Thread {
 	 */
 	public void dispose() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		layer.checkInitialized();
+		timer.cancel();
 		if (getCDState() != CDState.DISCONNECTED) {
 			disconnect();
 		}
@@ -114,13 +118,12 @@ public abstract class CDPipe extends Thread {
 	 */
 	public void disconnect() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		layer.checkInitialized();
-		if (getCDState() == CDState.DISCONNECTED) {
-			throw new PipeDisconnectedException();
+		if (getCDState() != CDState.DISCONNECTED) {
+			layer.setState(CDState.DISCONNECT_PENDING);
+			disconnectImpl();
+			layer.setState(CDState.DISCONNECTED);
+			notifyDisconnected();
 		}
-		layer.setState(CDState.DISCONNECT_PENDING);
-		disconnectImpl();
-		layer.setState(CDState.DISCONNECTED);
-		notifyDisconnected();
 	}
 
 	/**
@@ -243,10 +246,7 @@ public abstract class CDPipe extends Thread {
 	 *             if timeout occurs.
 	 */
 	public InputStream getInput() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
-		layer.checkInitialized();
-		if ((getCDState() != CDState.CONNECTED) && (getCDState() != CDState.DISCONNECT_PENDING)) {
-			throw new BadPipeStateException();
-		}
+		layer.checkConnected();
 		if (pipeSink == null) {
 			try {
 				this.pipeSink = new PipedInputStream(pipeSource);
@@ -324,15 +324,11 @@ public abstract class CDPipe extends Thread {
 	 */
 	public void write(byte[] b, int offset, int count) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
 			TimeoutException {
-		layer.checkInitialized();
-		CDState state = getCDState();
-		if (state != CDState.CONNECTED) {
-			throw new BadPipeStateException("state " + state);
-		}
+		layer.checkConnected();
 	}
 
 	/**
-	 * Sends the given command to the Newton device.<br>
+	 * Sends the given command to the Newton device.
 	 * 
 	 * @param cmd
 	 *            the command.
@@ -502,6 +498,46 @@ public abstract class CDPipe extends Thread {
 		if (cmd == null) {
 			return;
 		}
+		try {
+			queueCommandFromNewton.put(cmd);
+		} catch (InterruptedException ie) {
+			ie.printStackTrace();
+		}
 		restartTimeout();
+	}
+
+	/**
+	 * Reads a command from the Newton device.<br>
+	 * This method blocks until a command is received.
+	 * 
+	 * @return the command.
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
+	 * @throws BadPipeStateException
+	 *             if pipe is in an incorrect state.
+	 * @throws PipeDisconnectedException
+	 *             if the pipe is disconnected.
+	 * @throws TimeoutException
+	 *             if timeout occurs.
+	 */
+	public IDockCommandFromNewton nextCommand() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
+			TimeoutException {
+		layer.checkConnected();
+		try {
+			return queueCommandFromNewton.take();
+		} catch (InterruptedException ie) {
+			throw new TimeoutException(ie.getMessage());
+		}
+	}
+
+	/**
+	 * Get the CD layer.
+	 * 
+	 * @return the layer.
+	 */
+	public CDLayer getLayer() {
+		return layer;
 	}
 }

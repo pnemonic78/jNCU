@@ -80,6 +80,9 @@ public class MNPPacketFactory {
 	 * @return the packet.
 	 */
 	public MNPPacket createLinkPacket(byte[] payload) {
+		if (payload == null) {
+			return null;
+		}
 		MNPPacket packet = createLinkPacket(payload[1]);
 		packet.deserialize(payload);
 		return packet;
