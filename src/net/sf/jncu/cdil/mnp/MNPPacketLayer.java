@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 import net.sf.lang.ControlCharacter;
 import net.sf.util.zip.CRC16;
@@ -249,7 +248,7 @@ public class MNPPacketLayer {
 	 */
 	protected void firePacketReceived(MNPPacket packet) {
 		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<MNPPacketListener> listenersCopy = Collections.unmodifiableCollection(listeners);
+		Collection<MNPPacketListener> listenersCopy = new ArrayList<MNPPacketListener>(listeners);
 		for (MNPPacketListener listener : listenersCopy) {
 			listener.packetReceived(packet);
 		}

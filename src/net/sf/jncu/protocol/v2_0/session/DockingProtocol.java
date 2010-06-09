@@ -123,6 +123,8 @@ public class DockingProtocol {
 
 		setState(state);
 
+		String cmdName = (cmd == null) ? null : cmd.getCommand();
+
 		switch (oldDockingState) {
 		case DISCONNECTED:
 			if (state != DockingState.DISCONNECTED) {
@@ -145,14 +147,18 @@ public class DockingProtocol {
 				throw new BadPipeStateException("expected command");
 			}
 			cmd = DockCommandFromNewton.deserialize(data);
-			if (!DRequestToDock.COMMAND.equals(cmd.getCommand())) {
-				throw new BadPipeStateException("expected command '" + DRequestToDock.COMMAND + "', and not '" + cmd.getCommand() + "'");
+			if (DResult.COMMAND.equals(cmdName)) {
+				handleError((DResult) cmd);
+			} else if (!DRequestToDock.COMMAND.equals(cmdName)) {
+				throw new BadPipeStateException("expected command '" + DRequestToDock.COMMAND + "', and not '" + cmdName + "'");
 			}
 			setState(state, DockingState.HANDSHAKE_RTDK_RECEIVED, data, cmd);
 			break;
 		case HANDSHAKE_RTDK_RECEIVED:
-			if (!DRequestToDock.COMMAND.equals(cmd.getCommand())) {
-				throw new BadPipeStateException("expected command '" + DRequestToDock.COMMAND + "', and not '" + cmd.getCommand() + "'");
+			if (DResult.COMMAND.equals(cmdName)) {
+				handleError((DResult) cmd);
+			} else if (!DRequestToDock.COMMAND.equals(cmdName)) {
+				throw new BadPipeStateException("expected command '" + DRequestToDock.COMMAND + "', and not '" + cmdName + "'");
 			}
 			commandReceived(cmd, state);
 			break;
@@ -169,15 +175,18 @@ public class DockingProtocol {
 				throw new BadPipeStateException("expected command");
 			}
 			cmd = DockCommandFromNewton.deserialize(data);
-			if (!DNewtonName.COMMAND.equals(cmd.getCommand())) {
-				throw new BadPipeStateException("expected command '" + DNewtonName.COMMAND + "', and not '" + cmd.getCommand() + "', and not '"
-						+ cmd.getCommand() + "'");
+			if (DResult.COMMAND.equals(cmdName)) {
+				handleError((DResult) cmd);
+			} else if (!DNewtonName.COMMAND.equals(cmdName)) {
+				throw new BadPipeStateException("expected command '" + DNewtonName.COMMAND + "', and not '" + cmdName + "'");
 			}
 			setState(state, DockingState.HANDSHAKE_NAME_RECEIVED, data, cmd);
 			break;
 		case HANDSHAKE_NAME_RECEIVED:
-			if (!DNewtonName.COMMAND.equals(cmd.getCommand())) {
-				throw new BadPipeStateException("expected command '" + DNewtonName.COMMAND + "', and not '" + cmd.getCommand() + "'");
+			if (DResult.COMMAND.equals(cmdName)) {
+				handleError((DResult) cmd);
+			} else if (!DNewtonName.COMMAND.equals(cmdName)) {
+				throw new BadPipeStateException("expected command '" + DNewtonName.COMMAND + "', and not '" + cmdName + "'");
 			}
 			commandReceived(cmd, state);
 			break;
@@ -194,14 +203,18 @@ public class DockingProtocol {
 				throw new BadPipeStateException("expected command");
 			}
 			cmd = DockCommandFromNewton.deserialize(data);
-			if (!DNewtonInfo.COMMAND.equals(cmd.getCommand())) {
-				throw new BadPipeStateException("expected command '" + DNewtonInfo.COMMAND + "', and not '" + cmd.getCommand() + "'");
+			if (DResult.COMMAND.equals(cmdName)) {
+				handleError((DResult) cmd);
+			} else if (!DNewtonInfo.COMMAND.equals(cmdName)) {
+				throw new BadPipeStateException("expected command '" + DNewtonInfo.COMMAND + "', and not '" + cmdName + "'");
 			}
 			setState(state, DockingState.HANDSHAKE_NINFO_RECEIVED, data, cmd);
 			break;
 		case HANDSHAKE_NINFO_RECEIVED:
-			if (!DNewtonInfo.COMMAND.equals(cmd.getCommand())) {
-				throw new BadPipeStateException("expected command '" + DNewtonInfo.COMMAND + "', and not '" + cmd.getCommand() + "'");
+			if (DResult.COMMAND.equals(cmdName)) {
+				handleError((DResult) cmd);
+			} else if (!DNewtonInfo.COMMAND.equals(cmdName)) {
+				throw new BadPipeStateException("expected command '" + DNewtonInfo.COMMAND + "', and not '" + cmdName + "'");
 			}
 			commandReceived(cmd, state);
 			break;
@@ -218,14 +231,14 @@ public class DockingProtocol {
 				throw new BadPipeStateException("expected command");
 			}
 			cmd = DockCommandFromNewton.deserialize(data);
-			if (!DResult.COMMAND.equals(cmd.getCommand())) {
-				throw new BadPipeStateException("expected command '" + DResult.COMMAND + "', and not '" + cmd.getCommand() + "'");
+			if (!DResult.COMMAND.equals(cmdName)) {
+				throw new BadPipeStateException("expected command '" + DResult.COMMAND + "', and not '" + cmdName + "'");
 			}
 			setState(state, DockingState.HANDSHAKE_ICONS_RESULT_RECEIVED, data, cmd);
 			break;
 		case HANDSHAKE_ICONS_RESULT_RECEIVED:
-			if (!DResult.COMMAND.equals(cmd.getCommand())) {
-				throw new BadPipeStateException("expected command '" + DResult.COMMAND + "', and not '" + cmd.getCommand() + "'");
+			if (!DResult.COMMAND.equals(cmdName)) {
+				throw new BadPipeStateException("expected command '" + DResult.COMMAND + "', and not '" + cmdName + "'");
 			}
 			commandReceived(cmd, state);
 			break;
@@ -242,14 +255,18 @@ public class DockingProtocol {
 				throw new BadPipeStateException("expected command");
 			}
 			cmd = DockCommandFromNewton.deserialize(data);
-			if (!DPassword.COMMAND.equals(cmd.getCommand())) {
-				throw new BadPipeStateException("expected command '" + DPassword.COMMAND + "', and not '" + cmd.getCommand() + "'");
+			if (DResult.COMMAND.equals(cmdName)) {
+				handleError((DResult) cmd);
+			} else if (!DPassword.COMMAND.equals(cmdName)) {
+				throw new BadPipeStateException("expected command '" + DPassword.COMMAND + "', and not '" + cmdName + "'");
 			}
 			setState(state, DockingState.HANDSHAKE_PASS_RECEIVED, data, cmd);
 			break;
 		case HANDSHAKE_PASS_RECEIVED:
-			if (!DPassword.COMMAND.equals(cmd.getCommand())) {
-				throw new BadPipeStateException("expected command '" + DPassword.COMMAND + "', and not '" + cmd.getCommand() + "'");
+			if (DResult.COMMAND.equals(cmdName)) {
+				handleError((DResult) cmd);
+			} else if (!DPassword.COMMAND.equals(cmdName)) {
+				throw new BadPipeStateException("expected command '" + DPassword.COMMAND + "', and not '" + cmdName + "'");
 			}
 			commandReceived(cmd, state);
 			break;
@@ -410,5 +427,45 @@ public class DockingProtocol {
 	 */
 	public int getProtocolVersion() {
 		return protocolVersion;
+	}
+
+	/**
+	 * Handle an error result.
+	 * 
+	 * @param cmd
+	 *            the result command with error.
+	 * @throws BadPipeStateException
+	 * @throws CDILNotInitializedException
+	 * @throws PlatformException
+	 * @throws PipeDisconnectedException
+	 * @throws TimeoutException
+	 */
+	protected void handleError(DResult cmd) throws BadPipeStateException, CDILNotInitializedException, PlatformException, PipeDisconnectedException,
+			TimeoutException {
+		handleError(cmd.getErrorCode());
+	}
+
+	/**
+	 * Handle an error result.
+	 * 
+	 * @param errorCode
+	 *            the error code.
+	 * @throws BadPipeStateException
+	 * @throws CDILNotInitializedException
+	 * @throws PlatformException
+	 * @throws PipeDisconnectedException
+	 * @throws TimeoutException
+	 */
+	protected void handleError(int errorCode) throws BadPipeStateException, CDILNotInitializedException, PlatformException, PipeDisconnectedException,
+			TimeoutException {
+		switch (errorCode) {
+		case DResult.ERROR_DICONNECTED:
+			pipe.disconnect();
+			break;
+		case DResult.ERROR_TIMEOUT:
+			throw new TimeoutException("Communications problem (message timed out)");
+		default:
+			throw new BadPipeStateException("Error " + errorCode);
+		}
 	}
 }

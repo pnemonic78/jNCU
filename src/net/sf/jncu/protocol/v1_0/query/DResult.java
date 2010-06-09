@@ -48,8 +48,12 @@ public class DResult extends DockCommandFromNewton implements IDockCommandToNewt
 
 	/** No error. */
 	public static final int ERROR_NONE = 0;
+	/** Communications problem (message timed out). */
+	public static final int ERROR_TIMEOUT = -10021;
 	/** Bad package. */
 	public static final int ERROR_BAD_PACKAGE = -10401;
+	/** Request cancelled or connection disconnected. */
+	public static final int ERROR_DICONNECTED = -16005;
 	/**  */
 	public static final int ERROR_48000 = -48000;
 	/** The PCMCIA card is not a data storage card. */
