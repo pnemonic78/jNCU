@@ -26,28 +26,36 @@ package net.sf.jncu.cdil.mnp;
  */
 public class MNPLinkRequestPacket extends MNPPacket {
 
-	private static final int TYPE1 = 0x01;
-	private static final int FRAMING_MODE = 0x02;
-	private static final int MAX_OUTSTANDING = 0x03;
-	private static final int MAX_INFO_LENGTH = 0x04;
-	private static final int DATA_PHASE_OPT = 0x08;
+	private static final byte TYPE1 = 0x01;
+	private static final byte FRAMING_MODE = 0x02;
+	private static final byte MAX_OUTSTANDING = 0x03;
+	private static final byte MAX_INFO_LENGTH = 0x04;
+	private static final byte DATA_PHASE_OPT = 0x08;
+	private static final byte PROTOCOL = 0x0E;
 
 	private static final byte TYPE1_LENGTH = 6;
 	private static final byte FRAMING_MODE_LENGTH = 1;
 	private static final byte MAX_OUTSTANDING_LENGTH = 1;
 	private static final byte MAX_INFO_LENGTH_LENGTH = 2;
 	private static final byte DATA_PHASE_OPT_LENGTH = 1;
+	private static final byte PROTOCOL_LENGTH = 4;
+
+	/** Connect using "Toolkit" protocol. */
+	public static final byte PROTOCOL_NTK = 0x02;
+	/** Connect using "Docking" protocol. */
+	public static final byte PROTOCOL_NCU = 0x03;
 
 	private byte framingMode = 0x02;
 	private byte maxOutstanding = 0x08;
 	private short maxInfoLength = 0x0040;
 	private byte dataPhaseOpt = 0x03;
+	private byte protocol = PROTOCOL_NCU;
 
 	/**
 	 * Creates a new MNP LR packet.
 	 */
 	public MNPLinkRequestPacket() {
-		super(LR, 0x17);
+		super(LR, 0x1D);
 	}
 
 	@Override
@@ -80,6 +88,9 @@ public class MNPLinkRequestPacket extends MNPPacket {
 			case DATA_PHASE_OPT:
 				setDataPhaseOpt(payload[offset]);
 				break;
+			case PROTOCOL:
+				setProtocol(payload[offset]);
+				break;
 			}
 
 			offset += length;
@@ -90,9 +101,11 @@ public class MNPLinkRequestPacket extends MNPPacket {
 
 	@Override
 	public byte[] serialize() {
-		byte[] payload = new byte[] { 0x17, LR, 0x02, TYPE1, TYPE1_LENGTH, 0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0xFF, FRAMING_MODE, FRAMING_MODE_LENGTH,
-				framingMode, MAX_OUTSTANDING, MAX_OUTSTANDING_LENGTH, maxOutstanding, MAX_INFO_LENGTH, MAX_INFO_LENGTH_LENGTH, (byte) (maxInfoLength & 0xFF),
-				(byte) ((maxInfoLength >> 8) & 0xFF), DATA_PHASE_OPT, DATA_PHASE_OPT_LENGTH, dataPhaseOpt };
+		byte[] payload = new byte[] { 0x00, LR, 0x02, TYPE1, TYPE1_LENGTH, 0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0xFF, FRAMING_MODE, FRAMING_MODE_LENGTH,
+				getFramingMode(), MAX_OUTSTANDING, MAX_OUTSTANDING_LENGTH, maxOutstanding, MAX_INFO_LENGTH, MAX_INFO_LENGTH_LENGTH,
+				(byte) (getMaxInfoLength() & 0xFF), (byte) ((getMaxInfoLength() >> 8) & 0xFF), DATA_PHASE_OPT, DATA_PHASE_OPT_LENGTH, getDataPhaseOpt()
+		/* , PROTOCOL, PROTOCOL_LENGTH, getProtocol(), 0x04, 0x00, (byte) 0xFA */};
+		payload[0] = (byte) (payload.length - 1);
 		return payload;
 	}
 
@@ -170,6 +183,25 @@ public class MNPLinkRequestPacket extends MNPPacket {
 	 */
 	public void setDataPhaseOpt(byte dataPhaseOpt) {
 		this.dataPhaseOpt = dataPhaseOpt;
+	}
+
+	/**
+	 * Get the protocol type.
+	 * 
+	 * @return the protocol.
+	 */
+	public byte getProtocol() {
+		return protocol;
+	}
+
+	/**
+	 * Set protocol type.
+	 * 
+	 * @param protocol
+	 *            the protocol.
+	 */
+	public void setProtocol(byte protocol) {
+		this.protocol = protocol;
 	}
 
 }
