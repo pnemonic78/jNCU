@@ -17,29 +17,32 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.protocol.v1_0.query;
+package net.sf.jncu.protocol.v2_0.sync;
 
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * The time of the last sync.
+ * This command is like <tt>kDGetSoupInfo</tt> except that it only returns the
+ * soup info if it has been changed since the time set by the
+ * <tt>kDLastSyncTime</tt> command. If the info hasn't changed a <tt>kDRes</tt>
+ * with <tt>0</tt> is returned.
  * 
  * <pre>
- * 'stme'
- * length = 0
+ * 'cinf'
+ * length
  * </pre>
  * 
  * @author moshew
  */
-public class DLastSyncTime extends DockCommandToNewtonBlank {
+public class DGetChangedInfo extends DockCommandToNewtonBlank {
 
-	/** <tt>kDLastSyncTime</tt> */
-	public static final String COMMAND = "stme";
+	/** <tt>kDGetChangedInfo</tt> */
+	public static final String COMMAND = "cinf";
 
 	/**
 	 * Creates a new command.
 	 */
-	public DLastSyncTime(String cmd) {
+	public DGetChangedInfo(String cmd) {
 		super(COMMAND);
 	}
 

@@ -17,32 +17,31 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.protocol.v2_0.data;
+package net.sf.jncu.protocol.v2_0.sync;
 
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * This command is like <tt>kDGetIndexDescription</tt> except that it only
- * returns the index description if it has been changed since the time set by
- * the <tt>kDLastSyncTime</tt> command. If the index hasn't changed a
- * <tt>kDRes</tt> with <tt>0</tt> is returned.
+ * This command is sent from the desktop when the desktop wants to start a sync
+ * operation, when both the Newton and the desktop were waiting for the user to
+ * specify an operation.
  * 
  * <pre>
- * 'cidx'
- * length
+ * 'ssyn'
+ * length = 0
  * </pre>
  * 
  * @author moshew
  */
-public class DGetChangedIndex extends DockCommandToNewtonBlank {
+public class DRequestToSync extends DockCommandToNewtonBlank {
 
-	/** <tt>kDGetChangedIndex</tt> */
-	public static final String COMMAND = "cidx";
+	/** <tt>kDRequestToSync</tt> */
+	public static final String COMMAND = "ssyn";
 
 	/**
 	 * Creates a new command.
 	 */
-	public DGetChangedIndex(String cmd) {
+	public DRequestToSync() {
 		super(COMMAND);
 	}
 

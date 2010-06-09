@@ -17,32 +17,35 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.protocol.v2_0.data;
+package net.sf.jncu.protocol.v2_0.app;
 
-import net.sf.jncu.protocol.DockCommandToNewtonBlank;
+import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
- * This command is like <tt>kDGetSoupInfo</tt> except that it only returns the
- * soup info if it has been changed since the time set by the
- * <tt>kDLastSyncTime</tt> command. If the info hasn't changed a <tt>kDRes</tt>
- * with <tt>0</tt> is returned.
+ * This command sends all the entries associated with a package to the Newton in
+ * a single array. Packages are made up of at least 2 entries: one for the
+ * package info and one for each part in the package. All of these entries must
+ * be restored at the same time to restore a working package. A
+ * <tt>kDResult</tt> is returned after the package has been successfully
+ * restored.
  * 
  * <pre>
- * 'cinf'
+ * 'rpkg'
  * length
+ * package array
  * </pre>
  * 
  * @author moshew
  */
-public class DGetChangedInfo extends DockCommandToNewtonBlank {
+public class DRestorePackage extends DockCommandToNewtonScript {
 
-	/** <tt>kDGetChangedInfo</tt> */
-	public static final String COMMAND = "cinf";
+	/** <tt>kDRestorePackage</tt> */
+	public static final String COMMAND = "rpkg";
 
 	/**
 	 * Creates a new command.
 	 */
-	public DGetChangedInfo(String cmd) {
+	public DRestorePackage() {
 		super(COMMAND);
 	}
 

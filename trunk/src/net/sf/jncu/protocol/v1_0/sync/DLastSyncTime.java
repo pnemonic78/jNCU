@@ -17,30 +17,29 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.protocol.v1_0.data;
+package net.sf.jncu.protocol.v1_0.sync;
 
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * This command is sent to request a list of changed IDs for the current soup.
- * It expects to receive a <tt>kDChangedIDs</tt> command in response.
+ * The time of the last sync.
  * 
  * <pre>
- * 'gids'
+ * 'stme'
  * length = 0
  * </pre>
  * 
  * @author moshew
  */
-public class DGetChangedIDs extends DockCommandToNewtonBlank {
+public class DLastSyncTime extends DockCommandToNewtonBlank {
 
-	/** <tt>kDGetChangedIDs</tt> */
-	public static final String COMMAND = "gcid";
+	/** <tt>kDLastSyncTime</tt> */
+	public static final String COMMAND = "stme";
 
 	/**
 	 * Creates a new command.
 	 */
-	public DGetChangedIDs(String cmd) {
+	public DLastSyncTime(String cmd) {
 		super(COMMAND);
 	}
 

@@ -17,30 +17,30 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.protocol.v2_0.data;
+package net.sf.jncu.protocol.v1_0.sync;
 
-import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
+import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * This command is sent to the desktop when the user taps the
- * <tt>Synchronize<tt> button on the Newton.
+ * This command is sent to request a list of changed IDs for the current soup.
+ * It expects to receive a <tt>kDChangedIDs</tt> command in response.
  * 
  * <pre>
- * 'sync'
- * length
+ * 'gids'
+ * length = 0
  * </pre>
  * 
  * @author moshew
  */
-public class DSynchronize extends DockCommandFromNewtonBlank {
+public class DGetChangedIDs extends DockCommandToNewtonBlank {
 
-	/** <tt>kDSynchronize</tt> */
-	public static final String COMMAND = "sync";
+	/** <tt>kDGetChangedIDs</tt> */
+	public static final String COMMAND = "gcid";
 
 	/**
 	 * Creates a new command.
 	 */
-	public DSynchronize(String cmd) {
+	public DGetChangedIDs(String cmd) {
 		super(COMMAND);
 	}
 
