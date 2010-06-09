@@ -17,7 +17,7 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.protocol.v2_0.data;
+package net.sf.jncu.protocol.v2_0.sync;
 
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 

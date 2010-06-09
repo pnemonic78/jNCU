@@ -17,7 +17,7 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.protocol.v1_0.data;
+package net.sf.jncu.protocol.v1_0.sync;
 
 import java.io.IOException;
 import java.io.OutputStream;

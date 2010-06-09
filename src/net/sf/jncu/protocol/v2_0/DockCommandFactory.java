@@ -33,8 +33,6 @@ import net.sf.jncu.protocol.v2_0.data.DRestoreAll;
 import net.sf.jncu.protocol.v2_0.data.DRestoreFile;
 import net.sf.jncu.protocol.v2_0.data.DSetBaseID;
 import net.sf.jncu.protocol.v2_0.data.DSoupNotDirty;
-import net.sf.jncu.protocol.v2_0.data.DSyncOptions;
-import net.sf.jncu.protocol.v2_0.data.DSynchronize;
 import net.sf.jncu.protocol.v2_0.io.DDefaultStore;
 import net.sf.jncu.protocol.v2_0.io.DGetDefaultPath;
 import net.sf.jncu.protocol.v2_0.io.DGetFileInfo;
@@ -62,6 +60,8 @@ import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.jncu.protocol.v2_0.session.DPassword;
 import net.sf.jncu.protocol.v2_0.session.DRequestToDock;
 import net.sf.jncu.protocol.v2_0.session.DUnknownCommand;
+import net.sf.jncu.protocol.v2_0.sync.DSyncOptions;
+import net.sf.jncu.protocol.v2_0.sync.DSynchronize;
 
 /**
  * Docking command factory.

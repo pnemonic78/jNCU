@@ -26,15 +26,12 @@ import net.sf.jncu.protocol.DockCommand;
 import net.sf.jncu.protocol.v1_0.app.DPackage;
 import net.sf.jncu.protocol.v1_0.app.DPackageIDList;
 import net.sf.jncu.protocol.v1_0.data.DAddedID;
-import net.sf.jncu.protocol.v1_0.data.DChangedEntry;
-import net.sf.jncu.protocol.v1_0.data.DChangedIDs;
 import net.sf.jncu.protocol.v1_0.data.DEntry;
 import net.sf.jncu.protocol.v1_0.data.DIndexDescription;
 import net.sf.jncu.protocol.v1_0.data.DSoupIDs;
 import net.sf.jncu.protocol.v1_0.data.DSoupInfo;
 import net.sf.jncu.protocol.v1_0.data.DSoupNames;
 import net.sf.jncu.protocol.v1_0.io.DStoreNames;
-import net.sf.jncu.protocol.v1_0.query.DCurrentTime;
 import net.sf.jncu.protocol.v1_0.query.DInheritance;
 import net.sf.jncu.protocol.v1_0.query.DPatches;
 import net.sf.jncu.protocol.v1_0.query.DResult;
@@ -44,6 +41,9 @@ import net.sf.jncu.protocol.v1_0.session.DNewtonName;
 import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v1_0.session.DRequestToDock;
 import net.sf.jncu.protocol.v1_0.session.DTest;
+import net.sf.jncu.protocol.v1_0.sync.DChangedEntry;
+import net.sf.jncu.protocol.v1_0.sync.DChangedIDs;
+import net.sf.jncu.protocol.v1_0.sync.DCurrentTime;
 
 /**
  * Docking command factory.

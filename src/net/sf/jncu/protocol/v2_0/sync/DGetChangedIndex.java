@@ -17,35 +17,32 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.protocol.v2_0.data;
+package net.sf.jncu.protocol.v2_0.sync;
 
-import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
+import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * This command sends all the entries associated with a package to the Newton in
- * a single array. Packages are made up of at least 2 entries: one for the
- * package info and one for each part in the package. All of these entries must
- * be restored at the same time to restore a working package. A
- * <tt>kDResult</tt> is returned after the package has been successfully
- * restored.
+ * This command is like <tt>kDGetIndexDescription</tt> except that it only
+ * returns the index description if it has been changed since the time set by
+ * the <tt>kDLastSyncTime</tt> command. If the index hasn't changed a
+ * <tt>kDRes</tt> with <tt>0</tt> is returned.
  * 
  * <pre>
- * 'rpkg'
+ * 'cidx'
  * length
- * package array
  * </pre>
  * 
  * @author moshew
  */
-public class DRestorePackage extends DockCommandToNewtonScript {
+public class DGetChangedIndex extends DockCommandToNewtonBlank {
 
-	/** <tt>kDRestorePackage</tt> */
-	public static final String COMMAND = "rpkg";
+	/** <tt>kDGetChangedIndex</tt> */
+	public static final String COMMAND = "cidx";
 
 	/**
 	 * Creates a new command.
 	 */
-	public DRestorePackage() {
+	public DGetChangedIndex(String cmd) {
 		super(COMMAND);
 	}
 
