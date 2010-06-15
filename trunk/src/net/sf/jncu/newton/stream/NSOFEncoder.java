@@ -26,6 +26,8 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
 
+import net.sf.jncu.newton.stream.contrib.NSOFReal;
+
 /**
  * Newton Streamed Object Format encoder.
  * 

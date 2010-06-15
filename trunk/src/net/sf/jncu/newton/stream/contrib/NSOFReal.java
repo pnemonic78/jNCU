@@ -17,8 +17,10 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.newton.stream;
+package net.sf.jncu.newton.stream.contrib;
 
+import net.sf.jncu.newton.stream.NSOFBinaryObject;
+import net.sf.jncu.newton.stream.NSOFSymbol;
 import net.sf.jncu.util.NumberUtils;
 
 /**

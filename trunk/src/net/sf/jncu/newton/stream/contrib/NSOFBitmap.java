@@ -17,7 +17,11 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.newton.stream;
+package net.sf.jncu.newton.stream.contrib;
+
+import net.sf.jncu.newton.stream.NSOFFrame;
+import net.sf.jncu.newton.stream.NSOFSmallRect;
+import net.sf.jncu.newton.stream.NSOFSymbol;
 
 /**
  * Newton Streamed Object Format - Bitmap object.
