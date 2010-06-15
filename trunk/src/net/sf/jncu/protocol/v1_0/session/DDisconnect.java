@@ -45,7 +45,6 @@ public class DDisconnect extends DockCommandToNewtonBlank implements IDockComman
 		super(COMMAND);
 	}
 
-	@Override
 	public void decode(InputStream data) throws IOException {
 		// nothing to decode.
 	}
