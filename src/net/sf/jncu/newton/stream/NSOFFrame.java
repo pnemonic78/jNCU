@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Newton Streamed Object Format - Frame.
@@ -193,4 +194,12 @@ public class NSOFFrame extends NSOFObject implements Precedent {
 		return slots.size();
 	}
 
+	/**
+	 * Get the slot symbols.
+	 * 
+	 * @return the symbols.
+	 */
+	public Set<NSOFSymbol> getSymbols() {
+		return slots.keySet();
+	}
 }

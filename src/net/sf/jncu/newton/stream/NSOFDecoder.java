@@ -26,6 +26,11 @@ import java.io.InvalidObjectException;
 import java.util.Hashtable;
 import java.util.Map;
 
+import net.sf.jncu.newton.stream.contrib.NSOFInstructions;
+import net.sf.jncu.newton.stream.contrib.NSOFLiterals;
+import net.sf.jncu.newton.stream.contrib.NSOFRawBitmap;
+import net.sf.jncu.newton.stream.contrib.NSOFReal;
+
 /**
  * Newton Streamed Object Format decoder.
  * 
@@ -120,10 +125,55 @@ public class NSOFDecoder {
 			this.idMax++;
 		}
 		object.decode(in, this);
-		if (dataType == NewtonStreamedObjectFormat.PRECEDENT) {
+		object = postDecode(object, dataType);
+
+		return object;
+	}
+
+	/**
+	 * Post decode the object, possibly returning a more specific object.
+	 * 
+	 * @param object
+	 *            the decoded object.
+	 * @param dataType
+	 *            the data type.
+	 * @return the object.
+	 */
+	protected NSOFObject postDecode(NSOFObject object, int dataType) {
+		NSOFSymbol nsClass;
+
+		switch (dataType) {
+		case NewtonStreamedObjectFormat.PRECEDENT:
 			NSOFPrecedent id = (NSOFPrecedent) object;
 			Precedent p = precedents.get(id);
 			object = (NSOFObject) p;
+			break;
+		case NewtonStreamedObjectFormat.BINARY_OBJECT:
+			NSOFBinaryObject bin = (NSOFBinaryObject) object;
+			nsClass = object.getNSClass();
+			if (NSOFInstructions.NS_CLASS.equals(nsClass)) {
+				NSOFInstructions bin2 = new NSOFInstructions();
+				bin2.setValue(bin.getValue());
+				object = bin2;
+			} else if (NSOFRawBitmap.NS_CLASS.equals(nsClass)) {
+				NSOFRawBitmap bin2 = new NSOFRawBitmap();
+				bin2.setValue(bin.getValue());
+				object = bin2;
+			} else if (NSOFReal.NS_CLASS.equals(nsClass)) {
+				NSOFReal bin2 = new NSOFReal();
+				bin2.setValue(bin.getValue());
+				object = bin2;
+			}
+			break;
+		case NewtonStreamedObjectFormat.ARRAY:
+			NSOFArray arr = (NSOFArray) object;
+			nsClass = object.getNSClass();
+			if (NSOFLiterals.NS_CLASS.equals(nsClass)) {
+				NSOFLiterals arr2 = new NSOFLiterals();
+				arr2.setValue(arr.getValue());
+				object = arr2;
+			}
+			break;
 		}
 
 		return object;

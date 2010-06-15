@@ -59,4 +59,9 @@ public class NSOFNil extends NSOFObject {
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(NIL);
 	}
+	
+	@Override
+	public String toString() {
+		return null;
+	}
 }
