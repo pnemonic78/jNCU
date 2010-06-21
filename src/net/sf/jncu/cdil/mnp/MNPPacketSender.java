@@ -111,7 +111,7 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 
 				do {
 					try {
-						timeout = System.currentTimeMillis() + 1000L;
+						timeout = System.currentTimeMillis() + 2000L;
 						packetLayer.send(out, packet);
 						if (seqToAck >= 0) {
 							// Wait for acknowledgement.

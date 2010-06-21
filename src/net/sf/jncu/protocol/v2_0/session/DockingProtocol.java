@@ -29,6 +29,7 @@ import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.crypto.DESNewton;
+import net.sf.jncu.newton.NewtonError;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.NewtonInfo;
@@ -442,7 +443,7 @@ public class DockingProtocol {
 	 */
 	protected void handleError(DResult cmd) throws BadPipeStateException, CDILNotInitializedException, PlatformException, PipeDisconnectedException,
 			TimeoutException {
-		handleError(cmd.getErrorCode());
+		handleError(cmd.getError());
 	}
 
 	/**
@@ -458,14 +459,30 @@ public class DockingProtocol {
 	 */
 	protected void handleError(int errorCode) throws BadPipeStateException, CDILNotInitializedException, PlatformException, PipeDisconnectedException,
 			TimeoutException {
-		switch (errorCode) {
-		case DResult.ERROR_DICONNECTED:
+		handleError(new NewtonError(errorCode));
+	}
+
+	/**
+	 * Handle an error result.
+	 * 
+	 * @param error
+	 *            the error.
+	 * @throws BadPipeStateException
+	 * @throws CDILNotInitializedException
+	 * @throws PlatformException
+	 * @throws PipeDisconnectedException
+	 * @throws TimeoutException
+	 */
+	protected void handleError(NewtonError error) throws BadPipeStateException, CDILNotInitializedException, PlatformException, PipeDisconnectedException,
+			TimeoutException {
+		switch (error.getErrorCode()) {
+		case -16005:
 			pipe.disconnect();
 			break;
-		case DResult.ERROR_TIMEOUT:
-			throw new TimeoutException("Communications problem (message timed out)");
+		case -10021:
+			throw new TimeoutException(error.getMessage());
 		default:
-			throw new BadPipeStateException("Error " + errorCode);
+			throw new BadPipeStateException(error.getMessage());
 		}
 	}
 }

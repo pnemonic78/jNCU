@@ -84,31 +84,21 @@ public class DUnknownCommand extends DockCommandToNewton implements IDockCommand
 		data.write(cmdName[3] & 0xFF);
 	}
 
-	public void decode(InputStream frame) throws IOException {
-		int length = DockCommandFromNewton.ntohl(frame);
-		setLength(length);
-		if ((length != -1) && (frame.available() < length)) {
-			throw new ArrayIndexOutOfBoundsException();
-		}
-		decodeData(frame);
-	}
+	public void decode(InputStream data) throws IOException {
+		IDockCommandFromNewton cmd = new DockCommandFromNewton(COMMAND) {
 
-	/**
-	 * Decode the command data.
-	 * 
-	 * @param data
-	 *            the data.
-	 * @throws IOException
-	 *             if read past data buffer.
-	 */
-	protected void decodeData(InputStream data) throws IOException {
-		char[] cmdName = new char[getLength()];
-		cmdName[0] = (char) (data.read() & 0xFF);
-		cmdName[1] = (char) (data.read() & 0xFF);
-		cmdName[2] = (char) (data.read() & 0xFF);
-		cmdName[3] = (char) (data.read() & 0xFF);
+			@Override
+			protected void decodeData(InputStream data) throws IOException {
+				char[] cmdName = new char[getLength()];
+				cmdName[0] = (char) (data.read() & 0xFF);
+				cmdName[1] = (char) (data.read() & 0xFF);
+				cmdName[2] = (char) (data.read() & 0xFF);
+				cmdName[3] = (char) (data.read() & 0xFF);
 
-		setBadCommand(new String(cmdName));
+				setBadCommand(new String(cmdName));
+			}
+		};
+		cmd.decode(data);
 	}
 
 }
