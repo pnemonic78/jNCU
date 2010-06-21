@@ -71,7 +71,7 @@ public class DKeyboardString extends DockCommandToNewton {
 	 * @param s
 	 *            the string.
 	 */
-	protected void setString(String s) {
+	public void setString(String s) {
 		this.s = s;
 	}
 

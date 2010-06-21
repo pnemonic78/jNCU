@@ -22,9 +22,7 @@ package net.sf.jncu.protocol.v2_0.session;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import net.sf.jncu.newton.stream.NSOFArray;
-import net.sf.jncu.newton.stream.NSOFEncoder;
-import net.sf.jncu.newton.stream.NSOFSymbol;
+import net.sf.jncu.newton.stream.*;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
@@ -46,8 +44,8 @@ public class DCallGlobalFunction extends DockCommandToNewton {
 	/** <tt>kDCallGlobalFunction</tt> */
 	public static final String COMMAND = "cgfn";
 
-	private NSOFSymbol funcName;
-	private NSOFArray args;
+	private String funcName;
+	private Object[] args;
 
 	/**
 	 * Creates a new command.
@@ -61,7 +59,7 @@ public class DCallGlobalFunction extends DockCommandToNewton {
 	 * 
 	 * @return the function name.
 	 */
-	public NSOFSymbol getFunctionName() {
+	public String getFunctionName() {
 		return funcName;
 	}
 
@@ -71,18 +69,8 @@ public class DCallGlobalFunction extends DockCommandToNewton {
 	 * @param funcName
 	 *            the function name.
 	 */
-	public void setFunctionName(NSOFSymbol funcName) {
-		this.funcName = funcName;
-	}
-
-	/**
-	 * Set the function name.
-	 * 
-	 * @param funcName
-	 *            the function name.
-	 */
 	public void setFunctionName(String funcName) {
-		setFunctionName(new NSOFSymbol(funcName));
+		this.funcName = funcName;
 	}
 
 	/**
@@ -90,7 +78,7 @@ public class DCallGlobalFunction extends DockCommandToNewton {
 	 * 
 	 * @return the arguments.
 	 */
-	public NSOFArray getArguments() {
+	public Object[] getArguments() {
 		return args;
 	}
 
@@ -100,14 +88,20 @@ public class DCallGlobalFunction extends DockCommandToNewton {
 	 * @param args
 	 *            the arguments.
 	 */
-	public void setArguments(NSOFArray args) {
+	public void setArguments(Object[] args) {
 		this.args = args;
 	}
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
 		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.encode(getFunctionName(), data);
-		encoder.encode(getArguments(), data);
+
+		encoder.encode(new NSOFSymbol(getFunctionName()), data);
+		Object[] args = getArguments();
+		if ((args == null) || (args.length == 0)) {
+			encoder.encode(new NSOFNil(), data);
+		} else {
+			encoder.encode(NSOFEncoder.toNS(args), data);
+		}
 	}
 }

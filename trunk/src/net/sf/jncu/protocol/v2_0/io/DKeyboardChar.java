@@ -78,7 +78,7 @@ public class DKeyboardChar extends DockCommandToNewton {
 	 * @param c
 	 *            the character.
 	 */
-	protected void setCharacter(char c) {
+	public void setCharacter(char c) {
 		this.c = c;
 	}
 

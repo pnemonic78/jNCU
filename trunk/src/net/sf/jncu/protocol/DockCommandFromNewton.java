@@ -107,19 +107,19 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	/**
 	 * Decode the command.
 	 * 
-	 * @param frame
-	 *            the frame data.
+	 * @param data
+	 *            the command data.
 	 * @throws IOException
 	 *             if read past data buffer.
 	 */
-	public void decode(InputStream frame) throws IOException {
-		int length = ntohl(frame);
+	public void decode(InputStream data) throws IOException {
+		int length = ntohl(data);
 		setLength(length);
-		if ((length != -1) && (frame.available() < length)) {
+		if ((length != -1) && (data.available() < length)) {
 			throw new ArrayIndexOutOfBoundsException();
 		}
 		if (length > 0) {
-			decodeData(frame);
+			decodeData(data);
 		}
 	}
 
