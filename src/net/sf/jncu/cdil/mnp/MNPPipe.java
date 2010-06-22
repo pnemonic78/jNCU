@@ -177,9 +177,15 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	protected void disconnectImpl() throws PlatformException, TimeoutException {
 		MNPLinkDisconnectPacket packet = (MNPLinkDisconnectPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LD);
 		sendAndAcknowledge(packet);
+		super.disconnectImpl();
+	}
+
+	/**
+	 * Disconnect request was sent, so now we can actually disconnect.
+	 */
+	protected void disconnectSent() {
 		sender.cancel();
 
-		super.disconnectImpl();
 		packetLayer.removePacketListener(this);
 		port.close();
 		try {
@@ -219,6 +225,12 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 			cnie.printStackTrace();
 		} catch (PlatformException pe) {
 			pe.printStackTrace();
+		}
+	}
+
+	public void packetSent(MNPPacket packet) {
+		if (packet.getType() == MNPPacket.LD) {
+			disconnectSent();
 		}
 	}
 

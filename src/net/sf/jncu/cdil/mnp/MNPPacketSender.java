@@ -155,6 +155,10 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 		}
 	}
 
+	public void packetSent(MNPPacket packet) {
+		// Nothing to do.
+	}
+
 	/**
 	 * Cancel all sending requests.
 	 */

@@ -19,6 +19,11 @@
  */
 package net.sf.jncu.cdil.mnp;
 
+/**
+ * MNP packet listener interface.
+ * 
+ * @author moshew
+ */
 public interface MNPPacketListener {
 
 	/**
@@ -28,5 +33,13 @@ public interface MNPPacketListener {
 	 *            the packet.
 	 */
 	void packetReceived(MNPPacket packet);
+
+	/**
+	 * Notification that a MNP packet was sent.
+	 * 
+	 * @param packet
+	 *            the packet.
+	 */
+	void packetSent(MNPPacket packet);
 
 }

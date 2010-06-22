@@ -83,7 +83,7 @@ public class DResult extends DockCommandFromNewton implements IDockCommandToNewt
 	 * @return the error code.
 	 */
 	public int getErrorCode() {
-		return error.getErrorCode();
+		return (error == null) ? 0 : error.getErrorCode();
 	}
 
 	/**
@@ -103,6 +103,16 @@ public class DResult extends DockCommandFromNewton implements IDockCommandToNewt
 	 */
 	public NewtonError getError() {
 		return error;
+	}
+
+	/**
+	 * Set the error.
+	 * 
+	 * @param error
+	 *            the error.
+	 */
+	public void setError(NewtonError error) {
+		this.error = error;
 	}
 
 	@Override

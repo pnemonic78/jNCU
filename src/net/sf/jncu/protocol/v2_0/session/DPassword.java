@@ -44,9 +44,9 @@ public class DPassword extends DockCommandFromNewton implements IDockCommandToNe
 	/** <tt>kDPassword</tt> */
 	public static final String COMMAND = "pass";
 
-	/** <tt>kDBadPassword</tt>. */
+	/** "Bad password error". */
 	public static final int ERROR_BAD_PASSWORD = -28022;
-	/** <tt>kDPWWrong</tt>. */
+	/** "Password retry". */
 	public static final int ERROR_RETRY_PASSWORD = -28023;
 
 	private long encryptedKey;
