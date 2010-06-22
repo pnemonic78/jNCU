@@ -118,7 +118,11 @@ public class DockingProtocol {
 			TimeoutException, BadPipeStateException, CDILNotInitializedException, PlatformException {
 		// Only move the previous state to the next state.
 		int compare = state.compareTo(oldDockingState);
-		if (compare != 1) {
+		if (compare < 0) {
+			// Maybe Newton sent us same packet again until we acknowledged it?
+			return;
+		}
+		if (compare > 1) {
 			throw new BadPipeStateException("bad state from " + oldDockingState + " to " + state);
 		}
 
@@ -482,7 +486,7 @@ public class DockingProtocol {
 		case -10021:
 			throw new TimeoutException(error.getMessage());
 		default:
-			throw new BadPipeStateException(error.getMessage());
+			throw new BadPipeStateException(error);
 		}
 	}
 }

@@ -216,6 +216,7 @@ public class MNPPacketLayer {
 	public void send(OutputStream out, MNPPacket packet) throws IOException {
 		byte[] payload = packet.serialize();
 		write(out, payload);
+		firePacketSent(packet);
 	}
 
 	/**
@@ -251,6 +252,20 @@ public class MNPPacketLayer {
 		Collection<MNPPacketListener> listenersCopy = new ArrayList<MNPPacketListener>(listeners);
 		for (MNPPacketListener listener : listenersCopy) {
 			listener.packetReceived(packet);
+		}
+	}
+
+	/**
+	 * Notify all the listeners that a packet has been sent.
+	 * 
+	 * @param packet
+	 *            the sent packet.
+	 */
+	protected void firePacketSent(MNPPacket packet) {
+		// Make copy of listeners to avoid ConcurrentModificationException.
+		Collection<MNPPacketListener> listenersCopy = new ArrayList<MNPPacketListener>(listeners);
+		for (MNPPacketListener listener : listenersCopy) {
+			listener.packetSent(packet);
 		}
 	}
 
