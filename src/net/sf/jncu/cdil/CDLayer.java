@@ -369,7 +369,7 @@ public class CDLayer {
 	 */
 	protected final void checkConnected() throws CDILNotInitializedException, PlatformException {
 		checkInitialized();
-		if (state != CDState.CONNECTED) {
+		if ((state != CDState.CONNECTED) && (state != CDState.LISTENING)) {
 			throw new BadPipeStateException("state " + state);
 		}
 	}
