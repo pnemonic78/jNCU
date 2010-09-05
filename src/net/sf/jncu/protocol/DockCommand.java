@@ -28,8 +28,6 @@ public abstract class DockCommand implements IDockCommand {
 
 	/** Number of bytes for a word. */
 	protected static final int LENGTH_WORD = 4;
-	/** Number of command characters. */
-	protected static final int COMMAND_LENGTH = LENGTH_WORD;
 
 	/** False. */
 	public static final int FALSE = 0;
@@ -42,7 +40,13 @@ public abstract class DockCommand implements IDockCommand {
 	 */
 	public static final String COMMAND_PREFIX = "newtdock";
 	protected static final byte[] COMMAND_PREFIX_BYTES = COMMAND_PREFIX.getBytes();
-	protected static final int kDNewtonDockLength = COMMAND_PREFIX_BYTES.length;
+	/**
+	 * <tt>kDNewtonDockLength</tt><br>
+	 * Command prefix length.
+	 */
+	protected static final int COMMAND_PREFIX_LENGTH = COMMAND_PREFIX_BYTES.length;
+	/** Number of characters for command name. */
+	public static final int COMMAND_NAME_LENGTH = LENGTH_WORD;
 
 	protected final String command;
 	protected final byte[] commandBytes;
@@ -56,8 +60,8 @@ public abstract class DockCommand implements IDockCommand {
 	 */
 	protected DockCommand(String command) {
 		super();
-		if (command.length() != COMMAND_LENGTH) {
-			throw new IllegalArgumentException("command length must be " + COMMAND_LENGTH);
+		if (command.length() != COMMAND_NAME_LENGTH) {
+			throw new IllegalArgumentException("command length must be " + COMMAND_NAME_LENGTH);
 		}
 		this.command = command;
 		this.commandBytes = command.getBytes();
@@ -71,8 +75,8 @@ public abstract class DockCommand implements IDockCommand {
 	 */
 	protected DockCommand(byte[] commandBytes) {
 		super();
-		if (commandBytes.length != COMMAND_LENGTH) {
-			throw new IllegalArgumentException("command length must be " + COMMAND_LENGTH);
+		if (commandBytes.length != COMMAND_NAME_LENGTH) {
+			throw new IllegalArgumentException("command length must be " + COMMAND_NAME_LENGTH);
 		}
 		this.commandBytes = commandBytes;
 		this.command = new String(commandBytes);
