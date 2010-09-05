@@ -127,7 +127,20 @@ public class DockCommandFactory {
 	 * @return the command - <tt>null</tt> otherwise.
 	 */
 	public DockCommand create(byte[] cmdName) {
-		return create(new String(cmdName));
+		return create(cmdName, 0);
+	}
+
+	/**
+	 * Create a new dock command.
+	 * 
+	 * @param cmdName
+	 *            the command name.
+	 * @param offset
+	 *            the offset.
+	 * @return the command - <tt>null</tt> otherwise.
+	 */
+	public DockCommand create(byte[] cmdName, int offset) {
+		return create(new String(cmdName, offset, DockCommand.COMMAND_NAME_LENGTH));
 	}
 
 	/**
