@@ -23,6 +23,8 @@ import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 
@@ -32,6 +34,12 @@ import net.sf.jncu.protocol.v2_0.DockCommandFactory;
  * @author moshew
  */
 public abstract class DockCommandFromNewton extends DockCommand implements IDockCommandFromNewton {
+
+	/**
+	 * Minimum length for command header.<br>
+	 * <tt>minimum length := length(prefix) + length(command name) + length(command data)</tt>
+	 */
+	protected static final int MIN_COMMAND_HEADER_LENGTH = COMMAND_PREFIX_LENGTH + COMMAND_NAME_LENGTH + LENGTH_WORD;
 
 	/**
 	 * Creates a new docking command from Newton.
@@ -62,11 +70,25 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	 *         otherwise.
 	 */
 	public static boolean isCommand(byte[] data) {
-		if ((data == null) || (data.length < kDNewtonDockLength)) {
+		return isCommand(data, 0);
+	}
+
+	/**
+	 * Is the data a command?
+	 * 
+	 * @param data
+	 *            the data.
+	 * @param offset
+	 *            the offset.
+	 * @return <tt>true</tt> if frame contains a command - <tt>false</tt>
+	 *         otherwise.
+	 */
+	public static boolean isCommand(byte[] data, int offset) {
+		if ((data == null) || (data.length < COMMAND_PREFIX_LENGTH)) {
 			return false;
 		}
-		for (int i = 0; i < kDNewtonDockLength; i++) {
-			if (COMMAND_PREFIX_BYTES[i] != data[i]) {
+		for (int i = 0, j = offset; i < COMMAND_PREFIX_LENGTH; i++, j++) {
+			if (COMMAND_PREFIX_BYTES[i] != data[j]) {
 				return false;
 			}
 		}
@@ -80,28 +102,65 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	 *            the data.
 	 * @return the command.
 	 */
-	public static IDockCommandFromNewton deserialize(byte[] data) {
-		if ((data == null) || (data.length < 16)) {
-			return null;
+	public static List<IDockCommandFromNewton> deserialize(byte[] data) {
+		List<IDockCommandFromNewton> cmds = new ArrayList<IDockCommandFromNewton>();
+		if ((data == null) || (data.length < MIN_COMMAND_HEADER_LENGTH)) {
+			return cmds;
 		}
-		int offset = 0;
-		byte[] cmdName = new byte[COMMAND_LENGTH];
-		System.arraycopy(data, kDNewtonDockLength, cmdName, offset, COMMAND_LENGTH);
-		offset += kDNewtonDockLength;
+		IDockCommandFromNewton cmd = null;
+		Command c = new Command();
+		do {
+			deserializeCommand(data, c);
+			cmd = c.cmd;
+			if (cmd != null) {
+				cmds.add(cmd);
+			}
+		} while (cmd != null);
+		return cmds;
+	}
+
+	protected static class Command {
+		public IDockCommandFromNewton cmd;
+		public int offset;
+
+		public Command() {
+			super();
+		}
+	}
+
+	/**
+	 * Decode the data.
+	 * 
+	 * @param data
+	 *            the data.
+	 * @param c
+	 *            the command.
+	 */
+	protected static void deserializeCommand(byte[] data, Command c) {
+		c.cmd = null;
+		int offset = c.offset;
+		if ((data == null) || ((data.length - offset) < MIN_COMMAND_HEADER_LENGTH)) {
+			return;
+		}
+		if (!isCommand(data, offset)) {
+			return;
+		}
+		offset += COMMAND_PREFIX_LENGTH;
 		DockCommandFactory factory = DockCommandFactory.getInstance();
-		IDockCommandFromNewton cmd = (IDockCommandFromNewton) factory.create(cmdName);
-		offset += COMMAND_LENGTH;
+		IDockCommandFromNewton cmd = (IDockCommandFromNewton) factory.create(data, offset);
+		offset += COMMAND_NAME_LENGTH;
 		if (cmd != null) {
-			byte[] dataBytes = new byte[data.length - offset];
-			System.arraycopy(data, offset, dataBytes, 0, dataBytes.length);
-			InputStream in = new ByteArrayInputStream(dataBytes);
+			InputStream in = new ByteArrayInputStream(data, offset, data.length - offset);
 			try {
 				cmd.decode(in);
+				offset = data.length - in.available();
+				in.close();
 			} catch (IOException ioe) {
 				throw new ArrayIndexOutOfBoundsException();
 			}
 		}
-		return cmd;
+		c.cmd = cmd;
+		c.offset = offset;
 	}
 
 	/**
@@ -116,7 +175,7 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 		int length = ntohl(data);
 		setLength(length);
 		if ((length != -1) && (data.available() < length)) {
-			throw new ArrayIndexOutOfBoundsException();
+			throw new ArrayIndexOutOfBoundsException("length " + length);
 		}
 		if (length > 0) {
 			decodeData(data);
