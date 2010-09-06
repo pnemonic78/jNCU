@@ -24,12 +24,13 @@ import gnu.io.SerialPort;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.TooManyListenersException;
 
 /**
- * NCU serial port reader.
+ * MNP serial port reader.
  * 
  * @author moshew
  */
@@ -37,7 +38,9 @@ public class MNPSerialPortReader extends Thread implements Closeable {
 
 	protected final SerialPort port;
 	private MNPSerialPortEventListener listener;
-	private final PipedOutputStream q = new PipedOutputStream();
+	/** Stream for the serial port to populate with data. */
+	private final PipedOutputStream data = new PipedOutputStream();
+	/** Stream of usable data that has been populated from the serial port. */
 	private InputStream in;
 
 	/**
@@ -53,14 +56,10 @@ public class MNPSerialPortReader extends Thread implements Closeable {
 	public MNPSerialPortReader(SerialPort port) throws TooManyListenersException, IOException {
 		super();
 		this.port = port;
-		this.listener = new MNPSerialPortEventListener(port, q);
-		this.in = new PipedInputStream(q);
+		this.in = new PipedInputStream(data);
+		this.listener = createPortListener(port, data);
 		port.notifyOnDataAvailable(true);
 		port.addEventListener(listener);
-	}
-
-	@Override
-	public void run() {
 	}
 
 	public void close() throws IOException {
@@ -90,6 +89,19 @@ public class MNPSerialPortReader extends Thread implements Closeable {
 	 */
 	public InputStream getInputStream() {
 		return in;
+	}
+
+	/**
+	 * Create a port event listener.
+	 * 
+	 * @param port
+	 *            the serial port.
+	 * @param out
+	 *            the buffer populate.
+	 * @return the listener.
+	 */
+	protected MNPSerialPortEventListener createPortListener(SerialPort port, OutputStream out) {
+		return new MNPSerialPortEventListener(port, out);
 	}
 
 }

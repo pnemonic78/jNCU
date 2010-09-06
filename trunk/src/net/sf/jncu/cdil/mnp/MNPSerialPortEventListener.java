@@ -45,7 +45,7 @@ public class MNPSerialPortEventListener implements SerialPortEventListener {
 	 * @param port
 	 *            the port.
 	 * @param queue
-	 *            the queue for populating data.
+	 *            the buffer for populating data.
 	 */
 	public MNPSerialPortEventListener(SerialPort port, BlockingQueue<Byte> queue) {
 		super();
@@ -60,7 +60,7 @@ public class MNPSerialPortEventListener implements SerialPortEventListener {
 	 * @param port
 	 *            the port.
 	 * @param out
-	 *            the queue for populating data.
+	 *            the buffer for populating data.
 	 */
 	public MNPSerialPortEventListener(SerialPort port, OutputStream out) {
 		super();
@@ -176,7 +176,7 @@ public class MNPSerialPortEventListener implements SerialPortEventListener {
 			in = port.getInputStream();
 			b = in.read();
 			while (b != -1) {
-				if (out == null) {
+				if (q != null) {
 					q.put((byte) b);
 				} else {
 					out.write(b);
@@ -227,9 +227,6 @@ public class MNPSerialPortEventListener implements SerialPortEventListener {
 			} catch (Exception e) {
 				// ignore
 			}
-		}
-		if (q != null) {
-			q.clear();
 		}
 	}
 

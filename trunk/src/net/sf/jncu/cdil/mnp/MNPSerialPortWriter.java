@@ -25,33 +25,28 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * MNP serial port writer.
+ * 
+ * @author moshew
+ */
 public class MNPSerialPortWriter extends Thread implements Closeable {
 
-	private final SerialPort port;
+	protected final SerialPort port;
 
+	/**
+	 * Creates a new serial port writer.
+	 * 
+	 * @param port
+	 *            the serial port.
+	 */
 	public MNPSerialPortWriter(SerialPort port) {
 		super();
 		this.port = port;
 	}
 
-	@Override
-	public void run() {
-	}
-
 	public void close() throws IOException {
 		getOutputStream().close();
-	}
-
-	/**
-	 * Write a byte to the port.
-	 * 
-	 * @param b
-	 *            the byte.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
-	public void write(byte b) throws IOException {
-		write(b & 0xFF);
 	}
 
 	/**

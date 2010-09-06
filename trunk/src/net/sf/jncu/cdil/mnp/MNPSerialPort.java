@@ -41,10 +41,10 @@ public class MNPSerialPort {
 	public static final int BAUD_9600 = BAUD_4800 << 1;
 	public static final int BAUD_19200 = BAUD_9600 << 1;
 	public static final int BAUD_38400 = BAUD_19200 << 1;
-	public static final int BAUD_57600 = 57600;
+	public static final int BAUD_57600 = BAUD_19200 * 3;
 	public static final int BAUD_115200 = BAUD_57600 << 1;
 
-	private final SerialPort ser;
+	private final SerialPort serialPort;
 	private MNPSerialPortReader reader;
 	private MNPSerialPortWriter writer;
 
@@ -87,10 +87,10 @@ public class MNPSerialPort {
 	 */
 	public MNPSerialPort(SerialPort port, int baud) throws TooManyListenersException, IOException, UnsupportedCommOperationException {
 		super();
-		this.ser = port;
 		port.setSerialPortParams(baud, port.getDataBits(), port.getStopBits(), port.getParity());
-		this.reader = new MNPSerialPortReader(port);
-		this.writer = new MNPSerialPortWriter(port);
+		this.serialPort = port;
+		this.reader = createReader(port);
+		this.writer = createWriter(port);
 		reader.start();
 		writer.start();
 	}
@@ -127,7 +127,7 @@ public class MNPSerialPort {
 		}
 		reader = null;
 		writer = null;
-		ser.close();
+		serialPort.close();
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class MNPSerialPort {
 	 * @return the port.
 	 */
 	public SerialPort getPort() {
-		return ser;
+		return serialPort;
 	}
 
 	/**
@@ -157,6 +157,36 @@ public class MNPSerialPort {
 	 */
 	public OutputStream getOutputStream() throws IOException {
 		return writer.getOutputStream();
+	}
+
+	/**
+	 * Create a serial port reader.
+	 * 
+	 * @param port
+	 *            the serial port.
+	 * @return the reader.
+	 * @throws TooManyListenersException
+	 *             if too many listeners.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected MNPSerialPortReader createReader(SerialPort port) throws TooManyListenersException, IOException {
+		return new MNPSerialPortReader(port);
+	}
+
+	/**
+	 * Create a serial port writer.
+	 * 
+	 * @param port
+	 *            the serial port.
+	 * @return the reader.
+	 * @throws TooManyListenersException
+	 *             if too many listeners.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected MNPSerialPortWriter createWriter(SerialPort port) throws TooManyListenersException, IOException {
+		return new MNPSerialPortWriter(port);
 	}
 
 }
