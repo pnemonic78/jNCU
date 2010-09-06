@@ -44,10 +44,11 @@ public class MNPPacketLayer {
 	/** Packet escape character. */
 	public static final byte DELIMITER_ESCAPE = ControlCharacter.DLE;
 
-	private final Collection<MNPPacketListener> listeners = new ArrayList<MNPPacketListener>();
+	/** List of packet listeners. */
+	protected final Collection<MNPPacketListener> listeners = new ArrayList<MNPPacketListener>();
 
 	/**
-	 * Creates a new MNP packet layer.
+	 * Creates a new packet layer.
 	 */
 	public MNPPacketLayer() {
 		super();
@@ -60,7 +61,7 @@ public class MNPPacketLayer {
 	 *            the input.
 	 * @throws IOException
 	 *             if an I/O error occurs.
-	 * @return the payload.
+	 * @return the payload - <tt>null</tt> otherwise.
 	 */
 	protected byte[] read(InputStream in) throws IOException {
 		int delimiterLength = PACKET_HEAD.length;
@@ -70,7 +71,7 @@ public class MNPPacketLayer {
 		/* Read header. */
 		while (state < delimiterLength) {
 			b = in.read();
-			if (b < 0) {
+			if (b == -1) {
 				throw new EOFException();
 			}
 			if (b == PACKET_HEAD[state]) {
@@ -88,7 +89,7 @@ public class MNPPacketLayer {
 		state = 0;
 		while (state < delimiterLength) {
 			b = in.read();
-			if (b < 0) {
+			if (b == -1) {
 				throw new EOFException();
 			}
 			if (b == DELIMITER_ESCAPE) {
@@ -116,12 +117,12 @@ public class MNPPacketLayer {
 
 		/* Read the FCS. */
 		b = in.read();
-		if (b < 0) {
+		if (b == -1) {
 			throw new EOFException();
 		}
 		long crcWord = b;
 		b = in.read();
-		if (b < 0) {
+		if (b == -1) {
 			throw new EOFException();
 		}
 		crcWord = (b << 8) | crcWord;
@@ -181,7 +182,7 @@ public class MNPPacketLayer {
 		crc.update(PACKET_TAIL, 1, PACKET_TAIL.length - 1);
 
 		/* Write the FCS. */
-		b = (int) (crc.getValue() & 0xFFFFL);
+		b = (int) crc.getValue();
 		out.write(b & 0xFF);
 		out.write((b >> 8) & 0xFF);
 	}
@@ -270,7 +271,7 @@ public class MNPPacketLayer {
 	}
 
 	/**
-	 * Listen for incoming packets.
+	 * Listen for incoming packets until no more packets are available.
 	 * 
 	 * @param in
 	 *            the input.
@@ -284,4 +285,10 @@ public class MNPPacketLayer {
 		} while (packet != null);
 	}
 
+	/**
+	 * Close the layer and release resources.
+	 */
+	public void close() {
+		listeners.clear();
+	}
 }
