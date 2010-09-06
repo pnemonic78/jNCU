@@ -43,6 +43,16 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 	protected boolean running = false;
 	private int sequenceAcknowledged = -1;
 
+	/**
+	 * Creates a new packet sender.
+	 * 
+	 * @param pipe
+	 *            the pipe.
+	 * @param packetLayer
+	 *            the packet layer.
+	 * @param out
+	 *            the output.
+	 */
 	public MNPPacketSender(MNPPipe pipe, MNPPacketLayer packetLayer, OutputStream out) {
 		super();
 		this.pipe = pipe;
@@ -53,7 +63,7 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 
 	/**
 	 * Send a packet and wait for acknowledgement.<br>
-	 * Do not wait for acknowledgement if the packet is itself and
+	 * Do not wait for acknowledgement if the packet is itself an
 	 * acknowledgement.
 	 * 
 	 * @param packet
