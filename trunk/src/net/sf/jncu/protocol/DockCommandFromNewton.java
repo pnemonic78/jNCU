@@ -96,13 +96,28 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	}
 
 	/**
+	 * Decode a single command from the Newton.
+	 * 
+	 * @param data
+	 *            the data.
+	 * @return the command.
+	 */
+	public static IDockCommandFromNewton deserialize(byte[] data) {
+		List<IDockCommandFromNewton> cmds = deserializeAll(data);
+		if (cmds.isEmpty()) {
+			return null;
+		}
+		return cmds.get(0);
+	}
+
+	/**
 	 * Decode the data.
 	 * 
 	 * @param data
 	 *            the data.
 	 * @return the command.
 	 */
-	public static List<IDockCommandFromNewton> deserialize(byte[] data) {
+	public static List<IDockCommandFromNewton> deserializeAll(byte[] data) {
 		List<IDockCommandFromNewton> cmds = new ArrayList<IDockCommandFromNewton>();
 		if ((data == null) || (data.length < MIN_COMMAND_HEADER_LENGTH)) {
 			return cmds;
