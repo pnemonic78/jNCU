@@ -26,19 +26,19 @@ package net.sf.jncu.cdil.mnp;
  */
 public class MNPLinkRequestPacket extends MNPPacket {
 
-	private static final byte TYPE1 = 0x01;
-	private static final byte FRAMING_MODE = 0x02;
-	private static final byte MAX_OUTSTANDING = 0x03;
-	private static final byte MAX_INFO_LENGTH = 0x04;
-	private static final byte DATA_PHASE_OPT = 0x08;
-	private static final byte PROTOCOL = 0x0E;
+	protected static final byte TYPE1 = 0x01;
+	protected static final byte FRAMING_MODE = 0x02;
+	protected static final byte MAX_OUTSTANDING = 0x03;
+	protected static final byte MAX_INFO_LENGTH = 0x04;
+	protected static final byte DATA_PHASE_OPT = 0x08;
+	protected static final byte PROTOCOL = 0x0E;
 
-	private static final byte TYPE1_LENGTH = 6;
-	private static final byte FRAMING_MODE_LENGTH = 1;
-	private static final byte MAX_OUTSTANDING_LENGTH = 1;
-	private static final byte MAX_INFO_LENGTH_LENGTH = 2;
-	private static final byte DATA_PHASE_OPT_LENGTH = 1;
-	private static final byte PROTOCOL_LENGTH = 4;
+	protected static final byte TYPE1_LENGTH = 6;
+	protected static final byte FRAMING_MODE_LENGTH = 1;
+	protected static final byte MAX_OUTSTANDING_LENGTH = 1;
+	protected static final byte MAX_INFO_LENGTH_LENGTH = 2;
+	protected static final byte DATA_PHASE_OPT_LENGTH = 1;
+	protected static final byte PROTOCOL_LENGTH = 4;
 
 	/** Connect using "Toolkit" protocol. */
 	public static final byte PROTOCOL_NTK = 0x02;

@@ -150,8 +150,8 @@ public class NSOFEncoder {
 				return new NSOFArray(entries);
 			}
 		}
-		if (o instanceof Collection) {
-			Collection coll = (Collection) o;
+		if (o instanceof Collection<?>) {
+			Collection<?> coll = (Collection<?>) o;
 			NSOFObject[] entries = new NSOFObject[coll.size()];
 			int i = 0;
 			for (Object entry : coll) {
