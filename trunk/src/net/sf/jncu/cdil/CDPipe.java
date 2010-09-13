@@ -29,6 +29,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeoutException;
 
+import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
@@ -38,7 +39,7 @@ import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
  * 
  * @author moshew
  */
-public abstract class CDPipe extends Thread {
+public abstract class CDPipe extends Thread implements DockCommandListener {
 
 	protected final CDLayer layer;
 	private PipedOutputStream pipeSource;
@@ -488,22 +489,29 @@ public abstract class CDPipe extends Thread {
 		timer.schedule(timeoutTask, timeout * 1000L);
 	}
 
-	/**
-	 * Command has been received, and now process it.
-	 * 
-	 * @param cmd
-	 *            the command.
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * net.sf.jncu.protocol.DockCommandListener#commandReceived(net.sf.jncu.
+	 * protocol.IDockCommandFromNewton)
 	 */
-	protected void commandReceived(IDockCommandFromNewton cmd) {
-		if (cmd == null) {
-			return;
-		}
+	public void commandReceived(IDockCommandFromNewton cmd) {
 		try {
 			queueCommandFromNewton.put(cmd);
 		} catch (InterruptedException ie) {
 			ie.printStackTrace();
 		}
 		restartTimeout();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * net.sf.jncu.protocol.DockCommandListener#commandSent(net.sf.jncu.protocol
+	 * .IDockCommandToNewton)
+	 */
+	public void commandSent(IDockCommandToNewton command) {
+		// TODO Auto-generated method stub
 	}
 
 	/**

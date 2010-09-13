@@ -35,14 +35,14 @@ import net.sf.util.zip.CRC16;
  * 
  * @author moshew
  */
-public class MNPPacketLayer {
+public class MNPPacketLayer extends Thread {
 
 	/** Packet-starting delimiter. */
-	public static final byte[] PACKET_HEAD = { ControlCharacter.SYN, ControlCharacter.DLE, ControlCharacter.STX };
+	protected static final byte[] PACKET_HEAD = { ControlCharacter.SYN, ControlCharacter.DLE, ControlCharacter.STX };
 	/** Packet-ending delimiter. */
-	public static final byte[] PACKET_TAIL = { ControlCharacter.DLE, ControlCharacter.ETX };
+	protected static final byte[] PACKET_TAIL = { ControlCharacter.DLE, ControlCharacter.ETX };
 	/** Packet escape character. */
-	public static final byte DELIMITER_ESCAPE = ControlCharacter.DLE;
+	protected static final byte DELIMITER_ESCAPE = ControlCharacter.DLE;
 
 	/** List of packet listeners. */
 	protected final Collection<MNPPacketListener> listeners = new ArrayList<MNPPacketListener>();
@@ -197,7 +197,8 @@ public class MNPPacketLayer {
 	 * @return the packet.
 	 */
 	public MNPPacket receive(InputStream in) throws IOException {
-		MNPPacket packet = MNPPacketFactory.getInstance().createLinkPacket(read(in));
+		byte[] payload = read(in);
+		MNPPacket packet = MNPPacketFactory.getInstance().createLinkPacket(payload);
 		if (packet != null) {
 			firePacketReceived(packet);
 		}
