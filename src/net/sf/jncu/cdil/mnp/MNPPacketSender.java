@@ -20,7 +20,6 @@
 package net.sf.jncu.cdil.mnp;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeoutException;
@@ -37,9 +36,8 @@ import net.sf.jncu.cdil.mnp.MNPPipe.MNPState;
 public class MNPPacketSender extends Thread implements MNPPacketListener {
 
 	protected final MNPPipe pipe;
-	protected final MNPPacketLayer packetLayer;
-	protected final OutputStream out;
-	protected final BlockingQueue<MNPPacket> queue = new LinkedBlockingQueue<MNPPacket>();
+	protected final MNPSerialPacketLayer packetLayer;
+	protected final BlockingQueue<MNPPacket> queueSend = new LinkedBlockingQueue<MNPPacket>();
 	protected boolean running = false;
 	private int sequenceAcknowledged = -1;
 
@@ -50,15 +48,12 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 	 *            the pipe.
 	 * @param packetLayer
 	 *            the packet layer.
-	 * @param out
-	 *            the output.
 	 */
-	public MNPPacketSender(MNPPipe pipe, MNPPacketLayer packetLayer, OutputStream out) {
+	public MNPPacketSender(MNPPipe pipe, MNPSerialPacketLayer packetLayer) {
 		super();
 		this.pipe = pipe;
 		this.packetLayer = packetLayer;
 		this.packetLayer.addPacketListener(this);
-		this.out = out;
 	}
 
 	/**
@@ -71,9 +66,9 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 	 * @throws TimeoutException
 	 *             if timeout occurs.
 	 */
-	public void send(MNPPacket packet) throws TimeoutException {
+	public void sendAndAcknowdlege(MNPPacket packet) throws TimeoutException {
 		try {
-			queue.put(packet);
+			queueSend.put(packet);
 		} catch (InterruptedException ie) {
 			ie.printStackTrace();
 		}
@@ -89,19 +84,19 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 	 * @throws TimeoutException
 	 *             if timeout occurs.
 	 */
-	protected final void sendAndWait() throws TimeoutException {
+	private void runSend() throws TimeoutException {
 		MNPPacket packet;
 		MNPPacket next = null;
 		long timeout; // Enough time to wait for acknowledgement.
 		long now;
-		int retry = 3;
+		int retry;
 		boolean resend = true;
-		int seqToAck = 0;
+		int sequenceToAcknowledge;
 		CDState stateCD;
 
 		while (running) {
 			try {
-				next = queue.take();
+				next = queueSend.take();
 			} catch (InterruptedException ie) {
 				ie.printStackTrace();
 			}
@@ -109,11 +104,11 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 			if (next != null) {
 				// LA and LD packets don't need acknowledgement.
 				if (next.getType() == MNPPacket.LR) {
-					seqToAck = 0;
+					sequenceToAcknowledge = 0;
 				} else if (next.getType() == MNPPacket.LT) {
-					seqToAck = ((MNPLinkTransferPacket) next).getSequence();
+					sequenceToAcknowledge = ((MNPLinkTransferPacket) next).getSequence();
 				} else {
-					seqToAck = -1;
+					sequenceToAcknowledge = -1;
 				}
 				retry = 5;
 				resend = true;
@@ -122,12 +117,13 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 				do {
 					try {
 						timeout = System.currentTimeMillis() + 2000L;
-						packetLayer.send(out, packet);
-						if (seqToAck >= 0) {
+						packetLayer.send(packet);
+						// TODO move this section to #packetSent
+						if (sequenceToAcknowledge >= 0) {
 							// Wait for acknowledgement.
 							do {
 								yield();
-								resend &= (sequenceAcknowledged < seqToAck);
+								resend &= (sequenceAcknowledged < sequenceToAcknowledge);
 								now = System.currentTimeMillis();
 							} while (resend && (now < timeout));
 						} else {
@@ -173,7 +169,7 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 	 * Cancel all sending requests.
 	 */
 	public void cancel() {
-		queue.clear();
+		queueSend.clear();
 		packetLayer.removePacketListener(this);
 		running = false;
 	}
@@ -182,7 +178,7 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 	public void run() {
 		running = true;
 		try {
-			sendAndWait();
+			runSend();
 		} catch (TimeoutException te) {
 			te.printStackTrace();
 			// TODO notify the pipe that error occurred.

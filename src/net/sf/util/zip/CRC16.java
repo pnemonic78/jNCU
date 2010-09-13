@@ -51,7 +51,7 @@ public class CRC16 implements Checksum {
 			0x8201, 0x42c0, 0x4380, 0x8341, 0x4100, 0x81c1, 0x8081, 0x4040 };
 
 	/** 16 bit value. */
-	private int crc;
+	private int value;
 
 	/** Creates a new CRC-16 checksum. */
 	public CRC16() {
@@ -63,7 +63,7 @@ public class CRC16 implements Checksum {
 	 * @see java.util.zip.Checksum#getValue()
 	 */
 	public long getValue() {
-		return (crc & 0xffffL);
+		return (value & 0xffffL);
 	}
 
 	/*
@@ -71,7 +71,7 @@ public class CRC16 implements Checksum {
 	 * @see java.util.zip.Checksum#reset()
 	 */
 	public void reset() {
-		crc = 0;
+		value = 0;
 	}
 
 	/*
@@ -89,6 +89,6 @@ public class CRC16 implements Checksum {
 	 * @see java.util.zip.Checksum#update(int)
 	 */
 	public void update(int b) {
-		crc = (((crc >> 8) & 0xFF) ^ TABLE[(crc & 0xFF) ^ b]);
+		value = (((value >> 8) & 0xFF) ^ TABLE[(value & 0xFF) ^ b]);
 	}
 }
