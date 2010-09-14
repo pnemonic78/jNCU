@@ -28,6 +28,9 @@ public class MNPPacketFactory {
 
 	private static MNPPacketFactory instance;
 
+	/** Outgoing sequence. */
+	private byte sequence;
+
 	/**
 	 * Creates a new factory.
 	 */
@@ -61,13 +64,13 @@ public class MNPPacketFactory {
 	public MNPPacket createLinkPacket(byte type) {
 		switch (type) {
 		case MNPPacket.LA:
-			return new MNPLinkAcknowledgementPacket();
+			return createLA();
 		case MNPPacket.LD:
-			return new MNPLinkDisconnectPacket();
+			return createLD();
 		case MNPPacket.LR:
-			return new MNPLinkRequestPacket();
+			return createLR();
 		case MNPPacket.LT:
-			return new MNPLinkTransferPacket();
+			return createLT();
 		}
 		throw new IllegalArgumentException("invalid type " + type);
 	}
@@ -80,11 +83,56 @@ public class MNPPacketFactory {
 	 * @return the packet.
 	 */
 	public MNPPacket createLinkPacket(byte[] payload) {
-		if (payload == null) {
+		if ((payload == null) || (payload.length < 2)) {
 			return null;
 		}
 		MNPPacket packet = createLinkPacket(payload[1]);
 		packet.deserialize(payload);
+		return packet;
+	}
+
+	/**
+	 * Reset the sequence.
+	 */
+	public void resetSequence() {
+		this.sequence = 0;
+	}
+
+	/**
+	 * Create a Link Acknowledgement packet.
+	 * 
+	 * @return the packet.
+	 */
+	protected MNPLinkAcknowledgementPacket createLA() {
+		return new MNPLinkAcknowledgementPacket();
+	}
+
+	/**
+	 * Create a Link Disconnect packet.
+	 * 
+	 * @return the packet.
+	 */
+	protected MNPLinkDisconnectPacket createLD() {
+		return new MNPLinkDisconnectPacket();
+	}
+
+	/**
+	 * Create a Link Request packet.
+	 * 
+	 * @return the packet.
+	 */
+	protected MNPLinkRequestPacket createLR() {
+		return new MNPLinkRequestPacket();
+	}
+
+	/**
+	 * Create a Link Transfer packet.
+	 * 
+	 * @return the packet.
+	 */
+	protected MNPLinkTransferPacket createLT() {
+		MNPLinkTransferPacket packet = new MNPLinkTransferPacket();
+		packet.setSequence(++sequence);
 		return packet;
 	}
 }

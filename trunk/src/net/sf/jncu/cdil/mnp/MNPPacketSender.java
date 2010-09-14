@@ -64,23 +64,21 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 	 * @param packet
 	 *            the packet to send.
 	 * @throws TimeoutException
-	 *             if timeout occurs.
+	 *             if a timeout occurs.
 	 */
 	public void sendAndAcknowdlege(MNPPacket packet) throws TimeoutException {
 		try {
 			queueSend.put(packet);
 		} catch (InterruptedException ie) {
-			ie.printStackTrace();
+			throw new TimeoutException(ie.getMessage());
 		}
 	}
 
 	/**
-	 * Send the packet and wait for more packets. Possibly re-send multiple
-	 * times until acknowledged. Packets are queued until the first packet is
-	 * sent.
+	 * Send packets while waiting for more to become available. Possibly re-send
+	 * multiple times until acknowledged. Packets are queued until the first
+	 * packet is sent.
 	 * 
-	 * @param packet
-	 *            the LT packet.
 	 * @throws TimeoutException
 	 *             if timeout occurs.
 	 */

@@ -96,18 +96,30 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	}
 
 	/**
-	 * Decode a single command from the Newton.
+	 * Is the data a command?
 	 * 
 	 * @param data
 	 *            the data.
-	 * @return the command.
+	 * @return <tt>true</tt> if frame contains a command - <tt>false</tt>
+	 *         otherwise.
+	 * @throws IOException
+	 *             if an I/O error occurs.
 	 */
-	public static IDockCommandFromNewton deserialize(byte[] data) {
-		List<IDockCommandFromNewton> cmds = deserializeAll(data);
-		if (cmds.isEmpty()) {
-			return null;
+	public static boolean isCommand(InputStream data) throws IOException {
+		if ((data == null) || (data.available() < COMMAND_PREFIX_LENGTH)) {
+			return false;
 		}
-		return cmds.get(0);
+		int b;
+		for (int i = 0; i < COMMAND_PREFIX_LENGTH; i++) {
+			b = data.read();
+			if (b == -1) {
+				throw new EOFException();
+			}
+			if (COMMAND_PREFIX_BYTES[i] != b) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -117,16 +129,32 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	 *            the data.
 	 * @return the command.
 	 */
-	public static List<IDockCommandFromNewton> deserializeAll(byte[] data) {
+	public static List<IDockCommandFromNewton> deserialize(byte[] data) {
+		ByteArrayInputStream in = new ByteArrayInputStream(data);
+		try {
+			return deserialize(in);
+		} catch (IOException ioe) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+	}
+
+	/**
+	 * Decode the data.
+	 * 
+	 * @param data
+	 *            the data stream.
+	 * @return the command.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	public static List<IDockCommandFromNewton> deserialize(InputStream data) throws IOException {
 		List<IDockCommandFromNewton> cmds = new ArrayList<IDockCommandFromNewton>();
-		if ((data == null) || (data.length < MIN_COMMAND_HEADER_LENGTH)) {
+		if ((data == null) || (data.available() < MIN_COMMAND_HEADER_LENGTH)) {
 			return cmds;
 		}
 		IDockCommandFromNewton cmd = null;
-		Command c = new Command();
 		do {
-			deserializeCommand(data, c);
-			cmd = c.cmd;
+			cmd = deserializeCommand(data);
 			if (cmd != null) {
 				cmds.add(cmd);
 			}
@@ -148,34 +176,35 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	 * 
 	 * @param data
 	 *            the data.
-	 * @param c
-	 *            the command.
 	 */
-	protected static void deserializeCommand(byte[] data, Command c) {
-		c.cmd = null;
-		int offset = c.offset;
-		if ((data == null) || ((data.length - offset) < MIN_COMMAND_HEADER_LENGTH)) {
-			return;
+	protected static IDockCommandFromNewton deserializeCommand(byte[] data) {
+		InputStream in = new ByteArrayInputStream(data);
+		try {
+			return deserializeCommand(in);
+		} catch (IOException ioe) {
+			throw new ArrayIndexOutOfBoundsException();
 		}
-		if (!isCommand(data, offset)) {
-			return;
+	}
+
+	/**
+	 * Decode the data.
+	 * 
+	 * @param data
+	 *            the data stream.
+	 * @return the command.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected static IDockCommandFromNewton deserializeCommand(InputStream data) throws IOException {
+		if (!isCommand(data)) {
+			return null;
 		}
-		offset += COMMAND_PREFIX_LENGTH;
 		DockCommandFactory factory = DockCommandFactory.getInstance();
-		IDockCommandFromNewton cmd = (IDockCommandFromNewton) factory.create(data, offset);
-		offset += COMMAND_NAME_LENGTH;
+		IDockCommandFromNewton cmd = (IDockCommandFromNewton) factory.create(data);
 		if (cmd != null) {
-			InputStream in = new ByteArrayInputStream(data, offset, data.length - offset);
-			try {
-				cmd.decode(in);
-				offset = data.length - in.available();
-				in.close();
-			} catch (IOException ioe) {
-				throw new ArrayIndexOutOfBoundsException();
-			}
+			cmd.decode(data);
 		}
-		c.cmd = cmd;
-		c.offset = offset;
+		return cmd;
 	}
 
 	/**

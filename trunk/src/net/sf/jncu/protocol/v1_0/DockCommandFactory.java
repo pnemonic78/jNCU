@@ -19,6 +19,8 @@
  */
 package net.sf.jncu.protocol.v1_0;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -166,5 +168,20 @@ public class DockCommandFactory {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Create a new dock command.
+	 * 
+	 * @param in
+	 *            the input that starts with the command name.
+	 * @return the command - <tt>null</tt> otherwise.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	public DockCommand create(InputStream in) throws IOException {
+		byte[] cmdName = new byte[DockCommand.COMMAND_NAME_LENGTH];
+		in.read(cmdName);
+		return create(cmdName);
 	}
 }

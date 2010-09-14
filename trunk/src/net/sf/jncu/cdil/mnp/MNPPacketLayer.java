@@ -35,7 +35,7 @@ import net.sf.util.zip.CRC16;
  * 
  * @author moshew
  */
-public class MNPPacketLayer extends Thread {
+public class MNPPacketLayer {
 
 	/** Packet-starting delimiter. */
 	protected static final byte[] PACKET_HEAD = { ControlCharacter.SYN, ControlCharacter.DLE, ControlCharacter.STX };

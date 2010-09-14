@@ -25,8 +25,6 @@ import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.Timer;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeoutException;
 
 import net.sf.jncu.protocol.DockCommandListener;
@@ -48,7 +46,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	protected DockingProtocol docking;
 	private static final Timer timer = new Timer();
 	protected CDTimeout timeoutTask;
-	protected final BlockingQueue<IDockCommandFromNewton> queueCommandFromNewton = new LinkedBlockingQueue<IDockCommandFromNewton>();
+	protected CDCommandLayer cmdLayer;
 
 	/**
 	 * Creates a new pipe.
@@ -65,7 +63,10 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 		}
 		this.layer = layer;
 		this.pipeSource = new PipedOutputStream();
+		this.cmdLayer = createCommandLayer();
 		layer.setState(CDState.DISCONNECTED);
+		cmdLayer.addCommandListener(this);
+		cmdLayer.start();
 	}
 
 	/**
@@ -139,6 +140,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 		if (timeoutTask != null) {
 			timeoutTask.cancel();
 		}
+		cmdLayer.close();
 	}
 
 	public void disconnectQuiet() {
@@ -495,12 +497,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 * net.sf.jncu.protocol.DockCommandListener#commandReceived(net.sf.jncu.
 	 * protocol.IDockCommandFromNewton)
 	 */
-	public void commandReceived(IDockCommandFromNewton cmd) {
-		try {
-			queueCommandFromNewton.put(cmd);
-		} catch (InterruptedException ie) {
-			ie.printStackTrace();
-		}
+	public void commandReceived(IDockCommandFromNewton command) {
 		restartTimeout();
 	}
 
@@ -511,7 +508,6 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 * .IDockCommandToNewton)
 	 */
 	public void commandSent(IDockCommandToNewton command) {
-		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -533,11 +529,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	public IDockCommandFromNewton nextCommand() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
 			TimeoutException {
 		layer.checkConnected();
-		try {
-			return queueCommandFromNewton.take();
-		} catch (InterruptedException ie) {
-			throw new TimeoutException(ie.getMessage());
-		}
+		return cmdLayer.read();
 	}
 
 	/**
@@ -548,4 +540,11 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	public CDLayer getLayer() {
 		return layer;
 	}
+
+	/**
+	 * Create a command layer.
+	 * 
+	 * @return the command layer.
+	 */
+	protected abstract CDCommandLayer createCommandLayer();
 }
