@@ -25,11 +25,11 @@ import gnu.io.UnsupportedCommOperationException;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.util.List;
 import java.util.TooManyListenersException;
 import java.util.concurrent.TimeoutException;
 
 import net.sf.jncu.cdil.BadPipeStateException;
+import net.sf.jncu.cdil.CDCommandLayer;
 import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDPipe;
@@ -37,10 +37,8 @@ import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
-import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
-import net.sf.jncu.protocol.v1_0.session.DHello;
 import net.sf.jncu.protocol.v2_0.session.DockingState;
 
 /**
@@ -84,13 +82,9 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		MNP_DISCONNECTED
 	}
 
-	protected final byte CREDIT = 7;
-
 	protected final CommPortIdentifier portId;
 	protected final int baud;
 	protected final MNPSerialPacketLayer packetLayer;
-	/** Outgoing sequence. */
-	private byte sequence;
 	/** MNP handshaking state. */
 	protected MNPState stateMNP = MNPState.MNP_HANDSHAKE_LR_LISTEN;
 
@@ -152,7 +146,6 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 			byte[] data = new byte[count];
 			System.arraycopy(b, offset, data, 0, count);
 			packet.setData(data);
-			packet.setSequence(++sequence);
 			sendAndAcknowledge(packet);
 		}
 	}
@@ -170,6 +163,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	protected void disconnectImpl() throws PlatformException, TimeoutException {
 		MNPLinkDisconnectPacket packet = (MNPLinkDisconnectPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LD);
 		sendAndAcknowledge(packet);
+		packetLayer.removePacketListener(this);
 		super.disconnectImpl();
 	}
 
@@ -186,6 +180,12 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * net.sf.jncu.cdil.mnp.MNPPacketListener#packetReceived(net.sf.jncu.cdil
+	 * .mnp.MNPPacket)
+	 */
 	public void packetReceived(MNPPacket packet) {
 		byte packetType = packet.getType();
 		MNPState oldState = stateMNP;
@@ -194,19 +194,6 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		try {
 			if (packetType == MNPPacket.LR) {
 				newState = MNPState.MNP_HANDSHAKE_LR_LISTEN;
-			} else if (packetType == MNPPacket.LT) {
-				MNPLinkTransferPacket lt = (MNPLinkTransferPacket) packet;
-				MNPLinkAcknowledgementPacket ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
-				ack.setSequence(lt.getSequence());
-				ack.setCredit(CREDIT);
-				sendAndAcknowledge(ack);
-
-				// TODO Append the packet data to the buffer and check for
-				// multi-packet commands or multi-command packet.
-				List<IDockCommandFromNewton> commands = DockCommandFromNewton.deserialize(lt.getData());
-				for (IDockCommandFromNewton c : commands) {
-					commandReceived(c);
-				}
 			} else if (packetType == MNPPacket.LD) {
 				newState = MNPState.MNP_DISCONNECTING;
 			}
@@ -225,6 +212,12 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * net.sf.jncu.cdil.mnp.MNPPacketListener#packetSent(net.sf.jncu.cdil.mnp
+	 * .MNPPacket)
+	 */
 	public void packetSent(MNPPacket packet) {
 		if (packet.getType() == MNPPacket.LD) {
 			disconnectSent();
@@ -287,10 +280,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		case MNP_IDLE:
 			// Process the command.
 			String cmdName = cmd.getCommand();
-			if (DHello.COMMAND.equals(cmdName)) {
-				queueCommandFromNewton.remove(cmd);
-			} else if (DDisconnect.COMMAND.equals(cmdName)) {
-				queueCommandFromNewton.remove(cmd);
+			if (DDisconnect.COMMAND.equals(cmdName)) {
 				disconnect();
 			}
 			break;
@@ -346,7 +336,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		case MNP_HANDSHAKE_LR_RECEIVED:
 			if (packetType == MNPPacket.LR) {
 				MNPLinkRequestPacket lr = (MNPLinkRequestPacket) packet;
-				this.sequence = 0;
+				MNPPacketFactory.getInstance().resetSequence();
 				MNPLinkRequestPacket reply = (MNPLinkRequestPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LR);
 				reply.setDataPhaseOpt(lr.getDataPhaseOpt());
 				reply.setFramingMode(lr.getFramingMode());
@@ -449,6 +439,15 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	 */
 	protected MNPSerialPacketLayer createPacketLayer(MNPSerialPort port) {
 		return new MNPSerialPacketLayer(port, this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.sf.jncu.cdil.CDPipe#createCommandLayer()
+	 */
+	@Override
+	protected CDCommandLayer createCommandLayer() {
+		return new MNPCommandLayer(packetLayer);
 	}
 
 }

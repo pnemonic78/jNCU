@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.cdil.ctb;
 
+import net.sf.jncu.cdil.CDCommandLayer;
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
@@ -49,6 +50,16 @@ public class CTBPipe extends CDPipe {
 		super(layer);
 		this.toolName = toolName;
 		this.configString = configString;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.sf.jncu.cdil.CDPipe#createCommandLayer()
+	 */
+	@Override
+	protected CDCommandLayer createCommandLayer() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

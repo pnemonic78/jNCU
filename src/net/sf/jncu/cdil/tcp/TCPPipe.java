@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.cdil.tcp;
 
+import net.sf.jncu.cdil.CDCommandLayer;
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
@@ -48,6 +49,16 @@ public class TCPPipe extends CDPipe {
 	public TCPPipe(CDLayer layer, int port) throws ServiceNotSupportedException {
 		super(layer);
 		this.port = port;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.sf.jncu.cdil.CDPipe#createCommandLayer()
+	 */
+	@Override
+	protected CDCommandLayer createCommandLayer() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
