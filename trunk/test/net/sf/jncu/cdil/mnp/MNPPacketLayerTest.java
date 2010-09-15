@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandToNewton;
@@ -73,10 +74,11 @@ public class MNPPacketLayerTest extends SFTestCase {
 				0, 0, 0, 3, 0, 0, 0, 0, 1, -66, 82, -52, 0, 0, 0, 11, 0, 77, 0, 111, 0, 115, 0, 104, 0, 101, 0, 32, 0, 77, 0, 105, 0, 99, 0, 104, 0, 97, 0,
 				101, 0, 108, 0, 32, 0, 87, 0, 97, 0, 105, 0, 115, 0, 98, 0, 101, 0, 114, 0, 103, 0, 0, 0, 0 };
 
-		IDockCommandFromNewton cmd = DockCommandFromNewton.deserialize(data);
-		assertNotNull(cmd);
 		assertTrue(DockCommandFromNewton.isCommand(data));
-		assertEquals(DNewtonName.COMMAND, cmd.getCommand());
+		List<IDockCommandFromNewton> cmd = DockCommandFromNewton.deserialize(data);
+		assertNotNull(cmd);
+		assertFalse(cmd.isEmpty());
+		assertEquals(DNewtonName.COMMAND, cmd.get(0).getCommand());
 	}
 
 	/**

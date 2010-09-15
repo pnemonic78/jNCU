@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.Reader;
+import java.util.List;
 
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
@@ -217,10 +218,12 @@ public class TraceDecode {
 				return;
 			}
 			if (DockCommandFromNewton.isCommand(data)) {
-				IDockCommandFromNewton cmd = null;
+				List<IDockCommandFromNewton> cmds = null;
 				if (direction == DIRECTION_1TO2) {
-					cmd = DockCommandFromNewton.deserialize(data);
-					System.out.println(direction + "\tcmd:" + cmd);
+					cmds = DockCommandFromNewton.deserialize(data);
+					for (IDockCommandFromNewton cmd : cmds) {
+						System.out.println(direction + "\tcmd:" + cmd);
+					}
 				}
 			}
 		}
