@@ -49,11 +49,10 @@ public class CommPorts {
 	 * @throws NoSuchPortException
 	 *             if no ports are found.
 	 */
-	@SuppressWarnings("unchecked")
 	public List<CommPortIdentifier> getPortIdentifiers(int portType) throws NoSuchPortException {
 		List<CommPortIdentifier> portIdentifiers = new ArrayList<CommPortIdentifier>();
 
-		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
+		Enumeration<?> portEnum = CommPortIdentifier.getPortIdentifiers();
 		while (portEnum.hasMoreElements()) {
 			CommPortIdentifier portIdentifier = (CommPortIdentifier) portEnum.nextElement();
 			if (portIdentifier.getPortType() == portType) {
