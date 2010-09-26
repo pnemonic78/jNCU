@@ -9,12 +9,20 @@ import java.util.List;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 import net.sf.jncu.protocol.v2_0.session.DDesktopInfo;
 import net.sf.jncu.protocol.v2_0.session.DNewtonName;
 import net.sf.junit.SFTestCase;
 
 public class MNPPacketLayerTest extends SFTestCase {
+
+	public void testMultiCmd() {
+		byte[] data = { 'n', 'e', 'w', 't', 'd', 'o', 'c', 'k', 'u', 'n', 'k', 'n', 0x00, 0x00, 0x00, 0x04, 'k', 'b', 'd', 'c', 'n', 'e', 'w', 't', 'd', 'o',
+				'c', 'k', 'd', 'r', 'e', 's', 0x00, 0x00, 0x00, 0x04, (byte) 0xff, (byte) 0xff, (byte) 0xb1, (byte) 0xdf };
+		assertNotNull(data);
+		List<IDockCommandFromNewton> cmds = DockCommandFromNewton.deserialize(data);
+		assertNotNull(cmds);
+		assertEquals(2, cmds.size());
+	}
 
 	/**
 	 * Test the FCS of Newton's "attempt to connect."
@@ -62,7 +70,7 @@ public class MNPPacketLayerTest extends SFTestCase {
 		out.close();
 		byte[] buf = out.toByteArray();
 		assertNotNull(buf);
-		assertEquals(buf[3], packet.getHeaderLength());
+		assertEquals(0x1D, packet.getHeaderLength());
 	}
 
 	/**
@@ -75,17 +83,18 @@ public class MNPPacketLayerTest extends SFTestCase {
 				101, 0, 108, 0, 32, 0, 87, 0, 97, 0, 105, 0, 115, 0, 98, 0, 101, 0, 114, 0, 103, 0, 0, 0, 0 };
 
 		assertTrue(DockCommandFromNewton.isCommand(data));
-		List<IDockCommandFromNewton> cmd = DockCommandFromNewton.deserialize(data);
-		assertNotNull(cmd);
-		assertFalse(cmd.isEmpty());
-		assertEquals(DNewtonName.COMMAND, cmd.get(0).getCommand());
+		List<IDockCommandFromNewton> cmds = DockCommandFromNewton.deserialize(data);
+		assertNotNull(cmds);
+		assertEquals(1, cmds.size());
+		IDockCommandFromNewton cmd = cmds.get(0);
+		assertEquals(DNewtonName.COMMAND, cmd.getCommand());
 	}
 
 	/**
 	 * Test sending a command "desktop info".
 	 */
 	public void testDesktopInfo() {
-		DockCommandToNewton cmd = (DockCommandToNewton) DockCommandFactory.getInstance().create(DDesktopInfo.COMMAND);
+		DockCommandToNewton cmd = new DDesktopInfo();
 		assertNotNull(cmd);
 		assertEquals(DDesktopInfo.COMMAND, cmd.getCommand());
 		byte[] payload = cmd.getPayload();
