@@ -21,7 +21,7 @@ package net.sf.jncu.protocol.v2_0.query;
 
 /**
  * Resets the cursor to the rightmost entry in the valid subset. A
- * <tt>kDRes</tt> of <tt>0</tt> is returned.
+ * <tt>kDRes</tt> of {@code 0} is returned.
  * 
  * <pre>
  * 'rend'

@@ -57,10 +57,16 @@ public class NSOFFrame extends NSOFObject implements Precedent {
 		// Number of slots (xlong)
 		int length = XLong.decodeValue(in);
 		NSOFSymbol[] symbols = new NSOFSymbol[length];
+		NSOFString str;
 
 		// Slot tags in ascending order (symbol objects)
 		for (int i = 0; i < length; i++) {
-			symbols[i] = (NSOFSymbol) decoder.decode(in);
+			str = (NSOFString) decoder.decode(in);
+			if (str instanceof NSOFSymbol) {
+				symbols[i] = (NSOFSymbol) str;
+			} else {
+				symbols[i] = new NSOFSymbol(str.getValue());
+			}
 		}
 
 		// Slot values in ascending order (objects)
@@ -152,7 +158,7 @@ public class NSOFFrame extends NSOFObject implements Precedent {
 	 * 
 	 * @param key
 	 *            the slot symbol.
-	 * @return the slot value - <tt>null</tt> otherwise.
+	 * @return the slot value - {@code null} otherwise.
 	 */
 	public NSOFObject get(NSOFSymbol key) {
 		return slots.get(key);
@@ -163,7 +169,7 @@ public class NSOFFrame extends NSOFObject implements Precedent {
 	 * 
 	 * @param key
 	 *            the slot symbol name.
-	 * @return the slot value - <tt>null</tt> otherwise.
+	 * @return the slot value - {@code null} otherwise.
 	 */
 	public NSOFObject get(String key) {
 		return get(new NSOFSymbol(key));

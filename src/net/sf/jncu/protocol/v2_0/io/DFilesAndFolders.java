@@ -56,7 +56,7 @@ import net.sf.jncu.protocol.v1_0.io.Device;
  * <tt>disktype</tt> with the values (floppy = 0, hardDrive = 1, cdRom = 2,
  * netDrive = 3). Also, if the current location is the desktop, there is an
  * additional slot <tt>whichvol</tt> to indicate the location of the individual
- * files, folders and disks with the values <tt>0</tt> for disks and a negative
+ * files, folders and disks with the values {@code 0} for disks and a negative
  * number for the <tt>volRefNum</tt> for files and folders on the desktop.
  * <p>
  * If the item is an alias there is an <tt>alias</tt> slot. The existence of

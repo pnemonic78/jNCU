@@ -126,7 +126,7 @@ public class DockCommandFactory {
 	 * 
 	 * @param cmdName
 	 *            the command name.
-	 * @return the command - <tt>null</tt> otherwise.
+	 * @return the command - {@code null} otherwise.
 	 */
 	public DockCommand create(byte[] cmdName) {
 		return create(cmdName, 0);
@@ -139,7 +139,7 @@ public class DockCommandFactory {
 	 *            the command name.
 	 * @param offset
 	 *            the offset.
-	 * @return the command - <tt>null</tt> otherwise.
+	 * @return the command - {@code null} otherwise.
 	 */
 	public DockCommand create(byte[] cmdName, int offset) {
 		return create(new String(cmdName, offset, DockCommand.COMMAND_NAME_LENGTH));
@@ -150,7 +150,7 @@ public class DockCommandFactory {
 	 * 
 	 * @param cmdName
 	 *            the command name.
-	 * @return the command - <tt>null</tt> otherwise.
+	 * @return the command - {@code null} otherwise.
 	 */
 	public DockCommand create(String cmdName) {
 		Class<? extends DockCommand> clazz = getRegistry().get(cmdName);
@@ -175,7 +175,7 @@ public class DockCommandFactory {
 	 * 
 	 * @param in
 	 *            the input that starts with the command name.
-	 * @return the command - <tt>null</tt> otherwise.
+	 * @return the command - {@code null} otherwise.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */

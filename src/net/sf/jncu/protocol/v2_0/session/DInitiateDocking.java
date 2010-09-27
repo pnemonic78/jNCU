@@ -26,8 +26,8 @@ import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
  * Ask Newton to start docking process.<br>
- * This command should be sent to the Newton in response to a kDRequestToDock
- * command. Session type should be 4 to load a package.
+ * This command should be sent to the Newton in response to a
+ * <tt>kDRequestToDock</tt> command. Session type should be 4 to load a package.
  * 
  * <pre>
  * 'dock'

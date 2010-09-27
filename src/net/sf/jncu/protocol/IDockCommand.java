@@ -36,7 +36,7 @@ public interface IDockCommand {
 	/**
 	 * Get the length.
 	 * 
-	 * @return the length. Default value is <tt>0</tt>.
+	 * @return the length. Default value is {@code 0}.
 	 */
 	public int getLength();
 }

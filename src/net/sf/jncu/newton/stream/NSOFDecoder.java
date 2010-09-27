@@ -40,7 +40,7 @@ public class NSOFDecoder {
 
 	private final Map<NSOFPrecedent, Precedent> precedents = new Hashtable<NSOFPrecedent, Precedent>();
 
-	/** <tt>0</tt> is a legal ID. */
+	/** {@code 0} is a legal ID. */
 	private int idMax = 0;
 	/** Written version header? */
 	private boolean versioned = false;

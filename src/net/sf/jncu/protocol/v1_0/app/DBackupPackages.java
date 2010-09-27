@@ -23,8 +23,8 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
  * This command is sent to backup any packages that are installed on the Newton.
- * It expects a <tt>kDPackage</tt> command or a kDResponse with an error of
- * <tt>0</tt> (to indicate that there are no more packages) in response.
+ * It expects a <tt>kDPackage</tt> command or a <tt>kDResponse</tt> with an error of
+ * {@code 0} (to indicate that there are no more packages) in response.
  * 
  * <pre>
  * 'bpkg'

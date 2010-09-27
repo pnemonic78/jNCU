@@ -41,8 +41,8 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * number sent to it by the desktop. The desktop can then decide whether it can
  * talk the specified protocol or not.
  * <p>
- * The desktop type is a long that identifies the sender‚ <tt>0</tt> for the
- * Macintosh and <tt>1</tt> for Windows.
+ * The desktop type is a long that identifies the sender‚ {@code 0} for the
+ * Macintosh and {@code 1} for Windows.
  * <p>
  * The password key is used as part of the password verification.
  * <p>

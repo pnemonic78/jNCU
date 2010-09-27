@@ -28,7 +28,7 @@ public class DESUtils {
 
 	/**
 	 * Convert a 64-bit Big Endian number to 64 separate bits.<br>
-	 * MSB is at index <tt>0</tt>.
+	 * MSB is at index {@code 0}.
 	 * 
 	 * @param l
 	 *            the number.
@@ -45,7 +45,7 @@ public class DESUtils {
 
 	/**
 	 * Convert 64 bits to a 64-bit Big Endian number.<br>
-	 * MSB is at index <tt>0</tt>.
+	 * MSB is at index {@code 0}.
 	 * 
 	 * @param b
 	 *            the array of bits.

@@ -49,7 +49,7 @@ import net.sf.jncu.protocol.v1_0.io.Device;
  * 3). If the type is disk, there is an additional slot <tt>disktype</tt> with
  * the values (floppy = 0, hardDrive = 1, cdRom = 2, netDrive = 3). Finally, for
  * the second frame in the array i.e. the one after Desktop, there will be an
- * additional slot <tt>whichvol</tt> , which will be a <tt>0</tt> if the item is
+ * additional slot <tt>whichvol</tt> , which will be a {@code 0} if the item is
  * disk or a <tt>volRefNum</tt> if the item is a folder on the desktop.
  * <p>
  * For example, the Macintosh might send:<br>

@@ -261,7 +261,7 @@ public class NewtonInfo {
 	/**
 	 * Set the patch version.
 	 * <p>
-	 * This value is <tt>0</tt> on an unpatched Newton device, and non-zero on a
+	 * This value is {@code 0} on an unpatched Newton device, and non-zero on a
 	 * patched Newton.
 	 * 
 	 * @param patchVersion
@@ -417,7 +417,7 @@ public class NewtonInfo {
 	 * Set the target protocol.
 	 * <p>
 	 * The version of the protocol used by the Dock application. On Newton 2.0
-	 * devices this is <tt>9</tt>. On Newton 2.1 devices this is <tt>11</tt>.
+	 * devices this is {@code 9}. On Newton 2.1 devices this is {@code 11}.
 	 * 
 	 * @param targetProtocol
 	 *            the protocol.

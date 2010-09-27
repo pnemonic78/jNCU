@@ -42,13 +42,13 @@ public class ADSPPipe extends CDPipe {
 	 * @param name
 	 *            the name of the ADSP connection. This string is what appears
 	 *            in the Chooser list on the Newton OS device. If you pass
-	 *            <tt>NULL</tt> for this parameter, the CDIL uses a default name
+	 *            {@code null} for this parameter, the CDIL uses a default name
 	 *            based on your desktop computer's preferences (for instance, on
 	 *            a Macintosh, it will use the strings specified in the File
 	 *            Sharing control panel).
 	 * @param type
 	 *            the connection type. This is searched for by the Chooser on
-	 *            the Newton OS device. If you pass <tt>NULL</tt> for this
+	 *            the Newton OS device. If you pass {@code null} for this
 	 *            parameter, the CDIL uses the type specified by the
 	 *            Connection/Dock application.
 	 * @throws ServiceNotSupportedException

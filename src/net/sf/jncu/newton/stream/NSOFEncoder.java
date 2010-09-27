@@ -37,7 +37,7 @@ public class NSOFEncoder {
 
 	private final Map<Precedent, NSOFPrecedent> precedents = new Hashtable<Precedent, NSOFPrecedent>();
 
-	/** <tt>0</tt> is a legal ID. */
+	/** {@code 0} is a legal ID. */
 	private int idMax = 0;
 	/** Written version header? */
 	private boolean versioned = false;
@@ -103,7 +103,7 @@ public class NSOFEncoder {
 	 * 
 	 * @param o
 	 *            the object.
-	 * @return the NewtonScript object - <tt>null</tt> otherwise.
+	 * @return the NewtonScript object - {@code null} otherwise.
 	 */
 	public static NSOFObject toNS(Object o) {
 		if (o == null) {
