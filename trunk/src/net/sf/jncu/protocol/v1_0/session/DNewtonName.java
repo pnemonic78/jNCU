@@ -58,7 +58,7 @@ public class DNewtonName extends DockCommandFromNewton {
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
 		int versionInfoLength = ntohl(data);
-		info = new NewtonInfo();
+		NewtonInfo info = new NewtonInfo();
 		info.setNewtonId(ntohl(data)); // #1
 		info.setManufacturerId(ntohl(data)); // #2
 		info.setMachineType(ntohl(data)); // #3
@@ -92,6 +92,7 @@ public class DNewtonName extends DockCommandFromNewton {
 				info.setTargetProtocol(ntohl(data));
 			}
 		}
+		setInformation(info);
 
 		int nameLength = data.available();
 		byte[] nameBytes = new byte[nameLength];
@@ -132,5 +133,15 @@ public class DNewtonName extends DockCommandFromNewton {
 	 */
 	public NewtonInfo getInformation() {
 		return info;
+	}
+
+	/**
+	 * Set the Newton information.
+	 * 
+	 * @param info
+	 *            the information.
+	 */
+	protected void setInformation(NewtonInfo info) {
+		this.info = info;
 	}
 }

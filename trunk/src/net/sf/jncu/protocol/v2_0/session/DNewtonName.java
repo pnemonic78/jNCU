@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.NewtonInfo;
 
 /**
@@ -61,25 +60,22 @@ import net.sf.jncu.protocol.NewtonInfo;
  * name
  * </pre>
  */
-public class DNewtonName extends DockCommandFromNewton {
+public class DNewtonName extends net.sf.jncu.protocol.v1_0.session.DNewtonName {
 
 	/** <tt>kDNewtonName</tt> */
-	public static final String COMMAND = "name";
-
-	private String name;
-	private NewtonInfo info;
+	public static final String COMMAND = net.sf.jncu.protocol.v1_0.session.DNewtonName.COMMAND;
 
 	/**
 	 * Creates a new command.
 	 */
 	public DNewtonName() {
-		super(COMMAND);
+		super();
 	}
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
 		int versionInfoLength = ntohl(data);
-		info = new NewtonInfo();
+		NewtonInfo info = new NewtonInfo();
 		info.setNewtonId(ntohl(data)); // #1
 		info.setManufacturerId(ntohl(data)); // #2
 		info.setMachineType(ntohl(data)); // #3
@@ -113,6 +109,7 @@ public class DNewtonName extends DockCommandFromNewton {
 				info.setTargetProtocol(ntohl(data));
 			}
 		}
+		setInformation(info);
 
 		int nameLength = data.available();
 		byte[] nameBytes = new byte[nameLength];
@@ -125,33 +122,5 @@ public class DNewtonName extends DockCommandFromNewton {
 		} catch (UnsupportedEncodingException uee) {
 			uee.printStackTrace();
 		}
-	}
-
-	/**
-	 * Get the name.
-	 * 
-	 * @return the name.
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Set the name.
-	 * 
-	 * @param name
-	 *            the name.
-	 */
-	protected void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * Get the Newton information.
-	 * 
-	 * @return the information.
-	 */
-	public NewtonInfo getInformation() {
-		return info;
 	}
 }
