@@ -39,7 +39,7 @@ public class FDArray extends FDPointer {
 	private final List<FDObject> slots;
 
 	/**
-	 * Creates a new array of size <tt>0</tt>.
+	 * Creates a new array of size {@code 0}.
 	 */
 	public FDArray() {
 		this(0);

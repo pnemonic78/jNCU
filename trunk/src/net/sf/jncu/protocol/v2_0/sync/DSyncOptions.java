@@ -46,7 +46,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  * &nbsp;&nbsp;stores: [{store info}, {store info}]<br>
  * }</code><br>
  * Each store frame in the stores array contains the same information returned
- * by the kDStoreNames command with the addition of soup information. It looks
+ * by the <tt>kDStoreNames</tt> command with the addition of soup information. It looks
  * like this: <br>
  * <code>{<br>
  * &nbsp;&nbsp;name: "",<br>

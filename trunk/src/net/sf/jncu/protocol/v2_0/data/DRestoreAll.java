@@ -26,7 +26,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
  * This command is sent to the desktop if the user elects to restore all
- * information. <tt>Merge</tt> is <tt>0</tt> to not merge, <tt>1</tt> to merge.
+ * information. <tt>Merge</tt> is {@code 0} to not merge, {@code 1} to merge.
  * 
  * <pre>
  * 'rall'

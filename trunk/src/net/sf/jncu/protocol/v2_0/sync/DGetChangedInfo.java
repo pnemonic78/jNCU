@@ -25,7 +25,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  * This command is like <tt>kDGetSoupInfo</tt> except that it only returns the
  * soup info if it has been changed since the time set by the
  * <tt>kDLastSyncTime</tt> command. If the info hasn't changed a <tt>kDRes</tt>
- * with <tt>0</tt> is returned.
+ * with {@code 0} is returned.
  * 
  * <pre>
  * 'cinf'

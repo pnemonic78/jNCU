@@ -73,7 +73,7 @@ public class FDString extends FDBinaryObject {
 	 * You may receive a rich string from a Newton device. A rich string is a
 	 * string with embedded ink data. You cannot create a rich string, nor
 	 * interpret the data in the ink portion of a rich string. When translating
-	 * rich strings, a <tt>0xF700</tt> or <tt>0x1A</tt> character is inserted in
+	 * rich strings, a {@code 0xF700} or {@code 0x1A} character is inserted in
 	 * the place of the embedded ink, depending on whether you are extracting
 	 * 16-bit or 8-bit characters.
 	 * 

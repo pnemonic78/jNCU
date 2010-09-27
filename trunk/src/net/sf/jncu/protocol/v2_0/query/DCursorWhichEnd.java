@@ -20,8 +20,8 @@
 package net.sf.jncu.protocol.v2_0.query;
 
 /**
- * Returns <tt>kDLongData</tt> with a <tt>0</tt> for unknown, <tt>1</tt> for
- * start and <tt>2</tt> for end.
+ * Returns <tt>kDLongData</tt> with a {@code 0} for unknown, {@code 1} for start
+ * and {@code 2} for end.
  * 
  * <pre>
  * 'whch'

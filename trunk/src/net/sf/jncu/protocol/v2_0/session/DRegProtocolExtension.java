@@ -32,8 +32,8 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * install the extension every time you connect). The function is a Newton
  * script closure that would have to be compiled on the desktop. See the Dante
  * Connection (ROM) API IU document for details. A <tt>kDResult</tt> with value
- * <tt>0</tt> (or the error value if an error occurred) is sent to the desktop
- * in response.
+ * {@code 0} (or the error value if an error occurred) is sent to the desktop in
+ * response.
  * 
  * <pre>
  * 'pext'

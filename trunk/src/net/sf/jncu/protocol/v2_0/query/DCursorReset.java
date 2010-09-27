@@ -20,7 +20,7 @@
 package net.sf.jncu.protocol.v2_0.query;
 
 /**
- * Resets the cursor to its initial state. A <tt>kDRes</tt> of <tt>0</tt> is
+ * Resets the cursor to its initial state. A <tt>kDRes</tt> of {@code 0} is
  * returned.
  * 
  * <pre>

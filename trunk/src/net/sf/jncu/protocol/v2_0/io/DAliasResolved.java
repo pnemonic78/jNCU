@@ -26,8 +26,8 @@ import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
  * This command is sent by the desktop in response to the
- * <tt>kDResolveAlias</tt> command. If the value is <tt>0</tt>, the alias can't
- * be resolved. If the data is <tt>1</tt> (or non-zero) the alias can be
+ * <tt>kDResolveAlias</tt> command. If the value is {@code 0}, the alias can't
+ * be resolved. If the data is {@code 1} (or non-zero) the alias can be
  * resolved.
  * 
  * <pre>

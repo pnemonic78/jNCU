@@ -32,7 +32,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * were deleted. The changed entries are sent with <tt>kDEntry</tt> commands.
  * The unique ids are sent with a <tt>kDBackupIDs</tt> command. A
  * <tt>kDBackupSoupDone</tt> command finishes the sequence. If there are any IDs
- * > <tt>0x7FFF</tt> there could also be a <tt>kDSetBaseID</tt> command. The
+ * &lt; {@code 0x7FFF} there could also be a <tt>kDSetBaseID</tt> command. The
  * changed entries and unique ids are sent in unique id sequence. The Newton
  * checks for <tt>kDOperationCanceled</tt> commands occasionally. If the soup
  * hasn't been changed since the last backup a <tt>kDSoupNotDirty</tt> command

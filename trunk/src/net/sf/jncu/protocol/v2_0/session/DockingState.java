@@ -62,10 +62,10 @@ public enum DockingState {
 	HANDSHAKE_ICONS_SENDING,
 	/** Newton sends LA. */
 	HANDSHAKE_ICONS_SENT,
-	/** List for <tt>kDResult</tt> from Newton (for kDWhichIcons). */
+	/** List for <tt>kDResult</tt> from Newton (for <tt>kDWhichIcons</tt>). */
 	HANDSHAKE_ICONS_RESULT_LISTEN,
 	/**
-	 * Newton sends <tt>kDResult</tt> (for kDWhichIcons in previous step).<br>
+	 * Newton sends <tt>kDResult</tt> (for <tt>kDWhichIcons</tt> in previous step).<br>
 	 * Send LA to Newton.
 	 */
 	HANDSHAKE_ICONS_RESULT_RECEIVED,

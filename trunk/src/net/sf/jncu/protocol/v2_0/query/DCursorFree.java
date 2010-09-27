@@ -20,7 +20,7 @@
 package net.sf.jncu.protocol.v2_0.query;
 
 /**
- * Disposes the cursor and returns a <tt>kDRes</tt> with a <tt>0</tt> or error.
+ * Disposes the cursor and returns a <tt>kDRes</tt> with a {@code 0} or error.
  * 
  * <pre>
  * 'cfre'
