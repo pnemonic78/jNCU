@@ -19,11 +19,6 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import net.sf.jncu.protocol.DockCommandToNewton;
-
 /**
  * Ask Newton to start docking process.<br>
  * This command should be sent to the Newton in response to a
@@ -35,50 +30,25 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * session type
  * </pre>
  */
-public class DInitiateDocking extends DockCommandToNewton {
+public class DInitiateDocking extends net.sf.jncu.protocol.v1_0.session.DInitiateDocking {
 
 	/** <tt>kDInitiateDocking</tt> */
-	public static final String COMMAND = "dock";
+	public static final String COMMAND = net.sf.jncu.protocol.v1_0.session.DInitiateDocking.COMMAND;
 
-	public static final int SESSION_NONE = 0;
-	public static final int SESSION_SETTING_UP = 1;
-	public static final int SESSION_SYNCHRONIZE = 2;
-	public static final int SESSION_RESTORE = 3;
-	public static final int SESSION_LOAD_PACKAGE = 4;
-	public static final int SESSION_TEST_COMM = 5;
-	public static final int SESSION_LOAD_PATCH = 6;
-	public static final int SESSION_UPDATING_STORES = 7;
-
-	private int session = SESSION_NONE;
+	public static final int SESSION_NONE = net.sf.jncu.protocol.v1_0.session.DInitiateDocking.SESSION_NONE;
+	public static final int SESSION_SETTING_UP = net.sf.jncu.protocol.v1_0.session.DInitiateDocking.SESSION_SETTING_UP;
+	public static final int SESSION_SYNCHRONIZE = net.sf.jncu.protocol.v1_0.session.DInitiateDocking.SESSION_SYNCHRONIZE;
+	public static final int SESSION_RESTORE = net.sf.jncu.protocol.v1_0.session.DInitiateDocking.SESSION_RESTORE;
+	public static final int SESSION_LOAD_PACKAGE = net.sf.jncu.protocol.v1_0.session.DInitiateDocking.SESSION_LOAD_PACKAGE;
+	public static final int SESSION_TEST_COMM = net.sf.jncu.protocol.v1_0.session.DInitiateDocking.SESSION_TEST_COMM;
+	public static final int SESSION_LOAD_PATCH = net.sf.jncu.protocol.v1_0.session.DInitiateDocking.SESSION_LOAD_PATCH;
+	public static final int SESSION_UPDATING_STORES = net.sf.jncu.protocol.v1_0.session.DInitiateDocking.SESSION_UPDATING_STORES;
 
 	/**
 	 * Creates a new command.
 	 */
 	public DInitiateDocking() {
-		super(COMMAND);
+		super();
 	}
 
-	/**
-	 * Get the session type.
-	 * 
-	 * @return the session.
-	 */
-	public int getSession() {
-		return session;
-	}
-
-	/**
-	 * Set the session type.
-	 * 
-	 * @param session
-	 *            the session.
-	 */
-	public void setSession(int session) {
-		this.session = session;
-	}
-
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		htonl(session, data);
-	}
 }
