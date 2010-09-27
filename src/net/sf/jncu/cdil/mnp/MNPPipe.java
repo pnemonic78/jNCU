@@ -447,7 +447,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	 */
 	@Override
 	protected CDCommandLayer createCommandLayer() {
-		return new MNPCommandLayer(packetLayer);
+		return new MNPSerialCommandLayer(packetLayer);
 	}
 
 }

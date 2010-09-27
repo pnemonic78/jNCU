@@ -21,16 +21,14 @@ package net.sf.jncu.cdil.mnp;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.Map;
 import java.util.TreeMap;
 
 import net.sf.jncu.cdil.CDCommandLayer;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
-import net.sf.jncu.protocol.v1_0.session.DDisconnect;
-import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 
 /**
  * MNP command layer.
@@ -42,7 +40,7 @@ public class MNPCommandLayer extends CDCommandLayer implements MNPPacketListener
 	protected final byte CREDIT = 7;
 
 	/** The packet layer. */
-	protected final MNPSerialPacketLayer packetLayer;
+	protected final MNPPacketLayer packetLayer;
 	/** Stream for packets to populate commands. */
 	private final PipedOutputStream packets = new PipedOutputStream();
 	/** Stream of commands that have been populated from packets. */
@@ -56,7 +54,7 @@ public class MNPCommandLayer extends CDCommandLayer implements MNPPacketListener
 	 * @param packetLayer
 	 *            the packet layer.
 	 */
-	public MNPCommandLayer(MNPSerialPacketLayer packetLayer) {
+	public MNPCommandLayer(MNPPacketLayer packetLayer) {
 		super();
 		this.packetLayer = packetLayer;
 		packetLayer.addPacketListener(this);
@@ -74,6 +72,15 @@ public class MNPCommandLayer extends CDCommandLayer implements MNPPacketListener
 	@Override
 	protected InputStream getInput() {
 		return in;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.sf.jncu.cdil.CDCommandLayer#getOutput()
+	 */
+	@Override
+	protected OutputStream getOutput() throws IOException {
+		return null;
 	}
 
 	/*
@@ -98,7 +105,7 @@ public class MNPCommandLayer extends CDCommandLayer implements MNPPacketListener
 		packet.setData(payload);
 		Byte seq = packet.getSequence();
 		queueOut.put(seq, cmd);
-		packetLayer.send(packet);
+		packetLayer.send(getOutput(), packet);
 	}
 
 	/*
@@ -150,12 +157,13 @@ public class MNPCommandLayer extends CDCommandLayer implements MNPPacketListener
 	 *            the packet.
 	 */
 	protected void packetReceivedLD(MNPLinkDisconnectPacket packet) {
-		IDockCommandFromNewton cmd = (IDockCommandFromNewton) DockCommandFactory.getInstance().create(DDisconnect.COMMAND);
-		try {
-			queueIn.put(cmd);
-		} catch (InterruptedException ie) {
-			ie.printStackTrace();
-		}
+		// IDockCommandFromNewton cmd = (IDockCommandFromNewton)
+		// DockCommandFactory.getInstance().create(DDisconnect.COMMAND);
+		// try {
+		// queueIn.put(cmd);
+		// } catch (InterruptedException ie) {
+		// ie.printStackTrace();
+		// }
 	}
 
 	/**
@@ -166,12 +174,19 @@ public class MNPCommandLayer extends CDCommandLayer implements MNPPacketListener
 	 */
 	protected void packetReceivedLT(MNPLinkTransferPacket packet) {
 		byte[] payload = packet.getData();
-		MNPLinkAcknowledgementPacket ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
-		ack.setSequence(packet.getSequence());
-		ack.setCredit(CREDIT);
+		OutputStream out;
+		MNPLinkAcknowledgementPacket ack;
+
 		try {
-			packetLayer.send(ack);
+			out = getOutput();
+			if (out != null) {
+				ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
+				ack.setSequence(packet.getSequence());
+				ack.setCredit(CREDIT);
+				packetLayer.send(out, ack);
+			}
 			packets.write(payload);
+			packets.flush();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}

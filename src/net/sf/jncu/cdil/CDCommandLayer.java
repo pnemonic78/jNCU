@@ -19,18 +19,20 @@
  */
 package net.sf.jncu.cdil;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeoutException;
 
+import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
-import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 
 /**
  * CDIL command layer.
@@ -84,8 +86,12 @@ public abstract class CDCommandLayer extends Thread {
 	protected void fireCommandReceived(IDockCommandFromNewton command) {
 		// Make copy of listeners to avoid ConcurrentModificationException.
 		Collection<DockCommandListener> listenersCopy = new ArrayList<DockCommandListener>(listeners);
+		boolean remove = false;
 		for (DockCommandListener listener : listenersCopy) {
-			listener.commandReceived(command);
+			remove |= listener.commandReceived(command);
+		}
+		if (remove) {
+			queueIn.remove(command);
 		}
 	}
 
@@ -133,26 +139,39 @@ public abstract class CDCommandLayer extends Thread {
 	 */
 	protected abstract InputStream getInput();
 
+	/**
+	 * Get the output stream for commands.
+	 * 
+	 * @return the stream.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected abstract OutputStream getOutput() throws IOException;
+
+	/**
+	 * Wait for incoming commands.
+	 */
 	@Override
 	public void run() {
 		running = true;
 
-		DockCommandFactory factory = DockCommandFactory.getInstance();
+		InputStream in;
 		IDockCommandFromNewton cmd;
-		InputStream in = getInput();
 
 		try {
-			while (running) {
-				cmd = (IDockCommandFromNewton) factory.create(in);
+			do {
+				in = getInput();
+				cmd = DockCommandFromNewton.deserializeCommand(in);
 				if (cmd != null) {
-					cmd.decode(in);
 					try {
 						queueIn.put(cmd);
+						fireCommandReceived(cmd);
 					} catch (InterruptedException ie) {
 						ie.printStackTrace();
 					}
 				}
-			}
+			} while (running && (cmd != null));
+		} catch (EOFException eofe) {
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}

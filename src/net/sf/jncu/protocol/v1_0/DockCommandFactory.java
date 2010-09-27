@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v1_0;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -181,7 +182,10 @@ public class DockCommandFactory {
 	 */
 	public DockCommand create(InputStream in) throws IOException {
 		byte[] cmdName = new byte[DockCommand.COMMAND_NAME_LENGTH];
-		in.read(cmdName);
+		int count = in.read(cmdName);
+		if (count == -1) {
+			throw new EOFException();
+		}
 		return create(cmdName);
 	}
 }
