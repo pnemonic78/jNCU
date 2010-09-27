@@ -106,15 +106,12 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	 *             if an I/O error occurs.
 	 */
 	public static boolean isCommand(InputStream data) throws IOException {
-		if ((data == null) || (data.available() < COMMAND_PREFIX_LENGTH)) {
+		if (data == null) {
 			return false;
 		}
 		int b;
 		for (int i = 0; i < COMMAND_PREFIX_LENGTH; i++) {
-			b = data.read();
-			if (b == -1) {
-				throw new EOFException();
-			}
+			b = readByte(data);
 			if (COMMAND_PREFIX_BYTES[i] != b) {
 				return false;
 			}
@@ -127,9 +124,12 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	 * 
 	 * @param data
 	 *            the data.
-	 * @return the command.
+	 * @return the list of commands.
 	 */
 	public static List<IDockCommandFromNewton> deserialize(byte[] data) {
+		if ((data == null) || (data.length < MIN_COMMAND_HEADER_LENGTH)) {
+			return new ArrayList<IDockCommandFromNewton>();
+		}
 		ByteArrayInputStream in = new ByteArrayInputStream(data);
 		try {
 			return deserialize(in);
@@ -143,13 +143,13 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	 * 
 	 * @param data
 	 *            the data stream.
-	 * @return the command.
+	 * @return the list of commands.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
 	public static List<IDockCommandFromNewton> deserialize(InputStream data) throws IOException {
 		List<IDockCommandFromNewton> cmds = new ArrayList<IDockCommandFromNewton>();
-		if ((data == null) || (data.available() < MIN_COMMAND_HEADER_LENGTH)) {
+		if (data == null) {
 			return cmds;
 		}
 		IDockCommandFromNewton cmd = null;
@@ -176,8 +176,9 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	 * 
 	 * @param data
 	 *            the data.
+	 * @return the command - {@code null} otherwise.
 	 */
-	protected static IDockCommandFromNewton deserializeCommand(byte[] data) {
+	public static IDockCommandFromNewton deserializeCommand(byte[] data) {
 		InputStream in = new ByteArrayInputStream(data);
 		try {
 			return deserializeCommand(in);
@@ -191,11 +192,11 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	 * 
 	 * @param data
 	 *            the data stream.
-	 * @return the command.
+	 * @return the command - {@code null} otherwise.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected static IDockCommandFromNewton deserializeCommand(InputStream data) throws IOException {
+	public static IDockCommandFromNewton deserializeCommand(InputStream data) throws IOException {
 		if (!isCommand(data)) {
 			return null;
 		}
@@ -219,11 +220,12 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 		int length = ntohl(data);
 		setLength(length);
 		if (length == 0x010000) {
-			length = data.read();
+			length = readByte(data);
 		}
-		if ((length != -1) && (data.available() < length)) {
-			throw new ArrayIndexOutOfBoundsException("length " + length);
-		}
+		/*
+		 * if ((length != -1) && (data.available() < length)) { throw new
+		 * ArrayIndexOutOfBoundsException("length " + length); }
+		 */
 		if (length > 0) {
 			decodeData(data);
 		}
@@ -250,10 +252,10 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	 *             if read past buffer.
 	 */
 	public static int ntohl(InputStream in) throws IOException {
-		int n24 = (in.read() & 0xFF) << 24;
-		int n16 = (in.read() & 0xFF) << 16;
-		int n08 = (in.read() & 0xFF) << 8;
-		int n00 = (in.read() & 0xFF) << 0;
+		int n24 = (readByte(in) & 0xFF) << 24;
+		int n16 = (readByte(in) & 0xFF) << 16;
+		int n08 = (readByte(in) & 0xFF) << 8;
+		int n00 = (readByte(in) & 0xFF) << 0;
 
 		return n24 | n16 | n08 | n00;
 	}
@@ -269,8 +271,8 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	 *             if read past buffer.
 	 */
 	public static short ntohs(InputStream in) throws IOException {
-		int n08 = (in.read() & 0xFF) << 8;
-		int n00 = (in.read() & 0xFF) << 0;
+		int n08 = (readByte(in) & 0xFF) << 8;
+		int n00 = (readByte(in) & 0xFF) << 0;
 
 		return (short) (n08 | n00);
 	}
@@ -286,27 +288,43 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	 */
 	public static String readString(InputStream in) throws IOException {
 		StringBuffer buf = new StringBuffer();
-		int hi = in.read();
-		if (hi == -1) {
-			throw new EOFException();
-		}
-		int lo = in.read();
-		if (lo == -1) {
-			throw new EOFException();
-		}
+		int hi = readByte(in);
+		int lo = readByte(in);
 		int c = ((hi & 0xFF) << 8) | (lo & 0xFF);
 		while (c != 0) {
 			buf.append((char) c);
-			hi = in.read();
-			if (hi == -1) {
-				throw new EOFException();
-			}
-			lo = in.read();
-			if (lo == -1) {
-				throw new EOFException();
-			}
+			hi = readByte(in);
+			lo = readByte(in);
 			c = ((hi & 0xFF) << 8) | (lo & 0xFF);
 		}
 		return buf.toString();
+	}
+
+	/**
+	 * Read a byte.
+	 * 
+	 * @param in
+	 *            the input.
+	 * @return the byte value.
+	 * @throws EOFException
+	 *             if end of stream is reached.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	private static int readByte(InputStream in) throws IOException {
+		int b;
+		try {
+			b = in.read();
+		} catch (IOException ioe) {
+			// PipedInputStream throws IOException instead of returning -1.
+			if (in.available() == 0) {
+				throw new EOFException();
+			}
+			throw ioe;
+		}
+		if (b == -1) {
+			throw new EOFException();
+		}
+		return b;
 	}
 }

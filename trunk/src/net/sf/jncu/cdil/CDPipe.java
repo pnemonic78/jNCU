@@ -497,8 +497,9 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 * net.sf.jncu.protocol.DockCommandListener#commandReceived(net.sf.jncu.
 	 * protocol.IDockCommandFromNewton)
 	 */
-	public void commandReceived(IDockCommandFromNewton command) {
+	public boolean commandReceived(IDockCommandFromNewton command) {
 		restartTimeout();
+		return true;
 	}
 
 	/*

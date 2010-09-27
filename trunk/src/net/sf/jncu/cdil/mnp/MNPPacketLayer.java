@@ -59,21 +59,20 @@ public class MNPPacketLayer {
 	 * 
 	 * @param in
 	 *            the input.
+	 * @return the payload - {@code null} otherwise.
+	 * @throws EOFException
+	 *             if end of stream is reached.
 	 * @throws IOException
 	 *             if an I/O error occurs.
-	 * @return the payload - <tt>null</tt> otherwise.
 	 */
-	protected byte[] read(InputStream in) throws IOException {
+	protected byte[] read(InputStream in) throws EOFException, IOException {
 		int delimiterLength = PACKET_HEAD.length;
 		int state = 0;
 		int b;
 
 		/* Read header. */
 		while (state < delimiterLength) {
-			b = in.read();
-			if (b == -1) {
-				throw new EOFException();
-			}
+			b = readByte(in);
 			if (b == PACKET_HEAD[state]) {
 				state++;
 			} else {
@@ -88,10 +87,7 @@ public class MNPPacketLayer {
 		delimiterLength = PACKET_TAIL.length;
 		state = 0;
 		while (state < delimiterLength) {
-			b = in.read();
-			if (b == -1) {
-				throw new EOFException();
-			}
+			b = readByte(in);
 			if (b == DELIMITER_ESCAPE) {
 				if (isEscape) {
 					buf.write(b);
@@ -116,15 +112,9 @@ public class MNPPacketLayer {
 		crc.update(PACKET_TAIL, 1, PACKET_TAIL.length - 1);
 
 		/* Read the FCS. */
-		b = in.read();
-		if (b == -1) {
-			throw new EOFException();
-		}
+		b = readByte(in);
 		long crcWord = b;
-		b = in.read();
-		if (b == -1) {
-			throw new EOFException();
-		}
+		b = readByte(in);
 		crcWord = (b << 8) | crcWord;
 		if (crcWord != crc.getValue()) {
 			// throw new ProtocolException("CRC error on input framing");
@@ -291,5 +281,33 @@ public class MNPPacketLayer {
 	 */
 	public void close() {
 		listeners.clear();
+	}
+
+	/**
+	 * Read a byte.
+	 * 
+	 * @param in
+	 *            the input.
+	 * @return the byte value.
+	 * @throws EOFException
+	 *             if end of stream is reached.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	private int readByte(InputStream in) throws IOException {
+		int b;
+		try {
+			b = in.read();
+		} catch (IOException ioe) {
+			// PipedInputStream throws IOException instead of returning -1.
+			if (in.available() == 0) {
+				throw new EOFException();
+			}
+			throw ioe;
+		}
+		if (b == -1) {
+			throw new EOFException();
+		}
+		return b;
 	}
 }

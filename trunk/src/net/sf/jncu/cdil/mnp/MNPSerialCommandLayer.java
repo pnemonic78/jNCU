@@ -17,30 +17,34 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.protocol;
+package net.sf.jncu.cdil.mnp;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
- * Docking command listener interface.
+ * MNP command layer for serial port.
  * 
  * @author moshew
  */
-public interface DockCommandListener {
+public class MNPSerialCommandLayer extends MNPCommandLayer {
 
 	/**
-	 * Notification that a command was received.
+	 * Creates a new command layer.
 	 * 
-	 * @param command
-	 *            the command.
-	 * @return {@code true} if command can be removed from the queue.
+	 * @param packetLayer
+	 *            the packet layer.
 	 */
-	public boolean commandReceived(IDockCommandFromNewton command);
+	public MNPSerialCommandLayer(MNPSerialPacketLayer packetLayer) {
+		super(packetLayer);
+	}
 
-	/**
-	 * Notification that a command was sent.
-	 * 
-	 * @param command
-	 *            the command.
+	/*
+	 * (non-Javadoc)
+	 * @see net.sf.jncu.cdil.mnp.MNPCommandLayer#getOutput()
 	 */
-	public void commandSent(IDockCommandToNewton command);
-
+	@Override
+	protected OutputStream getOutput() throws IOException {
+		return ((MNPSerialPacketLayer) packetLayer).getPort().getOutputStream();
+	}
 }
