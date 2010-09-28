@@ -58,6 +58,9 @@ public class NumberUtils {
 	 * @return the 64-bit number.
 	 */
 	public static long toLong(byte[] b) {
+		if ((b == null) || (b.length == 0)) {
+			return 0;
+		}
 		long l = 0;
 		for (int i = 0; i < 8; i++) {
 			l <<= 8;
