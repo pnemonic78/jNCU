@@ -82,7 +82,7 @@ public class DESNewton {
 			byte[] keyBytes = NumberUtils.toBytes(key);
 			DESKeySpec keySpec = new DESKeySpec(keyBytes);
 			SecretKey skey = getKeyFactory().generateSecret(keySpec);
-			cipher.init(opmode, skey);
+			cipher.init(Cipher.ENCRYPT_MODE, skey);
 
 			byte[] zero = NumberUtils.toBytes(0L);
 			byte[] tmpKeyBytes = cipher.doFinal(zero);
@@ -174,6 +174,8 @@ public class DESNewton {
 	 * @return the cipher-text.
 	 */
 	public long cipher(long data) {
-		return NumberUtils.toLong(cipher.update(NumberUtils.toBytes(data)));
+		byte[] input = NumberUtils.toBytes(data);
+		byte[] ciphered = cipher.update(input);
+		return NumberUtils.toLong(ciphered);
 	}
 }
