@@ -25,9 +25,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeoutException;
 
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandListener;
@@ -43,8 +40,6 @@ public abstract class CDCommandLayer extends Thread {
 
 	/** List of command listeners. */
 	protected final Collection<DockCommandListener> listeners = new ArrayList<DockCommandListener>();
-	/** Queue of incoming commands. */
-	protected final BlockingQueue<IDockCommandFromNewton> queueIn = new LinkedBlockingQueue<IDockCommandFromNewton>();
 	/** Still listening for incoming commands? */
 	protected boolean running = false;
 
@@ -86,12 +81,8 @@ public abstract class CDCommandLayer extends Thread {
 	protected void fireCommandReceived(IDockCommandFromNewton command) {
 		// Make copy of listeners to avoid ConcurrentModificationException.
 		Collection<DockCommandListener> listenersCopy = new ArrayList<DockCommandListener>(listeners);
-		boolean remove = false;
 		for (DockCommandListener listener : listenersCopy) {
-			remove |= listener.commandReceived(command);
-		}
-		if (remove) {
-			queueIn.remove(command);
+			listener.commandReceived(command);
 		}
 	}
 
@@ -163,32 +154,12 @@ public abstract class CDCommandLayer extends Thread {
 				in = getInput();
 				cmd = DockCommandFromNewton.deserializeCommand(in);
 				if (cmd != null) {
-					try {
-						queueIn.put(cmd);
-						fireCommandReceived(cmd);
-					} catch (InterruptedException ie) {
-						ie.printStackTrace();
-					}
+					fireCommandReceived(cmd);
 				}
 			} while (running && (cmd != null));
 		} catch (EOFException eofe) {
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
-		}
-	}
-
-	/**
-	 * Read the next available command.
-	 * 
-	 * @return the command.
-	 * @throws TimeoutException
-	 *             if timeout occurs.
-	 */
-	public IDockCommandFromNewton read() throws TimeoutException {
-		try {
-			return queueIn.take();
-		} catch (InterruptedException ie) {
-			throw new TimeoutException(ie.getMessage());
 		}
 	}
 }

@@ -390,18 +390,18 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 			}
 
 			if (packetType != MNPPacket.LA) {
-				IDockCommandFromNewton cmd = nextCommand();
-				docking.commandReceived(cmd);
+				// IDockCommandFromNewton cmd = nextCommand();
+				// docking.commandReceived(cmd);
 			}
 			break;
 		case MNP_ACCEPTED:
 		case MNP_IDLE:
 			if (packetType == MNPPacket.LT) {
-				IDockCommandFromNewton cmd = nextCommand();
-				if (cmd == null) {
-					throw new BadPipeStateException("expected command");
-				}
-				commandReceived(cmd, state);
+				// IDockCommandFromNewton cmd = nextCommand();
+				// if (cmd == null) {
+				// throw new BadPipeStateException("expected command");
+				// }
+				// commandReceived(cmd, state);
 			}
 			break;
 		case MNP_DISCONNECTING:
