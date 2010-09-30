@@ -497,9 +497,8 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 * net.sf.jncu.protocol.DockCommandListener#commandReceived(net.sf.jncu.
 	 * protocol.IDockCommandFromNewton)
 	 */
-	public boolean commandReceived(IDockCommandFromNewton command) {
+	public void commandReceived(IDockCommandFromNewton command) {
 		restartTimeout();
-		return true;
 	}
 
 	/*
@@ -509,28 +508,6 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 * .IDockCommandToNewton)
 	 */
 	public void commandSent(IDockCommandToNewton command) {
-	}
-
-	/**
-	 * Reads a command from the Newton device.<br>
-	 * This method blocks until a command is received.
-	 * 
-	 * @return the command.
-	 * @throws CDILNotInitializedException
-	 *             if CDIL is not initialised.
-	 * @throws PlatformException
-	 *             if a platform error occurs.
-	 * @throws BadPipeStateException
-	 *             if pipe is in an incorrect state.
-	 * @throws PipeDisconnectedException
-	 *             if the pipe is disconnected.
-	 * @throws TimeoutException
-	 *             if timeout occurs.
-	 */
-	public IDockCommandFromNewton nextCommand() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
-			TimeoutException {
-		layer.checkConnected();
-		return cmdLayer.read();
 	}
 
 	/**

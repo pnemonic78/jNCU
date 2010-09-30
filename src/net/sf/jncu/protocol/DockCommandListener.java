@@ -31,9 +31,8 @@ public interface DockCommandListener {
 	 * 
 	 * @param command
 	 *            the command.
-	 * @return {@code true} if command can be removed from the queue.
 	 */
-	public boolean commandReceived(IDockCommandFromNewton command);
+	public void commandReceived(IDockCommandFromNewton command);
 
 	/**
 	 * Notification that a command was sent.

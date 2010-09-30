@@ -145,7 +145,6 @@ public class DockingProtocol {
 			setState(DockingState.HANDSHAKE_RTDK_LISTEN);
 			break;
 		case HANDSHAKE_RTDK_LISTEN:
-			cmd = pipe.nextCommand();
 			if (cmd == null) {
 				throw new BadPipeStateException("expected command");
 			}
