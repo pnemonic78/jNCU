@@ -151,17 +151,21 @@ public class TraceDecode {
 			cancel();
 		}
 
+		@Override
 		public void packetReceived(MNPPacket packet) {
 			processPacket(direction, packet);
 		}
 
+		@Override
 		public void packetSent(MNPPacket packet) {
 		}
 
+		@Override
 		public void commandReceived(IDockCommandFromNewton command) {
 			System.out.println(direction + "\trcv cmd:" + command);
 		}
 
+		@Override
 		public void commandSent(IDockCommandToNewton command) {
 			System.out.println(direction + "\tsnt cmd:" + command);
 		}
