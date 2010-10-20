@@ -31,15 +31,21 @@ public class MNPLinkRequestPacket extends MNPPacket {
 	protected static final byte MAX_OUTSTANDING = 0x03;
 	protected static final byte MAX_INFO_LENGTH = 0x04;
 	protected static final byte DATA_PHASE_OPT = 0x08;
+	protected static final byte TYPE9 = 0x09;
 	protected static final byte PROTOCOL = 0x0E;
+	protected static final byte TYPEC5 = (byte) 0xC5;
 
 	protected static final byte TYPE1_LENGTH = 6;
 	protected static final byte FRAMING_MODE_LENGTH = 1;
 	protected static final byte MAX_OUTSTANDING_LENGTH = 1;
 	protected static final byte MAX_INFO_LENGTH_LENGTH = 2;
 	protected static final byte DATA_PHASE_OPT_LENGTH = 1;
+	protected static final byte TYPE9_LENGTH = 1;
 	protected static final byte PROTOCOL_LENGTH = 4;
+	protected static final byte TYPEC5_LENGTH = 6;
 
+	/** Connect using unknown protocol. */
+	public static final byte PROTOCOL_NONE = 0x00;
 	/** Connect using "Toolkit" protocol. */
 	public static final byte PROTOCOL_NTK = 0x02;
 	/** Connect using "Docking" protocol. */
