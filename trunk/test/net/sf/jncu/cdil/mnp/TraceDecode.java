@@ -211,7 +211,7 @@ public class TraceDecode {
 			// } catch (IOException e) {
 			// e.printStackTrace();
 			// }
-			// cmdLayer.close();
+			cmdLayer.close();
 			// packetLayer.close();
 		}
 
