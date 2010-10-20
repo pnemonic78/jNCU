@@ -30,7 +30,7 @@ public interface MNPPacketListener {
 	 * Notification that a MNP packet was received.
 	 * 
 	 * @param packet
-	 *            the packet.
+	 *            the received packet.
 	 */
 	void packetReceived(MNPPacket packet);
 
@@ -38,7 +38,7 @@ public interface MNPPacketListener {
 	 * Notification that a MNP packet was sent.
 	 * 
 	 * @param packet
-	 *            the packet.
+	 *            the sent packet.
 	 */
 	void packetSent(MNPPacket packet);
 

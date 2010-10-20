@@ -142,6 +142,7 @@ public class NCUFrame extends JFrame {
 			menuExit.setText("Exit");
 			menuExit.setMnemonic(KeyEvent.VK_X);
 			menuExit.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					close();
 				}
@@ -162,6 +163,7 @@ public class NCUFrame extends JFrame {
 			menuSettings.setText("Settings...");
 			menuSettings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
 			menuSettings.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					Settings settings = getSettings();
 					// comm.stopListenForNewton();
@@ -279,6 +281,7 @@ public class NCUFrame extends JFrame {
 		}
 
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				NCUFrame thisClass = new NCUFrame();
 				thisClass.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

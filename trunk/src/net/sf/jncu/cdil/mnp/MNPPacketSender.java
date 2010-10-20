@@ -146,6 +146,7 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 		}
 	}
 
+	@Override
 	public void packetReceived(MNPPacket packet) {
 		byte packetType = packet.getType();
 
@@ -159,6 +160,7 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 		}
 	}
 
+	@Override
 	public void packetSent(MNPPacket packet) {
 		// Nothing to do.
 	}

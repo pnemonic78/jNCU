@@ -46,6 +46,7 @@ public class DOperationCanceled extends DockCommandToNewtonBlank implements IDoc
 		super(COMMAND);
 	}
 
+	@Override
 	public void decode(InputStream data) throws IOException {
 		// nothing to decode.
 	}

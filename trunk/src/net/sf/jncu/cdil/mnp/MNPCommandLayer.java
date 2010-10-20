@@ -114,6 +114,7 @@ public class MNPCommandLayer extends CDCommandLayer implements MNPPacketListener
 	 * net.sf.jncu.cdil.mnp.MNPPacketListener#packetReceived(net.sf.jncu.cdil
 	 * .mnp.MNPPacket)
 	 */
+	@Override
 	public void packetReceived(MNPPacket packet) {
 		byte type = packet.getType();
 		if (type == MNPPacket.LA) {
@@ -131,6 +132,7 @@ public class MNPCommandLayer extends CDCommandLayer implements MNPPacketListener
 	 * net.sf.jncu.cdil.mnp.MNPPacketListener#packetSent(net.sf.jncu.cdil.mnp
 	 * .MNPPacket)
 	 */
+	@Override
 	public void packetSent(MNPPacket packet) {
 		// Nothing to do.
 	}

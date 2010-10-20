@@ -44,6 +44,7 @@ public class DHello extends DockCommandFromNewtonBlank implements IDockCommandTo
 		super(COMMAND);
 	}
 
+	@Override
 	public byte[] getPayload() {
 		IDockCommandToNewton cmd = new DockCommandToNewtonBlank(COMMAND) {
 		};

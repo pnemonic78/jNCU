@@ -148,6 +148,7 @@ public class DSoupsChanged extends DockCommandToNewton {
 			return compareTo(that) == 0;
 		}
 
+		@Override
 		public int compareTo(Soup that) {
 			if (this == that) {
 				return 0;

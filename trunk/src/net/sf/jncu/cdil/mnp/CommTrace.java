@@ -149,6 +149,7 @@ public class CommTrace implements SerialPortEventListener {
 		}
 	}
 
+	@Override
 	public void serialEvent(SerialPortEvent e) {
 		SerialPort port = (SerialPort) e.getSource();
 		if (e.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
