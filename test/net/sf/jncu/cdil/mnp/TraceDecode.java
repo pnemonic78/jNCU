@@ -8,10 +8,12 @@ import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.Reader;
-import java.util.List;
 
 import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
+import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 
 /**
  * Decode trace dumps.
@@ -23,7 +25,6 @@ public class TraceDecode {
 	private static final char DIRECTION_1TO2 = CommTrace.CHAR_DIRECTION_1TO2;
 	private static final char DIRECTION_2TO1 = CommTrace.CHAR_DIRECTION_2TO1;
 	private static final String HEX = "0123456789ABCDEF";
-	private final MNPPacketLayer layer = new MNPPacketLayer();
 
 	/**
 	 * Creates a new decoder.
@@ -67,8 +68,8 @@ public class TraceDecode {
 	}
 
 	public void parse(Reader reader) throws IOException {
-		PipedInputStream in1To2 = new PipedInputStream(1);
-		PipedInputStream in2To1 = new PipedInputStream(1);
+		PipedInputStream in1To2 = new PipedInputStream();
+		PipedInputStream in2To1 = new PipedInputStream();
 		PipedOutputStream buf1To2 = new PipedOutputStream(in1To2);
 		PipedOutputStream buf2To1 = new PipedOutputStream(in2To1);
 
@@ -109,45 +110,60 @@ public class TraceDecode {
 
 			b = reader.read();
 		}
-
-		buf1To2.close();
-		buf2To1.close();
-		pp1.cancel();
-		pp2.cancel();
 	}
 
-	private class ProcessPayload extends Thread {
+	private class ProcessPayload extends Thread implements MNPPacketListener, DockCommandListener {
 
 		private boolean running = false;
 		private final char direction;
 		private final InputStream in;
+		private final MNPPacketLayer packetLayer;
+		private final MNPCommandLayer cmdLayer;
 
 		public ProcessPayload(char direction, InputStream in) {
 			super();
+			setName("ProcessPayload-" + direction);
 			this.direction = direction;
 			this.in = in;
+			this.packetLayer = new MNPPacketLayer();
+			packetLayer.addPacketListener(this);
+			if (direction == DIRECTION_1TO2) {
+				this.cmdLayer = new MNPCommandLayer(packetLayer);
+			} else {
+				this.cmdLayer = new MNPCommandLayer2To1(packetLayer);
+			}
+			cmdLayer.addCommandListener(this);
 		}
 
 		@Override
 		public void run() {
 			running = true;
+			cmdLayer.start();
+			MNPPacket packet;
 			try {
-				processPayload(direction, in);
 				do {
-					yield();
-				} while (running);
+					packet = packetLayer.receive(in);
+				} while (running && (packet != null));
 			} catch (EOFException eof) {
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
 			}
+			cancel();
 		}
 
-		private void processPayload(char direction, InputStream in) throws IOException {
-			MNPPacket packet;
-			do {
-				packet = layer.receive(in);
-				processPacket(direction, packet);
-			} while (packet != null);
+		public void packetReceived(MNPPacket packet) {
+			processPacket(direction, packet);
+		}
+
+		public void packetSent(MNPPacket packet) {
+		}
+
+		public void commandReceived(IDockCommandFromNewton command) {
+			System.out.println(direction + "\trcv cmd:" + command);
+		}
+
+		public void commandSent(IDockCommandToNewton command) {
+			System.out.println(direction + "\tsnt cmd:" + command);
 		}
 
 		private void processPacket(char direction, MNPPacket packet) {
@@ -182,11 +198,17 @@ public class TraceDecode {
 		private void processLT(char direction, MNPLinkTransferPacket packet) {
 			System.out.println(direction + " type:(LT)" + packet.getType() + " trans:" + packet.getTransmitted() + " seq:" + packet.getSequence() + " data:"
 					+ dataToString(packet.getData()));
-			processCmd(direction, packet);
 		}
 
 		public void cancel() {
 			running = false;
+			// try {
+			// in.close();
+			// } catch (IOException e) {
+			// e.printStackTrace();
+			// }
+			// cmdLayer.close();
+			// packetLayer.close();
 		}
 
 		private String dataToString(byte[] data) {
@@ -212,21 +234,46 @@ public class TraceDecode {
 			return buf.toString();
 		}
 
-		private void processCmd(char direction, MNPLinkTransferPacket packet) {
-			byte[] data = packet.getData();
-			if ((data == null) || (data.length == 0)) {
-				return;
-			}
-			if (DockCommandFromNewton.isCommand(data)) {
-				List<IDockCommandFromNewton> cmds = null;
-				if (direction == DIRECTION_1TO2) {
-					cmds = DockCommandFromNewton.deserialize(data);
-					for (IDockCommandFromNewton cmd : cmds) {
-						System.out.println(direction + "\tcmd:" + cmd);
-					}
-				}
-			}
+	}
+
+	private class MNPCommandLayer2To1 extends MNPCommandLayer {
+
+		private final DockCommandFactory factory;
+
+		public MNPCommandLayer2To1(MNPPacketLayer packetLayer) {
+			super(packetLayer);
+			this.factory = DockCommandFactory.getInstance();
 		}
 
+		@Override
+		public void run() {
+			running = true;
+
+			InputStream in;
+			IDockCommandToNewton cmd;
+			int length;
+
+			try {
+				do {
+					in = getInput();
+					cmd = null;
+					if (DockCommandFromNewton.isCommand(in)) {
+						cmd = (IDockCommandToNewton) factory.create(in);
+						if (cmd != null) {
+							length = DockCommandFromNewton.ntohl(in);
+							if (length == 0x10000) {
+								length = in.read();
+							}
+							// Skip the command data.
+							in.skip(length);
+							fireCommandSent(cmd);
+						}
+					}
+				} while (running && (cmd != null));
+			} catch (EOFException eofe) {
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+		}
 	}
 }
