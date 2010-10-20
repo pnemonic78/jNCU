@@ -153,12 +153,16 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 			return cmds;
 		}
 		IDockCommandFromNewton cmd = null;
-		do {
-			cmd = deserializeCommand(data);
-			if (cmd != null) {
-				cmds.add(cmd);
-			}
-		} while (cmd != null);
+		try {
+			do {
+				cmd = deserializeCommand(data);
+				if (cmd != null) {
+					cmds.add(cmd);
+				}
+			} while (cmd != null);
+		} catch (EOFException eofe) {
+			// no more commands.
+		}
 		return cmds;
 	}
 

@@ -14,6 +14,7 @@ import java.util.Iterator;
 
 import net.sf.jncu.cdil.mnp.CommPorts;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
+import net.sf.junit.SFTestCase;
 
 /**
  * Use Virtual COM ports for testing. COM2 attaches to NCU. COM3 attaches to
@@ -21,17 +22,9 @@ import net.sf.jncu.cdil.mnp.MNPSerialPort;
  * 
  * @author moshew
  */
-public class NullModem {
+public class NullModem extends SFTestCase {
 
-	public static void main(String[] args) {
-		try {
-			new NullModem().test();
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
-	}
-
-	public void test() throws Exception {
+	public void testNModem() throws Exception {
 		CommPorts commPorts = new CommPorts();
 		Collection<CommPortIdentifier> ports = commPorts.getPortIdentifiers(CommPortIdentifier.PORT_SERIAL);
 		if (ports.size() == 0) {
