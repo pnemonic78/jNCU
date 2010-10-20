@@ -84,6 +84,7 @@ public class DUnknownCommand extends DockCommandToNewton implements IDockCommand
 		data.write(cmdName[3] & 0xFF);
 	}
 
+	@Override
 	public void decode(InputStream data) throws IOException {
 		IDockCommandFromNewton cmd = new DockCommandFromNewton(COMMAND) {
 

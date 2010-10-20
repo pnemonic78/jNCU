@@ -49,6 +49,7 @@ public class DKeyboardPassthrough extends DockCommandToNewtonBlank implements ID
 		super(COMMAND);
 	}
 
+	@Override
 	public void decode(InputStream data) throws IOException {
 		// nothing to decode.
 	}

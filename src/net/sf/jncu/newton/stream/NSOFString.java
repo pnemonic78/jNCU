@@ -175,6 +175,7 @@ public class NSOFString extends NSOFObject implements Comparable<NSOFString>, Pr
 		return toString;
 	}
 
+	@Override
 	public int compareTo(NSOFString that) {
 		String valThis = this.getValue();
 		String valThat = that.getValue();

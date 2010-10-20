@@ -61,6 +61,7 @@ public class DChangedEntry extends DockCommandFromNewton implements IDockCommand
 		setEntry(decoder.decode(data));
 	}
 
+	@Override
 	public byte[] getPayload() {
 		IDockCommandToNewton cmd = new DockCommandToNewton(COMMAND) {
 

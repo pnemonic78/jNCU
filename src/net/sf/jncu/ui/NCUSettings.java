@@ -145,6 +145,7 @@ public class NCUSettings extends JDialog {
 			buttonOk.setName("buttonOk");
 			buttonOk.setMinimumSize(buttonMinimumSize);
 			buttonOk.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					save();
 					close();
@@ -167,6 +168,7 @@ public class NCUSettings extends JDialog {
 			buttonCancel.setName("buttonCancel");
 			buttonCancel.setMinimumSize(buttonMinimumSize);
 			buttonCancel.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					close();
 				}
@@ -295,6 +297,7 @@ public class NCUSettings extends JDialog {
 			buttonApply.setMnemonic(KeyEvent.VK_A);
 			buttonApply.setMinimumSize(buttonMinimumSize);
 			buttonApply.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					save();
 				}
@@ -400,6 +403,7 @@ public class NCUSettings extends JDialog {
 			buttonBrowse.setText("Browse...");
 			buttonBrowse.setMnemonic(KeyEvent.VK_B);
 			buttonBrowse.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					int ret = getBrowser().showOpenDialog(getButtonBrowse());
 					if (ret == JFileChooser.APPROVE_OPTION) {

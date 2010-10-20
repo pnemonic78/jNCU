@@ -220,6 +220,7 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	 * @throws IOException
 	 *             if read past data buffer.
 	 */
+	@Override
 	public void decode(InputStream data) throws IOException {
 		int length = ntohl(data);
 		setLength(length);

@@ -125,6 +125,7 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 		return String.valueOf(getId());
 	}
 
+	@Override
 	public int compareTo(NSOFPrecedent that) {
 		if (that == null) {
 			return +1;

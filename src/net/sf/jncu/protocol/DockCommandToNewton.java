@@ -56,6 +56,7 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 	 * 
 	 * @return the payload.
 	 */
+	@Override
 	public byte[] getPayload() {
 		RewriteByteArrayOutputStream payload = new RewriteByteArrayOutputStream();
 		int length = 0;

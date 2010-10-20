@@ -62,6 +62,7 @@ public class CRC16 implements Checksum {
 	 * (non-Javadoc)
 	 * @see java.util.zip.Checksum#getValue()
 	 */
+	@Override
 	public long getValue() {
 		return (value & 0xffffL);
 	}
@@ -70,6 +71,7 @@ public class CRC16 implements Checksum {
 	 * (non-Javadoc)
 	 * @see java.util.zip.Checksum#reset()
 	 */
+	@Override
 	public void reset() {
 		value = 0;
 	}
@@ -78,6 +80,7 @@ public class CRC16 implements Checksum {
 	 * (non-Javadoc)
 	 * @see java.util.zip.Checksum#update(byte[], int, int)
 	 */
+	@Override
 	public void update(byte[] b, int off, int len) {
 		for (int i = 0, o = off; i < len; i++, o++) {
 			update(b[o] & 0xFF);
@@ -88,6 +91,7 @@ public class CRC16 implements Checksum {
 	 * (non-Javadoc)
 	 * @see java.util.zip.Checksum#update(int)
 	 */
+	@Override
 	public void update(int b) {
 		value = (((value >> 8) & 0xFF) ^ TABLE[(value & 0xFF) ^ b]);
 	}

@@ -62,6 +62,7 @@ public class MNPSerialPortReader extends Thread implements Closeable {
 		port.addEventListener(listener);
 	}
 
+	@Override
 	public void close() throws IOException {
 		if (listener != null) {
 			listener.close();

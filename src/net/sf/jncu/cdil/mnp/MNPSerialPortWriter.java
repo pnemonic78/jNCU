@@ -45,6 +45,7 @@ public class MNPSerialPortWriter extends Thread implements Closeable {
 		this.port = port;
 	}
 
+	@Override
 	public void close() throws IOException {
 		getOutputStream().close();
 	}

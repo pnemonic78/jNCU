@@ -86,6 +86,7 @@ public abstract class DockCommand implements IDockCommand {
 	 * (non-Javadoc)
 	 * @see net.sf.jncu.protocol.IDockCommand#getCommand()
 	 */
+	@Override
 	public String getCommand() {
 		return command;
 	}
@@ -94,6 +95,7 @@ public abstract class DockCommand implements IDockCommand {
 	 * (non-Javadoc)
 	 * @see net.sf.jncu.protocol.IDockCommand#getLength()
 	 */
+	@Override
 	public int getLength() {
 		return length;
 	}

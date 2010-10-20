@@ -30,7 +30,9 @@ import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.crypto.DESNewton;
 import net.sf.jncu.newton.NewtonError;
+import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
+import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.NewtonInfo;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 
@@ -39,7 +41,7 @@ import net.sf.jncu.protocol.v1_0.query.DResult;
  * 
  * @author moshew
  */
-public class DockingProtocol {
+public class DockingProtocol implements DockCommandListener {
 
 	private final CDPipe pipe;
 	/** Internal state. */
@@ -250,22 +252,77 @@ public class DockingProtocol {
 		}
 	}
 
-	/**
-	 * Command has been received, and now process it.
-	 * 
-	 * @param cmd
-	 *            the command.
-	 * @throws PipeDisconnectedException
-	 *             if pipe disconnected.
-	 * @throws TimeoutException
-	 *             if timeout occurs.
-	 * @throws PlatformException
-	 * @throws CDILNotInitializedException
-	 * @throws BadPipeStateException
-	 */
-	public void commandReceived(IDockCommandFromNewton cmd) throws PipeDisconnectedException, TimeoutException, BadPipeStateException,
-			CDILNotInitializedException, PlatformException {
-		commandReceived(cmd, state);
+	@Override
+	public void commandReceived(IDockCommandFromNewton cmd) {
+		try {
+			commandReceived(cmd, state);
+		} catch (BadPipeStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (PipeDisconnectedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CDILNotInitializedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (PlatformException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void commandSent(IDockCommandToNewton command) {
+		String cmdName = command.getCommand();
+
+		try {
+			switch (state) {
+			case HANDSHAKE_DOCK_SENDING:
+				if (DInitiateDocking.COMMAND.equals(cmdName)) {
+					setState(state, DockingState.HANDSHAKE_DOCK_SENT, null);
+				}
+				break;
+			case HANDSHAKE_DINFO_SENDING:
+				if (DDesktopInfo.COMMAND.equals(cmdName)) {
+					setState(state, DockingState.HANDSHAKE_DINFO_SENT, null);
+				}
+				break;
+			case HANDSHAKE_ICONS_SENDING:
+				if (DWhichIcons.COMMAND.equals(cmdName)) {
+					setState(state, DockingState.HANDSHAKE_ICONS_SENT, null);
+				}
+				break;
+			case HANDSHAKE_TIMEOUT_SENDING:
+				if (DSetTimeout.COMMAND.equals(cmdName)) {
+					setState(state, DockingState.HANDSHAKE_TIMEOUT_SENT, null);
+				}
+				break;
+			case HANDSHAKE_PASS_SENDING:
+				if (DPassword.COMMAND.equals(cmdName)) {
+					setState(state, DockingState.HANDSHAKE_PASS_SENT, null);
+					// TODO notifyConnected();
+				}
+				break;
+			}
+		} catch (BadPipeStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (PipeDisconnectedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CDILNotInitializedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (PlatformException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
