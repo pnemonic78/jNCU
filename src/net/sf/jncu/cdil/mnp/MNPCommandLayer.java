@@ -90,6 +90,11 @@ public class MNPCommandLayer extends CDCommandLayer implements MNPPacketListener
 	@Override
 	public void close() {
 		packetLayer.removePacketListener(this);
+		try {
+			packets.close();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
 		super.close();
 	}
 
