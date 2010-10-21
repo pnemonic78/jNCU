@@ -46,7 +46,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	protected DockingProtocol docking;
 	private static final Timer timer = new Timer();
 	protected CDTimeout timeoutTask;
-	protected CDCommandLayer cmdLayer;
+	private CDCommandLayer cmdLayer;
 
 	/**
 	 * Creates a new pipe.
@@ -63,10 +63,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 		}
 		this.layer = layer;
 		this.pipeSource = new PipedOutputStream();
-		this.cmdLayer = createCommandLayer();
 		layer.setState(CDState.DISCONNECTED);
-		cmdLayer.addCommandListener(this);
-		cmdLayer.start();
 	}
 
 	/**
@@ -140,7 +137,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 		if (timeoutTask != null) {
 			timeoutTask.cancel();
 		}
-		cmdLayer.close();
+		getCommandLayer().close();
 	}
 
 	public void disconnectQuiet() {
@@ -182,6 +179,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 		if (getCDState() != CDState.DISCONNECTED) {
 			throw new BadPipeStateException();
 		}
+		getCommandLayer();
 		this.docking = new DockingProtocol(this);
 		start();
 		layer.setState(CDState.LISTENING);
@@ -348,7 +346,12 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 */
 	public void write(IDockCommandToNewton cmd) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
 			TimeoutException {
-		write(cmd.getPayload());
+		layer.checkConnected();
+		try {
+			getCommandLayer().write(cmd);
+		} catch (IOException ioe) {
+			throw new PipeDisconnectedException(ioe);
+		}
 	}
 
 	/**
@@ -450,20 +453,12 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	}
 
 	/**
-	 * Newton device connects.
+	 * Newton device connected.
 	 * 
-	 * @throws TimeoutException
-	 *             if timeout occurs.
-	 * @throws PipeDisconnectedException
-	 *             if the pipe is disconnected.
-	 * @throws PlatformException
-	 *             if a platform error occurs.
-	 * @throws CDILNotInitializedException
-	 *             if CDIL is not initialised.
 	 * @throws BadPipeStateException
 	 *             if pipe is in an incorrect state.
 	 */
-	protected void notifyConnected() throws BadPipeStateException, CDILNotInitializedException, PlatformException, TimeoutException {
+	protected void notifyConnected() throws BadPipeStateException {
 		if (getCDState() != CDState.LISTENING) {
 			throw new BadPipeStateException();
 		}
@@ -497,6 +492,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 * net.sf.jncu.protocol.DockCommandListener#commandReceived(net.sf.jncu.
 	 * protocol.IDockCommandFromNewton)
 	 */
+	@Override
 	public void commandReceived(IDockCommandFromNewton command) {
 		restartTimeout();
 	}
@@ -507,6 +503,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 * net.sf.jncu.protocol.DockCommandListener#commandSent(net.sf.jncu.protocol
 	 * .IDockCommandToNewton)
 	 */
+	@Override
 	public void commandSent(IDockCommandToNewton command) {
 	}
 
@@ -525,4 +522,28 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 * @return the command layer.
 	 */
 	protected abstract CDCommandLayer createCommandLayer();
+
+	/**
+	 * Can send?
+	 * 
+	 * @return true if connected or connection pending.
+	 */
+	public boolean canSend() {
+		CDState stateCD = getLayer().getState();
+		return (stateCD == CDState.CONNECT_PENDING) || (stateCD == CDState.CONNECTED) || (stateCD == CDState.LISTENING);
+	}
+
+	/**
+	 * Get the command layer. Creates layer if {@code null}.
+	 * 
+	 * @return the the command layer.
+	 */
+	protected CDCommandLayer getCommandLayer() {
+		if (cmdLayer == null) {
+			cmdLayer = createCommandLayer();
+			cmdLayer.addCommandListener(this);
+			cmdLayer.start();
+		}
+		return cmdLayer;
+	}
 }

@@ -99,8 +99,6 @@ public class DockingProtocol implements DockCommandListener {
 	/**
 	 * Flow to the next state.
 	 * 
-	 * @param oldDockingState
-	 *            the old state.
 	 * @param state
 	 *            the new state.
 	 * @param cmd
@@ -113,8 +111,30 @@ public class DockingProtocol implements DockCommandListener {
 	 * @throws CDILNotInitializedException
 	 * @throws BadPipeStateException
 	 */
-	public void setState(DockingState oldDockingState, DockingState state, IDockCommandFromNewton cmd) throws PipeDisconnectedException, TimeoutException,
-			BadPipeStateException, CDILNotInitializedException, PlatformException {
+	public void setState(DockingState state, IDockCommandFromNewton cmd) throws PipeDisconnectedException, TimeoutException, BadPipeStateException,
+			CDILNotInitializedException, PlatformException {
+		setState(getState(), state, cmd);
+	}
+
+	/**
+	 * Flow to the next state.
+	 * 
+	 * @param oldDockingState
+	 *            the old state.
+	 * @param state
+	 *            the new state.
+	 * @param command
+	 *            the command.
+	 * @throws PipeDisconnectedException
+	 *             if pipe is disconnected.
+	 * @throws TimeoutException
+	 *             if a timeout occurs.
+	 * @throws PlatformException
+	 * @throws CDILNotInitializedException
+	 * @throws BadPipeStateException
+	 */
+	protected void setState(DockingState oldDockingState, DockingState state, IDockCommandFromNewton command) throws PipeDisconnectedException,
+			TimeoutException, BadPipeStateException, CDILNotInitializedException, PlatformException {
 		// Only move the previous state to the next state.
 		int compare = state.compareTo(oldDockingState);
 		if (compare < 0) {
@@ -127,7 +147,7 @@ public class DockingProtocol implements DockCommandListener {
 
 		setState(state);
 
-		String cmdName = (cmd == null) ? null : cmd.getCommand();
+		String cmdName = (command == null) ? null : command.getCommand();
 
 		switch (oldDockingState) {
 		case DISCONNECTED:
@@ -138,32 +158,26 @@ public class DockingProtocol implements DockCommandListener {
 
 		switch (state) {
 		case HANDSHAKE_LR_LISTEN:
-			break;
 		case HANDSHAKE_LR_RECEIVED:
-			break;
 		case HANDSHAKE_LR_SENDING:
-			break;
 		case HANDSHAKE_LR_SENT:
-			setState(DockingState.HANDSHAKE_RTDK_LISTEN);
 			break;
 		case HANDSHAKE_RTDK_LISTEN:
-			if (cmd == null) {
-				throw new BadPipeStateException("expected command");
-			}
-			if (DResult.COMMAND.equals(cmdName)) {
-				handleError((DResult) cmd);
-			} else if (!DRequestToDock.COMMAND.equals(cmdName)) {
-				throw new BadPipeStateException("expected command '" + DRequestToDock.COMMAND + "', and not '" + cmdName + "'");
-			}
-			setState(state, DockingState.HANDSHAKE_RTDK_RECEIVED, cmd);
 			break;
 		case HANDSHAKE_RTDK_RECEIVED:
+			if (command == null) {
+				throw new BadPipeStateException("command required");
+			}
 			if (DResult.COMMAND.equals(cmdName)) {
-				handleError((DResult) cmd);
+				handleError((DResult) command);
 			} else if (!DRequestToDock.COMMAND.equals(cmdName)) {
 				throw new BadPipeStateException("expected command '" + DRequestToDock.COMMAND + "', and not '" + cmdName + "'");
 			}
-			commandReceived(cmd, state);
+
+			DInitiateDocking cmdInitiateDocking = new DInitiateDocking();
+			cmdInitiateDocking.setSession(DInitiateDocking.SESSION_SETTING_UP);
+			setState(state, DockingState.HANDSHAKE_DOCK_SENDING, command);
+			pipe.write(cmdInitiateDocking);
 			break;
 		case HANDSHAKE_DOCK_SENDING:
 			break;
@@ -171,17 +185,26 @@ public class DockingProtocol implements DockCommandListener {
 			setState(state, DockingState.HANDSHAKE_NAME_LISTEN, null);
 			break;
 		case HANDSHAKE_NAME_LISTEN:
-			if (cmd != null) {
-				setState(state, DockingState.HANDSHAKE_NAME_RECEIVED, cmd);
+			if (command != null) {
+				setState(state, DockingState.HANDSHAKE_NAME_RECEIVED, command);
 			}
 			break;
 		case HANDSHAKE_NAME_RECEIVED:
+			if (command == null) {
+				throw new BadPipeStateException("command required");
+			}
 			if (DResult.COMMAND.equals(cmdName)) {
-				handleError((DResult) cmd);
+				handleError((DResult) command);
 			} else if (!DNewtonName.COMMAND.equals(cmdName)) {
 				throw new BadPipeStateException("expected command '" + DNewtonName.COMMAND + "', and not '" + cmdName + "'");
 			}
-			commandReceived(cmd, state);
+
+			this.info = ((DNewtonName) command).getInformation();
+			DDesktopInfo cmdDesktopInfo = new DDesktopInfo();
+			this.challengeDesktop = cmdDesktopInfo.getEncryptedKey();
+			this.challengeDesktopCiphered = crypto.cipher(challengeDesktop);
+			setState(state, DockingState.HANDSHAKE_DINFO_SENDING, command);
+			pipe.write(cmdDesktopInfo);
 			break;
 		case HANDSHAKE_DINFO_SENDING:
 			break;
@@ -189,17 +212,30 @@ public class DockingProtocol implements DockCommandListener {
 			setState(state, DockingState.HANDSHAKE_NINFO_LISTEN, null);
 			break;
 		case HANDSHAKE_NINFO_LISTEN:
-			if (cmd != null) {
-				setState(state, DockingState.HANDSHAKE_NINFO_RECEIVED, cmd);
+			if (command != null) {
+				setState(state, DockingState.HANDSHAKE_NINFO_RECEIVED, command);
 			}
 			break;
 		case HANDSHAKE_NINFO_RECEIVED:
+			if (command == null) {
+				throw new BadPipeStateException("command required");
+			}
 			if (DResult.COMMAND.equals(cmdName)) {
-				handleError((DResult) cmd);
+				handleError((DResult) command);
 			} else if (!DNewtonInfo.COMMAND.equals(cmdName)) {
 				throw new BadPipeStateException("expected command '" + DNewtonInfo.COMMAND + "', and not '" + cmdName + "'");
 			}
-			commandReceived(cmd, state);
+
+			DNewtonInfo cmdNewtonInfo = (DNewtonInfo) command;
+			this.protocolVersion = cmdNewtonInfo.getProtocolVersion();
+			this.challengeNewton = cmdNewtonInfo.getEncryptedKey();
+			this.challengeNewtonCiphered = crypto.cipher(challengeNewton);
+
+			DWhichIcons cmdWhichIcons = new DWhichIcons();
+			cmdWhichIcons.setIcons(DWhichIcons.BACKUP | DWhichIcons.IMPORT | DWhichIcons.INSTALL | DWhichIcons.KEYBOARD | DWhichIcons.RESTORE
+					| DWhichIcons.SYNC);
+			setState(state, DockingState.HANDSHAKE_ICONS_SENDING, command);
+			pipe.write(cmdWhichIcons);
 			break;
 		case HANDSHAKE_ICONS_SENDING:
 			break;
@@ -207,15 +243,31 @@ public class DockingProtocol implements DockCommandListener {
 			setState(state, DockingState.HANDSHAKE_ICONS_RESULT_LISTEN, null);
 			break;
 		case HANDSHAKE_ICONS_RESULT_LISTEN:
-			if (cmd != null) {
-				setState(state, DockingState.HANDSHAKE_ICONS_RESULT_RECEIVED, cmd);
+			if (command != null) {
+				setState(state, DockingState.HANDSHAKE_ICONS_RESULT_RECEIVED, command);
 			}
 			break;
 		case HANDSHAKE_ICONS_RESULT_RECEIVED:
+			if (command == null) {
+				throw new BadPipeStateException("command required");
+			}
 			if (!DResult.COMMAND.equals(cmdName)) {
 				throw new BadPipeStateException("expected command '" + DResult.COMMAND + "', and not '" + cmdName + "'");
 			}
-			commandReceived(cmd, state);
+
+			DResult cmdResult = (DResult) command;
+			if (cmdResult.getErrorCode() == 0) {
+				DSetTimeout cmdSetTimeout = new DSetTimeout();
+				cmdSetTimeout.setTimeout(pipe.getTimeout());
+				setState(state, DockingState.HANDSHAKE_TIMEOUT_SENDING, command);
+				pipe.write(cmdSetTimeout);
+			} else {
+				// Was problem, so try send again with less icons?
+				cmdWhichIcons = new DWhichIcons();
+				cmdWhichIcons.setIcons(DWhichIcons.INSTALL | DWhichIcons.KEYBOARD);
+				setState(state, DockingState.HANDSHAKE_ICONS_SENDING, command);
+				pipe.write(cmdWhichIcons);
+			}
 			break;
 		case HANDSHAKE_TIMEOUT_SENDING:
 			break;
@@ -223,17 +275,37 @@ public class DockingProtocol implements DockCommandListener {
 			setState(state, DockingState.HANDSHAKE_PASS_LISTEN, null);
 			break;
 		case HANDSHAKE_PASS_LISTEN:
-			if (cmd != null) {
-				setState(state, DockingState.HANDSHAKE_PASS_RECEIVED, cmd);
+			if (command != null) {
+				setState(state, DockingState.HANDSHAKE_PASS_RECEIVED, command);
 			}
 			break;
 		case HANDSHAKE_PASS_RECEIVED:
+			if (command == null) {
+				throw new BadPipeStateException("command required");
+			}
 			if (DResult.COMMAND.equals(cmdName)) {
-				handleError((DResult) cmd);
+				handleError((DResult) command);
 			} else if (!DPassword.COMMAND.equals(cmdName)) {
 				throw new BadPipeStateException("expected command '" + DPassword.COMMAND + "', and not '" + cmdName + "'");
 			}
-			commandReceived(cmd, state);
+
+			DPassword cmdPassword = (DPassword) command;
+
+			if (cmdPassword.getEncryptedKey() == challengeDesktopCiphered) {
+				DPassword cmdPasswordReply = new DPassword();
+				cmdPasswordReply.setEncryptedKey(challengeNewtonCiphered);
+				setState(state, DockingState.HANDSHAKE_PASS_SENDING, cmdPassword);
+				pipe.write(cmdPasswordReply);
+			} else {
+				int error = DPassword.ERROR_BAD_PASSWORD;
+				challengePasswordAttempt++;
+				if (challengePasswordAttempt < MAX_PASSWORD_ATTEMPTS) {
+					error = DPassword.ERROR_RETRY_PASSWORD;
+				}
+				DResult cmdError = new DResult();
+				cmdError.setErrorCode(error);
+				pipe.write(cmdError);
+			}
 			break;
 		case HANDSHAKE_PASS_SENDING:
 			break;
@@ -253,9 +325,41 @@ public class DockingProtocol implements DockCommandListener {
 	}
 
 	@Override
-	public void commandReceived(IDockCommandFromNewton cmd) {
+	public void commandReceived(IDockCommandFromNewton command) {
 		try {
-			commandReceived(cmd, state);
+			switch (state) {
+			case HANDSHAKE_RTDK_LISTEN:
+				setState(state, DockingState.HANDSHAKE_RTDK_RECEIVED, command);
+				break;
+			case HANDSHAKE_RTDK_RECEIVED:
+				break;
+			case HANDSHAKE_NAME_LISTEN:
+				setState(state, DockingState.HANDSHAKE_NAME_RECEIVED, command);
+				break;
+			case HANDSHAKE_NAME_RECEIVED:
+				break;
+			case HANDSHAKE_NINFO_LISTEN:
+				setState(state, DockingState.HANDSHAKE_NINFO_RECEIVED, command);
+				break;
+			case HANDSHAKE_NINFO_RECEIVED:
+				break;
+			case HANDSHAKE_ICONS_RESULT_LISTEN:
+				setState(state, DockingState.HANDSHAKE_ICONS_RESULT_RECEIVED, command);
+				break;
+			case HANDSHAKE_ICONS_RESULT_RECEIVED:
+				break;
+			case HANDSHAKE_PASS_LISTEN:
+				setState(state, DockingState.HANDSHAKE_PASS_RECEIVED, command);
+				break;
+			case HANDSHAKE_PASS_RECEIVED:
+				break;
+			case HANDSHAKE_DONE:
+				break;
+			case DISCONNECTED:
+				throw new PipeDisconnectedException();
+			default:
+				throw new BadPipeStateException("bad state " + state);
+			}
 		} catch (BadPipeStateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -303,7 +407,7 @@ public class DockingProtocol implements DockCommandListener {
 			case HANDSHAKE_PASS_SENDING:
 				if (DPassword.COMMAND.equals(cmdName)) {
 					setState(state, DockingState.HANDSHAKE_PASS_SENT, null);
-					// TODO notifyConnected();
+					// TODO pipe.notifyConnected();
 				}
 				break;
 			}
@@ -322,112 +426,6 @@ public class DockingProtocol implements DockCommandListener {
 		} catch (TimeoutException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Command has been received, and now process it.
-	 * 
-	 * @param cmd
-	 *            the command.
-	 * @param state
-	 *            the state.
-	 * @throws PipeDisconnectedException
-	 *             if pipe disconnected.
-	 * @throws TimeoutException
-	 *             if timeout occurs.
-	 * @throws PlatformException
-	 * @throws CDILNotInitializedException
-	 * @throws BadPipeStateException
-	 */
-	public void commandReceived(IDockCommandFromNewton cmd, DockingState state) throws PipeDisconnectedException, TimeoutException, BadPipeStateException,
-			CDILNotInitializedException, PlatformException {
-		if (cmd == null) {
-			throw new IllegalArgumentException("command expected");
-		}
-
-		switch (state) {
-		case HANDSHAKE_RTDK_LISTEN:
-			setState(state, DockingState.HANDSHAKE_RTDK_RECEIVED, cmd);
-			break;
-		case HANDSHAKE_RTDK_RECEIVED:
-			DInitiateDocking cmdInitiateDocking = new DInitiateDocking();
-			cmdInitiateDocking.setSession(DInitiateDocking.SESSION_SETTING_UP);
-			setState(state, DockingState.HANDSHAKE_DOCK_SENDING, cmd);
-			pipe.write(cmdInitiateDocking);
-			break;
-		case HANDSHAKE_NAME_LISTEN:
-			setState(state, DockingState.HANDSHAKE_NAME_RECEIVED, cmd);
-			break;
-		case HANDSHAKE_NAME_RECEIVED:
-			this.info = ((DNewtonName) cmd).getInformation();
-			DDesktopInfo cmdDesktopInfo = new DDesktopInfo();
-			this.challengeDesktop = cmdDesktopInfo.getEncryptedKey();
-			this.challengeDesktopCiphered = crypto.cipher(challengeDesktop);
-			setState(state, DockingState.HANDSHAKE_DINFO_SENDING, cmd);
-			pipe.write(cmdDesktopInfo);
-			break;
-		case HANDSHAKE_NINFO_LISTEN:
-			setState(state, DockingState.HANDSHAKE_NINFO_RECEIVED, cmd);
-			break;
-		case HANDSHAKE_NINFO_RECEIVED:
-			DNewtonInfo cmdNewtonInfo = (DNewtonInfo) cmd;
-			this.protocolVersion = cmdNewtonInfo.getProtocolVersion();
-			this.challengeNewton = cmdNewtonInfo.getEncryptedKey();
-			this.challengeNewtonCiphered = crypto.cipher(challengeNewton);
-
-			DWhichIcons cmdWhichIcons = new DWhichIcons();
-			cmdWhichIcons.setIcons(DWhichIcons.BACKUP | DWhichIcons.IMPORT | DWhichIcons.INSTALL | DWhichIcons.KEYBOARD | DWhichIcons.RESTORE
-					| DWhichIcons.SYNC);
-			setState(state, DockingState.HANDSHAKE_ICONS_SENDING, cmd);
-			pipe.write(cmdWhichIcons);
-			break;
-		case HANDSHAKE_ICONS_RESULT_LISTEN:
-			setState(state, DockingState.HANDSHAKE_ICONS_RESULT_RECEIVED, cmd);
-			break;
-		case HANDSHAKE_ICONS_RESULT_RECEIVED:
-			DResult cmdResult = (DResult) cmd;
-			if (cmdResult.getErrorCode() == 0) {
-				DSetTimeout cmdSetTimeout = new DSetTimeout();
-				cmdSetTimeout.setTimeout(pipe.getTimeout());
-				setState(state, DockingState.HANDSHAKE_TIMEOUT_SENDING, cmd);
-				pipe.write(cmdSetTimeout);
-			} else {
-				// Was problem, so try send again with less icons?
-				cmdWhichIcons = new DWhichIcons();
-				cmdWhichIcons.setIcons(DWhichIcons.INSTALL | DWhichIcons.KEYBOARD);
-				setState(state, DockingState.HANDSHAKE_ICONS_SENDING, cmd);
-				pipe.write(cmdWhichIcons);
-			}
-			break;
-		case HANDSHAKE_PASS_LISTEN:
-			setState(state, DockingState.HANDSHAKE_PASS_RECEIVED, cmd);
-			break;
-		case HANDSHAKE_PASS_RECEIVED:
-			DPassword cmdPassword = (DPassword) cmd;
-
-			if (cmdPassword.getEncryptedKey() == challengeDesktopCiphered) {
-				DPassword cmdPasswordReply = new DPassword();
-				cmdPasswordReply.setEncryptedKey(challengeNewtonCiphered);
-				setState(state, DockingState.HANDSHAKE_PASS_SENDING, cmdPassword);
-				pipe.write(cmdPasswordReply);
-			} else {
-				int error = DPassword.ERROR_BAD_PASSWORD;
-				challengePasswordAttempt++;
-				if (challengePasswordAttempt < MAX_PASSWORD_ATTEMPTS) {
-					error = DPassword.ERROR_RETRY_PASSWORD;
-				}
-				DResult cmdError = new DResult();
-				cmdError.setErrorCode(error);
-				pipe.write(cmdError);
-			}
-			break;
-		case HANDSHAKE_DONE:
-			break;
-		case DISCONNECTED:
-			throw new PipeDisconnectedException();
-		default:
-			throw new BadPipeStateException("bad state " + state);
 		}
 	}
 

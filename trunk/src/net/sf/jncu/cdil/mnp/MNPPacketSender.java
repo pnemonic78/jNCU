@@ -25,8 +25,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeoutException;
 
 import net.sf.jncu.cdil.BadPipeStateException;
-import net.sf.jncu.cdil.CDState;
-import net.sf.jncu.cdil.mnp.MNPPipe.MNPState;
 
 /**
  * Send queued MNP packets.
@@ -90,7 +88,6 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 		int retry;
 		boolean resend = true;
 		int sequenceToAcknowledge;
-		CDState stateCD;
 
 		while (running) {
 			try {
@@ -131,10 +128,8 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 						ioe.printStackTrace();
 					}
 
-					stateCD = pipe.getLayer().getState();
 					resend &= running;
-					resend &= (pipe.getMNPState() != MNPState.MNP_DISCONNECTED);
-					resend &= (stateCD == CDState.CONNECT_PENDING) || (stateCD == CDState.CONNECTED) || (stateCD == CDState.LISTENING);
+					resend &= pipe.canSend();
 					if (resend) {
 						retry--;
 						if (retry < 0) {
