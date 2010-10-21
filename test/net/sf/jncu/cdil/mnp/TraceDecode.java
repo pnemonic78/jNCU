@@ -108,6 +108,7 @@ public class TraceDecode {
 				}
 			}
 
+			Thread.yield();
 			b = reader.read();
 		}
 	}

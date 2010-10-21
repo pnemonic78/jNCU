@@ -70,7 +70,7 @@ public class MNPPacketFactory {
 		case MNPPacket.LR:
 			return createLR();
 		case MNPPacket.LT:
-			return createLT();
+			return createLTSend();
 		}
 		throw new IllegalArgumentException("invalid type " + type);
 	}
@@ -86,7 +86,13 @@ public class MNPPacketFactory {
 		if ((payload == null) || (payload.length < 2)) {
 			return null;
 		}
-		MNPPacket packet = createLinkPacket(payload[1]);
+		byte type = payload[1];
+		MNPPacket packet = null;
+		if (type == MNPPacket.LT) {
+			packet = createLT();
+		} else {
+			packet = createLinkPacket(type);
+		}
 		packet.deserialize(payload);
 		return packet;
 	}
@@ -131,7 +137,16 @@ public class MNPPacketFactory {
 	 * @return the packet.
 	 */
 	protected MNPLinkTransferPacket createLT() {
-		MNPLinkTransferPacket packet = new MNPLinkTransferPacket();
+		return new MNPLinkTransferPacket();
+	}
+
+	/**
+	 * Create a Link Transfer packet for sending.
+	 * 
+	 * @return the packet.
+	 */
+	protected MNPLinkTransferPacket createLTSend() {
+		MNPLinkTransferPacket packet = createLT();
 		packet.setSequence(++sequence);
 		return packet;
 	}
