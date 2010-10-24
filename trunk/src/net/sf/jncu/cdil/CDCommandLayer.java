@@ -48,6 +48,7 @@ public abstract class CDCommandLayer extends Thread {
 	 */
 	public CDCommandLayer() {
 		super();
+		setName("CommandLayer-" + getId());
 	}
 
 	/**

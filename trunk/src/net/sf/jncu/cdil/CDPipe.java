@@ -58,6 +58,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 */
 	public CDPipe(CDLayer layer) throws ServiceNotSupportedException {
 		super();
+		setName("Pipe-" + getId());
 		if (layer == null) {
 			throw new ServiceNotSupportedException();
 		}
