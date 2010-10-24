@@ -407,7 +407,7 @@ public class DockingProtocol implements DockCommandListener {
 			case HANDSHAKE_PASS_SENDING:
 				if (DPassword.COMMAND.equals(cmdName)) {
 					setState(state, DockingState.HANDSHAKE_PASS_SENT, null);
-					// TODO pipe.notifyConnected();
+					pipe.notifyConnected();
 				}
 				break;
 			}

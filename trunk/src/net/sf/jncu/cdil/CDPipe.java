@@ -458,12 +458,11 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 * @throws BadPipeStateException
 	 *             if pipe is in an incorrect state.
 	 */
-	protected void notifyConnected() throws BadPipeStateException {
+	public void notifyConnected() throws BadPipeStateException {
 		if (getCDState() != CDState.LISTENING) {
 			throw new BadPipeStateException();
 		}
 		layer.setState(CDState.CONNECT_PENDING);
-		// this.docking = null;
 		restartTimeout();
 	}
 
