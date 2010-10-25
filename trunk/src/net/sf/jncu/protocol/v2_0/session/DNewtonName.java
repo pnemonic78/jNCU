@@ -111,13 +111,18 @@ public class DNewtonName extends net.sf.jncu.protocol.v1_0.session.DNewtonName {
 		}
 		setInformation(info);
 
-		int nameLength = data.available();
+		int nameLength = getLength();
+		// 4 bytes for version info length.
+		nameLength -= LENGTH_WORD;
+		// already read the version info.
+		nameLength -= versionInfoLength;
+		// double-null-terminated string.
+		nameLength += 2;
 		byte[] nameBytes = new byte[nameLength];
 		data.read(nameBytes);
 		try {
-			while ((nameLength > 0) && (nameBytes[nameLength - 1] == 0)) {
-				nameLength -= 2;
-			}
+			// double-null-terminated string.
+			nameLength -= 4;
 			setName(new String(nameBytes, 0, nameLength, "UTF-16"));
 		} catch (UnsupportedEncodingException uee) {
 			uee.printStackTrace();

@@ -26,10 +26,11 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandListener;
+import net.sf.jncu.protocol.IDockCommand;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 
 /**
  * CDIL command layer.
@@ -148,14 +149,18 @@ public abstract class CDCommandLayer extends Thread {
 		running = true;
 
 		InputStream in;
-		IDockCommandFromNewton cmd;
+		IDockCommand cmd;
 
 		try {
 			do {
 				in = getInput();
-				cmd = DockCommandFromNewton.deserializeCommand(in);
+				cmd = DockCommandFactory.getInstance().deserializeCommand(in);
 				if (cmd != null) {
-					fireCommandReceived(cmd);
+					if (cmd instanceof IDockCommandFromNewton) {
+						fireCommandReceived((IDockCommandFromNewton) cmd);
+					} else if (cmd instanceof IDockCommandToNewton) {
+						fireCommandSent((IDockCommandToNewton) cmd);
+					}
 				}
 			} while (running && (cmd != null));
 		} catch (EOFException eofe) {

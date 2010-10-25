@@ -22,6 +22,7 @@ package net.sf.jncu.protocol.v2_0.session;
 import java.io.IOException;
 import java.io.InputStream;
 
+import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 
@@ -49,6 +50,7 @@ public class DOperationCanceled extends DockCommandToNewtonBlank implements IDoc
 	@Override
 	public void decode(InputStream data) throws IOException {
 		// nothing to decode.
+		setLength(DockCommandFromNewton.ntohl(data));
 	}
 
 }

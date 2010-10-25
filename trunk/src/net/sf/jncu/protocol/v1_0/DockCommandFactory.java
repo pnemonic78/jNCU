@@ -19,13 +19,17 @@
  */
 package net.sf.jncu.protocol.v1_0;
 
+import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.sf.jncu.protocol.DockCommand;
+import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommand;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
@@ -74,7 +78,6 @@ import net.sf.jncu.protocol.v1_0.sync.DCurrentTime;
 import net.sf.jncu.protocol.v1_0.sync.DGetChangedIDs;
 import net.sf.jncu.protocol.v1_0.sync.DLastSyncTime;
 import net.sf.jncu.protocol.v1_0.sync.DReturnChangedEntry;
-import net.sf.jncu.protocol.v2_0.session.DDesktopInfo;
 
 /**
  * Docking command factory.
@@ -85,6 +88,12 @@ public class DockCommandFactory {
 
 	private static DockCommandFactory instance;
 	private static final Map<String, Class<? extends IDockCommand>> registry = new HashMap<String, Class<? extends IDockCommand>>();
+
+	/**
+	 * Minimum length for command header.<br>
+	 * <tt>minimum length := length(prefix) + length(command name) + length(command data)</tt>
+	 */
+	public static final int MIN_COMMAND_HEADER_LENGTH = DockCommand.COMMAND_PREFIX_LENGTH + DockCommand.COMMAND_NAME_LENGTH + DockCommand.LENGTH_WORD;
 
 	/**
 	 * Creates a new command factory.
@@ -167,7 +176,6 @@ public class DockCommandFactory {
 		registry.put(DDeleteEntries.COMMAND, DDeleteEntries.class);
 		registry.put(DDeletePkgDir.COMMAND, DDeletePkgDir.class);
 		registry.put(DDeleteSoup.COMMAND, DDeleteSoup.class);
-		registry.put(DDesktopInfo.COMMAND, DDesktopInfo.class);
 		registry.put(DEmptySoup.COMMAND, DEmptySoup.class);
 		registry.put(DGetChangedIDs.COMMAND, DGetChangedIDs.class);
 		registry.put(DGetIndexDescription.COMMAND, DGetIndexDescription.class);
@@ -265,5 +273,105 @@ public class DockCommandFactory {
 			throw new EOFException();
 		}
 		return create(cmdName);
+	}
+
+	/**
+	 * Decode the data.
+	 * 
+	 * @param data
+	 *            the data.
+	 * @return the list of commands.
+	 */
+	public List<IDockCommand> deserialize(byte[] data) {
+		if ((data == null) || (data.length < MIN_COMMAND_HEADER_LENGTH)) {
+			return new ArrayList<IDockCommand>();
+		}
+		ByteArrayInputStream in = new ByteArrayInputStream(data);
+		try {
+			return deserialize(in);
+		} catch (IOException ioe) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+	}
+
+	/**
+	 * Decode the data.
+	 * 
+	 * @param data
+	 *            the data stream.
+	 * @return the list of commands.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	public List<IDockCommand> deserialize(InputStream data) throws IOException {
+		List<IDockCommand> cmds = new ArrayList<IDockCommand>();
+		if (data == null) {
+			return cmds;
+		}
+		IDockCommand cmd = null;
+		try {
+			do {
+				cmd = deserializeCommand(data);
+				if (cmd != null) {
+					cmds.add(cmd);
+				}
+			} while (cmd != null);
+		} catch (EOFException eofe) {
+			// no more commands.
+		}
+		return cmds;
+	}
+
+	/**
+	 * Decode the data.
+	 * 
+	 * @param data
+	 *            the data.
+	 * @return the command - {@code null} otherwise.
+	 */
+	public IDockCommand deserializeCommand(byte[] data) {
+		InputStream in = new ByteArrayInputStream(data);
+		try {
+			return deserializeCommand(in);
+		} catch (IOException ioe) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+	}
+
+	/**
+	 * Decode the data.
+	 * 
+	 * @param data
+	 *            the data stream.
+	 * @return the command - {@code null} otherwise.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	public IDockCommand deserializeCommand(InputStream data) throws IOException {
+		if (!DockCommand.isCommand(data)) {
+			return null;
+		}
+		IDockCommand cmd = create(data);
+		if (cmd != null) {
+			if (cmd instanceof IDockCommandFromNewton) {
+				((IDockCommandFromNewton) cmd).decode(data);
+			} else if (cmd instanceof IDockCommandToNewton) {
+				int length = DockCommandFromNewton.ntohl(data);
+				if (length == 0) {
+					length = DockCommand.LENGTH_WORD;
+				}
+				switch (length & 3) {
+				case 1:
+					length++;
+				case 2:
+					length++;
+				case 3:
+					length++;
+					break;
+				}
+				data.skip(length);
+			}
+		}
+		return cmd;
 	}
 }

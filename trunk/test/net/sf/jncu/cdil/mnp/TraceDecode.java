@@ -9,11 +9,9 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.Reader;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
-import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 
 /**
  * Decode trace dumps.
@@ -128,18 +126,14 @@ public class TraceDecode {
 			this.in = in;
 			this.packetLayer = new MNPPacketLayer();
 			packetLayer.addPacketListener(this);
-			if (direction == DIRECTION_1TO2) {
-				this.cmdLayer = new MNPCommandLayer(packetLayer);
-			} else {
-				this.cmdLayer = new MNPCommandLayer2To1(packetLayer);
-			}
+			this.cmdLayer = new MNPCommandLayer(packetLayer);
 			cmdLayer.addCommandListener(this);
+			cmdLayer.start();
 		}
 
 		@Override
 		public void run() {
 			running = true;
-			cmdLayer.start();
 			MNPPacket packet;
 			try {
 				do {
@@ -149,7 +143,15 @@ public class TraceDecode {
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
 			}
+
+			try {
+				// Enough time for commands to be received.
+				Thread.sleep(2000);
+			} catch (InterruptedException ie) {
+				ie.printStackTrace();
+			}
 			cancel();
+			System.out.println("End run " + getName());
 		}
 
 		@Override
@@ -213,7 +215,7 @@ public class TraceDecode {
 			// e.printStackTrace();
 			// }
 			cmdLayer.close();
-			// packetLayer.close();
+			packetLayer.close();
 		}
 
 		private String dataToString(byte[] data) {
@@ -241,44 +243,4 @@ public class TraceDecode {
 
 	}
 
-	private class MNPCommandLayer2To1 extends MNPCommandLayer {
-
-		private final DockCommandFactory factory;
-
-		public MNPCommandLayer2To1(MNPPacketLayer packetLayer) {
-			super(packetLayer);
-			this.factory = DockCommandFactory.getInstance();
-		}
-
-		@Override
-		public void run() {
-			running = true;
-
-			InputStream in;
-			IDockCommandToNewton cmd;
-			int length;
-
-			try {
-				do {
-					in = getInput();
-					cmd = null;
-					if (DockCommandFromNewton.isCommand(in)) {
-						cmd = (IDockCommandToNewton) factory.create(in);
-						if (cmd != null) {
-							length = DockCommandFromNewton.ntohl(in);
-							if (length == 0x10000) {
-								length = in.read();
-							}
-							// Skip the command data.
-							in.skip(length);
-							fireCommandSent(cmd);
-						}
-					}
-				} while (running && (cmd != null));
-			} catch (EOFException eofe) {
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			}
-		}
-	}
 }

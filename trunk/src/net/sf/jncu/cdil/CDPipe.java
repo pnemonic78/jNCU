@@ -546,4 +546,24 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 		}
 		return cmdLayer;
 	}
+
+	/**
+	 * Add a command listener.
+	 * 
+	 * @param listener
+	 *            the listener to add.
+	 */
+	public void addCommandListener(DockCommandListener listener) {
+		getCommandLayer().addCommandListener(listener);
+	}
+
+	/**
+	 * Remove a command listener.
+	 * 
+	 * @param listener
+	 *            the listener to remove.
+	 */
+	public void removeCommandListener(DockCommandListener listener) {
+		getCommandLayer().removeCommandListener(listener);
+	}
 }
