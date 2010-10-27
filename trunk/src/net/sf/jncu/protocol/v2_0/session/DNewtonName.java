@@ -21,7 +21,6 @@ package net.sf.jncu.protocol.v2_0.session;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 
 import net.sf.jncu.protocol.NewtonInfo;
 
@@ -73,23 +72,8 @@ public class DNewtonName extends net.sf.jncu.protocol.v1_0.session.DNewtonName {
 	}
 
 	@Override
-	protected void decodeData(InputStream data) throws IOException {
-		int versionInfoLength = ntohl(data);
-		NewtonInfo info = new NewtonInfo();
-		info.setNewtonId(ntohl(data)); // #1
-		info.setManufacturerId(ntohl(data)); // #2
-		info.setMachineType(ntohl(data)); // #3
-		info.setRomVersion(ntohl(data)); // #4
-		info.setRomStage(ntohl(data)); // #5
-		info.setRamSize(ntohl(data)); // #6
-		info.setScreenHeight(ntohl(data)); // #7
-		info.setScreenWidth(ntohl(data)); // #8
-		info.setPatchVersion(ntohl(data)); // #9
-		info.setObjectSystemVersion(ntohl(data)); // #10
-		info.setInternalStoreSignature(ntohl(data)); // #11
-		info.setScreenResolutionVertical(ntohl(data)); // #12
-		info.setScreenResolutionHorizontal(ntohl(data)); // #13
-		info.setScreenDepth(ntohl(data)); // #14
+	protected NewtonInfo decodeInfo(InputStream data) throws IOException {
+		NewtonInfo info = super.decodeInfo(data);
 
 		final int versionSize = 14 * LENGTH_WORD;
 		if (versionInfoLength > versionSize) {
@@ -109,23 +93,7 @@ public class DNewtonName extends net.sf.jncu.protocol.v1_0.session.DNewtonName {
 				info.setTargetProtocol(ntohl(data));
 			}
 		}
-		setInformation(info);
 
-		int nameLength = getLength();
-		// 4 bytes for version info length.
-		nameLength -= LENGTH_WORD;
-		// already read the version info.
-		nameLength -= versionInfoLength;
-		// double-null-terminated string.
-		nameLength += 2;
-		byte[] nameBytes = new byte[nameLength];
-		data.read(nameBytes);
-		try {
-			// double-null-terminated string.
-			nameLength -= 4;
-			setName(new String(nameBytes, 0, nameLength, "UTF-16"));
-		} catch (UnsupportedEncodingException uee) {
-			uee.printStackTrace();
-		}
+		return info;
 	}
 }

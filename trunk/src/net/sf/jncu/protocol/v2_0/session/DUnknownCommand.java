@@ -50,7 +50,7 @@ public class DUnknownCommand extends DockCommandToNewton implements IDockCommand
 	private String badCommand;
 
 	/**
-	 *Creates a new command.
+	 * Creates a new command.
 	 */
 	public DUnknownCommand() {
 		super(COMMAND);
@@ -102,4 +102,8 @@ public class DUnknownCommand extends DockCommandToNewton implements IDockCommand
 		cmd.decode(data);
 	}
 
+	@Override
+	public String toString() {
+		return "Unknown command: '" + getBadCommand() + "'";
+	}
 }
