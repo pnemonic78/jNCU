@@ -60,7 +60,12 @@ public class DKeyboardChar extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		htonl(((getCharacter() & 0xFFFF) << 16) | (getState() & 0xFFFF), data);
+		int c = getCharacter() & 0xFFFF;
+		int state = getState() & 0xFFFF;
+		data.write((c >> 8) & 0xFF);
+		data.write((c >> 0) & 0xFF);
+		data.write((state >> 8) & 0xFF);
+		data.write((state >> 0) & 0xFF);
 	}
 
 	/**

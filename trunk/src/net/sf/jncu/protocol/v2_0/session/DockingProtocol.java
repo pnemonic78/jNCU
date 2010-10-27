@@ -195,6 +195,9 @@ public class DockingProtocol implements DockCommandListener {
 			}
 			if (DResult.COMMAND.equals(cmdName)) {
 				handleError((DResult) command);
+			} else if (DRequestToDock.COMMAND.equals(cmdName)) {
+				// Ignore duplicates.
+				break;
 			} else if (!DNewtonName.COMMAND.equals(cmdName)) {
 				throw new BadPipeStateException("expected command '" + DNewtonName.COMMAND + "', and not '" + cmdName + "'");
 			}
@@ -222,6 +225,9 @@ public class DockingProtocol implements DockCommandListener {
 			}
 			if (DResult.COMMAND.equals(cmdName)) {
 				handleError((DResult) command);
+			} else if (DNewtonName.COMMAND.equals(cmdName)) {
+				// Ignore duplicates.
+				break;
 			} else if (!DNewtonInfo.COMMAND.equals(cmdName)) {
 				throw new BadPipeStateException("expected command '" + DNewtonInfo.COMMAND + "', and not '" + cmdName + "'");
 			}
@@ -250,6 +256,10 @@ public class DockingProtocol implements DockCommandListener {
 		case HANDSHAKE_ICONS_RESULT_RECEIVED:
 			if (command == null) {
 				throw new BadPipeStateException("command required");
+			}
+			if (DNewtonInfo.COMMAND.equals(cmdName)) {
+				// Ignore duplicates.
+				break;
 			}
 			if (!DResult.COMMAND.equals(cmdName)) {
 				throw new BadPipeStateException("expected command '" + DResult.COMMAND + "', and not '" + cmdName + "'");

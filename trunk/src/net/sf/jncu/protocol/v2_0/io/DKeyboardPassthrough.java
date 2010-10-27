@@ -29,7 +29,7 @@ import net.sf.jncu.protocol.IDockCommandFromNewton;
 /**
  * This command is sent to enter keyboard pass-through mode. It can be followed
  * by <tt>kDKeyboardChar</tt>, <tt>kDKeyboardString</tt>, <tt>kDHello</tt> and
- * <tt>kDOperationComplete</tt> commands.
+ * <tt>kDOperationDone</tt> commands.
  * 
  * <pre>
  * 'kybd'
