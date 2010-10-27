@@ -47,6 +47,7 @@ public class DNewtonName extends DockCommandFromNewton {
 
 	private String name;
 	private NewtonInfo info;
+	protected int versionInfoLength;
 
 	/**
 	 * Creates a new command.
@@ -57,7 +58,20 @@ public class DNewtonName extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		int versionInfoLength = ntohl(data);
+		setInformation(decodeInfo(data));
+		setName(decodeName(data));
+	}
+
+	/**
+	 * Decode the version information.
+	 * 
+	 * @param data
+	 *            the data.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected NewtonInfo decodeInfo(InputStream data) throws IOException {
+		versionInfoLength = ntohl(data);
 		NewtonInfo info = new NewtonInfo();
 		info.setNewtonId(ntohl(data)); // #1
 		info.setManufacturerId(ntohl(data)); // #2
@@ -74,42 +88,34 @@ public class DNewtonName extends DockCommandFromNewton {
 		info.setScreenResolutionHorizontal(ntohl(data)); // #13
 		info.setScreenDepth(ntohl(data)); // #14
 
-		final int versionSize = 14 * LENGTH_WORD;
-		if (versionInfoLength > versionSize) {
-			/**
-			 * A bit field. The following two bits are defined:<br>
-			 * 1 = has serial number <br>
-			 * 2 = has target protocol
-			 */
-			int systemFlags = ntohl(data);
+		return info;
+	}
 
-			if ((systemFlags & 0x1) == 0x1) {
-				long serHi = ntohl(data) & 0xFFFFFFFFL;
-				long serLo = ntohl(data) & 0xFFFFFFFFL;
-				info.setSerialNumber((serHi << 32) | serLo);
-			}
-			if ((systemFlags & 0x2) == 0x2) {
-				info.setTargetProtocol(ntohl(data));
-			}
-		}
-		setInformation(info);
-
+	/**
+	 * Decode the owner name.
+	 * 
+	 * @param data
+	 *            the data.
+	 * @param versionInfoLength
+	 *            the version information size.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected String decodeName(InputStream data) throws IOException {
 		int nameLength = getLength();
 		// 4 bytes for version info length.
 		nameLength -= LENGTH_WORD;
 		// already read the version info.
 		nameLength -= versionInfoLength;
-		// double-null-terminated string.
-		nameLength += 2;
 		byte[] nameBytes = new byte[nameLength];
 		data.read(nameBytes);
 		try {
-			// double-null-terminated string.
-			nameLength -= 4;
-			setName(new String(nameBytes, 0, nameLength, "UTF-16"));
+			// remove 2 bytes for null-terminated string.
+			return new String(nameBytes, 0, nameLength - 2, "UTF-16");
 		} catch (UnsupportedEncodingException uee) {
 			uee.printStackTrace();
 		}
+		return null;
 	}
 
 	/**

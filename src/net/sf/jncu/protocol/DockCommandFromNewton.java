@@ -70,6 +70,16 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 		 */
 		if (length > 0) {
 			decodeData(data);
+			// Commands are 4-byte aligned.
+			switch (length & 3) {
+			case 1:
+				data.skip(1);
+			case 2:
+				data.skip(1);
+			case 3:
+				data.skip(1);
+				break;
+			}
 		}
 	}
 
