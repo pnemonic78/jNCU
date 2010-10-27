@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v1_0.session;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -58,7 +59,12 @@ public class DNewtonName extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		setInformation(decodeInfo(data));
+		versionInfoLength = ntohl(data);
+		// Clone the information buffer in case not all fields are read and we
+		// still need to reach the name.
+		byte[] infoBuf = new byte[versionInfoLength];
+		data.read(infoBuf);
+		setInformation(decodeInfo(new ByteArrayInputStream(infoBuf)));
 		setName(decodeName(data));
 	}
 
@@ -71,7 +77,6 @@ public class DNewtonName extends DockCommandFromNewton {
 	 *             if an I/O error occurs.
 	 */
 	protected NewtonInfo decodeInfo(InputStream data) throws IOException {
-		versionInfoLength = ntohl(data);
 		NewtonInfo info = new NewtonInfo();
 		info.setNewtonId(ntohl(data)); // #1
 		info.setManufacturerId(ntohl(data)); // #2
