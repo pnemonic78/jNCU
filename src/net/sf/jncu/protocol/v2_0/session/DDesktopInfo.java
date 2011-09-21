@@ -127,7 +127,10 @@ public class DDesktopInfo extends DockCommandToNewton {
 	public DDesktopInfo() {
 		super(COMMAND);
 		setSessionType(DInitiateDocking.SESSION_SETTING_UP);
-		setDesktopType(System.getProperty("os.name").startsWith("Windows") ? WINDOWS : MACINTOSH);
+		// Windows type doesn't support many commands.
+		// setDesktopType(System.getProperty("os.name").startsWith("Windows") ?
+		// WINDOWS : MACINTOSH);
+		setDesktopType(MACINTOSH);
 		setSelectiveSync(true);
 		setEncryptedKey(rand.nextLong());
 		setDesktopApps(null);
