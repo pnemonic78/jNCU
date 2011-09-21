@@ -62,7 +62,13 @@ import java.util.TooManyListenersException;
  * <code>-Djava.library.path=<em>${user.dir}</em>/lib;<em>${user.dir}</em>/lib/Solaris/sparc32</code>
  * <li>for Solaris SPARC 64:
  * <code>-Djava.library.path=<em>${user.dir}</em>/lib;<em>${user.dir}</em>/lib/Solaris/sparc64</code>
- * <li>for Windows: <code>-Djava.library.path="<em>${user.dir}</em>\lib";"<em>${user.dir}</em>\lib\Windows\x86"</code> <//ul>
+ * <li>for Windows x86:
+ * <code>-Djava.library.path="<em>${user.dir}</em>\lib";"<em>${user.dir}</em>\lib\Windows\x86"</code>
+ * <li>for Windows ia64:
+ * <code>-Djava.library.path="<em>${user.dir}</em>\lib";"<em>${user.dir}</em>\lib\Windows\ia64"</code>
+ * <li>for Windows x86_64:
+ * <code>-Djava.library.path="<em>${user.dir}</em>\lib";"<em>${user.dir}</em>\lib\Windows\x86_64"</code>
+ * </ul>
  * 
  * @author moshew
  */
@@ -93,7 +99,7 @@ public class CommTrace implements SerialPortEventListener {
 	 */
 	public static void main(String[] args) {
 		if ((args == null) || (args.length < 2)) {
-			System.out.println("args: port1 port2 baud [file]");
+			System.out.println("args: port1 port2 [baud [file]]");
 			System.exit(1);
 			return;
 		}

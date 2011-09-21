@@ -66,4 +66,14 @@ public class CommPorts {
 		return portIdentifiers;
 	}
 
+	public static void main(String[] args) {
+		CommPorts ports = new CommPorts();
+		try {
+			for (CommPortIdentifier id : ports.getPortIdentifiers(CommPortIdentifier.PORT_SERIAL)) {
+				System.out.println(id.getName());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
