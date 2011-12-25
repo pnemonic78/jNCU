@@ -50,8 +50,7 @@ public class NSOFImmediate extends NSOFObject {
 	 * Constructs a new immediate.
 	 */
 	public NSOFImmediate() {
-		super();
-		setNSClass(NS_CLASS);
+		this(0);
 	}
 
 	/**
@@ -61,7 +60,8 @@ public class NSOFImmediate extends NSOFObject {
 	 *            the value.
 	 */
 	public NSOFImmediate(int value) {
-		this();
+		super();
+		setNSClass(NS_CLASS);
 		setValue(value);
 	}
 

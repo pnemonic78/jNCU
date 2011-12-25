@@ -40,13 +40,24 @@ public class NSOFEncoder {
 	/** {@code 0} is a legal ID. */
 	private int idMax = 0;
 	/** Written version header? */
-	private boolean versioned = false;
+	private boolean versioned;
 
 	/**
 	 * Creates a new encoder.
 	 */
 	public NSOFEncoder() {
+		this(false);
+	}
+
+	/**
+	 * Creates a new encoder.
+	 * 
+	 * @param versioned
+	 *            append version?
+	 */
+	public NSOFEncoder(boolean versioned) {
 		super();
+		this.versioned = versioned;
 	}
 
 	/**

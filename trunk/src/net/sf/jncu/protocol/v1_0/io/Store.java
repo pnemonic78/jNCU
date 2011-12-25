@@ -60,8 +60,8 @@ public class Store {
 
 	protected static final NSOFSymbol SLOT_NAME = new NSOFSymbol("name");
 	protected static final NSOFSymbol SLOT_SIGNATURE = new NSOFSymbol("signature");
-	protected static final NSOFSymbol SLOT_TOTALSIZE = new NSOFSymbol("totalsize");
-	protected static final NSOFSymbol SLOT_USEDSIZE = new NSOFSymbol("usedsize");
+	protected static final NSOFSymbol SLOT_TOTALSIZE = new NSOFSymbol("TotalSize");
+	protected static final NSOFSymbol SLOT_USEDSIZE = new NSOFSymbol("UsedSize");
 	protected static final NSOFSymbol SLOT_KIND = new NSOFSymbol("kind");
 	protected static final NSOFSymbol SLOT_INFO = new NSOFSymbol("info");
 	protected static final NSOFSymbol SLOT_READONLY = new NSOFSymbol("readOnly");
@@ -136,16 +136,28 @@ public class Store {
 	 */
 	public void decode(NSOFFrame frame) {
 		NSOFObject value;
+		NSOFFrame info;
+		boolean hasDefaultStore = false;
 
 		value = frame.get(SLOT_DEFAULT);
 		setDefaultStore(false);
 		if (value != null) {
 			NSOFImmediate imm = (NSOFImmediate) value;
 			setDefaultStore(imm.isTrue());
+			hasDefaultStore = true;
 		}
 
-		value = frame.get(SLOT_INFO);
-		setInfo((NSOFFrame) value);
+		info = (NSOFFrame) frame.get(SLOT_INFO);
+		setInfo(info);
+		if (info != null) {
+			if (!hasDefaultStore) {
+				value = info.get(SLOT_DEFAULT);
+				if (value != null) {
+					NSOFImmediate imm = (NSOFImmediate) value;
+					setDefaultStore(imm.isTrue());
+				}
+			}
+		}
 
 		value = frame.get(SLOT_KIND);
 		setKind(null);
