@@ -42,7 +42,7 @@ public class DGetChangedInfo extends DockCommandToNewtonBlank {
 	/**
 	 * Creates a new command.
 	 */
-	public DGetChangedInfo(String cmd) {
+	public DGetChangedInfo() {
 		super(COMMAND);
 	}
 

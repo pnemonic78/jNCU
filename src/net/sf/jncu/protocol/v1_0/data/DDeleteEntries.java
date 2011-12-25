@@ -48,7 +48,7 @@ public class DDeleteEntries extends DockCommandToNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DDeleteEntries(String cmd) {
+	public DDeleteEntries() {
 		super(COMMAND);
 	}
 

@@ -39,7 +39,7 @@ public class DDeletePkgDir extends DockCommandToNewtonBlank {
 	/**
 	 * Creates a new command.
 	 */
-	public DDeletePkgDir(String cmd) {
+	public DDeletePkgDir() {
 		super(COMMAND);
 	}
 

@@ -43,7 +43,7 @@ public class DBackupSoupDone extends DockCommandFromNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DBackupSoupDone(String cmd) {
+	public DBackupSoupDone() {
 		super(COMMAND);
 	}
 

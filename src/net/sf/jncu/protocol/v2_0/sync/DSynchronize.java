@@ -40,7 +40,7 @@ public class DSynchronize extends DockCommandFromNewtonBlank {
 	/**
 	 * Creates a new command.
 	 */
-	public DSynchronize(String cmd) {
+	public DSynchronize() {
 		super(COMMAND);
 	}
 

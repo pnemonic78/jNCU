@@ -53,7 +53,7 @@ public class DSetCurrentStore extends DockCommandToNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DSetCurrentStore(String cmd) {
+	public DSetCurrentStore() {
 		super(COMMAND);
 	}
 

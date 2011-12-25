@@ -46,7 +46,7 @@ public class DDeleteSoup extends DockCommandToNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DDeleteSoup(String cmd) {
+	public DDeleteSoup() {
 		super(COMMAND);
 	}
 

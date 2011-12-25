@@ -39,7 +39,7 @@ public class DGetPatches extends DockCommandToNewtonBlank {
 	/**
 	 * Creates a new command.
 	 */
-	public DGetPatches(String cmd) {
+	public DGetPatches() {
 		super(COMMAND);
 	}
 

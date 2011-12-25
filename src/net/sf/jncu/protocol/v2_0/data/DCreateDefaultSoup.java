@@ -48,7 +48,7 @@ public class DCreateDefaultSoup extends DockCommandToNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DCreateDefaultSoup(String cmd) {
+	public DCreateDefaultSoup() {
 		super(COMMAND);
 	}
 

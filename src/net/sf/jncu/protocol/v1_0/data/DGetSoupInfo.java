@@ -39,7 +39,7 @@ public class DGetSoupInfo extends DockCommandToNewtonBlank {
 	/**
 	 * Creates a new command.
 	 */
-	public DGetSoupInfo(String cmd) {
+	public DGetSoupInfo() {
 		super(COMMAND);
 	}
 

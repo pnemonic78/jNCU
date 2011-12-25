@@ -49,7 +49,7 @@ public class DSetCurrentSoup extends DockCommandToNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DSetCurrentSoup(String cmd) {
+	public DSetCurrentSoup() {
 		super(COMMAND);
 	}
 

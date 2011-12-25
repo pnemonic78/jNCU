@@ -44,7 +44,7 @@ public class DAddEntryWithUniqueID extends DockCommandToNewtonScript {
 	/**
 	 * Creates a new command.
 	 */
-	public DAddEntryWithUniqueID(String cmd) {
+	public DAddEntryWithUniqueID() {
 		super(COMMAND);
 	}
 

@@ -38,7 +38,7 @@ public class DDeleteAllPackages extends DockCommandToNewtonBlank {
 	/**
 	 * Creates a new command.
 	 */
-	public DDeleteAllPackages(String cmd) {
+	public DDeleteAllPackages() {
 		super(COMMAND);
 	}
 
