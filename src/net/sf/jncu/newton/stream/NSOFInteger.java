@@ -35,8 +35,7 @@ public class NSOFInteger extends NSOFImmediate {
 	 * Creates a new integer.
 	 */
 	public NSOFInteger() {
-		super();
-		setNSClass(NS_CLASS);
+		this(0);
 	}
 
 	/**
@@ -48,6 +47,7 @@ public class NSOFInteger extends NSOFImmediate {
 	public NSOFInteger(int value) {
 		super(value);
 		setNSClass(NS_CLASS);
+		setType(IMMEDIATE_INTEGER);
 	}
 
 	@Override

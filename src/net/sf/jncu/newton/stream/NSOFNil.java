@@ -28,7 +28,7 @@ import java.io.OutputStream;
  * 
  * @author Moshe
  */
-public class NSOFNil extends NSOFObject {
+public class NSOFNil extends NSOFImmediate {
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("NIL");
 
@@ -38,6 +38,7 @@ public class NSOFNil extends NSOFObject {
 	public NSOFNil() {
 		super();
 		setNSClass(NS_CLASS);
+		setType(IMMEDIATE_NIL);
 	}
 
 	/*
@@ -59,9 +60,14 @@ public class NSOFNil extends NSOFObject {
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(NIL);
 	}
-	
+
 	@Override
 	public String toString() {
 		return null;
+	}
+
+	@Override
+	public boolean isNil() {
+		return true;
 	}
 }

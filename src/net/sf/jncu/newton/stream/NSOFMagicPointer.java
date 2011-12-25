@@ -37,11 +37,17 @@ public class NSOFMagicPointer extends NSOFImmediate {
 	public NSOFMagicPointer() {
 		super();
 		setNSClass(NS_CLASS);
+		setType(IMMEDIATE_MAGIC_POINTER);
 	}
 
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(IMMEDIATE);
 		XLong.encode((getValue() << 2) | 0x3, out);
+	}
+
+	@Override
+	public boolean isMagicPointer() {
+		return true;
 	}
 }

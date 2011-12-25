@@ -83,10 +83,9 @@ public class NSOFPlainArray extends NSOFArray {
 			XLong.encode(0, out);
 		} else {
 			// Number of slots (xlong)
-			int length = slots.length;
-			XLong.encode(length, out);
+			XLong.encode(slots.length, out);
 			// Slot values in ascending order (objects)
-			for (int i = 0; i < length; i++) {
+			for (int i = 0; i < slots.length; i++) {
 				encoder.encode(slots[i], out);
 			}
 		}

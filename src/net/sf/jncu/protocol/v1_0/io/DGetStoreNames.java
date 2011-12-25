@@ -39,7 +39,7 @@ public class DGetStoreNames extends DockCommandToNewtonBlank {
 	/**
 	 * Creates a new command.
 	 */
-	public DGetStoreNames(String cmd) {
+	public DGetStoreNames() {
 		super(COMMAND);
 	}
 

@@ -37,6 +37,7 @@ public class NSOFTrue extends NSOFImmediate {
 	public NSOFTrue() {
 		super();
 		setNSClass(NS_CLASS);
+		setType(IMMEDIATE_TRUE);
 		setValue(0x1A);
 	}
 
@@ -45,9 +46,14 @@ public class NSOFTrue extends NSOFImmediate {
 		out.write(IMMEDIATE);
 		XLong.encode(0x1A, out);
 	}
-	
+
 	@Override
 	public String toString() {
 		return Boolean.TRUE.toString();
+	}
+
+	@Override
+	public boolean isTrue() {
+		return true;
 	}
 }
