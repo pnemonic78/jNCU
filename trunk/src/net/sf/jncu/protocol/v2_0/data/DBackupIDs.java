@@ -59,7 +59,7 @@ public class DBackupIDs extends DockCommandFromNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DBackupIDs(String cmd) {
+	public DBackupIDs() {
 		super(COMMAND);
 	}
 

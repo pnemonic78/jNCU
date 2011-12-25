@@ -31,6 +31,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  * </pre>
  * 
  * @author moshew
+ * @see DSoupNames
  */
 public class DGetSoupNames extends DockCommandToNewtonBlank {
 
@@ -40,7 +41,7 @@ public class DGetSoupNames extends DockCommandToNewtonBlank {
 	/**
 	 * Creates a new command.
 	 */
-	public DGetSoupNames(String cmd) {
+	public DGetSoupNames() {
 		super(COMMAND);
 	}
 

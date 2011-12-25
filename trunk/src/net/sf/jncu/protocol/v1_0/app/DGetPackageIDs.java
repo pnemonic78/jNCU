@@ -40,7 +40,7 @@ public class DGetPackageIDs extends DockCommandToNewtonBlank {
 	/**
 	 * Creates a new command.
 	 */
-	public DGetPackageIDs(String cmd) {
+	public DGetPackageIDs() {
 		super(COMMAND);
 	}
 

@@ -39,7 +39,7 @@ public class DLastSyncTime extends DockCommandToNewtonBlank {
 	/**
 	 * Creates a new command.
 	 */
-	public DLastSyncTime(String cmd) {
+	public DLastSyncTime() {
 		super(COMMAND);
 	}
 

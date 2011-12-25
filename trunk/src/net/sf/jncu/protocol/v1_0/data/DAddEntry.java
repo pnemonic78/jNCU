@@ -49,7 +49,7 @@ public class DAddEntry extends DockCommandToNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DAddEntry(String cmd) {
+	public DAddEntry() {
 		super(COMMAND);
 	}
 

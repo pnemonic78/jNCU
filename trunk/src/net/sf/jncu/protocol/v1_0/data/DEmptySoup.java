@@ -46,7 +46,7 @@ public class DEmptySoup extends DockCommandToNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DEmptySoup(String cmd) {
+	public DEmptySoup() {
 		super(COMMAND);
 	}
 

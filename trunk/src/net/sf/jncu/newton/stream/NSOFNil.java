@@ -63,7 +63,7 @@ public class NSOFNil extends NSOFImmediate {
 
 	@Override
 	public String toString() {
-		return null;
+		return "nil";
 	}
 
 	@Override

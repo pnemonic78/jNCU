@@ -39,7 +39,7 @@ public class DGetInheritance extends DockCommandToNewtonBlank {
 	/**
 	 * Creates a new command.
 	 */
-	public DGetInheritance(String cmd) {
+	public DGetInheritance() {
 		super(COMMAND);
 	}
 

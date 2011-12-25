@@ -49,7 +49,7 @@ public class DCreateSoup extends DockCommandToNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DCreateSoup(String cmd) {
+	public DCreateSoup() {
 		super(COMMAND);
 	}
 

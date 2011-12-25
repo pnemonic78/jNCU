@@ -40,6 +40,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * </pre>
  * 
  * @author Moshe
+ * @see DPackageInfo
  */
 public class DGetPackageInfo extends DockCommandToNewton {
 

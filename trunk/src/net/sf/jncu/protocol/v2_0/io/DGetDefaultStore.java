@@ -26,6 +26,8 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  * the info returned by the <tt>kDGetStoreNames</tt> command (see
  * <tt>kDStoreNames</tt> for details). The default store is the one used by
  * LoadPackage.
+ * <p>
+ * Returns a <tt>kDDefaultStore</tt> command.
  * 
  * <pre>
  * 'gdfs'

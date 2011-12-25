@@ -41,7 +41,7 @@ public class DBackupPackages extends DockCommandToNewtonBlank {
 	/**
 	 * Creates a new command.
 	 */
-	public DBackupPackages(String cmd) {
+	public DBackupPackages() {
 		super(COMMAND);
 	}
 

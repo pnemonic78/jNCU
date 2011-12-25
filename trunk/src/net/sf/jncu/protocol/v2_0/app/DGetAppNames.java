@@ -43,6 +43,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * </pre>
  * 
  * @author Moshe
+ * @see DAppNames
  */
 public class DGetAppNames extends DockCommandToNewton {
 

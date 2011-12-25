@@ -40,7 +40,7 @@ public class DGetChangedIDs extends DockCommandToNewtonBlank {
 	/**
 	 * Creates a new command.
 	 */
-	public DGetChangedIDs(String cmd) {
+	public DGetChangedIDs() {
 		super(COMMAND);
 	}
 

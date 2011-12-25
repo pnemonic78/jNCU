@@ -23,6 +23,8 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
  * This command is sent when a list of store names is needed.
+ * <p>
+ * Returns a <tt>kDStoreNames</tt> command.
  * 
  * <pre>
  * 'gsto'
@@ -30,6 +32,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  * </pre>
  * 
  * @author moshew
+ * @see DStoreNames
  */
 public class DGetStoreNames extends DockCommandToNewtonBlank {
 

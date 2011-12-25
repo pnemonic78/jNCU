@@ -46,7 +46,7 @@ public class DReturnChangedEntry extends DockCommandToNewton {
 	/**
 	 * Creates a new command.
 	 */
-	public DReturnChangedEntry(String cmd) {
+	public DReturnChangedEntry() {
 		super(COMMAND);
 	}
 

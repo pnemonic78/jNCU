@@ -40,7 +40,7 @@ public class DGetIndexDescription extends DockCommandToNewtonBlank {
 	/**
 	 * Creates a new command.
 	 */
-	public DGetIndexDescription(String cmd) {
+	public DGetIndexDescription() {
 		super(COMMAND);
 	}
 
