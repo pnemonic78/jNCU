@@ -1,6 +1,5 @@
 package net.sf.jncu.cdil.mnp;
 
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -109,15 +108,18 @@ public class TraceDecode {
 			Thread.yield();
 			b = reader.read();
 		}
+
+		buf1To2.close();
+		buf2To1.close();
 	}
 
 	private class ProcessPayload extends Thread implements MNPPacketListener, DockCommandListener {
 
-		private boolean running = false;
 		private final char direction;
 		private final InputStream in;
 		private final MNPPacketLayer packetLayer;
 		private final MNPCommandLayer cmdLayer;
+		private boolean running;
 
 		public ProcessPayload(char direction, InputStream in) {
 			super();
@@ -139,18 +141,10 @@ public class TraceDecode {
 				do {
 					packet = packetLayer.receive(in);
 				} while (running && (packet != null));
-			} catch (EOFException eof) {
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
 			}
 
-			try {
-				// Enough time for commands to be received.
-				Thread.sleep(2000);
-			} catch (InterruptedException ie) {
-				ie.printStackTrace();
-			}
-			cancel();
 			System.out.println("End run " + getName());
 		}
 
@@ -164,6 +158,12 @@ public class TraceDecode {
 		}
 
 		@Override
+		public void packetEOF() {
+			running = false;
+			packetLayer.close();
+		}
+
+		@Override
 		public void commandReceived(IDockCommandFromNewton command) {
 			System.out.println(direction + "\trcv cmd:" + command);
 		}
@@ -171,6 +171,12 @@ public class TraceDecode {
 		@Override
 		public void commandSent(IDockCommandToNewton command) {
 			System.out.println(direction + "\tsnt cmd:" + command);
+		}
+
+		@Override
+		public void commandEOF() {
+			cmdLayer.close();
+			System.out.println(direction + "\teof cmd");
 		}
 
 		private void processPacket(char direction, MNPPacket packet) {
@@ -205,17 +211,6 @@ public class TraceDecode {
 		private void processLT(char direction, MNPLinkTransferPacket packet) {
 			System.out.println(direction + " type:(LT)" + packet.getType() + " trans:" + packet.getTransmitted() + " seq:" + packet.getSequence() + " data:"
 					+ dataToString(packet.getData()));
-		}
-
-		public void cancel() {
-			running = false;
-			// try {
-			// in.close();
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
-			cmdLayer.close();
-			packetLayer.close();
 		}
 
 		private String dataToString(byte[] data) {
