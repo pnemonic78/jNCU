@@ -142,6 +142,15 @@ public class MNPCommandLayer extends CDCommandLayer implements MNPPacketListener
 		// Nothing to do.
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.sf.jncu.cdil.mnp.MNPPacketListener#packetEOF()
+	 */
+	@Override
+	public void packetEOF() {
+		// Nothing to do.
+	}
+
 	/**
 	 * Received a link acknowledgement packet.
 	 * 

@@ -507,6 +507,14 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	public void commandSent(IDockCommandToNewton command) {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.sf.jncu.protocol.DockCommandListener#commandEOF()
+	 */
+	@Override
+	public void commandEOF() {
+	}
+
 	/**
 	 * Get the CD layer.
 	 * 

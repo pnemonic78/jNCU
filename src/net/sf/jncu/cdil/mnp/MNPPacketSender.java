@@ -65,7 +65,7 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 	 * @throws TimeoutException
 	 *             if a timeout occurs.
 	 */
-	public void sendAndAcknowdlege(MNPPacket packet) throws TimeoutException {
+	public void sendAndAcknowledge(MNPPacket packet) throws TimeoutException {
 		try {
 			queueSend.put(packet);
 		} catch (InterruptedException ie) {
@@ -159,6 +159,11 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 	@Override
 	public void packetSent(MNPPacket packet) {
 		// Nothing to do.
+	}
+
+	@Override
+	public void packetEOF() {
+		cancel();
 	}
 
 	/**

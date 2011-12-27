@@ -75,6 +75,16 @@ public class DUnknownCommand extends DockCommandToNewton implements IDockCommand
 		this.badCommand = badCommand;
 	}
 
+	/**
+	 * Set the bad command.
+	 * 
+	 * @param badCommand
+	 *            the bad command.
+	 */
+	public void setBadCommand(byte[] badCommand) {
+		setBadCommand(new String(badCommand));
+	}
+
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
 		char[] cmdName = getBadCommand().toCharArray();

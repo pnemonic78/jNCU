@@ -241,6 +241,14 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.sf.jncu.cdil.mnp.MNPPacketListener#packetEOF()
+	 */
+	@Override
+	public void packetEOF() {
+	}
+
 	@Override
 	protected void acceptImpl() throws PlatformException, PipeDisconnectedException, TimeoutException {
 		super.acceptImpl();
@@ -267,7 +275,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	 *             if timeout occurs.
 	 */
 	protected void sendAndAcknowledge(MNPPacket packet) throws TimeoutException {
-		getPacketLayer().sendAndAcknowdlege(packet);
+		getPacketLayer().sendAndAcknowledge(packet);
 	}
 
 	/**

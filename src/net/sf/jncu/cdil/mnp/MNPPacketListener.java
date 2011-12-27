@@ -32,7 +32,7 @@ public interface MNPPacketListener {
 	 * @param packet
 	 *            the received packet.
 	 */
-	void packetReceived(MNPPacket packet);
+	public void packetReceived(MNPPacket packet);
 
 	/**
 	 * Notification that a MNP packet was sent.
@@ -40,6 +40,11 @@ public interface MNPPacketListener {
 	 * @param packet
 	 *            the sent packet.
 	 */
-	void packetSent(MNPPacket packet);
+	public void packetSent(MNPPacket packet);
+
+	/**
+	 * Notification that no more packets will be available.
+	 */
+	public void packetEOF();
 
 }

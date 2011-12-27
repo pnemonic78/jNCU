@@ -42,4 +42,9 @@ public interface DockCommandListener {
 	 */
 	public void commandSent(IDockCommandToNewton command);
 
+	/**
+	 * Notification that no more commands will be available.
+	 */
+	public void commandEOF();
+
 }
