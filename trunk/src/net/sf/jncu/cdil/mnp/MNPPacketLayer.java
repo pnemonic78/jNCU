@@ -46,6 +46,7 @@ public class MNPPacketLayer {
 
 	/** List of packet listeners. */
 	protected final Collection<MNPPacketListener> listeners = new ArrayList<MNPPacketListener>();
+	private boolean finished;
 
 	/**
 	 * Creates a new packet layer.
@@ -187,10 +188,17 @@ public class MNPPacketLayer {
 	 * @return the packet.
 	 */
 	public MNPPacket receive(InputStream in) throws IOException {
-		byte[] payload = read(in);
-		MNPPacket packet = MNPPacketFactory.getInstance().createLinkPacket(payload);
-		if (packet != null) {
-			firePacketReceived(packet);
+		if (finished)
+			return null;
+		MNPPacket packet = null;
+		try {
+			byte[] payload = read(in);
+			packet = MNPPacketFactory.getInstance().createLinkPacket(payload);
+			if (packet != null) {
+				firePacketReceived(packet);
+			}
+		} catch (EOFException eofe) {
+			firePacketEOF();
 		}
 		return packet;
 	}
@@ -206,9 +214,15 @@ public class MNPPacketLayer {
 	 *             if an I/O error occurs.
 	 */
 	public void send(OutputStream out, MNPPacket packet) throws IOException {
+		if (finished)
+			return;
 		byte[] payload = packet.serialize();
-		write(out, payload);
-		firePacketSent(packet);
+		try {
+			write(out, payload);
+			firePacketSent(packet);
+		} catch (EOFException eof) {
+			firePacketEOF();
+		}
 	}
 
 	/**
@@ -262,6 +276,17 @@ public class MNPPacketLayer {
 	}
 
 	/**
+	 * Notify all the listeners that no more packets will be available.
+	 */
+	protected void firePacketEOF() {
+		// Make copy of listeners to avoid ConcurrentModificationException.
+		Collection<MNPPacketListener> listenersCopy = new ArrayList<MNPPacketListener>(listeners);
+		for (MNPPacketListener listener : listenersCopy) {
+			listener.packetEOF();
+		}
+	}
+
+	/**
 	 * Listen for incoming packets until no more packets are available.
 	 * 
 	 * @param in
@@ -281,6 +306,7 @@ public class MNPPacketLayer {
 	 */
 	public void close() {
 		listeners.clear();
+		finished = true;
 	}
 
 	/**

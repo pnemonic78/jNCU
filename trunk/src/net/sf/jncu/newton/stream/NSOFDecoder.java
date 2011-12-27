@@ -43,13 +43,24 @@ public class NSOFDecoder {
 	/** {@code 0} is a legal ID. */
 	private int idMax = 0;
 	/** Written version header? */
-	private boolean versioned = false;
+	private boolean versioned;
 
 	/**
 	 * Constructs a new decoder.
 	 */
 	public NSOFDecoder() {
+		this(false);
+	}
+
+	/**
+	 * Creates a new decoder.
+	 * 
+	 * @param versioned
+	 *            append version?
+	 */
+	public NSOFDecoder(boolean versioned) {
 		super();
+		this.versioned = versioned;
 	}
 
 	/**

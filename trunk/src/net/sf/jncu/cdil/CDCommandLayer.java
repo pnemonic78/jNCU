@@ -42,7 +42,7 @@ public abstract class CDCommandLayer extends Thread {
 	/** List of command listeners. */
 	protected final Collection<DockCommandListener> listeners = new ArrayList<DockCommandListener>();
 	/** Still listening for incoming commands? */
-	protected boolean running = false;
+	protected boolean running;
 
 	/**
 	 * Creates a new command layer.
@@ -99,6 +99,17 @@ public abstract class CDCommandLayer extends Thread {
 		Collection<DockCommandListener> listenersCopy = new ArrayList<DockCommandListener>(listeners);
 		for (DockCommandListener listener : listenersCopy) {
 			listener.commandSent(command);
+		}
+	}
+
+	/**
+	 * Notify all the listeners that no more commands will be available.
+	 */
+	protected void fireCommandEOF() {
+		// Make copy of listeners to avoid ConcurrentModificationException.
+		Collection<DockCommandListener> listenersCopy = new ArrayList<DockCommandListener>(listeners);
+		for (DockCommandListener listener : listenersCopy) {
+			listener.commandEOF();
 		}
 	}
 
@@ -164,6 +175,7 @@ public abstract class CDCommandLayer extends Thread {
 				}
 			} while (running && (cmd != null));
 		} catch (EOFException eofe) {
+			fireCommandEOF();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}

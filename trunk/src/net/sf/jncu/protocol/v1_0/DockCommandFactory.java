@@ -213,7 +213,7 @@ public class DockCommandFactory {
 	 * 
 	 * @param cmdName
 	 *            the command name.
-	 * @return the command - {@code null} otherwise.
+	 * @return the command - {@link DRawCommand} otherwise.
 	 */
 	public IDockCommand create(byte[] cmdName) {
 		return create(cmdName, 0);
@@ -226,7 +226,7 @@ public class DockCommandFactory {
 	 *            the command name.
 	 * @param offset
 	 *            the offset.
-	 * @return the command - {@code null} otherwise.
+	 * @return the command - {@link DRawCommand} otherwise.
 	 */
 	public IDockCommand create(byte[] cmdName, int offset) {
 		return create(new String(cmdName, offset, DockCommand.COMMAND_NAME_LENGTH));
@@ -237,13 +237,13 @@ public class DockCommandFactory {
 	 * 
 	 * @param cmdName
 	 *            the command name.
-	 * @return the command - {@code null} otherwise.
+	 * @return the command - {@link DRawCommand} otherwise.
 	 */
 	public IDockCommand create(String cmdName) {
 		Class<? extends IDockCommand> clazz = getRegistry().get(cmdName);
 
+		IDockCommand cmd = null;
 		if (clazz != null) {
-			IDockCommand cmd = null;
 			try {
 				cmd = clazz.newInstance();
 			} catch (InstantiationException ie) {
@@ -251,10 +251,12 @@ public class DockCommandFactory {
 			} catch (IllegalAccessException iae) {
 				iae.printStackTrace();
 			}
-			return cmd;
+		}
+		if (cmd == null) {
+			cmd = new DRawCommand(cmdName);
 		}
 
-		return null;
+		return cmd;
 	}
 
 	/**
@@ -262,7 +264,7 @@ public class DockCommandFactory {
 	 * 
 	 * @param in
 	 *            the input that starts with the command name.
-	 * @return the command - {@code null} otherwise.
+	 * @return the command - {@link DRawCommand} otherwise.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */

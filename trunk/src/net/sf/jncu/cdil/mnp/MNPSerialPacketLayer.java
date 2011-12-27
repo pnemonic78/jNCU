@@ -115,8 +115,8 @@ public class MNPSerialPacketLayer extends MNPPacketLayer {
 		super.close();
 	}
 
-	public void sendAndAcknowdlege(MNPPacket packet) throws TimeoutException {
-		sender.sendAndAcknowdlege(packet);
+	public void sendAndAcknowledge(MNPPacket packet) throws TimeoutException {
+		sender.sendAndAcknowledge(packet);
 	}
 
 }

@@ -439,6 +439,10 @@ public class DockingProtocol implements DockCommandListener {
 		}
 	}
 
+	@Override
+	public void commandEOF() {
+	}
+
 	/**
 	 * Get the Newton information.
 	 * 
