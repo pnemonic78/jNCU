@@ -19,8 +19,6 @@
  */
 package net.sf.jncu.newton.stream;
 
-import java.io.IOException;
-import java.io.OutputStream;
 
 /**
  * Newton Streamed Object Format - True.
@@ -39,12 +37,6 @@ public class NSOFTrue extends NSOFImmediate {
 		setNSClass(NS_CLASS);
 		setType(IMMEDIATE_TRUE);
 		setValue(0x1A);
-	}
-
-	@Override
-	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
-		out.write(IMMEDIATE);
-		XLong.encode(0x1A, out);
 	}
 
 	@Override

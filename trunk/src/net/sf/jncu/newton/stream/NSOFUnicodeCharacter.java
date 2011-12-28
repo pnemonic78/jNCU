@@ -29,7 +29,7 @@ import java.io.OutputStream;
  * 
  * @author Moshe
  */
-public class NSOFUnicodeCharacter extends NSOFCharacter {
+public class NSOFUnicodeCharacter extends NSOFAnsiCharacter {
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("uniChar");
 
@@ -59,7 +59,7 @@ public class NSOFUnicodeCharacter extends NSOFCharacter {
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
-		setValue((char) 0);
+		setValue('\u0000');
 		// High byte of character code (byte)
 		int hi = in.read();
 		// Low byte of character code (byte)

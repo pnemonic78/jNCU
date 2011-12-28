@@ -70,4 +70,11 @@ public abstract class DockCommandFromNewtonScript extends DockCommandFromNewton 
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		NSOFObject result = getResult();
+		if (result == null)
+			return null;
+		return super.toString() + ":" + result.getNSClass() + "=" + result.toString();
+	}
 }
