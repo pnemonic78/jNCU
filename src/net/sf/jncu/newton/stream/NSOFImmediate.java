@@ -72,29 +72,7 @@ public class NSOFImmediate extends NSOFObject {
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
-		// Immediate Ref (xlong)
-		int ref = XLong.decodeValue(in);
-		int val = ref;
-		int type = -1;
-
-		if (isRefCharacter(ref)) {
-			type = IMMEDIATE_CHARACTER;
-			val = (ref >> 4) & 0xFFFF;
-		} else if (isRefInteger(ref)) {
-			type = IMMEDIATE_INTEGER;
-			val = ref >> 2;
-		} else if (isRefMagicPointer(ref)) {
-			type = IMMEDIATE_MAGIC_POINTER;
-			val = ref >> 2;
-		} else if (isRefNil(ref)) {
-			type = IMMEDIATE_NIL;
-			val = 0;
-		} else if (isRefTrue(ref)) {
-			type = IMMEDIATE_TRUE;
-			val = 1;
-		}
-		setType(type);
-		setValue(val);
+		// Already decoded.
 	}
 
 	/*
@@ -192,7 +170,7 @@ public class NSOFImmediate extends NSOFObject {
 	 *            the Ref of an Immediate.
 	 * @return true if a character.
 	 */
-	protected boolean isRefCharacter(int r) {
+	public static boolean isRefCharacter(int r) {
 		return (r & 0xF) == 0x6;
 	}
 
@@ -203,7 +181,7 @@ public class NSOFImmediate extends NSOFObject {
 	 *            the Ref of an Immediate.
 	 * @return true if an integer.
 	 */
-	protected boolean isRefInteger(int r) {
+	public static boolean isRefInteger(int r) {
 		return (r & 0x3) == 0x0;
 	}
 
@@ -214,7 +192,7 @@ public class NSOFImmediate extends NSOFObject {
 	 *            the Ref of an Immediate.
 	 * @return true if an integer.
 	 */
-	protected boolean isRefMagicPointer(int r) {
+	public static boolean isRefMagicPointer(int r) {
 		return (r & 0x3) == 0x3;
 	}
 
@@ -225,7 +203,7 @@ public class NSOFImmediate extends NSOFObject {
 	 *            the Ref of an Immediate.
 	 * @return true if NIL.
 	 */
-	protected boolean isRefNil(int r) {
+	public static boolean isRefNil(int r) {
 		return r == 0x2;
 	}
 
@@ -236,7 +214,7 @@ public class NSOFImmediate extends NSOFObject {
 	 *            the Ref of an Immediate.
 	 * @return true if TRUE.
 	 */
-	protected boolean isRefTrue(int r) {
+	public static boolean isRefTrue(int r) {
 		return (r == 0x1A);
 	}
 

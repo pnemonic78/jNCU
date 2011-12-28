@@ -19,8 +19,6 @@
  */
 package net.sf.jncu.newton.stream;
 
-import java.io.IOException;
-import java.io.OutputStream;
 
 /**
  * Newton Streamed Object Format - Magic Pointer.
@@ -38,12 +36,6 @@ public class NSOFMagicPointer extends NSOFImmediate {
 		super();
 		setNSClass(NS_CLASS);
 		setType(IMMEDIATE_MAGIC_POINTER);
-	}
-
-	@Override
-	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
-		out.write(IMMEDIATE);
-		XLong.encode((getValue() << 2) | 0x3, out);
 	}
 
 	@Override

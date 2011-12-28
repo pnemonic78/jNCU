@@ -94,12 +94,12 @@ public class NSOFDecoder {
 			object = new NSOFBinaryObject();
 			break;
 		case NewtonStreamedObjectFormat.CHARACTER:
-			object = new NSOFCharacter();
+			object = new NSOFAnsiCharacter();
 		case NewtonStreamedObjectFormat.FRAME:
 			object = new NSOFFrame();
 			break;
 		case NewtonStreamedObjectFormat.IMMEDIATE:
-			object = new NSOFImmediate();
+			object = decodeImmediate(in);
 			break;
 		case NewtonStreamedObjectFormat.LARGE_BINARY:
 			object = new NSOFLargeBinary();
@@ -190,4 +190,42 @@ public class NSOFDecoder {
 		return object;
 	}
 
+	/**
+	 * Decode the Immediate object.
+	 * 
+	 * @param in
+	 *            the input.
+	 * @return the immediate value.
+	 * @throws IOException
+	 *             if a decoding error occurs.
+	 */
+	public NSOFImmediate decodeImmediate(InputStream in) throws IOException {
+		// Immediate Ref (xlong)
+		int ref = XLong.decodeValue(in);
+		int val = ref;
+
+		NSOFImmediate imm = null;
+		if (NSOFImmediate.isRefCharacter(ref)) {
+			imm = new NSOFCharacter();
+			val = (ref >> 4) & 0xFFFF;
+		} else if (NSOFImmediate.isRefInteger(ref)) {
+			imm = new NSOFInteger();
+			val = ref >> 2;
+		} else if (NSOFImmediate.isRefMagicPointer(ref)) {
+			imm = new NSOFMagicPointer();
+			val = ref >> 2;
+		} else if (NSOFImmediate.isRefNil(ref)) {
+			imm = new NSOFNil();
+			val = 0;
+		} else if (NSOFImmediate.isRefTrue(ref)) {
+			imm = new NSOFTrue();
+			val = 1;
+		} else {
+			imm = new NSOFImmediate();
+			val = ref >> 2;
+		}
+		imm.setValue(val);
+
+		return imm;
+	}
 }
