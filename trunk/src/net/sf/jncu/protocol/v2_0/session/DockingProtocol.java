@@ -47,7 +47,7 @@ public class DockingProtocol implements DockCommandListener {
 	/** Internal state. */
 	private DockingState state = DockingState.HANDSHAKE_LR_LISTEN;
 	/** Newton information. */
-	private NewtonInfo info;
+	private static NewtonInfo info;
 	/** Protocol version. */
 	private int protocolVersion = DRequestToDock.PROTOCOL_VERSION;
 	/** The password sent by the Desktop. */
@@ -78,6 +78,7 @@ public class DockingProtocol implements DockCommandListener {
 		this.pipe = pipe;
 		this.crypto = new DESNewton();
 		crypto.init(Cipher.ENCRYPT_MODE);
+		info = null;
 	}
 
 	/**
@@ -202,7 +203,7 @@ public class DockingProtocol implements DockCommandListener {
 				throw new BadPipeStateException("expected command '" + DNewtonName.COMMAND + "', and not '" + cmdName + "'");
 			}
 
-			this.info = ((DNewtonName) command).getInformation();
+			info = ((DNewtonName) command).getInformation();
 			DDesktopInfo cmdDesktopInfo = new DDesktopInfo();
 			this.challengeDesktop = cmdDesktopInfo.getEncryptedKey();
 			this.challengeDesktopCiphered = crypto.cipher(challengeDesktop);
@@ -448,7 +449,7 @@ public class DockingProtocol implements DockCommandListener {
 	 * 
 	 * @return the info.
 	 */
-	public NewtonInfo getNewtonInfo() {
+	public static NewtonInfo getNewtonInfo() {
 		return info;
 	}
 

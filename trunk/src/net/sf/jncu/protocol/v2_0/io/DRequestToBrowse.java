@@ -21,13 +21,13 @@ package net.sf.jncu.protocol.v2_0.io;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.TreeSet;
 
-import net.sf.jncu.newton.stream.NSOFArray;
 import net.sf.jncu.newton.stream.NSOFDecoder;
 import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.newton.stream.NSOFString;
+import net.sf.jncu.newton.stream.NSOFSymbol;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
@@ -49,14 +49,17 @@ public class DRequestToBrowse extends DockCommandFromNewton {
 	public static final String COMMAND = "rtbr";
 
 	/** List of files to import. */
-	public static final String IMPORT = "import";
-	/** List of packages. */
-	public static final String PACKAGES = "packages";
+	public static final NSOFSymbol IMPORT = new NSOFSymbol("import");
+	/** List of packages to install. */
+	public static final NSOFSymbol PACKAGES = new NSOFSymbol("packages");
 	/** List of files to synchronise. */
-	public static final String SYNC_FILES = "syncFiles";
+	public static final NSOFSymbol SYNC_FILES = new NSOFSymbol("syncFiles");
 
-	private final List<String> filters = new ArrayList<String>();
+	private final Collection<NSOFString> types = new TreeSet<NSOFString>();
 
+	/**
+	 * Constructs a new command.
+	 */
 	public DRequestToBrowse() {
 		super(COMMAND);
 	}
@@ -69,24 +72,34 @@ public class DRequestToBrowse extends DockCommandFromNewton {
 	 */
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		filters.clear();
+		types.clear();
 		NSOFDecoder decoder = new NSOFDecoder();
-		NSOFArray arr = (NSOFArray) decoder.decode(data);
-		NSOFObject[] entries = arr.getValue();
-		NSOFString filter;
-		for (NSOFObject entry : entries) {
-			filter = (NSOFString) entry;
-			filters.add(filter.getValue());
+
+		int length = getLength();
+		int start, end;
+		NSOFObject next;
+		while (length > 0) {
+			start = data.available();
+			next = decoder.decode(data);
+			end = data.available();
+			length -= (start - end);
+
+			if (next instanceof NSOFString) {
+				NSOFString filter = (NSOFString) next;
+				types.add(filter);
+			} else {
+				throw new ClassCastException("invalid filter: " + next);
+			}
 		}
 	}
 
 	/**
 	 * Get the file types for filtering.
 	 * 
-	 * @return the filter.
+	 * @return the list of types.
 	 */
-	public List<String> getFilters() {
-		return filters;
+	public Collection<NSOFString> getTypes() {
+		return types;
 	}
 
 }

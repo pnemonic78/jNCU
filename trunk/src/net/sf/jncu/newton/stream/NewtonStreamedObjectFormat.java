@@ -108,6 +108,7 @@ public abstract class NewtonStreamedObjectFormat {
 	public abstract void decode(InputStream in, NSOFDecoder decoder) throws IOException;
 
 	/**
+	 * Network to host - long.<br>
 	 * Read 4 bytes as an unsigned integer in network byte order (Big Endian).
 	 * 
 	 * @param in
@@ -126,6 +127,7 @@ public abstract class NewtonStreamedObjectFormat {
 	}
 
 	/**
+	 * Host to network - long.<br>
 	 * Write 4 bytes as an unsigned integer in network byte order (Big Endian).
 	 * 
 	 * @param out
@@ -143,6 +145,7 @@ public abstract class NewtonStreamedObjectFormat {
 	}
 
 	/**
+	 * Host to network - big long.<br>
 	 * Write 8 bytes as an unsigned integer in network byte order (Big Endian).
 	 * 
 	 * @param out
@@ -152,7 +155,7 @@ public abstract class NewtonStreamedObjectFormat {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected static void ntohl(long n, OutputStream out) throws IOException {
+	protected static void htonl(long n, OutputStream out) throws IOException {
 		htonl((int) ((n >> 32) & 0xFFFFFFFFL), out);
 		htonl((int) ((n >> 0) & 0xFFFFFFFFL), out);
 	}

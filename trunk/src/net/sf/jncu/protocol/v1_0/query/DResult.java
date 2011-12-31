@@ -47,6 +47,8 @@ public class DResult extends DockCommandFromNewton implements IDockCommandToNewt
 	/** <tt>kDResult</tt> */
 	public static final String COMMAND = "dres";
 
+	public static final int OK = 0;
+
 	private NewtonError error;
 
 	/**
@@ -54,6 +56,7 @@ public class DResult extends DockCommandFromNewton implements IDockCommandToNewt
 	 */
 	public DResult() {
 		super(COMMAND);
+		setErrorCode(OK);
 	}
 
 	/*

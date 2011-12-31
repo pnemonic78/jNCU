@@ -47,8 +47,8 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * desktop whether that item is a name of a volume or a folder in the Desktop
  * Folder and if so it's <tt>volRefNum</tt>.
  * <p>
- * For Windows the array would be something like: <code>["c:\", "business"]</code> to set
- * the path to "<tt>c:\business</tt>".
+ * For Windows the array would be something like:
+ * <code>["c:\", "business"]</code> to set the path to "<tt>c:\business</tt>".
  * 
  * <pre>
  * 'spth'
@@ -77,6 +77,7 @@ public class DSetPath extends DockCommandFromNewton {
 	 */
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
+		setPath(null);
 		NSOFDecoder decoder = new NSOFDecoder();
 		NSOFArray arr = (NSOFArray) decoder.decode(data);
 		NSOFObject[] entries = arr.getValue();
@@ -99,7 +100,7 @@ public class DSetPath extends DockCommandFromNewton {
 	}
 
 	/**
-	 * Set the file path.
+	 * Set the file path. This is supposed to be a folder.
 	 * 
 	 * @param path
 	 *            the path.

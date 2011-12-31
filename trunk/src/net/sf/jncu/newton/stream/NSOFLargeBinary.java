@@ -151,13 +151,13 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 		// compressed? (non-zero means compressed) (byte)
 		out.write(isCompressed() ? FLAG_UNCOMPRESSED : FLAG_UNCOMPRESSED);
 		// Number of bytes of data (long)
-		ntohl((data == null) ? 0 : data.length, out);
+		htonl((data == null) ? 0 : data.length, out);
 		// Number of characters in compander name (long)
-		ntohl((companderNameBytes == null) ? 0 : companderNameBytes.length, out);
+		htonl((companderNameBytes == null) ? 0 : companderNameBytes.length, out);
 		// Number of bytes of compander parameters (long)
-		ntohl((args == null) ? 0 : args.length, out);
+		htonl((args == null) ? 0 : args.length, out);
 		// Reserved (encode zero, ignore when decoding) (long)
-		ntohl(0, out);
+		htonl(0, out);
 		// Compander name (bytes)
 		if (companderNameBytes != null) {
 			out.write(companderNameBytes);

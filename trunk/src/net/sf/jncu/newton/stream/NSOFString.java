@@ -91,7 +91,8 @@ public class NSOFString extends NSOFObject implements Comparable<NSOFString>, Pr
 			// 2-bytes per character + null-terminated
 			XLong.encode(buf.length, out);
 			// String (halfwords)
-			out.write(buf, 2, buf.length - 2);
+			if (buf.length >= 2)
+				out.write(buf, 2, buf.length - 2);
 			out.write(0);
 			out.write(0);
 		}

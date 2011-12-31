@@ -23,7 +23,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import javax.swing.filechooser.FileFilter;
 
 import net.sf.jncu.newton.stream.NSOFArray;
 import net.sf.jncu.newton.stream.NSOFEncoder;
@@ -86,6 +89,8 @@ public class DFilesAndFolders extends DockCommandToNewton {
 	public static final String COMMAND = "file";
 
 	private File folder;
+	private FileFilter filter;
+	private final List<Device> devices = new ArrayList<Device>();
 
 	/**
 	 * Creates a new command.
@@ -96,24 +101,15 @@ public class DFilesAndFolders extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		File[] files = getFolder().listFiles();
-		List<Device> devices = new ArrayList<Device>();
-
-		if (files != null) {
-			Device device;
-			for (File file : files) {
-				if (!file.isHidden()) {
-					device = new Device(file);
-					devices.add(device);
-				}
-			}
-		}
-
+		if (devices.isEmpty())
+			return;
 		NSOFObject[] paths = new NSOFObject[devices.size()];
 		int i = 0;
-		for (Device device : devices) {
-			paths[i++] = device.toFrame();
+
+		for (Device dev : devices) {
+			paths[i++] = dev.toFrame();
 		}
+
 		NSOFArray arr = new NSOFPlainArray(paths);
 		NSOFEncoder encoder = new NSOFEncoder();
 		encoder.encode(arr, data);
@@ -135,7 +131,57 @@ public class DFilesAndFolders extends DockCommandToNewton {
 	 *            the folder.
 	 */
 	public void setFolder(File folder) {
+		File folderPrev = this.folder;
 		this.folder = folder;
+		if (folderPrev != folder)
+			populateDevices();
 	}
 
+	/**
+	 * Get the file filter.
+	 * 
+	 * @return the filter.
+	 */
+	public FileFilter getFilter() {
+		return filter;
+	}
+
+	/**
+	 * Set the file filter.
+	 * 
+	 * @param filter
+	 *            the filter.
+	 */
+	public void setFilter(FileFilter filter) {
+		FileFilter filterPrev = this.filter;
+		this.filter = filter;
+		if (filterPrev != filter)
+			populateDevices();
+	}
+
+	/**
+	 * Populate the list of devices.
+	 */
+	protected void populateDevices() {
+		devices.clear();
+
+		final File folder = getFolder();
+		if (folder == null)
+			return;
+
+		File[] files = folder.listFiles();
+		if ((files == null) || (files.length == 0))
+			return;
+		Arrays.sort(files);
+
+		Device device;
+		for (File file : files) {
+			if (file.isHidden())
+				continue;
+			if ((filter != null) && !filter.accept(file))
+				continue;
+			device = new Device(file);
+			devices.add(device);
+		}
+	}
 }

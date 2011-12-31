@@ -73,8 +73,16 @@ public abstract class DockCommandFromNewtonScript extends DockCommandFromNewton 
 	@Override
 	public String toString() {
 		NSOFObject result = getResult();
-		if (result == null)
-			return null;
-		return super.toString() + ":" + result.getNSClass() + "=" + result.toString();
+		StringBuffer s = new StringBuffer();
+		s.append(super.toString());
+		s.append(':');
+		if (result == null) {
+			s.append((String) null);
+		} else {
+			s.append(result.getNSClass());
+			s.append('=');
+			s.append(result.toString());
+		}
+		return s.toString();
 	}
 }

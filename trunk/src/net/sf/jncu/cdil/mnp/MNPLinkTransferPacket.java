@@ -84,6 +84,25 @@ public class MNPLinkTransferPacket extends MNPPacket {
 	}
 
 	/**
+	 * Set the data.
+	 * 
+	 * @param data
+	 *            the data.
+	 * @param offset
+	 *            the offset.
+	 * @param length
+	 *            the number of bytes.
+	 */
+	public void setData(byte[] data, int offset, int length) {
+		if ((offset == 0) && (data.length == length))
+			this.data = data;
+		else {
+			this.data = new byte[length];
+			System.arraycopy(data, offset, this.data, 0, length);
+		}
+	}
+
+	/**
 	 * Get the sequence number.
 	 * 
 	 * @return the sequence.

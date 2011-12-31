@@ -22,8 +22,13 @@ package net.sf.jncu.protocol.v2_0.io.win;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import net.sf.jncu.newton.stream.NSOFArray;
 import net.sf.jncu.newton.stream.NSOFEncoder;
 import net.sf.jncu.newton.stream.NSOFPlainArray;
 import net.sf.jncu.newton.stream.NSOFString;
@@ -48,7 +53,7 @@ public class DFilters extends DockCommandToNewton {
 	/** <tt>kDFilters</tt> */
 	public static final String COMMAND = "filt";
 
-	private final List<String> filters = new ArrayList<String>();
+	private final List<FileFilter> filters = new ArrayList<FileFilter>();
 
 	/**
 	 * Creates a new command.
@@ -59,35 +64,45 @@ public class DFilters extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		if (filters.size() > 0) {
-			NSOFString[] entries = new NSOFString[filters.size()];
-			int i = 0;
-			for (String filter : filters) {
-				entries[i++] = new NSOFString(filter);
-			}
-			NSOFPlainArray parr = new NSOFPlainArray();
-			NSOFEncoder encoder = new NSOFEncoder();
-			encoder.encode(parr, data);
+		if (filters.isEmpty())
+			return;
+		NSOFString[] entries = new NSOFString[filters.size()];
+		int i = 0;
+		for (FileFilter filter : filters) {
+			entries[i++] = new NSOFString(filter.getDescription());
 		}
+		NSOFArray arr = new NSOFPlainArray(entries);
+		NSOFEncoder encoder = new NSOFEncoder();
+		encoder.encode(arr, data);
 	}
 
 	/**
 	 * Get the filters.
 	 * 
-	 * @return the filters.
+	 * @return the list of filters.
 	 */
-	public List<String> getFilters() {
+	public List<FileFilter> getFilters() {
 		return filters;
 	}
 
 	/**
 	 * Set the filters.
 	 * 
-	 * @return the filters.
+	 * @return the list of filters.
 	 */
-	public void setFilters(List<String> filters) {
+	public void setFilters(Collection<FileFilter> filters) {
 		this.filters.clear();
 		this.filters.addAll(filters);
+	}
+
+	/**
+	 * Add a filter.
+	 * 
+	 * @param extension
+	 *            the filter extension.
+	 */
+	public void addExtensionFilter(String extension) {
+		addFilter(new FileNameExtensionFilter(extension, extension));
 	}
 
 	/**
@@ -96,8 +111,30 @@ public class DFilters extends DockCommandToNewton {
 	 * @param filter
 	 *            the filter.
 	 */
-	public void addFilter(String filter) {
+	public void addFilter(FileFilter filter) {
 		filters.add(filter);
 	}
 
+	/**
+	 * Add filters.
+	 * 
+	 * @param filters
+	 *            the array of filters.
+	 */
+	public void addFilters(FileFilter[] filters) {
+		if (filters != null)
+			for (FileFilter filter : filters)
+				addFilter(filter);
+	}
+
+	/**
+	 * Add filters.
+	 * 
+	 * @param filters
+	 *            the list of filters.
+	 */
+	public void addFilters(Collection<FileFilter> filters) {
+		if (filters != null)
+			this.filters.addAll(filters);
+	}
 }

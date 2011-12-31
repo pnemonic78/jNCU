@@ -22,6 +22,7 @@ package net.sf.jncu.protocol.v2_0.io;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import net.sf.jncu.newton.stream.NSOFEncoder;
@@ -67,6 +68,26 @@ public class DTranslatorList extends DockCommandToNewton {
 		NSOFPlainArray arr = new NSOFPlainArray(items);
 		NSOFEncoder encoder = new NSOFEncoder();
 		encoder.encode(arr, data);
+	}
+
+	/**
+	 * Get the translators.
+	 * 
+	 * @return the list of translators.
+	 */
+	public List<String> getTranslators() {
+		return translators;
+	}
+
+	/**
+	 * Set the translators.
+	 * 
+	 * @param translators
+	 *            the list of translators.
+	 */
+	public void setTranslators(Collection<String> translators) {
+		this.translators.clear();
+		this.translators.addAll(translators);
 	}
 
 	/**
