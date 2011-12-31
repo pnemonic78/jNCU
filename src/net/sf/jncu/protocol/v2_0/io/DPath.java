@@ -74,7 +74,7 @@ public class DPath extends DockCommandToNewton {
 	/** <tt>kDPath</tt> */
 	public static final String COMMAND = "path";
 
-	private File path;
+	private File file;
 
 	/**
 	 * Creates a new command.
@@ -86,44 +86,45 @@ public class DPath extends DockCommandToNewton {
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
 		File file = getPath();
-		List<Device> devices = new ArrayList<Device>();
-
 		if (file != null) {
+			final List<Device> devices = new ArrayList<Device>();
 			Device device;
-			while (file != null) {
+			String path = file.getPath();
+			while (path != null) {
+				file = new File(path);
 				device = new Device(file);
 				devices.add(0, device);
-				file = file.getParentFile();
+				path = file.getParent();
 			}
-		}
 
-		NSOFObject[] paths = new NSOFObject[devices.size()];
-		int i = 0;
-		for (Device device : devices) {
-			paths[i++] = device.toFrame();
+			NSOFObject[] paths = new NSOFObject[devices.size()];
+			int i = 0;
+			for (Device dev : devices) {
+				paths[i++] = dev.toFrame();
+			}
+			NSOFArray arr = new NSOFPlainArray(paths);
+			NSOFEncoder encoder = new NSOFEncoder();
+			encoder.encode(arr, data);
 		}
-		NSOFArray arr = new NSOFPlainArray(paths);
-		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.encode(arr, data);
 	}
 
 	/**
 	 * Get the initial path.
 	 * 
-	 * @return the path.
+	 * @return the folder.
 	 */
 	public File getPath() {
-		return path;
+		return file;
 	}
 
 	/**
 	 * Set the initial path.
 	 * 
-	 * @param path
-	 *            the path.
+	 * @param file
+	 *            the folder.
 	 */
-	public void setPath(File path) {
-		this.path = path;
+	public void setPath(File file) {
+		this.file = file;
 	}
 
 }

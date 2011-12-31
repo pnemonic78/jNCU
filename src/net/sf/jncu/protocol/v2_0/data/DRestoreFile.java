@@ -19,7 +19,12 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
-import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
+import java.io.IOException;
+import java.io.InputStream;
+
+import net.sf.jncu.newton.stream.NSOFDecoder;
+import net.sf.jncu.newton.stream.NSOFString;
+import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
  * This command asks the desktop to restore the file specified by the last path
@@ -35,10 +40,12 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  * 
  * @author moshew
  */
-public class DRestoreFile extends DockCommandFromNewtonScript {
+public class DRestoreFile extends DockCommandFromNewton {
 
 	/** <tt>kDRestoreFile</tt> */
 	public static final String COMMAND = "rsfl";
+
+	private String filename;
 
 	/**
 	 * Creates a new command.
@@ -47,4 +54,49 @@ public class DRestoreFile extends DockCommandFromNewtonScript {
 		super(COMMAND);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * net.sf.jncu.protocol.DockCommandFromNewton#decodeData(java.io.InputStream
+	 * )
+	 */
+	@Override
+	protected void decodeData(InputStream data) throws IOException {
+		setFilename((String) null);
+		NSOFDecoder decoder = new NSOFDecoder();
+		NSOFString name = (NSOFString) decoder.decode(data);
+		setFilename(name);
+	}
+
+	/**
+	 * Get the file name.
+	 * 
+	 * @return the file name.
+	 */
+	public String getFilename() {
+		return filename;
+	}
+
+	/**
+	 * Set the file name.
+	 * 
+	 * @param filename
+	 *            the file name.
+	 */
+	protected void setFilename(String filename) {
+		this.filename = filename;
+	}
+
+	/**
+	 * Set the file name.
+	 * 
+	 * @param filename
+	 *            the file name.
+	 */
+	protected void setFilename(NSOFString filename) {
+		if (filename == null)
+			setFilename((String) null);
+		else
+			setFilename(filename.getValue());
+	}
 }

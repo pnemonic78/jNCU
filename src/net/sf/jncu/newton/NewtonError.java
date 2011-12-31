@@ -81,8 +81,10 @@ public class NewtonError extends Exception {
 	 * Initialise the errors.
 	 */
 	private void initErrors() {
-		if (errors.size() == 0) {
-			populateErrors(errors);
+		synchronized (errors) {
+			if (errors.isEmpty()) {
+				populateErrors(errors);
+			}
 		}
 	}
 

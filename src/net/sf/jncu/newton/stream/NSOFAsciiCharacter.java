@@ -29,12 +29,12 @@ import java.io.OutputStream;
  * 
  * @author Moshe
  */
-public class NSOFAnsiCharacter extends NSOFCharacter {
+public class NSOFAsciiCharacter extends NSOFCharacter {
 
 	/**
 	 * Constructs a new character.
 	 */
-	public NSOFAnsiCharacter() {
+	public NSOFAsciiCharacter() {
 		super();
 	}
 
@@ -44,7 +44,7 @@ public class NSOFAnsiCharacter extends NSOFCharacter {
 	 * @param value
 	 *            the character.
 	 */
-	public NSOFAnsiCharacter(char value) {
+	public NSOFAsciiCharacter(char value) {
 		super(value);
 	}
 

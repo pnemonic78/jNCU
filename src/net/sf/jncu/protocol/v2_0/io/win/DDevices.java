@@ -57,8 +57,6 @@ public class DDevices extends DockCommandToNewton {
 	/** <tt>kDDevices</tt> */
 	public static final String COMMAND = "devs";
 
-	protected static final char driveChar = ':';
-
 	/**
 	 * Creates a new command.
 	 */
@@ -68,26 +66,13 @@ public class DDevices extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		File[] drives = File.listRoots();
-		List<Device> devices = new ArrayList<Device>();
+		File[] roots = File.listRoots();
+		final List<Device> devices = new ArrayList<Device>();
 
-		if (drives != null) {
+		if (roots != null) {
 			Device device;
-			String name;
-			for (File file : drives) {
-				device = new Device(file);
-				name = device.getName();
-				// Prepend the drive name to the device name for DSetDrive
-				// - "Local Disk (C:)" to "C:Local Disk (C:)"
-				if (device.geType() == Device.DISK) {
-					String path = file.getPath();
-					if (path.charAt(1) == driveChar) {
-						path = path.substring(0, 2);
-						if (!name.startsWith(path)) {
-							device.setName(path + name);
-						}
-					}
-				}
+			for (File root : roots) {
+				device = new Device(root);
 				devices.add(device);
 			}
 		}
@@ -101,5 +86,4 @@ public class DDevices extends DockCommandToNewton {
 		NSOFEncoder encoder = new NSOFEncoder();
 		encoder.encode(arr, data);
 	}
-
 }

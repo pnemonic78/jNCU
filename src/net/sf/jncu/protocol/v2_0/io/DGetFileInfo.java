@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import net.sf.jncu.newton.stream.NSOFDecoder;
-import net.sf.jncu.newton.stream.NSOFObject;
+import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
@@ -47,7 +47,7 @@ public class DGetFileInfo extends DockCommandFromNewton {
 	/** <tt>kDGetFileInfo</tt> */
 	public static final String COMMAND = "gfin";
 
-	private NSOFObject filename;
+	private String filename;
 
 	public DGetFileInfo() {
 		super(COMMAND);
@@ -61,8 +61,10 @@ public class DGetFileInfo extends DockCommandFromNewton {
 	 */
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
+		setFilename((String) null);
 		NSOFDecoder decoder = new NSOFDecoder();
-		setFilename(decoder.decode(data));
+		NSOFString name = (NSOFString) decoder.decode(data);
+		setFilename(name);
 	}
 
 	/**
@@ -70,7 +72,7 @@ public class DGetFileInfo extends DockCommandFromNewton {
 	 * 
 	 * @return the file name.
 	 */
-	public NSOFObject getFilename() {
+	public String getFilename() {
 		return filename;
 	}
 
@@ -80,8 +82,20 @@ public class DGetFileInfo extends DockCommandFromNewton {
 	 * @param filename
 	 *            the file name.
 	 */
-	protected void setFilename(NSOFObject filename) {
+	protected void setFilename(String filename) {
 		this.filename = filename;
 	}
 
+	/**
+	 * Set the file name.
+	 * 
+	 * @param filename
+	 *            the file name.
+	 */
+	protected void setFilename(NSOFString filename) {
+		if (filename == null)
+			setFilename((String) null);
+		else
+			setFilename(filename.getValue());
+	}
 }

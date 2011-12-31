@@ -94,7 +94,7 @@ public class NSOFDecoder {
 			object = new NSOFBinaryObject();
 			break;
 		case NewtonStreamedObjectFormat.CHARACTER:
-			object = new NSOFAnsiCharacter();
+			object = new NSOFAsciiCharacter();
 		case NewtonStreamedObjectFormat.FRAME:
 			object = new NSOFFrame();
 			break;

@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Random;
@@ -127,10 +128,11 @@ public class DDesktopInfo extends DockCommandToNewton {
 	public DDesktopInfo() {
 		super(COMMAND);
 		setSessionType(DInitiateDocking.SESSION_SETTING_UP);
-		// Windows type doesn't support many commands.
+		// FIXME Windows type doesn't support many commands.
 		// setDesktopType(System.getProperty("os.name").startsWith("Windows") ?
 		// WINDOWS : MACINTOSH);
-		setDesktopType(MACINTOSH);
+		setDesktopType((File.separatorChar == '\\') ? WINDOWS : MACINTOSH);
+		// setDesktopType(MACINTOSH);
 		setSelectiveSync(true);
 		setEncryptedKey(rand.nextLong());
 		setDesktopApps(null);

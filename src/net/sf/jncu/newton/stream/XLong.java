@@ -120,7 +120,7 @@ public class XLong extends NewtonStreamedObjectFormat {
 			out.write(value & 0xFF);
 		} else {
 			out.write(0xFF);
-			ntohl(value, out);
+			htonl(value, out);
 		}
 	}
 

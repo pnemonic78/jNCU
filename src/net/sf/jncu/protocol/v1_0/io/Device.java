@@ -29,13 +29,14 @@ import net.sf.jncu.newton.stream.NSOFInteger;
 import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.newton.stream.NSOFSymbol;
+import net.sf.swing.SwingUtils;
 
 /**
  * Device information.
  * 
  * @author moshew
  */
-public class Device {
+public class Device implements Comparable<Device> {
 
 	/**
 	 * <tt>kDesktop</tt><br>
@@ -93,8 +94,7 @@ public class Device {
 	private Integer volRefNum;
 	private String alias;
 
-	protected static final FileSystemView fileSystemView = FileSystemView.getFileSystemView();
-	protected final File home = fileSystemView.getHomeDirectory();
+	protected static final char driveCharWindows = ':';
 
 	/**
 	 * Creates a new device.
@@ -110,18 +110,43 @@ public class Device {
 	 *            the file.
 	 */
 	public Device(File file) {
-		this();
-		String name = fileSystemView.getSystemDisplayName(file);
+		super();
+		setFile(file);
+	}
+
+	/**
+	 * Set the device file.
+	 * 
+	 * @param file
+	 *            the file.
+	 */
+	public void setFile(File file) {
+		String path = file.getPath();
+
+		String name = file.getName();
 		if (name.length() == 0) {
-			name = file.getName();
-			if (name.length() == 0) {
-				name = file.getPath();
-			}
+			name = path;
 		}
 		setName(name);
-		if (file.isFile()) {
-			setType(FILE);
-		} else if (fileSystemView.isDrive(file)) {
+		setType(FILE);
+
+		FileSystemView fileSystemView = SwingUtils.getFileSystemView();
+		if (fileSystemView.isDrive(file)) {
+			// Special case for Windows drives:
+			// Prepend the drive name to the device name for DSetDrive
+			// - {"C:\" + "Local Disk (C:)"} to {"C: Local Disk"}
+			if (File.separatorChar == '\\') {
+				if (path.charAt(1) == driveCharWindows) {
+					path = path.substring(0, 2);
+					name = fileSystemView.getSystemDisplayName(file);
+					int indexBracket = name.lastIndexOf('(');
+					if (indexBracket > 0)
+						name = name.substring(0, indexBracket);
+					if (!name.startsWith(path))
+						setName(path + ' ' + name);
+				}
+			}
+
 			setType(DISK);
 			setDiskType(HARD_DISK);
 			if (fileSystemView.isFloppyDrive(file)) {
@@ -131,6 +156,7 @@ public class Device {
 			}
 		} else if (file.isDirectory()) {
 			setType(FOLDER);
+			File home = getHome();
 			if (home.equals(file)) {
 				setType(DESKTOP);
 				setVolume(0);
@@ -156,8 +182,9 @@ public class Device {
 		if (getVolumeRef() != null) {
 			frame.put(SLOT_VOLREF, new NSOFInteger(getVolumeRef()));
 		}
-		if (getAlias() != null) {
-			frame.put(SLOT_ALIAS, new NSOFString(getAlias()));
+		String alias = getAlias();
+		if ((alias != null) && (alias.length() > 0)) {
+			frame.put(SLOT_ALIAS, new NSOFString(alias));
 		}
 		return frame;
 	}
@@ -336,4 +363,60 @@ public class Device {
 		this.alias = alias;
 	}
 
+	/**
+	 * Get the user's home folder.
+	 * 
+	 * @return the home folder.
+	 */
+	protected File getHome() {
+		return SwingUtils.getFileSystemView().getHomeDirectory();
+	}
+
+	@Override
+	public String toString() {
+		return toFrame().toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Device) {
+			Device that = (Device) obj;
+			return this.compareTo(that) == 0;
+		}
+		return super.equals(obj);
+	}
+
+	@Override
+	public int compareTo(Device that) {
+		int c = this.getName().compareTo(that.getName());
+		if (c != 0)
+			return c;
+		c = this.type - that.type;
+		if (c != 0)
+			return c;
+		c = this.diskType - that.diskType;
+		if (c != 0)
+			return c;
+		c = compare(this.vol, that.vol);
+		if (c != 0)
+			return c;
+		c = compare(this.volRefNum, that.volRefNum);
+		if (c != 0)
+			return c;
+		c = compare(this.alias, that.alias);
+		if (c != 0)
+			return c;
+		return 0;
+	}
+
+	protected <T extends Comparable<T>> int compare(T o1, T o2) {
+		if (o1 == null) {
+			if (o2 == null)
+				return 0;
+			return -1;
+		}
+		if (o2 == null)
+			return 1;
+		return o1.compareTo(o2);
+	}
 }

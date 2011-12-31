@@ -59,6 +59,8 @@ public class DNewtonName extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
+		setInformation(null);
+		setName(null);
 		versionInfoLength = ntohl(data);
 		// Clone the information buffer in case not all fields are read and we
 		// still need to reach the name.

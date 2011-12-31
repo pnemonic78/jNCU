@@ -47,8 +47,8 @@ public class NSOFPlainArray extends NSOFArray {
 	 *            the value.
 	 */
 	public NSOFPlainArray(NSOFObject[] value) {
-		this();
-		setValue(value);
+		super(value);
+		setNSClass(NS_CLASS);
 	}
 
 	/*

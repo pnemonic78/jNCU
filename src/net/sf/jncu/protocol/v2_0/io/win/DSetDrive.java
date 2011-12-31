@@ -19,9 +19,12 @@
  */
 package net.sf.jncu.protocol.v2_0.io.win;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import net.sf.jncu.newton.stream.NSOFDecoder;
+import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
@@ -50,7 +53,10 @@ public class DSetDrive extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		setDrive(readString(data));
+		setDrive((String) null);
+		NSOFDecoder decoder = new NSOFDecoder();
+		NSOFString drive = (NSOFString) decoder.decode(data);
+		setDrive(drive);
 	}
 
 	/**
@@ -69,7 +75,25 @@ public class DSetDrive extends DockCommandFromNewton {
 	 *            the drive.
 	 */
 	protected void setDrive(String drive) {
+		if (drive != null) {
+			if (drive.endsWith(":")) {
+				drive += File.separatorChar;
+			}
+		}
 		this.drive = drive;
 	}
 
+	/**
+	 * Set the drive.
+	 * 
+	 * @param drive
+	 *            the drive.
+	 */
+	protected void setDrive(NSOFString drive) {
+		if (drive == null) {
+			setDrive((String) null);
+		} else {
+			setDrive(drive.getValue());
+		}
+	}
 }

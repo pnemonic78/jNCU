@@ -29,7 +29,7 @@ import java.io.OutputStream;
  * 
  * @author Moshe
  */
-public class NSOFUnicodeCharacter extends NSOFAnsiCharacter {
+public class NSOFUnicodeCharacter extends NSOFAsciiCharacter {
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("uniChar");
 

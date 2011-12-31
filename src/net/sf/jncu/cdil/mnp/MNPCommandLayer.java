@@ -39,6 +39,12 @@ public class MNPCommandLayer extends CDCommandLayer implements MNPPacketListener
 
 	protected final byte CREDIT = 7;
 
+	/**
+	 * Maximum packet length before having to split into multiple packets. <br>
+	 * FIXME this value should come from LR packets.
+	 */
+	protected static final int MAX_PACKET_LENGTH = 255;
+
 	/** The packet layer. */
 	protected final MNPPacketLayer packetLayer;
 	/** Stream for packets to populate commands. */
@@ -105,9 +111,57 @@ public class MNPCommandLayer extends CDCommandLayer implements MNPPacketListener
 	 */
 	@Override
 	public void write(IDockCommandToNewton cmd) throws IOException {
-		byte[] payload = cmd.getPayload();
+		final byte[] payload = cmd.getPayload();
+		int length = payload.length;
+
+		if (length <= MAX_PACKET_LENGTH) {
+			writeCommandPayload(cmd, payload);
+		} else {
+			int i = 0;
+			while (length > MAX_PACKET_LENGTH) {
+				writeCommandPayload(cmd, payload, i, MAX_PACKET_LENGTH);
+				i += MAX_PACKET_LENGTH;
+				length -= MAX_PACKET_LENGTH;
+			}
+			writeCommandPayload(cmd, payload, i, length);
+		}
+	}
+
+	/**
+	 * Write the command payload.
+	 * 
+	 * @param cmd
+	 *            the command.
+	 * @param payload
+	 *            the command payload.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	private void writeCommandPayload(IDockCommandToNewton cmd, byte[] payload) throws IOException {
 		MNPLinkTransferPacket packet = (MNPLinkTransferPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LT);
 		packet.setData(payload);
+		Byte seq = packet.getSequence();
+		queueOut.put(seq, cmd);
+		packetLayer.send(getOutput(), packet);
+	}
+
+	/**
+	 * Write the command payload.
+	 * 
+	 * @param cmd
+	 *            the command.
+	 * @param payload
+	 *            the command payload.
+	 * @param offset
+	 *            the payload offset.
+	 * @param length
+	 *            the payload length.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	private void writeCommandPayload(IDockCommandToNewton cmd, byte[] payload, int offset, int length) throws IOException {
+		MNPLinkTransferPacket packet = (MNPLinkTransferPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LT);
+		packet.setData(payload, offset, length);
 		Byte seq = packet.getSequence();
 		queueOut.put(seq, cmd);
 		packetLayer.send(getOutput(), packet);

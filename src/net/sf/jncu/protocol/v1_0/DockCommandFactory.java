@@ -109,8 +109,10 @@ public class DockCommandFactory {
 	 * @return the registry.
 	 */
 	protected Map<String, Class<? extends IDockCommand>> getRegistry() {
-		if (registry.isEmpty()) {
-			register(registry);
+		synchronized (registry) {
+			if (registry.isEmpty()) {
+				register(registry);
+			}
 		}
 		return registry;
 	}
@@ -359,9 +361,6 @@ public class DockCommandFactory {
 				((IDockCommandFromNewton) cmd).decode(data);
 			} else if (cmd instanceof IDockCommandToNewton) {
 				int length = DockCommandFromNewton.ntohl(data);
-				if (length == 0) {
-					length = DockCommand.LENGTH_WORD;
-				}
 				switch (length & 3) {
 				case 1:
 					length++;
