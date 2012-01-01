@@ -27,6 +27,7 @@ import java.util.List;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import net.sf.jncu.Preferences;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.DockCommandListener;
@@ -79,6 +80,9 @@ public class FileChooser implements DockCommandListener {
 		None, Initialised, Browsing, Cancelled, Selected, Finished
 	}
 
+	/** Property key for default path. */
+	private static final String KEY_PATH = "FileChooser.Path";
+
 	private final CDPipe pipe;
 	private final List<NSOFString> types = new ArrayList<NSOFString>();
 	private State state = State.None;
@@ -94,17 +98,21 @@ public class FileChooser implements DockCommandListener {
 	 */
 	public FileChooser(CDPipe pipe, Collection<NSOFString> types) {
 		super();
+		// if (pipe == null)
+		// throw new IllegalArgumentException("pipe required");
 		this.pipe = pipe;
-		this.types.addAll(types);
-		init();
-	}
+		if (types != null)
+			this.types.addAll(types);
 
-	/**
-	 * Initialise.
-	 */
-	private void init() {
-		// TODO Load the path from INI properties file.
-		this.path = SwingUtils.getFileSystemView().getDefaultDirectory();
+		// Load the path from the properties file.
+		Preferences prefs = Preferences.getInstance();
+		String folderPath = prefs.get(KEY_PATH);
+		if (folderPath == null) {
+			folderPath = SwingUtils.getFileSystemView().getDefaultDirectory().getPath();
+			prefs.set(KEY_PATH, folderPath);
+			prefs.save();
+		}
+		this.path = new File(folderPath);
 		populateFilters();
 
 		pipe.addCommandListener(this);
@@ -204,6 +212,10 @@ public class FileChooser implements DockCommandListener {
 	@Override
 	public void commandEOF() {
 		pipe.removeCommandListener(this);
+		// Save the last path back to preferences.
+		Preferences prefs = Preferences.getInstance();
+		prefs.set(KEY_PATH, path.getPath());
+		prefs.save();
 		state = State.Finished;
 	}
 

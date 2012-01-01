@@ -23,12 +23,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import net.sf.jncu.newton.stream.NSOFBinaryObject;
 import net.sf.jncu.newton.stream.NSOFEncoder;
 import net.sf.jncu.newton.stream.NSOFFrame;
 import net.sf.jncu.newton.stream.NSOFInteger;
 import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.newton.stream.NSOFSymbol;
+import net.sf.jncu.newton.stream.contrib.NSOFBitmap;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.util.NewtonDateUtils;
 import net.sf.swing.SwingUtils;
@@ -126,7 +126,7 @@ public class DFileInfo extends DockCommandToNewton {
 		if (description != null)
 			frame.put(SLOT_KIND, new NSOFString(description));
 
-		NSOFBinaryObject icon = getIcon(file);
+		NSOFBitmap icon = getIcon(file);
 		if (icon != null)
 			frame.put(SLOT_ICON, icon);
 
@@ -146,16 +146,16 @@ public class DFileInfo extends DockCommandToNewton {
 	 *            the file.
 	 * @return the icon.
 	 */
-	protected NSOFBinaryObject getIcon(File file) {
+	protected NSOFBitmap getIcon(File file) {
 		// TODO
 		// Icon icon = SwingUtils.getFileSystemView().getSystemIcon(file);
 		// if (icon == null) {
 		// return null;
 		// }
-		NSOFBinaryObject bin = null;
+		NSOFBitmap bmp = null;
 		// Convert "Java Icon" to "Newton bitmap" or "Apple PICT image".
 		// see "developer/QAs-2.x/html/newtbitm.htm"
-		// bin = new NSOFBinaryObject();
-		return bin;
+		// bmp = new NSOFBitmap();
+		return bmp;
 	}
 }
