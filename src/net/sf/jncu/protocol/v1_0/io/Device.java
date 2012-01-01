@@ -142,7 +142,7 @@ public class Device implements Comparable<Device> {
 					int indexBracket = name.lastIndexOf('(');
 					if (indexBracket > 0)
 						name = name.substring(0, indexBracket);
-					if (!name.startsWith(path))
+					if ((name.length() > 0) && !name.startsWith(path))
 						setName(path + ' ' + name);
 				}
 			}
@@ -156,11 +156,11 @@ public class Device implements Comparable<Device> {
 			}
 		} else if (file.isDirectory()) {
 			setType(FOLDER);
-			File home = getHome();
-			if (home.equals(file)) {
-				setType(DESKTOP);
-				setVolume(0);
-			}
+			// File home = getHome();
+			// if (home.equals(file)) {
+			// setType(DESKTOP);
+			// setVolume(0);
+			// }
 		}
 	}
 
