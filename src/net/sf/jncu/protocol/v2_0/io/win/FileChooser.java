@@ -81,7 +81,7 @@ public class FileChooser implements DockCommandListener {
 	}
 
 	/** Property key for default path. */
-	private static final String KEY_PATH = "FileChooser.Path";
+	protected static final String KEY_PATH = "FileChooser.Path";
 
 	private final CDPipe pipe;
 	private final List<NSOFString> types = new ArrayList<NSOFString>();
