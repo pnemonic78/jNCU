@@ -19,6 +19,7 @@
  */
 package net.sf.jncu;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -34,11 +35,14 @@ import java.util.Properties;
  */
 public class Preferences {
 
+	/** Properties file folder. */
+	private static final String FOLDER = "jNCU";
 	/** Properties file name. */
 	private static final String NAME = "jncu.xml";
 
 	private static Preferences instance;
 	private final Properties props = new Properties();
+	private File file;
 
 	/**
 	 * Constructs a new preferences.
@@ -66,7 +70,7 @@ public class Preferences {
 	protected void load() {
 		InputStream in = null;
 		try {
-			in = new FileInputStream(NAME);
+			in = new FileInputStream(getFile());
 			props.loadFromXML(in);
 		} catch (FileNotFoundException fnfe) {
 			// File does not exist yet.
@@ -88,7 +92,7 @@ public class Preferences {
 	public void save() {
 		OutputStream out = null;
 		try {
-			out = new FileOutputStream(NAME);
+			out = new FileOutputStream(getFile());
 			props.storeToXML(out, null);
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
@@ -123,5 +127,20 @@ public class Preferences {
 	 */
 	public void set(String key, String value) {
 		props.setProperty(key, value);
+	}
+
+	/**
+	 * Get the properties file.
+	 * 
+	 * @return the file.
+	 */
+	protected File getFile() {
+		if (file == null) {
+			File userFolder = new File(System.getProperty("user.home"));
+			File jncuFolder = new File(userFolder, FOLDER);
+			jncuFolder.mkdirs();
+			file = new File(jncuFolder, NAME);
+		}
+		return file;
 	}
 }
