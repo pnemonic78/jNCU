@@ -19,7 +19,14 @@
  */
 package net.sf.jncu.newton.stream.contrib;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import net.sf.jncu.newton.stream.NSOFBinaryObject;
+import net.sf.jncu.newton.stream.NSOFDecoder;
+import net.sf.jncu.newton.stream.NSOFEncoder;
+import net.sf.jncu.newton.stream.NSOFSmallRect;
 import net.sf.jncu.newton.stream.NSOFSymbol;
 
 /**
@@ -92,6 +99,11 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("bits");
 
+	private int header;
+	private int rowBytes;
+	private int top, left, bottom, right;
+	private byte[] pixels;
+
 	/**
 	 * Constructs a new bitmap.
 	 */
@@ -100,4 +112,188 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 		setNSClass(NS_CLASS);
 	}
 
+	@Override
+	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
+		super.decode(in, decoder);
+
+		// 0-3 long ignored
+		this.header = ntohl(in);
+		// 4-5 word #bytes per row of the bitmap data (must be a multiple of 4)
+		setRowBytes(ntohs(in));
+		// 6-7 word ignored
+		in.skip(2);
+		// 8-9 word top
+		setTop(ntohs(in));
+		// 10-11 word left
+		setLeft(ntohs(in));
+		// 12-13 word bottom
+		setBottom(ntohs(in));
+		// 14-15 word right
+		setRight(ntohs(in));
+		// 16-* bits pixel data, 1 for "on" pixel, 0 for "off"
+		byte[] pixels = new byte[in.available()];
+		in.read(pixels);
+		setPixels(pixels);
+	}
+
+	@Override
+	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
+		super.encode(out, encoder);
+
+		// 0-3 long ignored
+		htonl(header, out);
+		// 4-5 word #bytes per row of the bitmap data (must be a multiple of 4)
+		htons(rowBytes, out);
+		// 6-7 word ignored
+		htons(0, out);
+		// 8-9 word top
+		htons(top, out);
+		// 10-11 word left
+		htons(left, out);
+		// 12-13 word bottom
+		htons(bottom, out);
+		// 14-15 word right
+		htons(right, out);
+		// 16-* bits pixel data, 1 for "on" pixel, 0 for "off"
+		out.write(pixels);
+	}
+
+	/**
+	 * Get the number of bytes per row.
+	 * 
+	 * @return the number of bytes.
+	 */
+	public int getRowBytes() {
+		return rowBytes;
+	}
+
+	/**
+	 * Set the number of bytes per row. Will always be 32-bit aligned.
+	 * 
+	 * @param rowBytes
+	 *            the number of bytes.
+	 */
+	protected void setRowBytes(int rowBytes) {
+		this.rowBytes = rowBytes & 0xFC;
+	}
+
+	/**
+	 * Set the rectangle bounds.
+	 * 
+	 * @param bounds
+	 *            the rectangle.
+	 */
+	public void setBounds(NSOFSmallRect bounds) {
+		setTop(bounds.getTop());
+		setLeft(bounds.getLeft());
+		setBottom(bounds.getBottom());
+		setRight(bounds.getRight());
+	}
+
+	/**
+	 * Get the rectangle top.
+	 * 
+	 * @return the top.
+	 */
+	public int getTop() {
+		return top;
+	}
+
+	/**
+	 * Set the rectangle top.
+	 * 
+	 * @param top
+	 *            the top.
+	 */
+	public void setTop(int top) {
+		this.top = top;
+	}
+
+	/**
+	 * Get the rectangle left.
+	 * 
+	 * @return the left.
+	 */
+	public int getLeft() {
+		return left;
+	}
+
+	/**
+	 * Set the rectangle left.
+	 * 
+	 * @param left
+	 *            the left.
+	 */
+	public void setLeft(int left) {
+		this.left = left;
+
+		final int width = getRight() - left;
+		int rowBytes = width >> 3;
+		if ((width & 7) > 0)
+			rowBytes++;
+		setRowBytes(rowBytes);
+	}
+
+	/**
+	 * Get the rectangle bottom.
+	 * 
+	 * @return the bottom.
+	 */
+	public int getBottom() {
+		return bottom;
+	}
+
+	/**
+	 * Set the rectangle bottom.
+	 * 
+	 * @param bottom
+	 *            the bottom.
+	 */
+	public void setBottom(int bottom) {
+		this.bottom = bottom;
+	}
+
+	/**
+	 * Get the rectangle right.
+	 * 
+	 * @return the right.
+	 */
+	public int getRight() {
+		return right;
+	}
+
+	/**
+	 * Set the rectangle right.
+	 * 
+	 * @param right
+	 *            the right.
+	 */
+	public void setRight(int right) {
+		this.right = right;
+
+		final int width = right - getLeft();
+		int rowBytes = width >> 3;
+		if ((width & 7) > 0)
+			rowBytes++;
+		setRowBytes(rowBytes);
+	}
+
+	/**
+	 * Get the bits pixel data.
+	 * 
+	 * @return the pixels.
+	 */
+	public byte[] getPixels() {
+		return pixels;
+	}
+
+	/**
+	 * Set the bits pixel data.
+	 * 
+	 * @param pixels
+	 *            the pixels.
+	 */
+	public void setPixels(byte[] pixels) {
+		this.pixels = pixels;
+	}
 }

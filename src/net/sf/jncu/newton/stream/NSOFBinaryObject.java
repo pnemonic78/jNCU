@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.newton.stream;
 
+import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +35,7 @@ public class NSOFBinaryObject extends NSOFObject implements Precedent {
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("binary");
 
 	private byte[] value;
+	private NSOFObject object;
 
 	/**
 	 * Constructs a new binary object.
@@ -52,6 +54,17 @@ public class NSOFBinaryObject extends NSOFObject implements Precedent {
 	public NSOFBinaryObject(byte[] value) {
 		this();
 		setValue(value);
+	}
+
+	/**
+	 * Constructs a new binary object.
+	 * 
+	 * @param value
+	 *            the value.
+	 */
+	public NSOFBinaryObject(NSOFObject value) {
+		this();
+		setObject(value);
 	}
 
 	/*
@@ -84,17 +97,32 @@ public class NSOFBinaryObject extends NSOFObject implements Precedent {
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(BINARY_OBJECT);
+
 		byte[] v = getValue();
+		NSOFObject o = getObject();
 
-		// Number of bytes of data (xlong)
-		int length = (v == null) ? 0 : v.length;
-		XLong.encode(length, out);
+		if (o != null) {
+			ByteArrayOutputStream bout = new ByteArrayOutputStream();
+			NSOFEncoder enc = new NSOFEncoder(false);
+			enc.setPrecedents(false);
+			enc.encode(o, bout);
+			v = bout.toByteArray();
+		}
 
-		// Class (object)
-		encoder.encode(getNSClass(), out);
+		if (v == null) {
+			// Number of bytes of data (xlong)
+			XLong.encode(0, out);
 
-		// Data
-		if (v != null) {
+			// Class (object)
+			encoder.encode(getNSClass(), out);
+		} else {
+			// Number of bytes of data (xlong)
+			XLong.encode(v.length, out);
+
+			// Class (object)
+			encoder.encode(getNSClass(), out);
+
+			// Data
 			out.write(v);
 		}
 	}
@@ -116,6 +144,27 @@ public class NSOFBinaryObject extends NSOFObject implements Precedent {
 	 */
 	public void setValue(byte[] value) {
 		this.value = value;
+		this.object = null;
+	}
+
+	/**
+	 * Set the object value.
+	 * 
+	 * @param value
+	 *            the value.
+	 */
+	public void setObject(NSOFObject value) {
+		this.value = null;
+		this.object = value;
+	}
+
+	/**
+	 * Get the object value.
+	 * 
+	 * @return the value.
+	 */
+	public NSOFObject getObject() {
+		return object;
 	}
 
 }

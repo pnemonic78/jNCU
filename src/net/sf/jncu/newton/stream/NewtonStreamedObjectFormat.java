@@ -130,10 +130,10 @@ public abstract class NewtonStreamedObjectFormat {
 	 * Host to network - long.<br>
 	 * Write 4 bytes as an unsigned integer in network byte order (Big Endian).
 	 * 
+	 * @param in
+	 *            the number.
 	 * @param out
 	 *            the output.
-	 * @param frame
-	 *            the frame data.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
@@ -148,15 +148,64 @@ public abstract class NewtonStreamedObjectFormat {
 	 * Host to network - big long.<br>
 	 * Write 8 bytes as an unsigned integer in network byte order (Big Endian).
 	 * 
+	 * @param in
+	 *            the number.
 	 * @param out
 	 *            the output.
-	 * @param frame
-	 *            the frame data.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
 	protected static void htonl(long n, OutputStream out) throws IOException {
 		htonl((int) ((n >> 32) & 0xFFFFFFFFL), out);
 		htonl((int) ((n >> 0) & 0xFFFFFFFFL), out);
+	}
+
+	/**
+	 * Network to host - word.<br>
+	 * Read 2 bytes as an unsigned integer in network byte order (Big Endian).
+	 * 
+	 * @param in
+	 *            the input.
+	 * @return the number.
+	 * @throws IOException
+	 *             if read past buffer.
+	 */
+	protected static int ntohs(InputStream in) throws IOException {
+		int n08 = (in.read() & 0xFF) << 8;
+		int n00 = (in.read() & 0xFF) << 0;
+
+		return n08 | n00;
+	}
+
+	/**
+	 * Host to network - word.<br>
+	 * Write 2 bytes as an unsigned integer in network byte order (Big Endian).
+	 * 
+	 * @param in
+	 *            the number.
+	 * @param out
+	 *            the output.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected static void htons(short n, OutputStream out) throws IOException {
+		out.write((n >> 8) & 0xFF);
+		out.write((n >> 0) & 0xFF);
+	}
+
+	/**
+	 * Host to network - word.<br>
+	 * Write 2 bytes as an unsigned integer in network byte order (Big Endian).
+	 * 
+	 * @param in
+	 *            the number.
+	 * @param out
+	 *            the output.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected static void htons(int n, OutputStream out) throws IOException {
+		out.write((n >> 8) & 0xFF);
+		out.write((n >> 0) & 0xFF);
 	}
 }

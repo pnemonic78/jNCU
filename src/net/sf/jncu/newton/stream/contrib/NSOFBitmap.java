@@ -19,6 +19,11 @@
  */
 package net.sf.jncu.newton.stream.contrib;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import net.sf.jncu.newton.stream.NSOFDecoder;
 import net.sf.jncu.newton.stream.NSOFFrame;
 import net.sf.jncu.newton.stream.NSOFSmallRect;
 import net.sf.jncu.newton.stream.NSOFSymbol;
@@ -30,6 +35,8 @@ import net.sf.jncu.newton.stream.NSOFSymbol;
  */
 public class NSOFBitmap extends NSOFFrame {
 
+	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("bitmap");
+
 	public static final NSOFSymbol SLOT_BOUNDS = new NSOFSymbol("bounds");
 	public static final NSOFSymbol SLOT_BITS = new NSOFSymbol("bits");
 	public static final NSOFSymbol SLOT_MASK = new NSOFSymbol("mask");
@@ -39,6 +46,7 @@ public class NSOFBitmap extends NSOFFrame {
 	 */
 	public NSOFBitmap() {
 		super();
+		setNSClass(NS_CLASS);
 	}
 
 	/**
@@ -98,4 +106,23 @@ public class NSOFBitmap extends NSOFFrame {
 		put(SLOT_MASK, mask);
 	}
 
+	/**
+	 * Set the value from the binary object.
+	 * 
+	 * @param value
+	 *            the encoded bitmap.
+	 * @param decoder
+	 *            the decoder.
+	 * @throws IOException
+	 *             if a decoding error occurs.
+	 */
+	public void setValue(byte[] value, NSOFDecoder decoder) throws IOException {
+		// Decode the frame.
+		InputStream in = new ByteArrayInputStream(value);
+		NSOFBitmap bmp = (NSOFBitmap) decoder.decode(in);
+		setBits(bmp.getBits());
+		setBounds(bmp.getBounds());
+		setMask(bmp.getMask());
+		setNSClass(bmp.getNSClass());
+	}
 }
