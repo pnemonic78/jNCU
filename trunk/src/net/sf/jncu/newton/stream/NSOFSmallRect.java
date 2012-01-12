@@ -42,8 +42,7 @@ public class NSOFSmallRect extends NSOFObject implements Precedent {
 	 * Constructs a new small rectangle.
 	 */
 	public NSOFSmallRect() {
-		super();
-		setNSClass(NS_CLASS);
+		this(0, 0, 0, 0);
 	}
 
 	/**
@@ -59,7 +58,8 @@ public class NSOFSmallRect extends NSOFObject implements Precedent {
 	 *            the right co-ordinate.
 	 */
 	public NSOFSmallRect(int top, int left, int bottom, int right) {
-		this();
+		super();
+		setNSClass(NS_CLASS);
 		setTop(top);
 		setLeft(left);
 		setBottom(bottom);

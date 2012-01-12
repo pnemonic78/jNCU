@@ -41,6 +41,7 @@ public class NSOFEncoder {
 	private int idMax = 0;
 	/** Written version header? */
 	private boolean versioned;
+	private boolean precedentsUse = true;
 
 	/**
 	 * Creates a new encoder.
@@ -94,7 +95,7 @@ public class NSOFEncoder {
 		if (object == null) {
 			NewtonStreamedObjectFormat.htonl(0, out);
 		} else {
-			if (object instanceof Precedent) {
+			if (precedentsUse && (object instanceof Precedent)) {
 				Precedent p = (Precedent) object;
 				NSOFPrecedent id = precedents.get(p);
 				if (id == null) {
@@ -171,5 +172,16 @@ public class NSOFEncoder {
 			return new NSOFArray(entries);
 		}
 		return null;
+	}
+
+	/**
+	 * Use precedents for encoding duplicate objects?
+	 * 
+	 * @param use
+	 *            {@code true} to encode precedents - {@code false} to ignore
+	 *            precedents.
+	 */
+	public void setPrecedents(boolean use) {
+		this.precedentsUse = use;
 	}
 }

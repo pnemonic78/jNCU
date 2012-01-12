@@ -26,6 +26,7 @@ import java.io.InvalidObjectException;
 import java.util.Hashtable;
 import java.util.Map;
 
+import net.sf.jncu.newton.stream.contrib.NSOFBitmap;
 import net.sf.jncu.newton.stream.contrib.NSOFInstructions;
 import net.sf.jncu.newton.stream.contrib.NSOFLiterals;
 import net.sf.jncu.newton.stream.contrib.NSOFRawBitmap;
@@ -149,8 +150,10 @@ public class NSOFDecoder {
 	 * @param dataType
 	 *            the data type.
 	 * @return the object.
+	 * @throws IOException
+	 *             if a decoding error occurs.
 	 */
-	protected NSOFObject postDecode(NSOFObject object, int dataType) {
+	protected NSOFObject postDecode(NSOFObject object, int dataType) throws IOException {
 		NSOFSymbol nsClass;
 
 		switch (dataType) {
@@ -162,7 +165,12 @@ public class NSOFDecoder {
 		case NewtonStreamedObjectFormat.BINARY_OBJECT:
 			NSOFBinaryObject bin = (NSOFBinaryObject) object;
 			nsClass = object.getNSClass();
-			if (NSOFInstructions.NS_CLASS.equals(nsClass)) {
+
+			if (NSOFBitmap.NS_CLASS.equals(nsClass)) {
+				NSOFBitmap bin2 = new NSOFBitmap();
+				bin2.setValue(bin.getValue(), this);
+				object = bin2;
+			} else if (NSOFInstructions.NS_CLASS.equals(nsClass)) {
 				NSOFInstructions bin2 = new NSOFInstructions();
 				bin2.setValue(bin.getValue());
 				object = bin2;
