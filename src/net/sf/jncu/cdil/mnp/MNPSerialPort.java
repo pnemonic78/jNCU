@@ -125,8 +125,6 @@ public class MNPSerialPort {
 		} catch (IOException ioe) {
 			// ignore
 		}
-		reader = null;
-		writer = null;
 		serialPort.close();
 	}
 

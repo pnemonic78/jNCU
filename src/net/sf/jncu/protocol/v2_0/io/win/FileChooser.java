@@ -81,7 +81,7 @@ public class FileChooser implements DockCommandListener {
 	}
 
 	/** Property key for default path. */
-	protected static final String KEY_PATH = "FileChooser.Path";
+	protected static final String KEY_PATH = "FileChooser.path";
 
 	private final CDPipe pipe;
 	private final List<NSOFString> types = new ArrayList<NSOFString>();
@@ -95,11 +95,16 @@ public class FileChooser implements DockCommandListener {
 
 	/**
 	 * Constructs a new file chooser.
+	 * 
+	 * @param pipe
+	 *            the pipe.
+	 * @param types
+	 *            the filter types.
 	 */
 	public FileChooser(CDPipe pipe, Collection<NSOFString> types) {
 		super();
-		// if (pipe == null)
-		// throw new IllegalArgumentException("pipe required");
+		if (pipe == null)
+			throw new IllegalArgumentException("pipe required");
 		this.pipe = pipe;
 		if (types != null)
 			this.types.addAll(types);
@@ -219,6 +224,12 @@ public class FileChooser implements DockCommandListener {
 		state = State.Finished;
 	}
 
+	/**
+	 * Send a command.
+	 * 
+	 * @param command
+	 *            the command.
+	 */
 	protected void send(IDockCommandToNewton command) {
 		try {
 			pipe.write(command);
