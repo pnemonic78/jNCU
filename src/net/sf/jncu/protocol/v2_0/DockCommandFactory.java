@@ -155,7 +155,6 @@ public class DockCommandFactory extends net.sf.jncu.protocol.v1_0.DockCommandFac
 		registry.put(DNewtonName.COMMAND, DNewtonName.class);
 		registry.put(DRequestToDock.COMMAND, DRequestToDock.class);
 		registry.put(DOperationCanceled.COMMAND, DOperationCanceled.class);
-		registry.put(DOperationCanceledAck.COMMAND, DOperationCanceledAck.class);
 		registry.put(DPassword.COMMAND, DPassword.class);
 		registry.put(DPackageInfo.COMMAND, DPackageInfo.class);
 		registry.put(DLoadPackageFile.COMMAND, DLoadPackageFile.class);
@@ -238,6 +237,7 @@ public class DockCommandFactory extends net.sf.jncu.protocol.v1_0.DockCommandFac
 		registry.put(DKeyboardPassthrough.COMMAND, DKeyboardPassthrough.class);
 		registry.put(DKeyboardString.COMMAND, DKeyboardString.class);
 		registry.put(DOperationCanceled.COMMAND, DOperationCanceled.class);
+		registry.put(DOperationCanceledAck.COMMAND, DOperationCanceledAck.class);
 		registry.put(DOperationDone.COMMAND, DOperationDone.class);
 		registry.put(DPath.COMMAND, DPath.class);
 		registry.put(DQuery.COMMAND, DQuery.class);
