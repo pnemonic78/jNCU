@@ -34,6 +34,10 @@ public class SwingUtils {
 	private static boolean initialised;
 	private static FileSystemView fileSystemView;
 
+	static {
+		init();
+	}
+
 	/**
 	 * Constructs a new object.
 	 */
@@ -41,7 +45,10 @@ public class SwingUtils {
 		super();
 	}
 
-	private static void init() {
+	/**
+	 * Initialise.
+	 */
+	public static void init() {
 		if (initialised)
 			return;
 
@@ -63,7 +70,6 @@ public class SwingUtils {
 	 */
 	public static FileSystemView getFileSystemView() {
 		if (fileSystemView == null) {
-			init();
 			fileSystemView = FileSystemView.getFileSystemView();
 		}
 		return fileSystemView;

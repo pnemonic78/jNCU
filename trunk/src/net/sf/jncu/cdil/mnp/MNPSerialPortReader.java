@@ -80,7 +80,6 @@ public class MNPSerialPortReader extends Thread implements Closeable {
 			} catch (Exception e) {
 				// ignore
 			}
-			in = null;
 		}
 	}
 
