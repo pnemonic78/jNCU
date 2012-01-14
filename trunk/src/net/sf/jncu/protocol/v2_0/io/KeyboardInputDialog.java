@@ -38,38 +38,38 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import net.sf.swing.SwingUtils;
 
 /**
+ * Keyboard input dialog.
+ * <p>
+ * Provides a UI for the user to type text.
+ * 
  * @author Moshe
  */
-public class KeyboardInputDialog extends JDialog implements DocumentListener, KeyListener {
+public class KeyboardInputDialog extends JDialog implements KeyListener {
 
 	static {
 		SwingUtils.init();
 	}
 
-	private KeyListener keyListener;
-	private DocumentListener docListener;
-	private JTextArea text;
+	private JLabel inputLabel;
+	private JTextArea input;
 	private JButton pasteButton;
-	private JButton clearButton;
 	private JButton cancelButton;
-
-	public static void main(String[] args) {
-		KeyboardInputDialog dlg = new KeyboardInputDialog();
-		dlg.setVisible(true);
-	}
+	private final List<KeyboardInputListener> listeners = new ArrayList<KeyboardInputListener>();
 
 	/**
 	 * Constructs a new dialog.
@@ -114,7 +114,7 @@ public class KeyboardInputDialog extends JDialog implements DocumentListener, Ke
 
 		setTitle("Keyboard Passthrough");
 		final int w = 320;
-		final int h = 200;
+		final int h = 150;
 		setSize(w, h);
 
 		// Centre.
@@ -133,33 +133,52 @@ public class KeyboardInputDialog extends JDialog implements DocumentListener, Ke
 		setLocation(x, y);
 
 		JPanel buttons = new JPanel();
+		// TODO align buttons on right-hand side.
 		BoxLayout layoutButtons = new BoxLayout(buttons, BoxLayout.X_AXIS);
 		buttons.setLayout(layoutButtons);
 		buttons.add(getPasteButton());
-		buttons.add(getClearButton());
 		buttons.add(getCancelButton());
 
 		setLayout(new BorderLayout(10, 10));
-		add(new JScrollPane(getTextArea()), BorderLayout.CENTER);
+		add(getTextLabel(), BorderLayout.NORTH);
+		add(new JScrollPane(getTextInput()), BorderLayout.CENTER);
 		add(buttons, BorderLayout.SOUTH);
-		getTextArea().requestFocus();
+
+		getTextInput().requestFocus();
+
+		this.addKeyListener(this);
 	}
 
 	/**
-	 * Get the text area.
+	 * Get the text label.
 	 * 
-	 * @return the text area.
+	 * @return the text label.
 	 */
-	private JTextArea getTextArea() {
-		if (text == null) {
-			text = new JTextArea();
-			Font font = text.getFont();
-			font = new Font(font.getFontName(), font.getStyle(), 14);
-			text.setFont(font);
-			text.addKeyListener(this);
-			text.getDocument().addDocumentListener(this);
+	private JLabel getTextLabel() {
+		if (inputLabel == null) {
+			inputLabel = new JLabel("Text typed:");
 		}
-		return text;
+		return inputLabel;
+	}
+
+	/**
+	 * Get the text summary input.
+	 * 
+	 * @return the text summary.
+	 */
+	private JTextArea getTextInput() {
+		if (input == null) {
+			input = new JTextArea();
+			input.setEditable(false);
+			input.setAlignmentX(CENTER_ALIGNMENT);
+			input.addKeyListener(this);
+			input.setFocusTraversalKeysEnabled(false);
+
+			Font font = input.getFont();
+			font = font.deriveFont(font.getStyle(), 14);
+			input.setFont(font);
+		}
+		return input;
 	}
 
 	/**
@@ -169,7 +188,7 @@ public class KeyboardInputDialog extends JDialog implements DocumentListener, Ke
 	 */
 	private JButton getPasteButton() {
 		if (pasteButton == null) {
-			pasteButton = new JButton("Paste");
+			pasteButton = new JButton(Toolkit.getProperty("AWT.paste", "Paste"));
 			pasteButton.addActionListener(new ActionListener() {
 
 				@Override
@@ -182,32 +201,13 @@ public class KeyboardInputDialog extends JDialog implements DocumentListener, Ke
 	}
 
 	/**
-	 * Get the "clear" button. Clears the text.
-	 * 
-	 * @return the button.
-	 */
-	private JButton getClearButton() {
-		if (clearButton == null) {
-			clearButton = new JButton("Clear");
-			clearButton.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					getTextArea().setText(null);
-				}
-			});
-		}
-		return clearButton;
-	}
-
-	/**
 	 * Get the "cancel" button. Closes the window.
 	 * 
 	 * @return the button.
 	 */
 	private JButton getCancelButton() {
 		if (cancelButton == null) {
-			cancelButton = new JButton("Cancel");
+			cancelButton = new JButton(Toolkit.getProperty("AWT.cancel", "Cancel"));
 			cancelButton.addActionListener(new ActionListener() {
 
 				@Override
@@ -236,7 +236,9 @@ public class KeyboardInputDialog extends JDialog implements DocumentListener, Ke
 					s.append((char) c);
 					c = reader.read();
 				}
-				getTextArea().append(s.toString());
+				String text = s.toString();
+				getTextInput().setText(text);
+				fireStringTyped(text);
 			} catch (UnsupportedFlavorException ufe) {
 				ufe.printStackTrace();
 			} catch (IOException ioe) {
@@ -249,6 +251,57 @@ public class KeyboardInputDialog extends JDialog implements DocumentListener, Ke
 					}
 				}
 			}
+		}
+		getTextInput().requestFocus();
+	}
+
+	/**
+	 * Add a keyboard input listener.
+	 * 
+	 * @param listener
+	 *            the listener to add.
+	 */
+	public void addInputListener(KeyboardInputListener listener) {
+		if (!listeners.contains(listener)) {
+			listeners.add(listener);
+		}
+	}
+
+	/**
+	 * Remove a keyboard input listener.
+	 * 
+	 * @param listener
+	 *            the listener to remove.
+	 */
+	public void removeInputListener(KeyboardInputListener listener) {
+		listeners.remove(listener);
+	}
+
+	/**
+	 * Notify all the listeners that a character has been pressed.
+	 * 
+	 * @param ke
+	 *            the key event.
+	 */
+	protected void fireCharTyped(KeyEvent ke) {
+		// Make copy of listeners to avoid ConcurrentModificationException.
+		Collection<KeyboardInputListener> listenersCopy = new ArrayList<KeyboardInputListener>(listeners);
+		for (KeyboardInputListener listener : listenersCopy) {
+			listener.charTyped(ke);
+		}
+	}
+
+	/**
+	 * Notify all the listeners that text has been typed.
+	 * 
+	 * @param text
+	 *            the text.
+	 */
+	protected void fireStringTyped(String text) {
+		// Make copy of listeners to avoid ConcurrentModificationException.
+		Collection<KeyboardInputListener> listenersCopy = new ArrayList<KeyboardInputListener>(listeners);
+		for (KeyboardInputListener listener : listenersCopy) {
+			listener.stringTyped(text);
 		}
 	}
 
@@ -263,59 +316,20 @@ public class KeyboardInputDialog extends JDialog implements DocumentListener, Ke
 		}
 	}
 
-	/**
-	 * Set the key listener.
-	 * 
-	 * @param keyListener
-	 *            the listener.
-	 */
-	public void setKeyListener(KeyListener keyListener) {
-		this.keyListener = keyListener;
-	}
-
-	/**
-	 * Set the document listener.
-	 * 
-	 * @param docListener
-	 *            the listener.
-	 */
-	public void setDocumentListener(DocumentListener docListener) {
-		this.docListener = docListener;
-	}
-
-	@Override
-	public void insertUpdate(DocumentEvent de) {
-		if (docListener != null)
-			docListener.insertUpdate(de);
-	}
-
-	@Override
-	public void removeUpdate(DocumentEvent de) {
-		if (docListener != null)
-			docListener.removeUpdate(de);
-	}
-
-	@Override
-	public void changedUpdate(DocumentEvent de) {
-		if (docListener != null)
-			docListener.changedUpdate(de);
-	}
-
-	@Override
-	public void keyTyped(KeyEvent ke) {
-		if (keyListener != null)
-			keyListener.keyTyped(ke);
-	}
-
 	@Override
 	public void keyPressed(KeyEvent ke) {
-		if (keyListener != null)
-			keyListener.keyPressed(ke);
+		String text = KeyEvent.getKeyText(ke.getKeyCode());
+		getTextInput().setText(text);
+		fireCharTyped(ke);
 	}
 
 	@Override
 	public void keyReleased(KeyEvent ke) {
-		if (keyListener != null)
-			keyListener.keyReleased(ke);
+		fireCharTyped(ke);
+	}
+
+	@Override
+	public void keyTyped(KeyEvent ke) {
+		fireCharTyped(ke);
 	}
 }

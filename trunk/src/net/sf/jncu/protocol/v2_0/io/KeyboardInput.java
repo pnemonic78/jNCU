@@ -20,16 +20,11 @@
 package net.sf.jncu.protocol.v2_0.io;
 
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-
 import net.sf.jncu.cdil.CDPipe;
+import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
@@ -42,7 +37,14 @@ import net.sf.jncu.protocol.v2_0.session.DOperationDone;
  * 
  * @author Moshe
  */
-public class KeyboardInput extends Thread implements DockCommandListener, KeyListener, DocumentListener, WindowListener {
+public class KeyboardInput extends Thread implements DockCommandListener, WindowListener, KeyboardInputListener {
+
+	/** Windows EOL. */
+	protected static final String CRLF = "\r\n";
+	/** Macintosh EOL. */
+	protected static final String CR = "\r";
+	/** Unix EOL. */
+	protected static final char LF = '\n';
 
 	private static enum State {
 		None, Initialised, Input, Cancelled, Finished
@@ -66,8 +68,7 @@ public class KeyboardInput extends Thread implements DockCommandListener, KeyLis
 		state = State.Initialised;
 
 		dialog = new KeyboardInputDialog();
-		dialog.setKeyListener(this);
-		dialog.setDocumentListener(this);
+		dialog.addInputListener(this);
 		dialog.addWindowListener(this);
 	}
 
@@ -76,6 +77,7 @@ public class KeyboardInput extends Thread implements DockCommandListener, KeyLis
 	 */
 	@Override
 	public void run() {
+		pipe.ping();
 		state = State.Input;
 		dialog.setVisible(true);
 	}
@@ -90,7 +92,6 @@ public class KeyboardInput extends Thread implements DockCommandListener, KeyLis
 		String cmd = command.getCommand();
 
 		if (DOperationCanceled.COMMAND.equals(cmd)) {
-			// TODO fireCancelled();
 			DOperationCanceledAck ack = new DOperationCanceledAck();
 			send(ack);
 			commandEOF();
@@ -116,10 +117,12 @@ public class KeyboardInput extends Thread implements DockCommandListener, KeyLis
 
 	@Override
 	public void commandEOF() {
+		pipe.cancelPing();
 		pipe.removeCommandListener(this);
 		if (state == State.Input) {
 			dialog.close();
 		}
+		dialog.removeInputListener(this);
 	}
 
 	/**
@@ -130,7 +133,8 @@ public class KeyboardInput extends Thread implements DockCommandListener, KeyLis
 	 */
 	protected void send(IDockCommandToNewton command) {
 		try {
-			pipe.write(command);
+			if (pipe.getLayer().getState() == CDState.CONNECTED)
+				pipe.write(command);
 		} catch (Exception e) {
 			e.printStackTrace();
 			commandEOF();
@@ -142,13 +146,16 @@ public class KeyboardInput extends Thread implements DockCommandListener, KeyLis
 	 * 
 	 * @param c
 	 *            the character.
+	 * @param flags
+	 *            the state flags.
 	 */
-	protected void writeChar(char c) {
+	protected void writeChar(char c, int flags) {
 		if (state != State.Input)
 			return;
 
 		DKeyboardChar cmd = new DKeyboardChar();
 		cmd.setCharacter(c);
+		cmd.setState(flags);
 		send(cmd);
 	}
 
@@ -168,46 +175,6 @@ public class KeyboardInput extends Thread implements DockCommandListener, KeyLis
 	}
 
 	@Override
-	public void keyTyped(KeyEvent ke) {
-		char c = ke.getKeyChar();
-		if (c == '\n')
-			c = '\r';
-		writeChar(c);
-	}
-
-	@Override
-	public void keyPressed(KeyEvent ke) {
-	}
-
-	@Override
-	public void keyReleased(KeyEvent ke) {
-	}
-
-	@Override
-	public void insertUpdate(DocumentEvent de) {
-		Document doc = de.getDocument();
-		int offset = de.getOffset();
-		int length = de.getLength();
-		if (length <= 1)
-			return;// The event will be handled by key event.
-		try {
-			String text = doc.getText(offset, length);
-			text = text.replace('\n', '\r');
-			writeString(text);
-		} catch (BadLocationException ble) {
-			ble.printStackTrace();
-		}
-	}
-
-	@Override
-	public void removeUpdate(DocumentEvent de) {
-	}
-
-	@Override
-	public void changedUpdate(DocumentEvent de) {
-	}
-
-	@Override
 	public void windowOpened(WindowEvent we) {
 	}
 
@@ -216,7 +183,8 @@ public class KeyboardInput extends Thread implements DockCommandListener, KeyLis
 		if (state == State.Input) {
 			DOperationDone done = new DOperationDone();
 			try {
-				pipe.write(done);
+				if (pipe.getLayer().getState() == CDState.CONNECTED)
+					pipe.write(done);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -242,5 +210,31 @@ public class KeyboardInput extends Thread implements DockCommandListener, KeyLis
 
 	@Override
 	public void windowDeactivated(WindowEvent we) {
+	}
+
+	@Override
+	public void charTyped(KeyEvent ke) {
+		if (ke.getID() != KeyEvent.KEY_PRESSED)
+			return;
+		char keyChar = DKeyboardChar.toNewtonChar(ke.getKeyChar(), ke.getKeyCode());
+		// Ignore unknown characters.
+		if (keyChar == 0)
+			return;
+
+		int keyFlags = DKeyboardChar.toNewtonState(ke.getModifiers());
+
+		writeChar(keyChar, keyFlags);
+	}
+
+	@Override
+	public void stringTyped(String text) {
+		int length = text.length();
+		if (length == 0)
+			return;
+
+		// Replace with Macintosh EOL.
+		text = text.replaceAll(CRLF, CR);
+		text = text.replace(LF, DKeyboardChar.RETURN);
+		writeString(text);
 	}
 }

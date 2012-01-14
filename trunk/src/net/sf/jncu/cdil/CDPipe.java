@@ -46,6 +46,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	protected DockingProtocol docking;
 	private static final Timer timer = new Timer();
 	protected CDTimeout timeoutTask;
+	protected CDPing pingTask;
 	private CDCommandLayer cmdLayer;
 
 	/**
@@ -427,6 +428,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 			TimeoutException {
 		layer.checkInitialized();
 		this.timeout = timeoutInSecs;
+		restartTimeout();
 	}
 
 	/**
@@ -479,9 +481,8 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 * Restart the timeout.
 	 */
 	protected void restartTimeout() {
-		if (timeoutTask != null) {
+		if (timeoutTask != null)
 			timeoutTask.cancel();
-		}
 		this.timeoutTask = new CDTimeout(this);
 		timer.schedule(timeoutTask, timeout * 1000L);
 	}
@@ -505,6 +506,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 */
 	@Override
 	public void commandSent(IDockCommandToNewton command) {
+		restartTimeout();
 	}
 
 	/*
@@ -573,5 +575,22 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 */
 	public void removeCommandListener(DockCommandListener listener) {
 		getCommandLayer().removeCommandListener(listener);
+	}
+
+	/**
+	 * Start pinging the Newton every 10 seconds to maintain connection and
+	 * avoid a timeout.
+	 */
+	public void ping() {
+		this.pingTask = new CDPing(this);
+		timer.schedule(pingTask, 10000L, 10000L);
+	}
+
+	/**
+	 * Stop pinging the Newton. Resumes connection timeout.
+	 */
+	public void cancelPing() {
+		if (pingTask != null)
+			pingTask.cancel();
 	}
 }
