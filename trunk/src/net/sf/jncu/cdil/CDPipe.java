@@ -39,6 +39,8 @@ import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
  */
 public abstract class CDPipe extends Thread implements DockCommandListener {
 
+	protected static final long PING_TIME = 10000L;
+
 	protected final CDLayer layer;
 	private PipedOutputStream pipeSource;
 	private PipedInputStream pipeSink;
@@ -47,6 +49,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	private static final Timer timer = new Timer();
 	protected CDTimeout timeoutTask;
 	protected CDPing pingTask;
+	protected boolean pingFixed;
 	private CDCommandLayer cmdLayer;
 
 	/**
@@ -495,7 +498,12 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 */
 	@Override
 	public void commandReceived(IDockCommandFromNewton command) {
-		restartTimeout();
+		// We keep connection alive either with ping or timeout.
+		if (pingTask == null) {
+			restartTimeout();
+		} else if (!pingFixed) {
+			restartPing();
+		}
 	}
 
 	/*
@@ -506,7 +514,12 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 */
 	@Override
 	public void commandSent(IDockCommandToNewton command) {
-		restartTimeout();
+		// We keep connection alive either with ping or timeout.
+		if (pingTask == null) {
+			restartTimeout();
+		} else if (!pingFixed) {
+			restartPing();
+		}
 	}
 
 	/*
@@ -515,6 +528,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 */
 	@Override
 	public void commandEOF() {
+		stopPing();
 	}
 
 	/**
@@ -582,15 +596,46 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 * avoid a timeout.
 	 */
 	public void ping() {
+		ping(false);
+	}
+
+	/**
+	 * Start pinging the Newton every 10 seconds to maintain connection and
+	 * avoid a timeout.
+	 * 
+	 * @param fixed
+	 *            ping at fixed intervals, even though connection is busy?
+	 */
+	public void ping(boolean fixed) {
+		this.pingFixed = fixed;
+		// We keep connection alive either with ping or timeout.
+		if (timeoutTask != null)
+			timeoutTask.cancel();
 		this.pingTask = new CDPing(this);
-		timer.schedule(pingTask, 10000L, 10000L);
+		if (fixed) {
+			timer.schedule(pingTask, PING_TIME, PING_TIME);
+		} else {
+			restartPing();
+		}
 	}
 
 	/**
 	 * Stop pinging the Newton. Resumes connection timeout.
 	 */
-	public void cancelPing() {
+	public void stopPing() {
 		if (pingTask != null)
 			pingTask.cancel();
+		pingTask = null;
+		restartTimeout();
+	}
+
+	/**
+	 * Restart the ping.
+	 */
+	protected void restartPing() {
+		if (pingTask != null)
+			pingTask.cancel();
+		this.pingTask = new CDPing(this);
+		timer.schedule(pingTask, PING_TIME);
 	}
 }
