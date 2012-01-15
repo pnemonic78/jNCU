@@ -24,7 +24,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import net.sf.jncu.cdil.CDPipe;
-import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
@@ -117,7 +116,6 @@ public class KeyboardInput extends Thread implements DockCommandListener, Window
 
 	@Override
 	public void commandEOF() {
-		pipe.cancelPing();
 		pipe.removeCommandListener(this);
 		if (state == State.Input) {
 			dialog.close();
@@ -133,7 +131,7 @@ public class KeyboardInput extends Thread implements DockCommandListener, Window
 	 */
 	protected void send(IDockCommandToNewton command) {
 		try {
-			if (pipe.getLayer().getState() == CDState.CONNECTED)
+			if (pipe.canSend())
 				pipe.write(command);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -183,7 +181,7 @@ public class KeyboardInput extends Thread implements DockCommandListener, Window
 		if (state == State.Input) {
 			DOperationDone done = new DOperationDone();
 			try {
-				if (pipe.getLayer().getState() == CDState.CONNECTED)
+				if (pipe.canSend())
 					pipe.write(done);
 			} catch (Exception e) {
 				e.printStackTrace();
