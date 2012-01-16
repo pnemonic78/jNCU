@@ -23,6 +23,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Toolkit;
@@ -42,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -83,6 +83,7 @@ public class KeyboardInputDialog extends JDialog implements KeyListener {
 	 * Constructs a new dialog.
 	 * 
 	 * @param owner
+	 *            the owner.
 	 */
 	public KeyboardInputDialog(Frame owner) {
 		super(owner);
@@ -93,6 +94,7 @@ public class KeyboardInputDialog extends JDialog implements KeyListener {
 	 * Constructs a new dialog.
 	 * 
 	 * @param owner
+	 *            the owner.
 	 */
 	public KeyboardInputDialog(Dialog owner) {
 		super(owner);
@@ -103,6 +105,7 @@ public class KeyboardInputDialog extends JDialog implements KeyListener {
 	 * Constructs a new dialog.
 	 * 
 	 * @param owner
+	 *            the owner.
 	 */
 	public KeyboardInputDialog(Window owner) {
 		super(owner);
@@ -133,8 +136,7 @@ public class KeyboardInputDialog extends JDialog implements KeyListener {
 		setLocation(x, y);
 
 		JPanel buttons = new JPanel();
-		// TODO align buttons on right-hand side.
-		BoxLayout layoutButtons = new BoxLayout(buttons, BoxLayout.X_AXIS);
+		FlowLayout layoutButtons = new FlowLayout(FlowLayout.TRAILING);
 		buttons.setLayout(layoutButtons);
 		buttons.add(getPasteButton());
 		buttons.add(getCancelButton());
