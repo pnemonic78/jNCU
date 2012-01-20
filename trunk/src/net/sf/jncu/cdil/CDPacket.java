@@ -17,15 +17,29 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.cdil.mnp;
+package net.sf.jncu.cdil;
 
-import net.sf.jncu.cdil.CDPacketListener;
+import java.io.Serializable;
 
 /**
- * MNP packet listener interface.
+ * CD packet.
  * 
- * @author moshew
+ * @author Moshe
  */
-public interface MNPPacketListener extends CDPacketListener<MNPPacket> {
+public abstract class CDPacket implements Serializable {
+
+	/**
+	 * Constructs a new packet.
+	 */
+	public CDPacket() {
+		super();
+	}
+
+	/**
+	 * Serialise the packet.
+	 * 
+	 * @return the payload.
+	 */
+	public abstract byte[] serialize();
 
 }

@@ -19,14 +19,14 @@
  */
 package net.sf.jncu.cdil.mnp;
 
-import java.io.Serializable;
+import net.sf.jncu.cdil.CDPacket;
 
 /**
  * MNP packet.
  * 
  * @author moshew
  */
-public abstract class MNPPacket implements Serializable {
+public abstract class MNPPacket extends CDPacket {
 
 	/** Link Request packet. */
 	public static final byte LR = 0x01;
@@ -74,13 +74,6 @@ public abstract class MNPPacket implements Serializable {
 		}
 		return offset;
 	}
-
-	/**
-	 * Serialise the packet.
-	 * 
-	 * @return the payload.
-	 */
-	public abstract byte[] serialize();
 
 	/**
 	 * Get the type.

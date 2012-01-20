@@ -30,7 +30,7 @@ import net.sf.jncu.protocol.v1_0.session.DHello;
  */
 public class CDPing extends TimerTask {
 
-	private final CDPipe pipe;
+	private final CDPipe<? extends CDPacket> pipe;
 
 	/**
 	 * Creates a new ping.
@@ -38,7 +38,7 @@ public class CDPing extends TimerTask {
 	 * @param pipe
 	 *            the pipe.
 	 */
-	public CDPing(CDPipe pipe) {
+	public CDPing(CDPipe<? extends CDPacket> pipe) {
 		super();
 		this.pipe = pipe;
 	}

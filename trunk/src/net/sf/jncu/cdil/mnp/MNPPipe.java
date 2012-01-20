@@ -59,7 +59,7 @@ import net.sf.jncu.protocol.v2_0.session.DockingState;
  * 
  * @author moshew
  */
-public class MNPPipe extends CDPipe implements MNPPacketListener {
+public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 
 	/** State for MNP. */
 	protected enum MNPState {
@@ -82,6 +82,9 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		/** Disconnected. */
 		MNP_DISCONNECTED
 	}
+
+	/** Port can timeout after 1 minute. */
+	private static final int PORT_TIMEOUT = 60;
 
 	protected final CommPortIdentifier portId;
 	protected final int baud;
@@ -107,7 +110,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 		this.portId = portId;
 		this.baud = baud;
 		try {
-			this.port = new MNPSerialPort(portId, baud, getTimeout());
+			this.port = new MNPSerialPort(portId, baud, PORT_TIMEOUT);
 		} catch (PortInUseException piue) {
 			throw new PlatformException(piue);
 		} catch (TooManyListenersException tmle) {
@@ -153,7 +156,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	public void setTimeout(int timeoutInSecs) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
 			TimeoutException {
 		if (portId != null) {
-			throw new BadPipeStateException("only able set the port timeout at port creation.");
+			throw new BadPipeStateException("Only able set the port timeout at port creation.");
 		}
 		super.setTimeout(timeoutInSecs);
 	}
@@ -433,7 +436,7 @@ public class MNPPipe extends CDPipe implements MNPPacketListener {
 	 * @see net.sf.jncu.cdil.CDPipe#createCommandLayer()
 	 */
 	@Override
-	protected CDCommandLayer createCommandLayer() {
+	protected CDCommandLayer<MNPPacket> createCommandLayer() {
 		return new MNPSerialCommandLayer(getPacketLayer());
 	}
 

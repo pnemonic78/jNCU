@@ -25,6 +25,7 @@ import javax.crypto.Cipher;
 
 import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDILNotInitializedException;
+import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
@@ -43,7 +44,7 @@ import net.sf.jncu.protocol.v1_0.query.DResult;
  */
 public class DockingProtocol implements DockCommandListener {
 
-	private final CDPipe pipe;
+	private final CDPipe<? extends CDPacket> pipe;
 	/** Internal state. */
 	private DockingState state = DockingState.HANDSHAKE_LR_LISTEN;
 	/** Newton information. */
@@ -73,7 +74,7 @@ public class DockingProtocol implements DockCommandListener {
 	 * @param pipe
 	 *            the pipe.
 	 */
-	public DockingProtocol(CDPipe pipe) {
+	public DockingProtocol(CDPipe<? extends CDPacket> pipe) {
 		super();
 		this.pipe = pipe;
 		this.crypto = new DESNewton();

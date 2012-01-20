@@ -17,15 +17,34 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.cdil.mnp;
-
-import net.sf.jncu.cdil.CDPacketListener;
+package net.sf.jncu.cdil;
 
 /**
- * MNP packet listener interface.
+ * Packet listener interface.
  * 
  * @author moshew
  */
-public interface MNPPacketListener extends CDPacketListener<MNPPacket> {
+public interface CDPacketListener<T extends CDPacket> {
+
+	/**
+	 * Notification that a packet was received.
+	 * 
+	 * @param packet
+	 *            the received packet.
+	 */
+	public void packetReceived(T packet);
+
+	/**
+	 * Notification that a packet was sent.
+	 * 
+	 * @param packet
+	 *            the sent packet.
+	 */
+	public void packetSent(T packet);
+
+	/**
+	 * Notification that no more packets will be available.
+	 */
+	public void packetEOF();
 
 }

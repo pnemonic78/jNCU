@@ -28,7 +28,7 @@ import java.util.TimerTask;
  */
 public class CDTimeout extends TimerTask {
 
-	private final CDPipe pipe;
+	private final CDPipe<? extends CDPacket> pipe;
 
 	/**
 	 * Creates a new timeout.
@@ -36,7 +36,7 @@ public class CDTimeout extends TimerTask {
 	 * @param pipe
 	 *            the pipe.
 	 */
-	public CDTimeout(CDPipe pipe) {
+	public CDTimeout(CDPipe<? extends CDPacket> pipe) {
 		super();
 		this.pipe = pipe;
 	}

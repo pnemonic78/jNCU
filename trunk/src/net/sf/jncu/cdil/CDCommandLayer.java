@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.TimeoutException;
 
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommand;
@@ -36,9 +37,12 @@ import net.sf.jncu.protocol.v2_0.DockCommandFactory;
  * CDIL command layer.
  * 
  * @author moshew
+ * @param <P>
  */
-public abstract class CDCommandLayer extends Thread {
+public abstract class CDCommandLayer<P extends CDPacket> extends Thread implements CDPacketListener<P> {
 
+	/** The packet layer. */
+	protected final CDPacketLayer<P> packetLayer;
 	/** List of command listeners. */
 	protected final Collection<DockCommandListener> listeners = new ArrayList<DockCommandListener>();
 	/** Still listening for incoming commands? */
@@ -46,10 +50,15 @@ public abstract class CDCommandLayer extends Thread {
 
 	/**
 	 * Creates a new command layer.
+	 * 
+	 * @param packetLayer
+	 *            the packet layer.
 	 */
-	public CDCommandLayer() {
+	public CDCommandLayer(CDPacketLayer<P> packetLayer) {
 		super();
 		setName("CommandLayer-" + getId());
+		this.packetLayer = packetLayer;
+		packetLayer.addPacketListener(this);
 	}
 
 	/**
@@ -119,6 +128,7 @@ public abstract class CDCommandLayer extends Thread {
 	public void close() {
 		running = false;
 		listeners.clear();
+		packetLayer.removePacketListener(this);
 		try {
 			getInput().close();
 		} catch (IOException ioe) {
@@ -179,5 +189,47 @@ public abstract class CDCommandLayer extends Thread {
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
+	}
+
+	/**
+	 * Sets the timeout period for CD_Read and CD_Write calls in a pipe.<br>
+	 * <tt>DIL_Error CD_SetTimeout(CD_Handle pipe, long timeoutInSecs)</tt>
+	 * <p>
+	 * When the CDIL pipe is created, it is initialised with a default timeout
+	 * period of 30 seconds. This timeout period is used to control
+	 * <tt>CD_Read</tt> and <tt>CD_Write</tt> calls (and, indirectly, any
+	 * flushing of outgoing data). Timeout values are specified on a per-pipe
+	 * basis.<br>
+	 * For <tt>CD_Read</tt>, if the requested number of bytes are not available
+	 * after the timeout period, a <tt>kCD_Timeout</tt> error is returned and no
+	 * bytes will be transferred. For <tt>CD_Write</tt>, if no data can be sent
+	 * after the timeout period, a <tt>kCD_Timeout</tt> error is returned.<br>
+	 * The timeout does not occur, if the data is presently being transferred.
+	 * That is, a long operation does not fail due to a timeout. Note that an
+	 * attempt is made to send data even if the timeout is set to zero seconds.
+	 * 
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
+	 * @throws BadPipeStateException
+	 *             if pipe is in an incorrect state.
+	 * @throws PipeDisconnectedException
+	 *             if the pipe is disconnected.
+	 * @throws TimeoutException
+	 *             if timeout occurs.
+	 */
+	public void setTimeout(int timeoutInSecs) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
+			TimeoutException {
+		packetLayer.setTimeout(timeoutInSecs);
+	}
+
+	/**
+	 * Get the timeout period.
+	 * 
+	 * @return the timeout in seconds.
+	 */
+	public int getTimeout() {
+		return packetLayer.getTimeout();
 	}
 }

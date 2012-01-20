@@ -20,6 +20,7 @@
 package net.sf.jncu.cdil.mnp;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -97,6 +98,15 @@ public class MNPSerialPacketLayer extends MNPPacketLayer {
 	 */
 	protected void write(byte[] payload, int offset, int length) throws IOException {
 		write(port.getOutputStream(), payload, offset, length);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.sf.jncu.cdil.mnp.MNPPacketLayer#write(java.io.OutputStream,
+	 * byte[], int, int)
+	 */
+	protected void write(InputStream payload) throws IOException {
+		write(port.getOutputStream(), payload);
 	}
 
 	/*

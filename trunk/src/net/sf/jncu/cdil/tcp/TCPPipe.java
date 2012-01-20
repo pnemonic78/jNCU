@@ -29,7 +29,7 @@ import net.sf.jncu.cdil.ServiceNotSupportedException;
  * 
  * @author moshew
  */
-public class TCPPipe extends CDPipe {
+public class TCPPipe extends CDPipe<TCPPacket> {
 
 	protected final int port;
 
@@ -56,7 +56,7 @@ public class TCPPipe extends CDPipe {
 	 * @see net.sf.jncu.cdil.CDPipe#createCommandLayer()
 	 */
 	@Override
-	protected CDCommandLayer createCommandLayer() {
+	protected CDCommandLayer<TCPPacket> createCommandLayer() {
 		// TODO Auto-generated method stub
 		return null;
 	}

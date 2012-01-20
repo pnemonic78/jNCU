@@ -37,20 +37,18 @@ import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
  * 
  * @author moshew
  */
-public abstract class CDPipe extends Thread implements DockCommandListener {
+public abstract class CDPipe<P extends CDPacket> extends Thread implements DockCommandListener {
 
 	protected static final long PING_TIME = 10000L;
 
 	protected final CDLayer layer;
 	private PipedOutputStream pipeSource;
 	private PipedInputStream pipeSink;
-	private int timeout = 30;
+	private CDCommandLayer<P> cmdLayer;
 	protected DockingProtocol docking;
-	private static final Timer timer = new Timer();
-	protected CDTimeout timeoutTask;
-	protected CDPing pingTask;
-	protected boolean pingFixed;
-	private CDCommandLayer cmdLayer;
+	private final Timer timer = new Timer();
+	private CDPing pingTask;
+	private boolean pingFixed;
 
 	/**
 	 * Creates a new pipe.
@@ -94,10 +92,10 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 */
 	public void dispose() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		layer.checkInitialized();
-		timer.cancel();
 		if (getCDState() != CDState.DISCONNECTED) {
 			disconnect();
 		}
+		timer.cancel();
 	}
 
 	/**
@@ -139,9 +137,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 *             if timeout occurs.
 	 */
 	protected void disconnectImpl() throws PlatformException, TimeoutException {
-		if (timeoutTask != null) {
-			timeoutTask.cancel();
-		}
+		stopPing();
 		getCommandLayer().close();
 	}
 
@@ -430,8 +426,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	public void setTimeout(int timeoutInSecs) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
 			TimeoutException {
 		layer.checkInitialized();
-		this.timeout = timeoutInSecs;
-		restartTimeout();
+		getCommandLayer().setTimeout(timeoutInSecs);
 	}
 
 	/**
@@ -440,7 +435,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 * @return the timeout in seconds.
 	 */
 	public int getTimeout() {
-		return timeout;
+		return getCommandLayer().getTimeout();
 	}
 
 	/**
@@ -469,7 +464,6 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 			throw new BadPipeStateException();
 		}
 		layer.setState(CDState.CONNECT_PENDING);
-		restartTimeout();
 	}
 
 	protected CDState getCDState() {
@@ -480,16 +474,6 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 		layer.setState(this, state);
 	}
 
-	/**
-	 * Restart the timeout.
-	 */
-	protected void restartTimeout() {
-		if (timeoutTask != null)
-			timeoutTask.cancel();
-		this.timeoutTask = new CDTimeout(this);
-		timer.schedule(timeoutTask, timeout * 1000L);
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -498,12 +482,8 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 */
 	@Override
 	public void commandReceived(IDockCommandFromNewton command) {
-		// We keep connection alive either with ping or timeout.
-		if (pingTask == null) {
-			restartTimeout();
-		} else if (!pingFixed) {
-			restartPing();
-		}
+		// We keep connection alive either by pinging.
+		restartPing();
 	}
 
 	/*
@@ -514,12 +494,8 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 */
 	@Override
 	public void commandSent(IDockCommandToNewton command) {
-		// We keep connection alive either with ping or timeout.
-		if (pingTask == null) {
-			restartTimeout();
-		} else if (!pingFixed) {
-			restartPing();
-		}
+		// We keep connection alive either by pinging.
+		restartPing();
 	}
 
 	/*
@@ -545,7 +521,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 * 
 	 * @return the command layer.
 	 */
-	protected abstract CDCommandLayer createCommandLayer();
+	protected abstract CDCommandLayer<P> createCommandLayer();
 
 	/**
 	 * Can send?
@@ -562,7 +538,7 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 * 
 	 * @return the the command layer.
 	 */
-	protected CDCommandLayer getCommandLayer() {
+	protected CDCommandLayer<P> getCommandLayer() {
 		if (cmdLayer == null) {
 			cmdLayer = createCommandLayer();
 			cmdLayer.addCommandListener(this);
@@ -607,16 +583,9 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 	 *            ping at fixed intervals, even though connection is busy?
 	 */
 	public void ping(boolean fixed) {
+		stopPing();
 		this.pingFixed = fixed;
-		// We keep connection alive either with ping or timeout.
-		if (timeoutTask != null)
-			timeoutTask.cancel();
-		this.pingTask = new CDPing(this);
-		if (fixed) {
-			timer.schedule(pingTask, PING_TIME, PING_TIME);
-		} else {
-			restartPing();
-		}
+		restartPing();
 	}
 
 	/**
@@ -626,16 +595,22 @@ public abstract class CDPipe extends Thread implements DockCommandListener {
 		if (pingTask != null)
 			pingTask.cancel();
 		pingTask = null;
-		restartTimeout();
 	}
 
 	/**
 	 * Restart the ping.
 	 */
 	protected void restartPing() {
-		if (pingTask != null)
-			pingTask.cancel();
-		this.pingTask = new CDPing(this);
-		timer.schedule(pingTask, PING_TIME);
+		if (pingFixed) {
+			if (pingTask == null) {
+				this.pingTask = new CDPing(this);
+				timer.schedule(pingTask, PING_TIME, PING_TIME);
+			}
+		} else {
+			if (pingTask != null)
+				pingTask.cancel();
+			this.pingTask = new CDPing(this);
+			timer.schedule(pingTask, PING_TIME);
+		}
 	}
 }
