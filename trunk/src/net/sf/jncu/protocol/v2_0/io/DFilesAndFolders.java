@@ -101,8 +101,6 @@ public class DFilesAndFolders extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		if (devices.isEmpty())
-			return;
 		NSOFObject[] paths = new NSOFObject[devices.size()];
 		int i = 0;
 

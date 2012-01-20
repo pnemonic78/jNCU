@@ -28,13 +28,16 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.sf.jncu.Preferences;
+import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.newton.stream.NSOFString;
+import net.sf.jncu.newton.stream.NSOFSymbol;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
+import net.sf.jncu.protocol.v2_0.app.DLoadPackageFile;
 import net.sf.jncu.protocol.v2_0.data.DRestoreFile;
 import net.sf.jncu.protocol.v2_0.io.DFileInfo;
 import net.sf.jncu.protocol.v2_0.io.DFilesAndFolders;
@@ -45,6 +48,7 @@ import net.sf.jncu.protocol.v2_0.io.DImportFile;
 import net.sf.jncu.protocol.v2_0.io.DPath;
 import net.sf.jncu.protocol.v2_0.io.DRequestToBrowse;
 import net.sf.jncu.protocol.v2_0.io.DSetPath;
+import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.swing.AcceptAllFileFilter;
 import net.sf.swing.SwingUtils;
@@ -76,6 +80,10 @@ public class FileChooser implements DockCommandListener {
 		public void cancelSelection();
 	}
 
+	public static final NSOFSymbol IMPORT = DRequestToBrowse.IMPORT;
+	public static final NSOFSymbol PACKAGES = DRequestToBrowse.PACKAGES;
+	public static final NSOFSymbol SYNC_FILES = DRequestToBrowse.SYNC_FILES;
+
 	private static enum State {
 		None, Initialised, Browsing, Cancelled, Selected, Finished
 	}
@@ -83,7 +91,7 @@ public class FileChooser implements DockCommandListener {
 	/** Property key for default path. */
 	protected static final String KEY_PATH = "FileChooser.path";
 
-	private final CDPipe pipe;
+	private final CDPipe<? extends CDPacket> pipe;
 	private final List<NSOFString> types = new ArrayList<NSOFString>();
 	private State state = State.None;
 	private File path;
@@ -99,16 +107,48 @@ public class FileChooser implements DockCommandListener {
 	 * @param pipe
 	 *            the pipe.
 	 * @param types
-	 *            the filter types.
+	 *            the chooser types.
 	 */
-	public FileChooser(CDPipe pipe, Collection<NSOFString> types) {
+	public FileChooser(CDPipe<? extends CDPacket> pipe, Collection<NSOFString> types) {
 		super();
 		if (pipe == null)
 			throw new IllegalArgumentException("pipe required");
 		this.pipe = pipe;
-		if (types != null)
-			this.types.addAll(types);
+		pipe.addCommandListener(this);
 
+		if (types == null)
+			throw new IllegalArgumentException("types required");
+		this.types.addAll(types);
+
+		init();
+	}
+
+	/**
+	 * Constructs a new file chooser.
+	 * 
+	 * @param pipe
+	 *            the pipe.
+	 * @param type
+	 *            the chooser type.
+	 */
+	public FileChooser(CDPipe<? extends CDPacket> pipe, NSOFString type) {
+		super();
+		if (pipe == null)
+			throw new IllegalArgumentException("pipe required");
+		this.pipe = pipe;
+		pipe.addCommandListener(this);
+
+		if (type == null)
+			throw new IllegalArgumentException("type required");
+		this.types.add(type);
+
+		init();
+	}
+
+	/**
+	 * Initialise.
+	 */
+	private void init() {
 		// Load the path from the properties file.
 		Preferences prefs = Preferences.getInstance();
 		String folderPath = prefs.get(KEY_PATH);
@@ -119,8 +159,6 @@ public class FileChooser implements DockCommandListener {
 		}
 		this.path = new File(folderPath);
 		populateFilters();
-
-		pipe.addCommandListener(this);
 
 		DResult cmdResult = new DResult();
 		send(cmdResult);
@@ -155,13 +193,13 @@ public class FileChooser implements DockCommandListener {
 			send(cmdInfo);
 		} else if (DSetDrive.COMMAND.equals(cmd)) {
 			DSetDrive cmdSet = (DSetDrive) command;
-			this.path = new File(cmdSet.getDrive());
+			setPath(new File(cmdSet.getDrive()));
 			DPath cmdPath = new DPath();
 			cmdPath.setPath(path);
 			send(cmdPath);
 		} else if (DSetPath.COMMAND.equals(cmd)) {
 			DSetPath cmdSet = (DSetPath) command;
-			this.path = cmdSet.getPath();
+			setPath(cmdSet.getPath());
 			sendFiles();
 		} else if (DSetFilter.COMMAND.equals(cmd)) {
 			DSetFilter cmdSet = (DSetFilter) command;
@@ -184,7 +222,17 @@ public class FileChooser implements DockCommandListener {
 			state = State.Selected;
 			fireApproved(this.file, command);
 			commandEOF();
+		} else if (DLoadPackageFile.COMMAND.equals(cmd)) {
+			DLoadPackageFile cmdGet = (DLoadPackageFile) command;
+			String filename = cmdGet.getFilename();
+			this.file = new File(path, filename);
+			this.command = command;
+			state = State.Selected;
+			fireApproved(this.file, command);
+			commandEOF();
 		} else if (DOperationCanceled.COMMAND.equals(cmd)) {
+			DOperationCanceledAck ack = new DOperationCanceledAck();
+			send(ack);
 			fireCancelled();
 			state = State.Cancelled;
 			commandEOF();
@@ -217,10 +265,6 @@ public class FileChooser implements DockCommandListener {
 	@Override
 	public void commandEOF() {
 		pipe.removeCommandListener(this);
-		// Save the last path back to preferences.
-		Preferences prefs = Preferences.getInstance();
-		prefs.set(KEY_PATH, path.getPath());
-		prefs.save();
 		state = State.Finished;
 	}
 
@@ -258,7 +302,7 @@ public class FileChooser implements DockCommandListener {
 		FileFilter filter;
 		// TODO Load the strings from resources bundle like the
 		// AcceptAllFileFilter.
-		if (types.contains(DRequestToBrowse.IMPORT)) {
+		if (types.contains(IMPORT)) {
 			filter = new FileNameExtensionFilter("Rich Text Format", "rtf", "RTF");
 			filters.add(filter);
 			filter = new FileNameExtensionFilter("Text Only", "txt", "TXT");
@@ -266,11 +310,11 @@ public class FileChooser implements DockCommandListener {
 			filter = new FileNameExtensionFilter("Windows MetaFile", "wmf", "WMF");
 			filters.add(filter);
 		}
-		if (types.contains(DRequestToBrowse.PACKAGES)) {
+		if (types.contains(PACKAGES)) {
 			filter = new FileNameExtensionFilter("Packages", "pkg", "PKG");
 			filters.add(filter);
 		}
-		if (types.contains(DRequestToBrowse.SYNC_FILES)) {
+		if (types.contains(SYNC_FILES)) {
 			filter = new FileNameExtensionFilter("Backup Files", "nbk", "NBK");
 			filters.add(filter);
 		}
@@ -287,6 +331,20 @@ public class FileChooser implements DockCommandListener {
 	 */
 	public File getPath() {
 		return path;
+	}
+
+	/**
+	 * Set the path.
+	 * 
+	 * @param path
+	 *            the path.
+	 */
+	private void setPath(File path) {
+		this.path = path;
+		// Save the last path back to preferences.
+		Preferences prefs = Preferences.getInstance();
+		prefs.set(KEY_PATH, path.getPath());
+		prefs.save();
 	}
 
 	/**
