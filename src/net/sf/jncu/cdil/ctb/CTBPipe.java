@@ -29,7 +29,7 @@ import net.sf.jncu.cdil.ServiceNotSupportedException;
  * 
  * @author moshew
  */
-public class CTBPipe extends CDPipe {
+public class CTBPipe extends CDPipe<CTBPacket> {
 
 	protected final String toolName;
 	protected final String configString;
@@ -57,7 +57,7 @@ public class CTBPipe extends CDPipe {
 	 * @see net.sf.jncu.cdil.CDPipe#createCommandLayer()
 	 */
 	@Override
-	protected CDCommandLayer createCommandLayer() {
+	protected CDCommandLayer<CTBPacket> createCommandLayer() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -29,7 +29,7 @@ import net.sf.jncu.cdil.ServiceNotSupportedException;
  * 
  * @author moshew
  */
-public class ADSPPipe extends CDPipe {
+public class ADSPPipe extends CDPipe<ADSPPacket> {
 
 	protected final String name;
 	protected final byte type;
@@ -65,7 +65,7 @@ public class ADSPPipe extends CDPipe {
 	 * @see net.sf.jncu.cdil.CDPipe#createCommandLayer()
 	 */
 	@Override
-	protected CDCommandLayer createCommandLayer() {
+	protected CDCommandLayer<ADSPPacket> createCommandLayer() {
 		// TODO Auto-generated method stub
 		return null;
 	}

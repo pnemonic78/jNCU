@@ -35,7 +35,7 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
  * 
  * @author moshew
  */
-public class MNPCommandLayer extends CDCommandLayer implements MNPPacketListener {
+public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 
 	protected final byte CREDIT = 7;
 
@@ -43,10 +43,8 @@ public class MNPCommandLayer extends CDCommandLayer implements MNPPacketListener
 	 * Maximum packet length before having to split into multiple packets. <br>
 	 * FIXME this value should come from LR packets.
 	 */
-	protected static final int MAX_PACKET_LENGTH = 255;
+	protected static final int MAX_PACKET_LENGTH = 256;
 
-	/** The packet layer. */
-	protected final MNPPacketLayer packetLayer;
 	/** Stream for packets to populate commands. */
 	private final PipedOutputStream packets = new PipedOutputStream();
 	/** Stream of commands that have been populated from packets. */
@@ -61,9 +59,7 @@ public class MNPCommandLayer extends CDCommandLayer implements MNPPacketListener
 	 *            the packet layer.
 	 */
 	public MNPCommandLayer(MNPPacketLayer packetLayer) {
-		super();
-		this.packetLayer = packetLayer;
-		packetLayer.addPacketListener(this);
+		super(packetLayer);
 		try {
 			this.in = new PipedInputStream(packets);
 		} catch (IOException ioe) {
@@ -95,7 +91,6 @@ public class MNPCommandLayer extends CDCommandLayer implements MNPPacketListener
 	 */
 	@Override
 	public void close() {
-		packetLayer.removePacketListener(this);
 		try {
 			packets.close();
 		} catch (IOException ioe) {

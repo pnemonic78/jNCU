@@ -408,7 +408,7 @@ public class CDLayer {
 	 * @param state
 	 *            the state.
 	 */
-	public void setState(CDPipe pipe, CDState state) {
+	public void setState(CDPipe<? extends CDPacket> pipe, CDState state) {
 		if (pipe == null) {
 			throw new IllegalArgumentException();
 		}

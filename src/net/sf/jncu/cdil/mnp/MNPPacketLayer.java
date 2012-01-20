@@ -24,9 +24,8 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
 
+import net.sf.jncu.cdil.CDPacketLayer;
 import net.sf.lang.ControlCharacter;
 import net.sf.util.zip.CRC16;
 
@@ -35,7 +34,7 @@ import net.sf.util.zip.CRC16;
  * 
  * @author moshew
  */
-public class MNPPacketLayer {
+public class MNPPacketLayer extends CDPacketLayer<MNPPacket> {
 
 	/** Packet-starting delimiter. */
 	protected static final byte[] PACKET_HEAD = { ControlCharacter.SYN, ControlCharacter.DLE, ControlCharacter.STX };
@@ -44,10 +43,6 @@ public class MNPPacketLayer {
 	/** Packet escape character. */
 	protected static final byte DELIMITER_ESCAPE = ControlCharacter.DLE;
 
-	/** List of packet listeners. */
-	protected final Collection<MNPPacketListener> listeners = new ArrayList<MNPPacketListener>();
-	private boolean finished;
-
 	/**
 	 * Creates a new packet layer.
 	 */
@@ -55,17 +50,7 @@ public class MNPPacketLayer {
 		super();
 	}
 
-	/**
-	 * Receive a packet payload.
-	 * 
-	 * @param in
-	 *            the input.
-	 * @return the payload - {@code null} otherwise.
-	 * @throws EOFException
-	 *             if end of stream is reached.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
+	@Override
 	protected byte[] read(InputStream in) throws EOFException, IOException {
 		int delimiterLength = PACKET_HEAD.length;
 		int state = 0;
@@ -125,34 +110,7 @@ public class MNPPacketLayer {
 		return payload;
 	}
 
-	/**
-	 * Send a packet.
-	 * 
-	 * @param out
-	 *            the output.
-	 * @param payload
-	 *            the payload.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
-	protected void write(OutputStream out, byte[] payload) throws IOException {
-		write(out, payload, 0, payload.length);
-	}
-
-	/**
-	 * Send a packet.
-	 * 
-	 * @param out
-	 *            the output.
-	 * @param payload
-	 *            the payload.
-	 * @param offset
-	 *            the frame offset.
-	 * @param length
-	 *            the frame length.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
+	@Override
 	protected void write(OutputStream out, byte[] payload, int offset, int length) throws IOException {
 		int b;
 		CRC16 crc = new CRC16();
@@ -179,161 +137,43 @@ public class MNPPacketLayer {
 	}
 
 	/**
-	 * Receive a packet.
-	 * 
-	 * @param in
-	 *            the input.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 * @return the packet.
-	 */
-	public MNPPacket receive(InputStream in) throws IOException {
-		if (finished)
-			return null;
-		MNPPacket packet = null;
-		try {
-			byte[] payload = read(in);
-			packet = MNPPacketFactory.getInstance().createLinkPacket(payload);
-			if (packet != null) {
-				firePacketReceived(packet);
-			}
-		} catch (EOFException eofe) {
-			firePacketEOF();
-		}
-		return packet;
-	}
-
-	/**
 	 * Send a packet.
 	 * 
 	 * @param out
 	 *            the output.
-	 * @param packet
-	 *            the packet.
+	 * @param payload
+	 *            the payload.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public void send(OutputStream out, MNPPacket packet) throws IOException {
-		if (finished)
-			return;
-		byte[] payload = packet.serialize();
-		try {
-			write(out, payload);
-			firePacketSent(packet);
-		} catch (EOFException eof) {
-			firePacketEOF();
-		}
-	}
-
-	/**
-	 * Add a packet listener.
-	 * 
-	 * @param listener
-	 *            the listener to add.
-	 */
-	public void addPacketListener(MNPPacketListener listener) {
-		if (!listeners.contains(listener)) {
-			listeners.add(listener);
-		}
-	}
-
-	/**
-	 * Remove a packet listener.
-	 * 
-	 * @param listener
-	 *            the listener to remove.
-	 */
-	public void removePacketListener(MNPPacketListener listener) {
-		listeners.remove(listener);
-	}
-
-	/**
-	 * Notify all the listeners that a packet has been received.
-	 * 
-	 * @param packet
-	 *            the received packet.
-	 */
-	protected void firePacketReceived(MNPPacket packet) {
-		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<MNPPacketListener> listenersCopy = new ArrayList<MNPPacketListener>(listeners);
-		for (MNPPacketListener listener : listenersCopy) {
-			listener.packetReceived(packet);
-		}
-	}
-
-	/**
-	 * Notify all the listeners that a packet has been sent.
-	 * 
-	 * @param packet
-	 *            the sent packet.
-	 */
-	protected void firePacketSent(MNPPacket packet) {
-		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<MNPPacketListener> listenersCopy = new ArrayList<MNPPacketListener>(listeners);
-		for (MNPPacketListener listener : listenersCopy) {
-			listener.packetSent(packet);
-		}
-	}
-
-	/**
-	 * Notify all the listeners that no more packets will be available.
-	 */
-	protected void firePacketEOF() {
-		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<MNPPacketListener> listenersCopy = new ArrayList<MNPPacketListener>(listeners);
-		for (MNPPacketListener listener : listenersCopy) {
-			listener.packetEOF();
-		}
-	}
-
-	/**
-	 * Listen for incoming packets until no more packets are available.
-	 * 
-	 * @param in
-	 *            the input.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
-	public void listen(InputStream in) throws IOException {
-		MNPPacket packet;
-		do {
-			packet = receive(in);
-		} while (packet != null);
-	}
-
-	/**
-	 * Close the layer and release resources.
-	 */
-	public void close() {
-		listeners.clear();
-		finished = true;
-	}
-
-	/**
-	 * Read a byte.
-	 * 
-	 * @param in
-	 *            the input.
-	 * @return the byte value.
-	 * @throws EOFException
-	 *             if end of stream is reached.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
-	private int readByte(InputStream in) throws IOException {
+	protected void write(OutputStream out, InputStream payload) throws IOException {
 		int b;
-		try {
-			b = in.read();
-		} catch (IOException ioe) {
-			// PipedInputStream throws IOException instead of returning -1.
-			if (in.available() == 0) {
-				throw new EOFException();
+		CRC16 crc = new CRC16();
+
+		/* Write header. */
+		out.write(PACKET_HEAD);
+
+		/* Write up to tail. */
+		b = payload.read();
+		while (b != -1) {
+			out.write(b);
+			if (b == DELIMITER_ESCAPE) {
+				out.write(b);
 			}
-			throw ioe;
+			crc.update(b);
+			b = payload.read();
 		}
-		if (b == -1) {
-			throw new EOFException();
-		}
-		return b;
+		out.write(PACKET_TAIL);
+		crc.update(PACKET_TAIL, 1, PACKET_TAIL.length - 1);
+
+		/* Write the FCS. */
+		b = (int) crc.getValue();
+		out.write(b & 0xFF);
+		out.write((b >> 8) & 0xFF);
+	}
+
+	@Override
+	protected MNPPacket createPacket(byte[] payload) {
+		return MNPPacketFactory.getInstance().createLinkPacket(payload);
 	}
 }

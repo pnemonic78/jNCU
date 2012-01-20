@@ -23,6 +23,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
@@ -49,14 +50,14 @@ public class KeyboardInput extends Thread implements DockCommandListener, Window
 		None, Initialised, Input, Cancelled, Finished
 	}
 
-	private final CDPipe pipe;
+	private final CDPipe<? extends CDPacket> pipe;
 	private State state = State.None;
 	private KeyboardInputDialog dialog;
 
 	/**
 	 * Constructs a new object.
 	 */
-	public KeyboardInput(CDPipe pipe) {
+	public KeyboardInput(CDPipe<? extends CDPacket> pipe) {
 		super();
 		if (pipe == null)
 			throw new IllegalArgumentException("pipe required");

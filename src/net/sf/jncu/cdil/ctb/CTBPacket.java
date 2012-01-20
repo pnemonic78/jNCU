@@ -17,15 +17,32 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.cdil.mnp;
+package net.sf.jncu.cdil.ctb;
 
-import net.sf.jncu.cdil.CDPacketListener;
+import net.sf.jncu.cdil.CDPacket;
 
 /**
- * MNP packet listener interface.
+ * Macintosh Communication Tool Serial packet.
  * 
- * @author moshew
+ * @author Moshe
  */
-public interface MNPPacketListener extends CDPacketListener<MNPPacket> {
+public class CTBPacket extends CDPacket {
+
+	/**
+	 * Constructs a new packet.
+	 */
+	public CTBPacket() {
+		super();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.sf.jncu.cdil.CDPacket#serialize()
+	 */
+	@Override
+	public byte[] serialize() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
