@@ -82,10 +82,10 @@ public class DSetPath extends DockCommandFromNewton {
 		NSOFArray arr = (NSOFArray) decoder.decode(data);
 		NSOFObject[] entries = arr.getValue();
 		NSOFString path = (NSOFString) entries[0];
-		File file = new File(path.getValue());
+		File file = new File(path.getValue() + File.separatorChar);
 		for (int i = 1; i < entries.length; i++) {
 			path = (NSOFString) entries[i];
-			file = new File(file, path.getValue());
+			file = new File(file, path.getValue() + File.separatorChar);
 		}
 		setPath(file);
 	}
