@@ -140,8 +140,10 @@ public class Device implements Comparable<Device> {
 					path = path.substring(0, 2);
 					name = fileSystemView.getSystemDisplayName(file);
 					int indexBracket = name.lastIndexOf('(');
-					if (indexBracket > 0)
+					if (indexBracket > 0) {
 						name = name.substring(0, indexBracket);
+						name = name.trim();
+					}
 					if ((name.length() > 0) && !name.startsWith(path))
 						setName(path + ' ' + name);
 				}
