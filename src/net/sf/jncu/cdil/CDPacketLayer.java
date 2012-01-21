@@ -50,6 +50,28 @@ public abstract class CDPacketLayer<T extends CDPacket> {
 	}
 
 	/**
+	 * Get the output stream for packets.
+	 * 
+	 * @return the stream.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected OutputStream getOutput() throws IOException {
+		return null;
+	}
+
+	/**
+	 * Get the input stream for packets.
+	 * 
+	 * @return the stream.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected InputStream getInput() throws IOException {
+		return null;
+	}
+
+	/**
 	 * Is finished?
 	 * 
 	 * @return finished.
@@ -141,18 +163,16 @@ public abstract class CDPacketLayer<T extends CDPacket> {
 	/**
 	 * Receive a packet.
 	 * 
-	 * @param in
-	 *            the input.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 * @return the packet.
 	 */
-	public T receive(InputStream in) throws IOException {
+	public T receive() throws IOException {
 		if (finished)
 			return null;
 		T packet = null;
 		try {
-			byte[] payload = read(in);
+			byte[] payload = read();
 			packet = createPacket(payload);
 			if (packet != null) {
 				restartTimeout();
@@ -167,28 +187,25 @@ public abstract class CDPacketLayer<T extends CDPacket> {
 	/**
 	 * Receive a packet payload.
 	 * 
-	 * @param in
-	 *            the input.
 	 * @return the payload - {@code null} otherwise.
 	 * @throws EOFException
 	 *             if end of stream is reached.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected abstract byte[] read(InputStream in) throws EOFException, IOException;
+	protected abstract byte[] read() throws EOFException, IOException;
 
 	/**
 	 * Read a byte.
 	 * 
-	 * @param in
-	 *            the input.
 	 * @return the byte value.
 	 * @throws EOFException
 	 *             if end of stream is reached.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected int readByte(InputStream in) throws IOException {
+	protected int readByte() throws IOException {
+		InputStream in = getInput();
 		int b;
 		try {
 			b = in.read();
@@ -217,34 +234,30 @@ public abstract class CDPacketLayer<T extends CDPacket> {
 	/**
 	 * Listen for incoming packets until no more packets are available.
 	 * 
-	 * @param in
-	 *            the input.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public void listen(InputStream in) throws IOException {
+	public void listen() throws IOException {
 		T packet;
 		do {
-			packet = receive(in);
+			packet = receive();
 		} while (packet != null);
 	}
 
 	/**
 	 * Send a packet.
 	 * 
-	 * @param out
-	 *            the output.
 	 * @param packet
 	 *            the packet.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public void send(OutputStream out, T packet) throws IOException {
+	public void send(T packet) throws IOException, TimeoutException {
 		if (finished)
 			return;
 		byte[] payload = packet.serialize();
 		try {
-			write(out, payload);
+			write(payload);
 			firePacketSent(packet);
 		} catch (EOFException eof) {
 			firePacketEOF();
@@ -254,22 +267,18 @@ public abstract class CDPacketLayer<T extends CDPacket> {
 	/**
 	 * Send a packet.
 	 * 
-	 * @param out
-	 *            the output.
 	 * @param payload
 	 *            the payload.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected void write(OutputStream out, byte[] payload) throws IOException {
-		write(out, payload, 0, payload.length);
+	protected void write(byte[] payload) throws IOException {
+		write(payload, 0, payload.length);
 	}
 
 	/**
 	 * Send a packet.
 	 * 
-	 * @param out
-	 *            the output.
 	 * @param payload
 	 *            the payload.
 	 * @param offset
@@ -279,7 +288,12 @@ public abstract class CDPacketLayer<T extends CDPacket> {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected abstract void write(OutputStream out, byte[] payload, int offset, int length) throws IOException;
+	protected void write(byte[] payload, int offset, int length) throws IOException {
+		OutputStream out = getOutput();
+		if (out == null)
+			return;
+		out.write(payload, offset, length);
+	}
 
 	/**
 	 * Sets the timeout period for CD_Read and CD_Write calls in a pipe.<br>

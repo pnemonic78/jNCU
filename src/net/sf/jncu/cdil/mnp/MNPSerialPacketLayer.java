@@ -21,6 +21,7 @@ package net.sf.jncu.cdil.mnp;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -31,22 +32,18 @@ import java.util.concurrent.TimeoutException;
 public class MNPSerialPacketLayer extends MNPPacketLayer {
 
 	protected final MNPSerialPort port;
-	/** Send packets. */
-	protected MNPPacketSender sender;
 
 	/**
 	 * Creates a new packet layer.
 	 * 
-	 * @param port
-	 *            the serial port.
 	 * @param pipe
 	 *            the pipe.
+	 * @param port
+	 *            the serial port.
 	 */
-	public MNPSerialPacketLayer(MNPSerialPort port, MNPPipe pipe) {
-		super();
+	public MNPSerialPacketLayer(MNPPipe pipe, MNPSerialPort port) {
+		super(pipe);
 		this.port = port;
-		this.sender = new MNPPacketSender(pipe, this);
-		this.sender.start();
 	}
 
 	/**
@@ -58,71 +55,20 @@ public class MNPSerialPacketLayer extends MNPPacketLayer {
 		return port;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.jncu.cdil.mnp.MNPPacketLayer#listen(java.io.InputStream)
-	 */
-	public void listen() throws IOException {
-		listen(port.getInputStream());
+	@Override
+	protected OutputStream getOutput() throws IOException {
+		return port.getOutputStream();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.jncu.cdil.mnp.MNPPacketLayer#read(java.io.InputStream)
-	 */
-	protected byte[] read() throws IOException {
-		return read(port.getInputStream());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.jncu.cdil.mnp.MNPPacketLayer#receive(java.io.InputStream)
-	 */
-	public MNPPacket receive() throws IOException {
-		return receive(port.getInputStream());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.jncu.cdil.mnp.MNPPacketLayer#send(java.io.OutputStream,
-	 * net.sf.jncu.cdil.mnp.MNPPacket)
-	 */
-	public void send(MNPPacket packet) throws IOException {
-		send(port.getOutputStream(), packet);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.jncu.cdil.mnp.MNPPacketLayer#write(java.io.OutputStream,
-	 * byte[], int, int)
-	 */
-	protected void write(byte[] payload, int offset, int length) throws IOException {
-		write(port.getOutputStream(), payload, offset, length);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.jncu.cdil.mnp.MNPPacketLayer#write(java.io.OutputStream,
-	 * byte[], int, int)
-	 */
-	protected void write(InputStream payload) throws IOException {
-		write(port.getOutputStream(), payload);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.jncu.cdil.mnp.MNPPacketLayer#write(java.io.OutputStream,
-	 * byte[])
-	 */
-	protected void write(byte[] payload) throws IOException {
-		write(port.getOutputStream(), payload);
+	@Override
+	protected InputStream getInput() throws IOException {
+		return port.getInputStream();
 	}
 
 	@Override
 	public void close() {
-		sender.cancel();
-		port.close();
 		super.close();
+		port.close();
 	}
 
 	public void sendAndAcknowledge(MNPPacket packet) throws TimeoutException {

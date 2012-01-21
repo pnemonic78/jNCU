@@ -26,6 +26,12 @@ package net.sf.jncu.cdil.mnp;
  */
 public class MNPPacketFactory {
 
+	/**
+	 * Maximum packet length before having to split into multiple packets. <br>
+	 * FIXME this value should come from LR packets.
+	 */
+	protected static final int MAX_PACKET_LENGTH = 256;
+
 	private static MNPPacketFactory instance;
 
 	/** Outgoing sequence. */
@@ -95,6 +101,54 @@ public class MNPPacketFactory {
 		}
 		packet.deserialize(payload);
 		return packet;
+	}
+
+	/**
+	 * Create MNP link transfer packets.
+	 * 
+	 * @param data
+	 *            the payload data.
+	 * @return the array of packets.
+	 */
+	public MNPLinkTransferPacket[] createTransferPackets(byte[] data) {
+		if (data == null)
+			return null;
+		return createTransferPackets(data, 0, data.length);
+	}
+
+	/**
+	 * Create MNP link transfer packets.
+	 * 
+	 * @param data
+	 *            the payload data.
+	 * @param offset
+	 *            the payload offset.
+	 * @param length
+	 *            the payload length.
+	 * @return the array of packets.
+	 */
+	public MNPLinkTransferPacket[] createTransferPackets(byte[] data, int offset, int length) {
+		if (data == null)
+			return null;
+		int numPackets = length / MAX_PACKET_LENGTH;
+		if ((length % MAX_PACKET_LENGTH) > 0)
+			numPackets++;
+		MNPLinkTransferPacket[] packets = new MNPLinkTransferPacket[numPackets];
+		MNPLinkTransferPacket packet = null;
+		int i = 0;
+		while (length > MAX_PACKET_LENGTH) {
+			packet = createLTSend();
+			packets[i++] = packet;
+			packet.setData(data, offset, MAX_PACKET_LENGTH);
+			offset += MAX_PACKET_LENGTH;
+			length -= MAX_PACKET_LENGTH;
+		}
+		if (length > 0) {
+			packet = createLTSend();
+			packets[i++] = packet;
+			packet.setData(data, offset, length);
+		}
+		return packets;
 	}
 
 	/**

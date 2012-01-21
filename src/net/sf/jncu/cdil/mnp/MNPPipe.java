@@ -428,7 +428,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	 * @return the packet layer.
 	 */
 	protected MNPSerialPacketLayer createPacketLayer(MNPSerialPort port) {
-		return new MNPSerialPacketLayer(port, this);
+		return new MNPSerialPacketLayer(this, port);
 	}
 
 	/*

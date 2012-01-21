@@ -24,6 +24,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.TimeoutException;
 
 import net.sf.jncu.cdil.CDPacketLayer;
 import net.sf.lang.ControlCharacter;
@@ -43,22 +44,30 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> {
 	/** Packet escape character. */
 	protected static final byte DELIMITER_ESCAPE = ControlCharacter.DLE;
 
+	/** Send packets. */
+	protected MNPPacketSender sender;
+
 	/**
 	 * Creates a new packet layer.
+	 * 
+	 * @param pipe
+	 *            the pipe.
 	 */
-	public MNPPacketLayer() {
+	public MNPPacketLayer(MNPPipe pipe) {
 		super();
+		this.sender = new MNPPacketSender(pipe, this);
+		this.sender.start();
 	}
 
 	@Override
-	protected byte[] read(InputStream in) throws EOFException, IOException {
+	protected byte[] read() throws EOFException, IOException {
 		int delimiterLength = PACKET_HEAD.length;
 		int state = 0;
 		int b;
 
 		/* Read header. */
 		while (state < delimiterLength) {
-			b = readByte(in);
+			b = readByte();
 			if (b == PACKET_HEAD[state]) {
 				state++;
 			} else {
@@ -73,7 +82,7 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> {
 		delimiterLength = PACKET_TAIL.length;
 		state = 0;
 		while (state < delimiterLength) {
-			b = readByte(in);
+			b = readByte();
 			if (b == DELIMITER_ESCAPE) {
 				if (isEscape) {
 					buf.write(b);
@@ -98,9 +107,9 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> {
 		crc.update(PACKET_TAIL, 1, PACKET_TAIL.length - 1);
 
 		/* Read the FCS. */
-		b = readByte(in);
+		b = readByte();
 		long crcWord = b;
-		b = readByte(in);
+		b = readByte();
 		crcWord = (b << 8) | crcWord;
 		if (crcWord != crc.getValue()) {
 			// throw new ProtocolException("CRC error on input framing");
@@ -111,9 +120,12 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> {
 	}
 
 	@Override
-	protected void write(OutputStream out, byte[] payload, int offset, int length) throws IOException {
+	protected void write(byte[] payload, int offset, int length) throws IOException {
 		int b;
 		CRC16 crc = new CRC16();
+		OutputStream out = getOutput();
+		if (out == null)
+			return;
 
 		/* Write header. */
 		out.write(PACKET_HEAD);
@@ -139,16 +151,17 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> {
 	/**
 	 * Send a packet.
 	 * 
-	 * @param out
-	 *            the output.
 	 * @param payload
 	 *            the payload.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected void write(OutputStream out, InputStream payload) throws IOException {
+	protected void write(InputStream payload) throws IOException {
 		int b;
 		CRC16 crc = new CRC16();
+		OutputStream out = getOutput();
+		if (out == null)
+			return;
 
 		/* Write header. */
 		out.write(PACKET_HEAD);
@@ -175,5 +188,23 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> {
 	@Override
 	protected MNPPacket createPacket(byte[] payload) {
 		return MNPPacketFactory.getInstance().createLinkPacket(payload);
+	}
+
+	@Override
+	public void close() {
+		super.close();
+		sender.cancel();
+	}
+
+	/**
+	 * Send a packet and wait for acknowledgement.
+	 * 
+	 * @param packet
+	 *            the packet to send.
+	 * @throws TimeoutException
+	 *             if a timeout occurs.
+	 */
+	public void sendQueued(MNPPacket packet) throws TimeoutException {
+		sender.sendAndAcknowledge(packet);
 	}
 }

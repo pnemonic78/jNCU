@@ -34,7 +34,7 @@ import net.sf.jncu.cdil.BadPipeStateException;
 public class MNPPacketSender extends Thread implements MNPPacketListener {
 
 	protected final MNPPipe pipe;
-	protected final MNPSerialPacketLayer packetLayer;
+	protected final MNPPacketLayer packetLayer;
 	protected final BlockingQueue<MNPPacket> queueSend = new LinkedBlockingQueue<MNPPacket>();
 	protected boolean running = false;
 	private int sequenceAcknowledged = -1;
@@ -47,17 +47,17 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 	 * @param packetLayer
 	 *            the packet layer.
 	 */
-	public MNPPacketSender(MNPPipe pipe, MNPSerialPacketLayer packetLayer) {
+	public MNPPacketSender(MNPPipe pipe, MNPPacketLayer packetLayer) {
 		super();
 		setName("PacketSender-" + getId());
 		this.pipe = pipe;
 		this.packetLayer = packetLayer;
-		this.packetLayer.addPacketListener(this);
+		packetLayer.addPacketListener(this);
 	}
 
 	/**
 	 * Send a packet and wait for acknowledgement.<br>
-	 * Do not wait for acknowledgement if the packet is itself an
+	 * Does not wait for acknowledgement if the packet is itself an
 	 * acknowledgement.
 	 * 
 	 * @param packet

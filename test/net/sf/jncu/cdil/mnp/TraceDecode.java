@@ -116,17 +116,19 @@ public class TraceDecode {
 	private class ProcessPayload extends Thread implements MNPPacketListener, DockCommandListener {
 
 		private final char direction;
-		private final InputStream in;
 		private final MNPPacketLayer packetLayer;
 		private final MNPCommandLayer cmdLayer;
 		private boolean running;
 
-		public ProcessPayload(char direction, InputStream in) {
+		public ProcessPayload(char direction, final InputStream in) {
 			super();
 			setName("ProcessPayload-" + direction);
 			this.direction = direction;
-			this.in = in;
-			this.packetLayer = new MNPPacketLayer();
+			this.packetLayer = new MNPPacketLayer(null) {
+				protected InputStream getInput() throws IOException {
+					return in;
+				}
+			};
 			packetLayer.addPacketListener(this);
 			this.cmdLayer = new MNPCommandLayer(packetLayer);
 			cmdLayer.addCommandListener(this);
@@ -139,7 +141,7 @@ public class TraceDecode {
 			MNPPacket packet;
 			try {
 				do {
-					packet = packetLayer.receive(in);
+					packet = packetLayer.receive();
 				} while (running && (packet != null));
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
