@@ -55,14 +55,23 @@ public class DLoadPackage extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		FileInputStream in = null;
-		try {
-			in = new FileInputStream(getFile());
+		if (file == null)
+			return;
 
-			int b = in.read();
-			while (b != -1) {
-				data.write(b);
-				b = in.read();
+		File file = getFile();
+		FileInputStream in = null;
+		int size = (int) (file.length() & 0xFFFFFFFFL);
+		byte[] buf = new byte[size];
+		int count;
+		int offset = 0;
+
+		try {
+			// Load the whole file into memory.
+			in = new FileInputStream(file);
+			count = in.read(buf, offset, size);
+			while ((count != -1) && (offset < size)) {
+				offset += count;
+				count = in.read(buf, offset, size - offset);
 			}
 		} finally {
 			if (in != null) {
@@ -73,6 +82,9 @@ public class DLoadPackage extends DockCommandToNewton {
 				}
 			}
 		}
+		// Dump the whole file into the command.
+		data.write(buf);
+		buf = null;
 	}
 
 	/**

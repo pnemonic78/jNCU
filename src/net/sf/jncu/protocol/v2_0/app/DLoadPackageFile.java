@@ -19,10 +19,11 @@
  */
 package net.sf.jncu.protocol.v2_0.app;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import net.sf.jncu.newton.stream.NSOFDecoder;
+import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
@@ -44,7 +45,7 @@ public class DLoadPackageFile extends DockCommandFromNewton {
 	/** <tt>kDLoadPackageFile</tt> */
 	public static final String COMMAND = "lpfl";
 
-	private File file;
+	private String filename;
 
 	/**
 	 * Creates a new command.
@@ -55,26 +56,41 @@ public class DLoadPackageFile extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
-		setFile(new File(readString(data)));
+		setFilename((String) null);
+		NSOFDecoder decoder = new NSOFDecoder();
+		NSOFString name = (NSOFString) decoder.decode(data);
+		setFilename(name);
 	}
 
 	/**
-	 * Get the package file.
+	 * Get the file name.
 	 * 
-	 * @return the file.
+	 * @return the file name.
 	 */
-	public File getFile() {
-		return file;
+	public String getFilename() {
+		return filename;
 	}
 
 	/**
-	 * Set the package file.
+	 * Set the file name.
 	 * 
-	 * @param file
-	 *            the file.
+	 * @param filename
+	 *            the file name.
 	 */
-	public void setFile(File file) {
-		this.file = file;
+	protected void setFilename(String filename) {
+		this.filename = filename;
 	}
 
+	/**
+	 * Set the file name.
+	 * 
+	 * @param filename
+	 *            the file name.
+	 */
+	protected void setFilename(NSOFString filename) {
+		if (filename == null)
+			setFilename((String) null);
+		else
+			setFilename(filename.getValue());
+	}
 }
