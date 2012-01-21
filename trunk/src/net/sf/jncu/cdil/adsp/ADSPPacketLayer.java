@@ -21,8 +21,6 @@ package net.sf.jncu.cdil.adsp;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import net.sf.jncu.cdil.CDPacketLayer;
 
@@ -34,20 +32,15 @@ import net.sf.jncu.cdil.CDPacketLayer;
 public class ADSPPacketLayer extends CDPacketLayer<ADSPPacket> {
 
 	@Override
-	protected byte[] read(InputStream in) throws EOFException, IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	protected ADSPPacket createPacket(byte[] payload) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	protected void write(OutputStream out, byte[] payload, int offset, int length) throws IOException {
+	protected byte[] read() throws EOFException, IOException {
 		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

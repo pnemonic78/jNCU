@@ -26,6 +26,7 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.TimeoutException;
 
 import net.sf.jncu.cdil.CDCommandLayer;
 import net.sf.jncu.protocol.IDockCommandToNewton;
@@ -38,12 +39,6 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
 public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 
 	protected final byte CREDIT = 7;
-
-	/**
-	 * Maximum packet length before having to split into multiple packets. <br>
-	 * FIXME this value should come from LR packets.
-	 */
-	protected static final int MAX_PACKET_LENGTH = 256;
 
 	/** Stream for packets to populate commands. */
 	private final PipedOutputStream packets = new PipedOutputStream();
@@ -105,61 +100,17 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 	 * IDockCommandToNewton)
 	 */
 	@Override
-	public void write(IDockCommandToNewton cmd) throws IOException {
+	public void write(IDockCommandToNewton cmd) throws IOException, TimeoutException {
 		final byte[] payload = cmd.getPayload();
-		int length = payload.length;
-
-		if (length <= MAX_PACKET_LENGTH) {
-			writeCommandPayload(cmd, payload);
-		} else {
-			int i = 0;
-			while (length > MAX_PACKET_LENGTH) {
-				writeCommandPayload(cmd, payload, i, MAX_PACKET_LENGTH);
-				i += MAX_PACKET_LENGTH;
-				length -= MAX_PACKET_LENGTH;
-			}
-			writeCommandPayload(cmd, payload, i, length);
+		if (payload == null)
+			return;
+		MNPLinkTransferPacket[] packets = MNPPacketFactory.getInstance().createTransferPackets(payload);
+		Byte seq;
+		for (MNPLinkTransferPacket packet : packets) {
+			seq = packet.getSequence();
+			queueOut.put(seq, cmd);
+			((MNPPacketLayer) packetLayer).sendQueued(packet);
 		}
-	}
-
-	/**
-	 * Write the command payload.
-	 * 
-	 * @param cmd
-	 *            the command.
-	 * @param payload
-	 *            the command payload.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
-	private void writeCommandPayload(IDockCommandToNewton cmd, byte[] payload) throws IOException {
-		MNPLinkTransferPacket packet = (MNPLinkTransferPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LT);
-		packet.setData(payload);
-		Byte seq = packet.getSequence();
-		queueOut.put(seq, cmd);
-		packetLayer.send(getOutput(), packet);
-	}
-
-	/**
-	 * Write the command payload.
-	 * 
-	 * @param cmd
-	 *            the command.
-	 * @param payload
-	 *            the command payload.
-	 * @param offset
-	 *            the payload offset.
-	 * @param length
-	 *            the payload length.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
-	private void writeCommandPayload(IDockCommandToNewton cmd, byte[] payload, int offset, int length) throws IOException {
-		MNPLinkTransferPacket packet = (MNPLinkTransferPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LT);
-		packet.setData(payload, offset, length);
-		Byte seq = packet.getSequence();
-		queueOut.put(seq, cmd);
-		packetLayer.send(getOutput(), packet);
 	}
 
 	/*
@@ -239,21 +190,20 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 	 */
 	protected void packetReceivedLT(MNPLinkTransferPacket packet) {
 		byte[] payload = packet.getData();
-		OutputStream out;
 		MNPLinkAcknowledgementPacket ack;
 
 		try {
-			out = getOutput();
-			if (out != null) {
-				ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
-				ack.setSequence(packet.getSequence());
-				ack.setCredit(CREDIT);
-				packetLayer.send(out, ack);
-			}
+			ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
+			ack.setSequence(packet.getSequence());
+			ack.setCredit(CREDIT);
+			packetLayer.send(ack);
+
 			packets.write(payload);
 			packets.flush();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
+		} catch (TimeoutException te) {
+			te.printStackTrace();
 		}
 	}
 }

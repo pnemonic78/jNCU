@@ -143,8 +143,10 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 	 *            the command.
 	 * @throws IOException
 	 *             if an I/O error occurs.
+	 * @throws TimeoutException
+	 *             if timeout occurs.
 	 */
-	public abstract void write(IDockCommandToNewton cmd) throws IOException;
+	public abstract void write(IDockCommandToNewton cmd) throws IOException, TimeoutException;
 
 	/**
 	 * Get the blocking input stream with commands.
