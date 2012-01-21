@@ -74,7 +74,7 @@ public class LoadPackage implements DockCommandListener {
 			// Upload was finished?
 			if (result.getErrorCode() != DResult.OK) {
 				// Show the error to the user.
-				JOptionPane.showMessageDialog(null, result.getError(), TITLE, JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, result.getError().getMessage() + "\nCode: " + result.getErrorCode(), TITLE, JOptionPane.ERROR_MESSAGE);
 			}
 			commandEOF();
 		}
