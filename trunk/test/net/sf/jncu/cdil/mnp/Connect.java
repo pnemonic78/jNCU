@@ -3,6 +3,7 @@ package net.sf.jncu.cdil.mnp;
 import java.io.IOException;
 
 import net.sf.jncu.cdil.CDLayer;
+import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.CDState;
 
@@ -67,7 +68,7 @@ public class Connect {
 
 		try {
 			CDLayer layer = CDLayer.getInstance();
-			CDPipe pipe;
+			CDPipe<? extends CDPacket> pipe;
 			// Initialize the library
 			layer.startUp();
 			// Create a connection object
