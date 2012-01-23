@@ -278,7 +278,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	 *             if timeout occurs.
 	 */
 	protected void sendAndAcknowledge(MNPPacket packet) throws TimeoutException {
-		getPacketLayer().sendAndAcknowledge(packet);
+		getPacketLayer().sendQueued(packet);
 	}
 
 	/**

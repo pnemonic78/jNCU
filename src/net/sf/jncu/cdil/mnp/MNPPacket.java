@@ -36,6 +36,10 @@ public abstract class MNPPacket extends CDPacket {
 	public static final byte LT = 0x04;
 	/** Link Acknowledgement packet. */
 	public static final byte LA = 0x05;
+	/** Link N packet. */
+	public static final byte LN = 0x06;
+	/** Link N Acknowledgement packet. */
+	public static final byte LNA = 0x07;
 
 	private byte type;
 	private int headerLength;

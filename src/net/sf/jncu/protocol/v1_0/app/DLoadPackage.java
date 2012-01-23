@@ -21,6 +21,7 @@ package net.sf.jncu.protocol.v1_0.app;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -60,7 +61,9 @@ public class DLoadPackage extends DockCommandToNewton {
 
 		File file = getFile();
 		FileInputStream in = null;
-		int size = (int) (file.length() & 0xFFFFFFFFL);
+		int size = (int) file.length();
+		if (size < 7)
+			throw new FileNotFoundException("file size must be at least 7 bytes");
 		byte[] buf = new byte[size];
 		int count;
 		int offset = 0;
@@ -69,9 +72,17 @@ public class DLoadPackage extends DockCommandToNewton {
 			// Load the whole file into memory.
 			in = new FileInputStream(file);
 			count = in.read(buf, offset, size);
-			while ((count != -1) && (offset < size)) {
+
+			// Check that header starts with "package"
+			if (count >= 7) {
+				if ((buf[0] != 'p') || (buf[1] != 'a') || (buf[2] != 'c') || (buf[3] != 'k') || (buf[4] != 'a') || (buf[5] != 'g') || (buf[6] != 'e'))
+					throw new FileNotFoundException("file header must start with 'package'");
+			}
+
+			while ((count != -1) && (size > 0)) {
 				offset += count;
-				count = in.read(buf, offset, size - offset);
+				size -= count;
+				count = in.read(buf, offset, size);
 			}
 		} finally {
 			if (in != null) {

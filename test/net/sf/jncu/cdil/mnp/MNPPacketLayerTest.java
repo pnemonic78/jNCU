@@ -87,7 +87,7 @@ public class MNPPacketLayerTest extends SFTestCase {
 	/**
 	 * Test receiving a command "name".
 	 */
-	public void testReceiveName() {
+	public void testReceiveName() throws Exception {
 		byte[] data = { 110, 101, 119, 116, 100, 111, 99, 107, 110, 97, 109, 101, 0, 0, 0, 122, 0, 0, 0, 72, 18, 126, 21, 116, 1, 0, 0, 0, 16, 0, 48, 0, 0, 2,
 				0, 2, 0, 0, -128, 0, 0, 14, 32, 0, 0, 0, 1, -32, 0, 0, 1, 64, 0, 0, 0, 1, 0, 0, 0, 1, 1, -66, 82, -52, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0, 4,
 				0, 0, 0, 3, 0, 0, 0, 0, 1, -66, 82, -52, 0, 0, 0, 11, 0, 77, 0, 111, 0, 115, 0, 104, 0, 101, 0, 32, 0, 77, 0, 105, 0, 99, 0, 104, 0, 97, 0,
@@ -103,8 +103,10 @@ public class MNPPacketLayerTest extends SFTestCase {
 
 	/**
 	 * Test sending a command "desktop info".
+	 * 
+	 * @throws Exception
 	 */
-	public void testDesktopInfo() {
+	public void testDesktopInfo() throws Exception {
 		DockCommandToNewton cmd = new DDesktopInfo();
 		assertNotNull(cmd);
 		assertEquals(DDesktopInfo.COMMAND, cmd.getCommand());

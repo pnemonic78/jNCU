@@ -109,10 +109,8 @@ public class DockCommandFactory {
 	 * @return the registry.
 	 */
 	protected Map<String, Class<? extends IDockCommand>> getRegistry() {
-		synchronized (registry) {
-			if (registry.isEmpty()) {
-				register(registry);
-			}
+		if (registry.isEmpty()) {
+			register(registry);
 		}
 		return registry;
 	}
@@ -125,7 +123,7 @@ public class DockCommandFactory {
 	 * @param registry
 	 *            the registry.
 	 */
-	private void register(Map<String, Class<? extends IDockCommand>> registry) {
+	private synchronized void register(Map<String, Class<? extends IDockCommand>> registry) {
 		Map<String, Class<? extends IDockCommandFromNewton>> registryFrom = new HashMap<String, Class<? extends IDockCommandFromNewton>>();
 		Map<String, Class<? extends IDockCommandToNewton>> registryTo = new HashMap<String, Class<? extends IDockCommandToNewton>>();
 		registerFrom(registryFrom);

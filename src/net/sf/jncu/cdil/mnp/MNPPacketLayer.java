@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.util.concurrent.TimeoutException;
 
 import net.sf.jncu.cdil.CDPacketLayer;
+import net.sf.jncu.cdil.CDPacketListener;
 import net.sf.lang.ControlCharacter;
 import net.sf.util.zip.CRC16;
 
@@ -35,7 +36,7 @@ import net.sf.util.zip.CRC16;
  * 
  * @author moshew
  */
-public class MNPPacketLayer extends CDPacketLayer<MNPPacket> {
+public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacketListener<MNPPacket> {
 
 	/** Packet-starting delimiter. */
 	protected static final byte[] PACKET_HEAD = { ControlCharacter.SYN, ControlCharacter.DLE, ControlCharacter.STX };
@@ -43,6 +44,8 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> {
 	protected static final byte[] PACKET_TAIL = { ControlCharacter.DLE, ControlCharacter.ETX };
 	/** Packet escape character. */
 	protected static final byte DELIMITER_ESCAPE = ControlCharacter.DLE;
+
+	protected final byte CREDIT = 7;
 
 	/** Send packets. */
 	protected MNPPacketSender sender;
@@ -57,6 +60,7 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> {
 		super();
 		this.sender = new MNPPacketSender(pipe, this);
 		this.sender.start();
+		addPacketListener(this);
 	}
 
 	@Override
@@ -194,6 +198,7 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> {
 	public void close() {
 		super.close();
 		sender.cancel();
+		removePacketListener(this);
 	}
 
 	/**
@@ -205,6 +210,30 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> {
 	 *             if a timeout occurs.
 	 */
 	public void sendQueued(MNPPacket packet) throws TimeoutException {
-		sender.sendAndAcknowledge(packet);
+		sender.sendQueued(packet);
+	}
+
+	@Override
+	public void packetReceived(MNPPacket packet) {
+		if (packet.getType() == MNPPacket.LT) {
+			MNPLinkTransferPacket packetLT = (MNPLinkTransferPacket) packet;
+			MNPLinkAcknowledgementPacket ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
+			ack.setSequence(packetLT.getSequence());
+			ack.setCredit(CREDIT);
+			try {
+				send(ack);
+			} catch (Exception e) {
+				e.printStackTrace();
+				firePacketEOF();
+			}
+		}
+	}
+
+	@Override
+	public void packetSent(MNPPacket packet) {
+	}
+
+	@Override
+	public void packetEOF() {
 	}
 }
