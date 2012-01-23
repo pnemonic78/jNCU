@@ -38,8 +38,6 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
  */
 public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 
-	protected final byte CREDIT = 7;
-
 	/** Stream for packets to populate commands. */
 	private final PipedOutputStream packets = new PipedOutputStream();
 	/** Stream of commands that have been populated from packets. */
@@ -173,13 +171,6 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 	 *            the packet.
 	 */
 	protected void packetReceivedLD(MNPLinkDisconnectPacket packet) {
-		// IDockCommandFromNewton cmd = (IDockCommandFromNewton)
-		// DockCommandFactory.getInstance().create(DDisconnect.COMMAND);
-		// try {
-		// queueIn.put(cmd);
-		// } catch (InterruptedException ie) {
-		// ie.printStackTrace();
-		// }
 	}
 
 	/**
@@ -190,20 +181,12 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 	 */
 	protected void packetReceivedLT(MNPLinkTransferPacket packet) {
 		byte[] payload = packet.getData();
-		MNPLinkAcknowledgementPacket ack;
 
 		try {
-			ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
-			ack.setSequence(packet.getSequence());
-			ack.setCredit(CREDIT);
-			packetLayer.send(ack);
-
 			packets.write(payload);
 			packets.flush();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
-		} catch (TimeoutException te) {
-			te.printStackTrace();
 		}
 	}
 }

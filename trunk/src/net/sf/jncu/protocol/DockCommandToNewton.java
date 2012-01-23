@@ -51,13 +51,8 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 		super(cmd);
 	}
 
-	/**
-	 * Get the payload to send.
-	 * 
-	 * @return the payload.
-	 */
 	@Override
-	public byte[] getPayload() {
+	public byte[] getPayload() throws IOException {
 		RewriteByteArrayOutputStream payload = new RewriteByteArrayOutputStream();
 		int length = 0;
 		int indexLength, indexData;
@@ -84,8 +79,6 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 				payload.write(0);
 				break;
 			}
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
 		} finally {
 			try {
 				payload.close();

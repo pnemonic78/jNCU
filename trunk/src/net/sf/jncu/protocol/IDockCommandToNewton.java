@@ -19,6 +19,8 @@
  */
 package net.sf.jncu.protocol;
 
+import java.io.IOException;
+
 /**
  * Docking command interface from Newton to desktop.
  * 
@@ -30,6 +32,17 @@ public interface IDockCommandToNewton extends IDockCommand {
 	 * Get the payload to send.
 	 * 
 	 * @return the payload.
+	 * @throws IOException
+	 *             if an I/O error occurs.
 	 */
-	public byte[] getPayload();
+	public byte[] getPayload() throws IOException;
+
+	// /** TODO for extra-long commands like DLoadPackage where we write files.
+	// * Get the payload to send.
+	// *
+	// * @return the payload.
+	// * @throws IOException
+	// * if an I/O error occurs.
+	// */
+	// public InputStream getPayloadStream() throws IOException;
 }

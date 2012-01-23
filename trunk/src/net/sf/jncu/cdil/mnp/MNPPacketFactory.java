@@ -27,10 +27,11 @@ package net.sf.jncu.cdil.mnp;
 public class MNPPacketFactory {
 
 	/**
-	 * Maximum packet length before having to split into multiple packets. <br>
+	 * Maximum date length per packet before having to split into multiple
+	 * packets. <br>
 	 * FIXME this value should come from LR packets.
 	 */
-	protected static final int MAX_PACKET_LENGTH = 256;
+	protected static final int MAX_DATA_LENGTH = 256;
 
 	private static MNPPacketFactory instance;
 
@@ -130,18 +131,18 @@ public class MNPPacketFactory {
 	public MNPLinkTransferPacket[] createTransferPackets(byte[] data, int offset, int length) {
 		if (data == null)
 			return null;
-		int numPackets = length / MAX_PACKET_LENGTH;
-		if ((length % MAX_PACKET_LENGTH) > 0)
+		int numPackets = length / MAX_DATA_LENGTH;
+		if ((length % MAX_DATA_LENGTH) > 0)
 			numPackets++;
 		MNPLinkTransferPacket[] packets = new MNPLinkTransferPacket[numPackets];
 		MNPLinkTransferPacket packet = null;
 		int i = 0;
-		while (length > MAX_PACKET_LENGTH) {
+		while (length > MAX_DATA_LENGTH) {
 			packet = createLTSend();
 			packets[i++] = packet;
-			packet.setData(data, offset, MAX_PACKET_LENGTH);
-			offset += MAX_PACKET_LENGTH;
-			length -= MAX_PACKET_LENGTH;
+			packet.setData(data, offset, MAX_DATA_LENGTH);
+			offset += MAX_DATA_LENGTH;
+			length -= MAX_DATA_LENGTH;
 		}
 		if (length > 0) {
 			packet = createLTSend();

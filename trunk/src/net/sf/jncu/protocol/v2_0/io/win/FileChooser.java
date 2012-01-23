@@ -276,7 +276,8 @@ public class FileChooser implements DockCommandListener {
 	 */
 	protected void send(IDockCommandToNewton command) {
 		try {
-			pipe.write(command);
+			if (pipe.canSend())
+				pipe.write(command);
 		} catch (Exception e) {
 			e.printStackTrace();
 			commandEOF();

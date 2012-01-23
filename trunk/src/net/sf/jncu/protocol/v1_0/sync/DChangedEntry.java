@@ -62,7 +62,7 @@ public class DChangedEntry extends DockCommandFromNewton implements IDockCommand
 	}
 
 	@Override
-	public byte[] getPayload() {
+	public byte[] getPayload() throws IOException {
 		IDockCommandToNewton cmd = new DockCommandToNewton(COMMAND) {
 
 			@Override

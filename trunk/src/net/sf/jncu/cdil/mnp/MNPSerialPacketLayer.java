@@ -22,7 +22,6 @@ package net.sf.jncu.cdil.mnp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.concurrent.TimeoutException;
 
 /**
  * MNP packet layer for serial port.
@@ -69,10 +68,6 @@ public class MNPSerialPacketLayer extends MNPPacketLayer {
 	public void close() {
 		super.close();
 		port.close();
-	}
-
-	public void sendAndAcknowledge(MNPPacket packet) throws TimeoutException {
-		sender.sendAndAcknowledge(packet);
 	}
 
 }

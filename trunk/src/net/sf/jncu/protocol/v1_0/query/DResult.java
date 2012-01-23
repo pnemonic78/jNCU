@@ -71,7 +71,7 @@ public class DResult extends DockCommandFromNewton implements IDockCommandToNewt
 	}
 
 	@Override
-	public byte[] getPayload() {
+	public byte[] getPayload() throws IOException {
 		IDockCommandToNewton cmd = new DockCommandToNewton(COMMAND) {
 			@Override
 			protected void writeCommandData(OutputStream data) throws IOException {

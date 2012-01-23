@@ -85,7 +85,7 @@ public class DPassword extends DockCommandFromNewton implements IDockCommandToNe
 	}
 
 	@Override
-	public byte[] getPayload() {
+	public byte[] getPayload() throws IOException {
 		IDockCommandToNewton cmd = new DockCommandToNewton(COMMAND) {
 
 			@Override

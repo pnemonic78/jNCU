@@ -62,7 +62,6 @@ public class KeyboardInput extends Thread implements DockCommandListener, Window
 		if (pipe == null)
 			throw new IllegalArgumentException("pipe required");
 		this.pipe = pipe;
-
 		pipe.addCommandListener(this);
 
 		state = State.Initialised;

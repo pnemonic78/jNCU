@@ -24,8 +24,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeoutException;
 
-import net.sf.jncu.cdil.BadPipeStateException;
-
 /**
  * Send queued MNP packets.
  * 
@@ -56,7 +54,7 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 	}
 
 	/**
-	 * Send a packet and wait for acknowledgement.<br>
+	 * Queue a packet for sending and wait for acknowledgement.<br>
 	 * Does not wait for acknowledgement if the packet is itself an
 	 * acknowledgement.
 	 * 
@@ -65,7 +63,7 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 	 * @throws TimeoutException
 	 *             if a timeout occurs.
 	 */
-	public void sendAndAcknowledge(MNPPacket packet) throws TimeoutException {
+	public void sendQueued(MNPPacket packet) throws TimeoutException {
 		try {
 			queueSend.put(packet);
 		} catch (InterruptedException ie) {
@@ -112,7 +110,7 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 
 				do {
 					try {
-						timeout = System.currentTimeMillis() + 2000L;
+						timeout = System.currentTimeMillis() + 5000L;
 						packetLayer.send(packet);
 						// TODO move this section to #packetSent
 						if (sequenceToAcknowledge >= 0) {
@@ -120,6 +118,7 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 							do {
 								yield();
 								resend &= (sequenceAcknowledged < sequenceToAcknowledge);
+								resend &= running;
 								now = System.currentTimeMillis();
 							} while (resend && (now < timeout));
 						} else {
@@ -146,13 +145,9 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 	public void packetReceived(MNPPacket packet) {
 		byte packetType = packet.getType();
 
-		try {
-			if (packetType == MNPPacket.LA) {
-				MNPLinkAcknowledgementPacket la = (MNPLinkAcknowledgementPacket) packet;
-				sequenceAcknowledged = Math.max(sequenceAcknowledged, la.getSequence());
-			}
-		} catch (BadPipeStateException bpse) {
-			bpse.printStackTrace();
+		if (packetType == MNPPacket.LA) {
+			MNPLinkAcknowledgementPacket packetLA = (MNPLinkAcknowledgementPacket) packet;
+			sequenceAcknowledged = Math.max(sequenceAcknowledged, packetLA.getSequence());
 		}
 	}
 
@@ -182,7 +177,8 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 			runSend();
 		} catch (TimeoutException te) {
 			te.printStackTrace();
-			// TODO notify the pipe that error occurred.
+			// Notify the pipe that error occurred.
+			packetEOF();
 		}
 	}
 
