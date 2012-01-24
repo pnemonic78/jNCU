@@ -56,7 +56,7 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 	 */
 	public CDCommandLayer(CDPacketLayer<P> packetLayer) {
 		super();
-		setName("CommandLayer-" + getId());
+		setName("CDCommandLayer-" + getId());
 		this.packetLayer = packetLayer;
 		packetLayer.addPacketListener(this);
 	}

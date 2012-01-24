@@ -48,6 +48,7 @@ public class CTBPipe extends CDPipe<CTBPacket> {
 	 */
 	public CTBPipe(CDLayer layer, String toolName, String configString) throws ServiceNotSupportedException {
 		super(layer);
+		setName("CTBPipe-" + getId());
 		this.toolName = toolName;
 		this.configString = configString;
 	}

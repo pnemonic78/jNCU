@@ -42,7 +42,7 @@ public class MNPSerialPortWriter extends Thread implements Closeable {
 	 */
 	public MNPSerialPortWriter(SerialPort port) {
 		super();
-		setName("SerialPortWriter-" + getId());
+		setName("MNPSerialPortWriter-" + getId());
 		this.port = port;
 	}
 

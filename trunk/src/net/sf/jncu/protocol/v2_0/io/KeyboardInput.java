@@ -59,6 +59,7 @@ public class KeyboardInput extends Thread implements DockCommandListener, Window
 	 */
 	public KeyboardInput(CDPipe<? extends CDPacket> pipe) {
 		super();
+		setName("KeyboardInput-" + getId());
 		if (pipe == null)
 			throw new IllegalArgumentException("pipe required");
 		this.pipe = pipe;

@@ -47,7 +47,7 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 	 */
 	public MNPPacketSender(MNPPipe pipe, MNPPacketLayer packetLayer) {
 		super();
-		setName("PacketSender-" + getId());
+		setName("MNPPacketSender-" + getId());
 		this.pipe = pipe;
 		this.packetLayer = packetLayer;
 		packetLayer.addPacketListener(this);

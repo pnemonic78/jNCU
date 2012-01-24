@@ -60,7 +60,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	 */
 	public CDPipe(CDLayer layer) throws ServiceNotSupportedException {
 		super();
-		setName("Pipe-" + getId());
+		setName("CDPipe-" + getId());
 		if (layer == null) {
 			throw new ServiceNotSupportedException();
 		}
