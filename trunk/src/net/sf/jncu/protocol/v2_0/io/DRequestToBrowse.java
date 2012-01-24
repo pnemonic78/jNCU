@@ -49,7 +49,7 @@ public class DRequestToBrowse extends DockCommandFromNewton {
 	public static final String COMMAND = "rtbr";
 
 	/** List of files to import. */
-	public static final NSOFSymbol IMPORT = new NSOFSymbol("import");
+	public static final NSOFSymbol IMPORT = new NSOFSymbol("Import");
 	/** List of packages to install. */
 	public static final NSOFSymbol PACKAGES = new NSOFSymbol("packages");
 	/** List of files to synchronise. */
