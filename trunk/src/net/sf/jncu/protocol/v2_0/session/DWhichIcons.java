@@ -55,33 +55,33 @@ public class DWhichIcons extends DockCommandToNewton {
 	private int icons;
 
 	/**
-	 * <tt>kBackupIcon</tt><br>
-	 * "Backup" icon.
+	 * "Backup" icon.<br>
+	 * <tt>kBackupIcon</tt>
 	 */
 	public static final int BACKUP = 1;
 	/**
-	 * <tt>kRestoreIcon</tt><br>
-	 * "Restore" icon.
+	 * "Restore" icon.<br>
+	 * <tt>kRestoreIcon</tt>
 	 */
 	public static final int RESTORE = 2;
 	/**
-	 * <tt>kInstallIcon</tt><br>
-	 * "Install package" icon.
+	 * "Install package" icon.<br>
+	 * <tt>kInstallIcon</tt>
 	 */
 	public static final int INSTALL = 4;
 	/**
-	 * <tt>kImportIcon</tt><br>
-	 * "Import" icon.
+	 * "Import" icon.<br>
+	 * <tt>kImportIcon</tt>
 	 */
 	public static final int IMPORT = 8;
 	/**
-	 * <tt>kSyncIcon</tt><br>
-	 * "Synchronise" icon.
+	 * "Synchronise" icon.<br>
+	 * <tt>kSyncIcon</tt>
 	 */
 	public static final int SYNC = 16;
 	/**
-	 * <tt>kKeyboardIcon</tt><br>
-	 * "Keyboard" icon.
+	 * "Keyboard" icon.<br>
+	 * <tt>kKeyboardIcon</tt>
 	 */
 	public static final int KEYBOARD = 32;
 
@@ -116,6 +116,12 @@ public class DWhichIcons extends DockCommandToNewton {
 		this.icons = icons;
 	}
 
+	/**
+	 * Add an icon.
+	 * 
+	 * @param icon
+	 *            the icon.
+	 */
 	public void addIcon(int icon) {
 		switch (icon) {
 		case BACKUP:
