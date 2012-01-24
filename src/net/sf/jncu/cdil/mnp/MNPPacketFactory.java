@@ -28,10 +28,9 @@ public class MNPPacketFactory {
 
 	/**
 	 * Maximum date length per packet before having to split into multiple
-	 * packets. <br>
-	 * FIXME this value should come from LR packets.
+	 * packets.
 	 */
-	protected static final int MAX_DATA_LENGTH = 256;
+	protected static final short MAX_DATA_LENGTH = 256;
 
 	private static MNPPacketFactory instance;
 
@@ -183,7 +182,9 @@ public class MNPPacketFactory {
 	 * @return the packet.
 	 */
 	protected MNPLinkRequestPacket createLR() {
-		return new MNPLinkRequestPacket();
+		MNPLinkRequestPacket packetLR = new MNPLinkRequestPacket();
+		packetLR.setMaxInfoLength(MAX_DATA_LENGTH);
+		return packetLR;
 	}
 
 	/**
