@@ -34,6 +34,7 @@ import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.newton.stream.NSOFSymbol;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.v1_0.io.Store;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v2_0.IconModule;
@@ -44,7 +45,9 @@ import net.sf.jncu.protocol.v2_0.io.DFilesAndFolders;
 import net.sf.jncu.protocol.v2_0.io.DGetDefaultPath;
 import net.sf.jncu.protocol.v2_0.io.DGetFileInfo;
 import net.sf.jncu.protocol.v2_0.io.DGetFilesAndFolders;
+import net.sf.jncu.protocol.v2_0.io.DGetInternalStore;
 import net.sf.jncu.protocol.v2_0.io.DImportFile;
+import net.sf.jncu.protocol.v2_0.io.DInternalStore;
 import net.sf.jncu.protocol.v2_0.io.DPath;
 import net.sf.jncu.protocol.v2_0.io.DRequestToBrowse;
 import net.sf.jncu.protocol.v2_0.io.DSetPath;
@@ -101,6 +104,7 @@ public class FileChooser extends IconModule {
 	private final List<FileFilter> filters = new ArrayList<FileFilter>();
 	private FileFilter filter;
 	private final List<FileChooserListener> listeners = new ArrayList<FileChooserListener>();
+	private Store internalStore;
 
 	/**
 	 * Constructs a new file chooser.
@@ -113,7 +117,7 @@ public class FileChooser extends IconModule {
 	public FileChooser(CDPipe<? extends CDPacket> pipe, Collection<NSOFString> types) {
 		super(TITLE, pipe);
 
-		if (types == null)
+		if ((types == null) || types.isEmpty())
 			throw new IllegalArgumentException("types required");
 		this.types.addAll(types);
 
@@ -153,8 +157,13 @@ public class FileChooser extends IconModule {
 		this.path = new File(folderPath);
 		populateFilters();
 
-		DResult cmdResult = new DResult();
-		write(cmdResult);
+		if (types.contains(IMPORT)) {
+			DGetInternalStore cmdGet = new DGetInternalStore();
+			write(cmdGet);
+		} else {
+			DResult cmdResult = new DResult();
+			write(cmdResult);
+		}
 		state = State.Initialised;
 	}
 
@@ -167,7 +176,12 @@ public class FileChooser extends IconModule {
 
 		String cmd = command.getCommand();
 
-		if (DGetDevices.COMMAND.equals(cmd)) {
+		if (DInternalStore.COMMAND.equals(cmd)) {
+			DInternalStore cmdStore = (DInternalStore) command;
+			internalStore = cmdStore.getStore();
+			DResult cmdResult = new DResult();
+			write(cmdResult);
+		} else if (DGetDevices.COMMAND.equals(cmd)) {
 			DDevices cmdDevices = new DDevices();
 			write(cmdDevices);
 		} else if (DGetDefaultPath.COMMAND.equals(cmd)) {
@@ -389,5 +403,14 @@ public class FileChooser extends IconModule {
 		for (FileChooserListener listener : listenersCopy) {
 			listener.cancelSelection();
 		}
+	}
+
+	/**
+	 * Get the internal store.
+	 * 
+	 * @return the store
+	 */
+	public Store getInternalStore() {
+		return internalStore;
 	}
 }
