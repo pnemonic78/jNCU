@@ -154,6 +154,7 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 
 		public Loader() {
 			super();
+			setName("Loader-" + getId());
 		}
 
 		@Override

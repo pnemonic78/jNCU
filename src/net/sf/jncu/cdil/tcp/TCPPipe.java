@@ -48,6 +48,7 @@ public class TCPPipe extends CDPipe<TCPPacket> {
 	 */
 	public TCPPipe(CDLayer layer, int port) throws ServiceNotSupportedException {
 		super(layer);
+		setName("TCPPipe-" + getId());
 		this.port = port;
 	}
 

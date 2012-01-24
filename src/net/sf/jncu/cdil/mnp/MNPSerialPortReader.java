@@ -55,7 +55,7 @@ public class MNPSerialPortReader extends Thread implements Closeable {
 	 */
 	public MNPSerialPortReader(SerialPort port) throws TooManyListenersException, IOException {
 		super();
-		setName("SerialPortReader-" + getId());
+		setName("MNPSerialPortReader-" + getId());
 		this.port = port;
 		this.in = new PipedInputStream(data);
 		this.listener = createPortListener(port, data);

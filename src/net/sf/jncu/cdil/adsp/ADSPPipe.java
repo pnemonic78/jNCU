@@ -56,6 +56,7 @@ public class ADSPPipe extends CDPipe<ADSPPacket> {
 	 */
 	public ADSPPipe(CDLayer layer, String name, byte type) throws ServiceNotSupportedException {
 		super(layer);
+		setName("ADSPPipe-" + getId());
 		this.name = name;
 		this.type = type;
 	}
