@@ -32,11 +32,11 @@ import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.newton.stream.NSOFSymbol;
-import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
+import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.app.DLoadPackageFile;
 import net.sf.jncu.protocol.v2_0.data.DRestoreFile;
 import net.sf.jncu.protocol.v2_0.io.DFileInfo;
@@ -58,7 +58,7 @@ import net.sf.swing.SwingUtils;
  * 
  * @author Moshe
  */
-public class FileChooser implements DockCommandListener {
+public class FileChooser extends IconModule {
 
 	/**
 	 * File chooser event.
@@ -91,7 +91,8 @@ public class FileChooser implements DockCommandListener {
 	/** Property key for default path. */
 	protected static final String KEY_PATH = "FileChooser.path";
 
-	private final CDPipe<? extends CDPacket> pipe;
+	private static final String TITLE = "File Chooser";
+
 	private final List<NSOFString> types = new ArrayList<NSOFString>();
 	private State state = State.None;
 	private File path;
@@ -110,11 +111,7 @@ public class FileChooser implements DockCommandListener {
 	 *            the chooser types.
 	 */
 	public FileChooser(CDPipe<? extends CDPacket> pipe, Collection<NSOFString> types) {
-		super();
-		if (pipe == null)
-			throw new IllegalArgumentException("pipe required");
-		this.pipe = pipe;
-		pipe.addCommandListener(this);
+		super(TITLE, pipe);
 
 		if (types == null)
 			throw new IllegalArgumentException("types required");
@@ -132,11 +129,7 @@ public class FileChooser implements DockCommandListener {
 	 *            the chooser type.
 	 */
 	public FileChooser(CDPipe<? extends CDPacket> pipe, NSOFString type) {
-		super();
-		if (pipe == null)
-			throw new IllegalArgumentException("pipe required");
-		this.pipe = pipe;
-		pipe.addCommandListener(this);
+		super(TITLE, pipe);
 
 		if (type == null)
 			throw new IllegalArgumentException("type required");
@@ -161,12 +154,14 @@ public class FileChooser implements DockCommandListener {
 		populateFilters();
 
 		DResult cmdResult = new DResult();
-		send(cmdResult);
+		write(cmdResult);
 		state = State.Initialised;
 	}
 
 	@Override
 	public void commandReceived(IDockCommandFromNewton command) {
+		if (state == State.Cancelled)
+			return;
 		if (state == State.Finished)
 			return;
 
@@ -174,29 +169,29 @@ public class FileChooser implements DockCommandListener {
 
 		if (DGetDevices.COMMAND.equals(cmd)) {
 			DDevices cmdDevices = new DDevices();
-			send(cmdDevices);
+			write(cmdDevices);
 		} else if (DGetDefaultPath.COMMAND.equals(cmd)) {
 			DPath cmdPath = new DPath();
 			cmdPath.setPath(path);
-			send(cmdPath);
+			write(cmdPath);
 		} else if (DGetFilesAndFolders.COMMAND.equals(cmd)) {
 			sendFiles();
 		} else if (DGetFilters.COMMAND.equals(cmd)) {
 			DFilters cmdFilters = new DFilters();
 			cmdFilters.addFilters(filters);
-			send(cmdFilters);
+			write(cmdFilters);
 		} else if (DGetFileInfo.COMMAND.equals(cmd)) {
 			DGetFileInfo cmdGet = (DGetFileInfo) command;
 			File f = new File(path, cmdGet.getFilename());
 			DFileInfo cmdInfo = new DFileInfo();
 			cmdInfo.setFile(f);
-			send(cmdInfo);
+			write(cmdInfo);
 		} else if (DSetDrive.COMMAND.equals(cmd)) {
 			DSetDrive cmdSet = (DSetDrive) command;
 			setPath(new File(cmdSet.getDrive()));
 			DPath cmdPath = new DPath();
 			cmdPath.setPath(path);
-			send(cmdPath);
+			write(cmdPath);
 		} else if (DSetPath.COMMAND.equals(cmd)) {
 			DSetPath cmdSet = (DSetPath) command;
 			setPath(cmdSet.getPath());
@@ -232,56 +227,37 @@ public class FileChooser implements DockCommandListener {
 			commandEOF();
 		} else if (DOperationCanceled.COMMAND.equals(cmd)) {
 			DOperationCanceledAck ack = new DOperationCanceledAck();
-			send(ack);
+			write(ack);
 			fireCancelled();
-			state = State.Cancelled;
 			commandEOF();
+			state = State.Cancelled;
 		}
 	}
 
 	@Override
 	public void commandSent(IDockCommandToNewton command) {
+		if (state == State.Cancelled)
+			return;
+		if (state == State.Finished)
+			return;
+
 		String cmd = command.getCommand();
 
 		if (DResult.COMMAND.equals(cmd)) {
 			state = State.Browsing;
-		} else if (DDevices.COMMAND.equals(cmd)) {
-			// state++;
-		} else if (DFilters.COMMAND.equals(cmd)) {
-			// state++;
-		} else if (DPath.COMMAND.equals(cmd)) {
-			// state++;
-		} else if (DFilesAndFolders.COMMAND.equals(cmd)) {
-			// state++;
-		} else if (DFileInfo.COMMAND.equals(cmd)) {
-			// state++;
 		} else if (DOperationCanceled.COMMAND.equals(cmd)) {
+			commandEOF();
 			state = State.Cancelled;
 		} else if (DOperationDone.COMMAND.equals(cmd)) {
+			commandEOF();
 			state = State.Cancelled;
 		}
 	}
 
 	@Override
 	public void commandEOF() {
-		pipe.removeCommandListener(this);
+		super.commandEOF();
 		state = State.Finished;
-	}
-
-	/**
-	 * Send a command.
-	 * 
-	 * @param command
-	 *            the command.
-	 */
-	protected void send(IDockCommandToNewton command) {
-		try {
-			if (pipe.canSend())
-				pipe.write(command);
-		} catch (Exception e) {
-			e.printStackTrace();
-			commandEOF();
-		}
 	}
 
 	/**
@@ -291,7 +267,7 @@ public class FileChooser implements DockCommandListener {
 		DFilesAndFolders cmdFiles = new DFilesAndFolders();
 		cmdFiles.setFolder(path);
 		cmdFiles.setFilter(filter);
-		send(cmdFiles);
+		write(cmdFiles);
 	}
 
 	/**
