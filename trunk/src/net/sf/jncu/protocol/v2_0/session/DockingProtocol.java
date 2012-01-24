@@ -77,6 +77,7 @@ public class DockingProtocol implements DockCommandListener {
 	public DockingProtocol(CDPipe<? extends CDPacket> pipe) {
 		super();
 		this.pipe = pipe;
+		pipe.addCommandListener(this);
 		this.crypto = new DESNewton();
 		crypto.init(Cipher.ENCRYPT_MODE);
 		info = null;
@@ -325,11 +326,13 @@ public class DockingProtocol implements DockCommandListener {
 			setState(state, DockingState.HANDSHAKE_DONE, null);
 			break;
 		case HANDSHAKE_DONE:
+			pipe.removeCommandListener(this);
 			break;
 		case DISCONNECTING:
 			pipe.disconnect();
 			break;
 		case DISCONNECTED:
+			pipe.removeCommandListener(this);
 			break;
 		default:
 			throw new BadPipeStateException("bad state from " + oldDockingState + " to " + state);
@@ -443,6 +446,7 @@ public class DockingProtocol implements DockCommandListener {
 
 	@Override
 	public void commandEOF() {
+		pipe.removeCommandListener(this);
 	}
 
 	/**

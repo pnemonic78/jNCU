@@ -38,7 +38,6 @@ import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v2_0.session.DockingState;
 
@@ -107,6 +106,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	 */
 	public MNPPipe(CDLayer layer, CommPortIdentifier portId, int baud) throws PlatformException, ServiceNotSupportedException {
 		super(layer);
+		setName("MNPPipe-" + getId());
 		this.portId = portId;
 		this.baud = baud;
 		try {
@@ -302,7 +302,6 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 
 		switch (stateMNP) {
 		case MNP_HANDSHAKE_DOCK:
-			docking.commandReceived(command);
 			break;
 		case MNP_ACCEPTED:
 		case MNP_IDLE:
@@ -312,19 +311,6 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 			// TODO throw new PipeDisconnectedException();
 		default:
 			throw new BadPipeStateException("bad state " + stateMNP);
-		}
-	}
-
-	@Override
-	public void commandSent(IDockCommandToNewton command) {
-		super.commandSent(command);
-
-		try {
-			if (stateMNP == MNPState.MNP_HANDSHAKE_DOCK) {
-				docking.commandSent(command);
-			}
-		} catch (BadPipeStateException bpe) {
-			bpe.printStackTrace();
 		}
 	}
 
@@ -372,7 +358,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 				MNPLinkRequestPacket reply = (MNPLinkRequestPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LR);
 				reply.setDataPhaseOpt(lr.getDataPhaseOpt());
 				reply.setFramingMode(lr.getFramingMode());
-				reply.setMaxInfoLength(lr.getMaxInfoLength());
+				// reply.setMaxInfoLength(lr.getMaxInfoLength());
 				reply.setMaxOutstanding(lr.getMaxOutstanding());
 				reply.setTransmitted(lr.getTransmitted());
 				docking.setState(DockingState.HANDSHAKE_LR_SENDING, null);
@@ -391,6 +377,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 			setState(state, MNPState.MNP_HANDSHAKE_DOCK, packet);
 			break;
 		case MNP_HANDSHAKE_DOCK:
+
 		case MNP_ACCEPTED:
 		case MNP_IDLE:
 			break;
