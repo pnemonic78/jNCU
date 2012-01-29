@@ -30,6 +30,7 @@ import java.util.List;
  * NCU communication ports.
  * 
  * @author moshew
+ * @see CommTrace CommTrace for setting library paths.
  */
 public class CommPorts {
 
@@ -49,12 +50,14 @@ public class CommPorts {
 	 * @throws NoSuchPortException
 	 *             if no ports are found.
 	 */
-	public List<CommPortIdentifier> getPortIdentifiers(int portType) throws NoSuchPortException {
+	public List<CommPortIdentifier> getPortIdentifiers(int portType)
+			throws NoSuchPortException {
 		List<CommPortIdentifier> portIdentifiers = new ArrayList<CommPortIdentifier>();
 
 		Enumeration<?> portEnum = CommPortIdentifier.getPortIdentifiers();
 		while (portEnum.hasMoreElements()) {
-			CommPortIdentifier portIdentifier = (CommPortIdentifier) portEnum.nextElement();
+			CommPortIdentifier portIdentifier = (CommPortIdentifier) portEnum
+					.nextElement();
 			if (portIdentifier.getPortType() == portType) {
 				portIdentifiers.add(portIdentifier);
 			}
@@ -69,7 +72,8 @@ public class CommPorts {
 	public static void main(String[] args) {
 		CommPorts ports = new CommPorts();
 		try {
-			for (CommPortIdentifier id : ports.getPortIdentifiers(CommPortIdentifier.PORT_SERIAL)) {
+			for (CommPortIdentifier id : ports
+					.getPortIdentifiers(CommPortIdentifier.PORT_SERIAL)) {
 				System.out.println(id.getName());
 			}
 		} catch (Exception e) {
