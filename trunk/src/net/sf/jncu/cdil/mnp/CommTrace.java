@@ -51,17 +51,17 @@ import java.util.TooManyListenersException;
  * <tt>java.library.path</tt> at start-up:
  * <ul>
  * <li>for Linux i686:
- * <code>-Djava.library.path=<em>${user.dir}</em>/lib;<em>${user.dir}</em>/lib/Linux/i686</code>
+ * <code>-Djava.library.path=<em>${user.dir}</em>/lib:<em>${user.dir}</em>/lib/Linux/i686</code>
  * <li>for Linux ia64:
- * <code>-Djava.library.path=<em>${user.dir}</em>/lib;<em>${user.dir}</em>/lib/Linux/ia64</code>
+ * <code>-Djava.library.path=<em>${user.dir}</em>/lib:<em>${user.dir}</em>/lib/Linux/ia64</code>
  * <li>for Linux x86_64 (x64):
- * <code>-Djava.library.path=<em>${user.dir}</em>/lib;<em>${user.dir}</em>/lib/Linux/x86_64</code>
+ * <code>-Djava.library.path=<em>${user.dir}</em>/lib:<em>${user.dir}</em>/lib/Linux/x86_64</code>
  * <li>for Mac OS X:
- * <code>-Djava.library.path=<em>${user.dir}</em>/lib;<em>${user.dir}</em>/lib/Mac_OS_X</code>
+ * <code>-Djava.library.path=<em>${user.dir}</em>/lib:<em>${user.dir}</em>/lib/Mac_OS_X</code>
  * <li>for Solaris SPARC 32:
- * <code>-Djava.library.path=<em>${user.dir}</em>/lib;<em>${user.dir}</em>/lib/Solaris/sparc32</code>
+ * <code>-Djava.library.path=<em>${user.dir}</em>/lib:<em>${user.dir}</em>/lib/Solaris/sparc32</code>
  * <li>for Solaris SPARC 64:
- * <code>-Djava.library.path=<em>${user.dir}</em>/lib;<em>${user.dir}</em>/lib/Solaris/sparc64</code>
+ * <code>-Djava.library.path=<em>${user.dir}</em>/lib:<em>${user.dir}</em>/lib/Solaris/sparc64</code>
  * <li>for Windows x86:
  * <code>-Djava.library.path="<em>${user.dir}</em>\lib";"<em>${user.dir}</em>\lib\Windows\x86"</code>
  * <li>for Windows ia64:
