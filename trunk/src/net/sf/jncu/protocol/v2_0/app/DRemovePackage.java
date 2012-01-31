@@ -19,7 +19,6 @@
  */
 package net.sf.jncu.protocol.v2_0.app;
 
-import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
@@ -35,7 +34,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  * 
  * @author Moshe
  */
-public class DRemovePackage extends DockCommandToNewtonScript {
+public class DRemovePackage extends DockCommandToNewtonScript<NSOFString> {
 
 	/** <tt>kDRemovePackage</tt> */
 	public static final String COMMAND = "rmvp";
@@ -46,13 +45,4 @@ public class DRemovePackage extends DockCommandToNewtonScript {
 	public DRemovePackage() {
 		super(COMMAND);
 	}
-
-	@Override
-	public void setObject(NSOFObject object) {
-		if (!(object instanceof NSOFString)) {
-			throw new ClassCastException("name required");
-		}
-		super.setObject(object);
-	}
-
 }

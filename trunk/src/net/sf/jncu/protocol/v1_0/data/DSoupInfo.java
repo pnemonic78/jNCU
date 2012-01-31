@@ -36,7 +36,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  * soup info frame
  * </pre>
  */
-public class DSoupInfo extends DockCommandFromNewtonScript {
+public class DSoupInfo extends DockCommandFromNewtonScript<NSOFFrame> {
 
 	/** <tt>kDSoupInfo</tt> */
 	public static final String COMMAND = "sinf";

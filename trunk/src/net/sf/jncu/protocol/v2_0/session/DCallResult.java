@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
+import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
@@ -34,7 +35,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  * 
  * @author moshew
  */
-public class DCallResult extends DockCommandFromNewtonScript {
+public class DCallResult extends DockCommandFromNewtonScript<NSOFObject> {
 
 	/** <tt>kDCallResult</tt> */
 	public static final String COMMAND = "cres";

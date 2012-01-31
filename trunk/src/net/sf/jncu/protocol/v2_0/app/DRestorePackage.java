@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.app;
 
+import net.sf.jncu.newton.stream.NSOFArray;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
@@ -37,7 +38,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  * 
  * @author moshew
  */
-public class DRestorePackage extends DockCommandToNewtonScript {
+public class DRestorePackage extends DockCommandToNewtonScript<NSOFArray> {
 
 	/** <tt>kDRestorePackage</tt> */
 	public static final String COMMAND = "rpkg";

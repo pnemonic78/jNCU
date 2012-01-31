@@ -19,13 +19,8 @@
  */
 package net.sf.jncu.protocol.v1_0.data;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import net.sf.jncu.newton.stream.NSOFBinaryObject;
-import net.sf.jncu.newton.stream.NSOFDecoder;
-import net.sf.jncu.newton.stream.NSOFObject;
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
  * This command is sent in response to a <tt>kDReturnEntry</tt> command. The
@@ -38,42 +33,15 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * entry  // binary data
  * </pre>
  */
-public class DEntry extends DockCommandFromNewton {
+public class DEntry extends DockCommandFromNewtonScript<NSOFBinaryObject> {
 
 	/** <tt>kDEntry</tt> */
 	public static final String COMMAND = "entr";
-
-	private NSOFBinaryObject entry;
 
 	/**
 	 * Creates a new command.
 	 */
 	public DEntry() {
 		super(COMMAND);
-	}
-
-	/**
-	 * Get the entry.
-	 * 
-	 * @return the entry.
-	 */
-	public NSOFObject getEntry() {
-		return entry;
-	}
-
-	/**
-	 * Set the entry.
-	 * 
-	 * @param entry
-	 *            the entry.
-	 */
-	protected void setEntry(NSOFBinaryObject entry) {
-		this.entry = entry;
-	}
-
-	@Override
-	protected void decodeData(InputStream data) throws IOException {
-		NSOFDecoder decoder = new NSOFDecoder();
-		setEntry((NSOFBinaryObject) decoder.decode(data));
 	}
 }

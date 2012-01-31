@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
+import net.sf.jncu.newton.stream.NSOFFrame;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
@@ -41,7 +42,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  * 
  * @author moshew
  */
-public class DRestoreOptions extends DockCommandToNewtonScript {
+public class DRestoreOptions extends DockCommandToNewtonScript<NSOFFrame> {
 
 	/** <tt>kDRestoreOptions</tt> */
 	public static final String COMMAND = "ropt";

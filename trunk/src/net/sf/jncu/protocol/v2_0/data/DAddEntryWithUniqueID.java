@@ -19,6 +19,8 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
+import net.sf.jncu.newton.stream.NSOFFrame;
+import net.sf.jncu.protocol.v1_0.data.DAddEntry;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
@@ -35,8 +37,9 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  * </pre>
  * 
  * @author moshew
+ * @see DAddEntry
  */
-public class DAddEntryWithUniqueID extends DockCommandToNewtonScript {
+public class DAddEntryWithUniqueID extends DockCommandToNewtonScript<NSOFFrame> {
 
 	/** <tt>kDAddEntryWithUniqueID</tt> */
 	public static final String COMMAND = "auni";
@@ -47,5 +50,4 @@ public class DAddEntryWithUniqueID extends DockCommandToNewtonScript {
 	public DAddEntryWithUniqueID() {
 		super(COMMAND);
 	}
-
 }

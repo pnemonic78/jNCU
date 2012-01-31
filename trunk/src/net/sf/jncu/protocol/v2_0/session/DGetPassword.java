@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
+import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
@@ -34,7 +35,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  * 
  * @author moshew
  */
-public class DGetPassword extends DockCommandToNewtonScript {
+public class DGetPassword extends DockCommandToNewtonScript<NSOFString> {
 
 	/** <tt>kDGetPassword</tt> */
 	public static final String COMMAND = "gpwd";
