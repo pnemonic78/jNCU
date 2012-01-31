@@ -138,8 +138,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	}
 
 	@Override
-	public void write(byte[] b, int offset, int count) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
-			TimeoutException {
+	public void write(byte[] b, int offset, int count) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		if ((stateMNP == MNPState.MNP_ACCEPTED) || (stateMNP == MNPState.MNP_IDLE)) {
 			super.write(b, offset, count);
 		}
@@ -153,8 +152,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	}
 
 	@Override
-	public void setTimeout(int timeoutInSecs) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
-			TimeoutException {
+	public void setTimeout(int timeoutInSecs) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		if (portId != null) {
 			throw new BadPipeStateException("Only able set the port timeout at port creation.");
 		}
@@ -184,6 +182,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see
 	 * net.sf.jncu.cdil.mnp.MNPPacketListener#packetReceived(net.sf.jncu.cdil
 	 * .mnp.MNPPacket)
@@ -217,6 +216,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see
 	 * net.sf.jncu.cdil.mnp.MNPPacketListener#packetSent(net.sf.jncu.cdil.mnp
 	 * .MNPPacket)
@@ -246,6 +246,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.jncu.cdil.mnp.MNPPacketListener#packetEOF()
 	 */
 	@Override
@@ -353,17 +354,19 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 			if ((packetType == MNPPacket.LR) && (state.compareTo(MNPState.MNP_HANDSHAKE_LR_SENT) < 0)) {
 				docking.setState(DockingState.HANDSHAKE_LR_RECEIVED, null);
 
-				MNPLinkRequestPacket lr = (MNPLinkRequestPacket) packet;
-				MNPPacketFactory.getInstance().resetSequence();
-				MNPLinkRequestPacket reply = (MNPLinkRequestPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LR);
-				reply.setDataPhaseOpt(lr.getDataPhaseOpt());
-				reply.setFramingMode(lr.getFramingMode());
-				// reply.setMaxInfoLength(lr.getMaxInfoLength());
-				reply.setMaxOutstanding(lr.getMaxOutstanding());
-				reply.setTransmitted(lr.getTransmitted());
-				docking.setState(DockingState.HANDSHAKE_LR_SENDING, null);
-				setState(state, MNPState.MNP_HANDSHAKE_LR_SENDING, reply);
-				sendAndAcknowledge(reply);
+				if (packet != null) {
+					MNPLinkRequestPacket lr = (MNPLinkRequestPacket) packet;
+					MNPPacketFactory.getInstance().resetSequence();
+					MNPLinkRequestPacket reply = (MNPLinkRequestPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LR);
+					reply.setDataPhaseOpt(lr.getDataPhaseOpt());
+					reply.setFramingMode(lr.getFramingMode());
+					// reply.setMaxInfoLength(lr.getMaxInfoLength());
+					reply.setMaxOutstanding(lr.getMaxOutstanding());
+					reply.setTransmitted(lr.getTransmitted());
+					docking.setState(DockingState.HANDSHAKE_LR_SENDING, null);
+					setState(state, MNPState.MNP_HANDSHAKE_LR_SENDING, reply);
+					sendAndAcknowledge(reply);
+				}
 			}
 			break;
 		case MNP_HANDSHAKE_LR_SENDING:
@@ -420,6 +423,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.jncu.cdil.CDPipe#createCommandLayer()
 	 */
 	@Override
@@ -442,6 +446,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.jncu.cdil.CDPipe#canSend()
 	 */
 	@Override

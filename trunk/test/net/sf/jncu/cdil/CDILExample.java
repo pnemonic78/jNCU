@@ -58,7 +58,7 @@ public class CDILExample {
 	public static void main(String[] args) {
 		try {
 			CDLayer layer = CDLayer.getInstance();
-			CDPipe pipe;
+			CDPipe<?> pipe;
 			byte[] dataBuffer = new byte[256];
 			int count;
 			// Initialize the library
