@@ -19,12 +19,8 @@
  */
 package net.sf.jncu.protocol.v1_0.data;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import net.sf.jncu.newton.stream.NSOFDecoder;
 import net.sf.jncu.newton.stream.NSOFObject;
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
  * This command specifies the indexes that should be created for the current
@@ -36,43 +32,16 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * indexes
  * </pre>
  */
-public class DIndexDescription extends DockCommandFromNewton {
+public class DIndexDescription extends DockCommandFromNewtonScript<NSOFObject> {
 
 	/** <tt>kDIndexDescription</tt> */
 	public static final String COMMAND = "indx";
-
-	private NSOFObject indexes;
 
 	/**
 	 * Creates a new command.
 	 */
 	public DIndexDescription() {
 		super(COMMAND);
-	}
-
-	@Override
-	protected void decodeData(InputStream data) throws IOException {
-		NSOFDecoder decoder = new NSOFDecoder();
-		setIndexes(decoder.decode(data));
-	}
-
-	/**
-	 * Get the indexes.
-	 * 
-	 * @return the indexes.
-	 */
-	public NSOFObject getIndexes() {
-		return indexes;
-	}
-
-	/**
-	 * Set the indexes.
-	 * 
-	 * @param indexes
-	 *            the indexes.
-	 */
-	public void setIndexes(NSOFObject indexes) {
-		this.indexes = indexes;
 	}
 
 }

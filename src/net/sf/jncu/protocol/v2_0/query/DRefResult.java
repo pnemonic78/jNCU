@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.query;
 
+import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
@@ -32,7 +33,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  * 
  * @author moshew
  */
-public class DRefResult extends DockCommandFromNewtonScript {
+public class DRefResult extends DockCommandFromNewtonScript<NSOFObject> {
 
 	/** <tt>kDRefResult</tt> */
 	public static final String COMMAND = "ref ";

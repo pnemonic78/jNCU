@@ -1,5 +1,6 @@
 package net.sf.jncu.protocol.v2_0.data;
 
+import net.sf.jncu.newton.stream.NSOFImmediate;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
@@ -12,7 +13,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  * 
  * @author Moshe
  */
-public class DNewtonTICommand extends DockCommandFromNewtonScript {
+public class DNewtonTICommand extends DockCommandFromNewtonScript<NSOFImmediate> {
 
 	public static final String COMMAND = "ntic";
 

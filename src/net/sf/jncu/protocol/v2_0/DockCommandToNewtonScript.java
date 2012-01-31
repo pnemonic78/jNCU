@@ -31,9 +31,9 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public abstract class DockCommandToNewtonScript extends DockCommandToNewton {
+public abstract class DockCommandToNewtonScript<T extends NSOFObject> extends DockCommandToNewton {
 
-	private NSOFObject object;
+	private T object;
 
 	/**
 	 * Creates a new command.
@@ -51,7 +51,7 @@ public abstract class DockCommandToNewtonScript extends DockCommandToNewton {
 	 * @param object
 	 *            the object.
 	 */
-	public void setObject(NSOFObject object) {
+	public void setObject(T object) {
 		this.object = object;
 	}
 
@@ -60,7 +60,7 @@ public abstract class DockCommandToNewtonScript extends DockCommandToNewton {
 	 * 
 	 * @return the object.
 	 */
-	public NSOFObject getObject() {
+	public T getObject() {
 		return object;
 	}
 

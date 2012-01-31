@@ -19,13 +19,8 @@
  */
 package net.sf.jncu.protocol.v1_0.data;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import net.sf.jncu.newton.stream.NSOFBinaryObject;
-import net.sf.jncu.newton.stream.NSOFEncoder;
-import net.sf.jncu.newton.stream.NSOFObject;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.newton.stream.NSOFFrame;
+import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
  * This command is sent when the desktop wants to add an entry to the current
@@ -39,12 +34,10 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DAddEntry extends DockCommandToNewton {
+public class DAddEntry extends DockCommandToNewtonScript<NSOFFrame> {
 
 	/** <tt>kDAddEntry</tt> */
 	public static final String COMMAND = "adde";
-
-	private NSOFBinaryObject entry;
 
 	/**
 	 * Creates a new command.
@@ -52,30 +45,4 @@ public class DAddEntry extends DockCommandToNewton {
 	public DAddEntry() {
 		super(COMMAND);
 	}
-
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.encode(getEntry(), data);
-	}
-
-	/**
-	 * Get the entry.
-	 * 
-	 * @return the entry.
-	 */
-	public NSOFObject getEntry() {
-		return entry;
-	}
-
-	/**
-	 * Set the entry.
-	 * 
-	 * @param entry
-	 *            the entry.
-	 */
-	public void setEntry(NSOFBinaryObject entry) {
-		this.entry = entry;
-	}
-
 }

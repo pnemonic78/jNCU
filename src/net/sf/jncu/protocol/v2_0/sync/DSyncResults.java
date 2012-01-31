@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.sync;
 
+import net.sf.jncu.newton.stream.NSOFArray;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
@@ -40,7 +41,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  * 
  * @author moshew
  */
-public class DSyncResults extends DockCommandToNewtonScript {
+public class DSyncResults extends DockCommandToNewtonScript<NSOFArray> {
 
 	/** <tt>kDSyncResults</tt> */
 	public static final String COMMAND = "sres";

@@ -31,9 +31,9 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public abstract class DockCommandFromNewtonScript extends DockCommandFromNewton {
+public abstract class DockCommandFromNewtonScript<T extends NSOFObject> extends DockCommandFromNewton {
 
-	private NSOFObject result;
+	private T result;
 
 	/**
 	 * Creates a new command.
@@ -45,10 +45,11 @@ public abstract class DockCommandFromNewtonScript extends DockCommandFromNewton 
 		super(cmd);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
 		NSOFDecoder decoder = new NSOFDecoder();
-		setResult(decoder.decode(data));
+		setResult((T) decoder.decode(data));
 	}
 
 	/**
@@ -57,7 +58,7 @@ public abstract class DockCommandFromNewtonScript extends DockCommandFromNewton 
 	 * @param result
 	 *            the result.
 	 */
-	protected void setResult(NSOFObject result) {
+	protected void setResult(T result) {
 		this.result = result;
 	}
 
@@ -66,13 +67,13 @@ public abstract class DockCommandFromNewtonScript extends DockCommandFromNewton 
 	 * 
 	 * @return the result.
 	 */
-	public NSOFObject getResult() {
+	public T getResult() {
 		return result;
 	}
 
 	@Override
 	public String toString() {
-		NSOFObject result = getResult();
+		T result = getResult();
 		StringBuffer s = new StringBuffer();
 		s.append(super.toString());
 		s.append(':');

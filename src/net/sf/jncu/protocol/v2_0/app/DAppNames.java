@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.app;
 
+import net.sf.jncu.newton.stream.NSOFFrame;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
@@ -45,7 +46,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  * 
  * @author Moshe
  */
-public class DAppNames extends DockCommandFromNewtonScript {
+public class DAppNames extends DockCommandFromNewtonScript<NSOFFrame> {
 
 	/** <tt>kDAppNames</tt> */
 	public static final String COMMAND = "appn";

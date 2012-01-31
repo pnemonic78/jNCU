@@ -20,15 +20,11 @@
 package net.sf.jncu.protocol.v1_0.sync;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
-import net.sf.jncu.newton.stream.NSOFDecoder;
-import net.sf.jncu.newton.stream.NSOFEncoder;
 import net.sf.jncu.newton.stream.NSOFObject;
-import net.sf.jncu.protocol.DockCommandFromNewton;
-import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
+import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
  * This command is sent by the Newton in response to a
@@ -41,12 +37,10 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
  * entry
  * </pre>
  */
-public class DChangedEntry extends DockCommandFromNewton implements IDockCommandToNewton {
+public class DChangedEntry extends DockCommandFromNewtonScript<NSOFObject> implements IDockCommandToNewton {
 
 	/** <tt>kDChangedEntry</tt> */
 	public static final String COMMAND = "cent";
-
-	private NSOFObject entry;
 
 	/**
 	 * Creates a new command.
@@ -56,40 +50,9 @@ public class DChangedEntry extends DockCommandFromNewton implements IDockCommand
 	}
 
 	@Override
-	protected void decodeData(InputStream data) throws IOException {
-		NSOFDecoder decoder = new NSOFDecoder();
-		setEntry(decoder.decode(data));
-	}
-
-	@Override
 	public byte[] getPayload() throws IOException {
-		IDockCommandToNewton cmd = new DockCommandToNewton(COMMAND) {
-
-			@Override
-			protected void writeCommandData(OutputStream data) throws IOException {
-				NSOFEncoder encoder = new NSOFEncoder();
-				encoder.encode(getEntry(), data);
-			}
+		IDockCommandToNewton cmd = new DockCommandToNewtonScript<NSOFObject>(COMMAND) {
 		};
 		return cmd.getPayload();
-	}
-
-	/**
-	 * Get the entry.
-	 * 
-	 * @return the entry.
-	 */
-	public NSOFObject getEntry() {
-		return entry;
-	}
-
-	/**
-	 * Set the entry.
-	 * 
-	 * @param entry
-	 *            the entry.
-	 */
-	public void setEntry(NSOFObject entry) {
-		this.entry = entry;
 	}
 }

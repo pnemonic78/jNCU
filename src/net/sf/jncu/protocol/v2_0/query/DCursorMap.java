@@ -55,10 +55,12 @@ public class DCursorMap extends DCursor {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.jncu.protocol.DockCommandToNewton#getCommandData()
 	 */
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
+		super.writeCommandData(data);
 		NSOFEncoder encoder = new NSOFEncoder();
 		encoder.encode(getFunction(), data);
 	}

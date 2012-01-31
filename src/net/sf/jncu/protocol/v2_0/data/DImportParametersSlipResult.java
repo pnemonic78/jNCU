@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
+import net.sf.jncu.newton.stream.NSOFFrame;
 import net.sf.jncu.newton.stream.NSOFSymbol;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
@@ -48,7 +49,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  * 
  * @author moshew
  */
-public class DImportParametersSlipResult extends DockCommandFromNewtonScript {
+public class DImportParametersSlipResult extends DockCommandFromNewtonScript<NSOFFrame> {
 
 	/** <tt>kDImportParameterSlipResult</tt> */
 	public static final String COMMAND = "islr";

@@ -46,8 +46,8 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  * &nbsp;&nbsp;stores: [{store info}, {store info}]<br>
  * }</code><br>
  * Each store frame in the stores array contains the same information returned
- * by the <tt>kDStoreNames</tt> command with the addition of soup information. It looks
- * like this: <br>
+ * by the <tt>kDStoreNames</tt> command with the addition of soup information.
+ * It looks like this: <br>
  * <code>{<br>
  * &nbsp;&nbsp;name: "",<br>
  * &nbsp;&nbsp;signature: 1234,<br>
@@ -75,7 +75,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  * 
  * @author moshew
  */
-public class DSyncOptions extends DockCommandFromNewtonScript {
+public class DSyncOptions extends DockCommandFromNewtonScript<NSOFFrame> {
 
 	/** <tt>kDSyncOptions</tt> */
 	public static final String COMMAND = "sopt";
@@ -91,6 +91,7 @@ public class DSyncOptions extends DockCommandFromNewtonScript {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see
 	 * net.sf.jncu.protocol.DockCommandFromNewton#decodeData(java.io.InputStream
 	 * )
@@ -98,7 +99,7 @@ public class DSyncOptions extends DockCommandFromNewtonScript {
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
 		super.decodeData(data);
-		NSOFFrame frame = (NSOFFrame) getResult();
+		NSOFFrame frame = getResult();
 		SyncInfo info = new SyncInfo();
 		info.decode(frame);
 	}

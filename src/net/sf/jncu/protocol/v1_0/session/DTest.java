@@ -22,6 +22,7 @@ package net.sf.jncu.protocol.v1_0.session;
 import java.io.IOException;
 import java.io.InputStream;
 
+import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
@@ -35,7 +36,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  * data
  * </pre>
  */
-public class DTest extends DockCommandToNewtonScript implements IDockCommandFromNewton {
+public class DTest extends DockCommandToNewtonScript<NSOFObject> implements IDockCommandFromNewton {
 
 	/** <tt>kDTest</tt> */
 	public static final String COMMAND = "test";
@@ -49,7 +50,7 @@ public class DTest extends DockCommandToNewtonScript implements IDockCommandFrom
 
 	@Override
 	public void decode(InputStream data) throws IOException {
-		DockCommandFromNewtonScript cmd = new DockCommandFromNewtonScript(COMMAND) {
+		DockCommandFromNewtonScript<NSOFObject> cmd = new DockCommandFromNewtonScript<NSOFObject>(COMMAND) {
 		};
 		cmd.decode(data);
 		setLength(cmd.getLength());
