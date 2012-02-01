@@ -44,6 +44,9 @@ public class DSetCurrentSoup extends DockCommandToNewton {
 	/** <tt>kDSetCurrentSoup</tt> */
 	public static final String COMMAND = "ssou";
 
+	/** Soup not found. */
+	public static final int ERROR_NOT_FOUND = -28015;
+
 	private String name;
 
 	/**

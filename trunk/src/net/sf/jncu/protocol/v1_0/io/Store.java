@@ -60,8 +60,8 @@ public class Store {
 
 	protected static final NSOFSymbol SLOT_NAME = new NSOFSymbol("name");
 	protected static final NSOFSymbol SLOT_SIGNATURE = new NSOFSymbol("signature");
-	protected static final NSOFSymbol SLOT_TOTALSIZE = new NSOFSymbol("TotalSize");
-	protected static final NSOFSymbol SLOT_USEDSIZE = new NSOFSymbol("UsedSize");
+	protected static final NSOFSymbol SLOT_TOTALSIZE = new NSOFSymbol("totalSize");
+	protected static final NSOFSymbol SLOT_USEDSIZE = new NSOFSymbol("usedSize");
 	protected static final NSOFSymbol SLOT_KIND = new NSOFSymbol("kind");
 	protected static final NSOFSymbol SLOT_INFO = new NSOFSymbol("info");
 	protected static final NSOFSymbol SLOT_READONLY = new NSOFSymbol("readOnly");
@@ -69,6 +69,7 @@ public class Store {
 	protected static final NSOFSymbol SLOT_PASSWORD = new NSOFSymbol("storePassword");
 	protected static final NSOFSymbol SLOT_SOUPS = new NSOFSymbol("soups");
 	protected static final NSOFSymbol SLOT_SIGNATURES = new NSOFSymbol("signatures");
+	protected static final NSOFSymbol SLOT_VERSION = new NSOFSymbol("storeVersion");
 
 	private String name;
 	private int signature;
@@ -79,6 +80,7 @@ public class Store {
 	private boolean readOnly;
 	private boolean defaultStore;
 	private int password;
+	private int version;
 	private List<String> soups;
 	private List<Integer> soupSignatures;
 
@@ -124,6 +126,9 @@ public class Store {
 				entries[i++] = new NSOFInteger(soup);
 			}
 			frame.put(SLOT_SIGNATURES, new NSOFPlainArray(entries));
+		}
+		if (getVersion() != 0) {
+			frame.put(SLOT_VERSION, new NSOFInteger(getVersion()));
 		}
 		return frame;
 	}
@@ -230,6 +235,13 @@ public class Store {
 		if (value != null) {
 			NSOFImmediate imm = (NSOFImmediate) value;
 			setUsedSize(imm.getValue());
+		}
+
+		value = frame.get(SLOT_VERSION);
+		setVersion(0);
+		if (value != null) {
+			NSOFImmediate imm = (NSOFImmediate) value;
+			setVersion(imm.getValue());
 		}
 	}
 
@@ -405,6 +417,25 @@ public class Store {
 	}
 
 	/**
+	 * Get the store version.
+	 * 
+	 * @return the version.
+	 */
+	public int getVersion() {
+		return version;
+	}
+
+	/**
+	 * Set the store version.
+	 * 
+	 * @param version
+	 *            the version.
+	 */
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
+	/**
 	 * Get the soup names.
 	 * 
 	 * @return the soups.
@@ -440,6 +471,17 @@ public class Store {
 	 */
 	public void setSoupSignatures(List<Integer> soupSignatures) {
 		this.soupSignatures = soupSignatures;
+	}
+
+	/**
+	 * Get the unused size.
+	 * 
+	 * @return the size.
+	 * @see #getTotalSize()
+	 * @see #getUsedSize()
+	 */
+	public int getFreeSize() {
+		return getTotalSize() - getUsedSize();
 	}
 
 }
