@@ -29,6 +29,7 @@ import net.sf.jncu.newton.stream.NSOFEncoder;
 import net.sf.jncu.newton.stream.NSOFFrame;
 import net.sf.jncu.newton.stream.NSOFInteger;
 import net.sf.jncu.newton.stream.NSOFObject;
+import net.sf.jncu.newton.stream.NSOFPlainArray;
 import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.newton.stream.NSOFSymbol;
 import net.sf.jncu.protocol.DockCommandToNewton;
@@ -53,7 +54,7 @@ public class DSoupsChanged extends DockCommandToNewton {
 	/** <tt>kDSoupsChanged</tt> */
 	public static final String COMMAND = "schg";
 
-	private final Set<Soup> soups = new TreeSet<Soup>();
+	private final Set<SoupChanged> soups = new TreeSet<SoupChanged>();
 
 	private static final NSOFSymbol SLOT_SOUP = new NSOFSymbol("soupName");
 	private static final NSOFSymbol SLOT_COUNT = new NSOFSymbol("count");
@@ -69,10 +70,10 @@ public class DSoupsChanged extends DockCommandToNewton {
 	protected void writeCommandData(OutputStream data) throws IOException {
 		NSOFObject[] items = new NSOFObject[soups.size()];
 		int i = 0;
-		for (Soup soup : soups) {
+		for (SoupChanged soup : soups) {
 			items[i++] = soup.toFrame();
 		}
-		NSOFArray arr = new NSOFArray(items);
+		NSOFArray arr = new NSOFPlainArray(items);
 		NSOFEncoder encoder = new NSOFEncoder();
 		encoder.encode(arr, data);
 	}
@@ -83,11 +84,30 @@ public class DSoupsChanged extends DockCommandToNewton {
 	 * @param soup
 	 *            the soup.
 	 */
-	public void addSoup(Soup soup) {
+	public void addSoup(SoupChanged soup) {
 		soups.add(soup);
 	}
 
-	public static class Soup implements Comparable<Soup> {
+	/**
+	 * Create a changed soup.
+	 * 
+	 * @param soupName
+	 *            the soup name.
+	 * @param count
+	 *            the count.
+	 * @return the soup.
+	 */
+	public static SoupChanged createSoup(String soupName, int count) {
+		SoupChanged soup = new SoupChanged();
+		soup.setSoupName(soupName);
+		soup.setCount(count);
+		return soup;
+	}
+
+	/**
+	 * Soup that has changed.
+	 */
+	public static class SoupChanged implements Comparable<SoupChanged> {
 
 		private String soupName;
 		private int count;
@@ -95,7 +115,7 @@ public class DSoupsChanged extends DockCommandToNewton {
 		/**
 		 * Creates a new soup frame.
 		 */
-		public Soup() {
+		protected SoupChanged() {
 			super();
 		}
 
@@ -144,12 +164,12 @@ public class DSoupsChanged extends DockCommandToNewton {
 
 		@Override
 		public boolean equals(Object obj) {
-			Soup that = (Soup) obj;
+			SoupChanged that = (SoupChanged) obj;
 			return compareTo(that) == 0;
 		}
 
 		@Override
-		public int compareTo(Soup that) {
+		public int compareTo(SoupChanged that) {
 			if (this == that) {
 				return 0;
 			}

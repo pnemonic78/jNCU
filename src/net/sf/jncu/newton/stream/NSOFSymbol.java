@@ -22,9 +22,11 @@ package net.sf.jncu.newton.stream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Locale;
 
 /**
- * Newton Streamed Object Format - Symbol.
+ * Newton Streamed Object Format - Symbol.<br>
+ * Symbols are case insensitive.
  * 
  * @author Moshe
  */
@@ -33,6 +35,8 @@ public class NSOFSymbol extends NSOFString {
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("symbol");
 
 	protected static final String ENCODING = "MacRoman";
+
+	private String valueLower;
 
 	/**
 	 * Constructs a new symbol.
@@ -82,6 +86,32 @@ public class NSOFSymbol extends NSOFString {
 		XLong.encode(name.length(), out);
 		// Name (bytes)
 		out.write(name.getBytes(ENCODING));
+	}
+
+	@Override
+	public void setValue(String value) {
+		super.setValue(value);
+		this.valueLower = (value == null) ? null : value.toLowerCase(Locale.ENGLISH);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return (valueLower == null) ? 0 : valueLower.hashCode();
+	}
+
+	@Override
+	public int compareTo(NSOFString that) {
+		String valThis = this.valueLower;
+		String valThat = that.getValue();
+		if (that instanceof NSOFSymbol)
+			valThat = ((NSOFSymbol) that).valueLower;
+		if (valThis == null)
+			return (valThat == null) ? 0 : -1;
+		return valThis.toLowerCase(Locale.ENGLISH).compareTo(valThat);
 	}
 
 }
