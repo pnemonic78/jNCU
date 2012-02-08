@@ -40,6 +40,8 @@ public class CDPing extends TimerTask {
 	 */
 	public CDPing(CDPipe<? extends CDPacket> pipe) {
 		super();
+		if (pipe == null)
+			throw new IllegalArgumentException("pipe required");
 		this.pipe = pipe;
 	}
 

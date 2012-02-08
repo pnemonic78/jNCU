@@ -17,31 +17,40 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.protocol.v1_0.data;
+package net.sf.jncu.newton.stream.contrib;
 
-import net.sf.jncu.newton.stream.NSOFArray;
-import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
+import net.sf.jncu.newton.stream.NSOFString;
 
 /**
- * This command specifies the indexes that should be created for the current
- * soup.
+ * Soup name.
+ * <p>
+ * Soup names must be < 25 characters.
  * 
- * <pre>
- * 'didx'
- * length
- * indexes
- * </pre>
+ * @author Moshe
  */
-public class DIndexDescription extends DockCommandFromNewtonScript<NSOFArray> {
-
-	/** <tt>kDIndexDescription</tt> */
-	public static final String COMMAND = "indx";
+public class NSOFSoupName extends NSOFString {
 
 	/**
-	 * Creates a new command.
+	 * Constructs a new name.
 	 */
-	public DIndexDescription() {
-		super(COMMAND);
+	public NSOFSoupName() {
+		super();
 	}
 
+	/**
+	 * Constructs a new name.
+	 * 
+	 * @param value
+	 *            the name.
+	 */
+	public NSOFSoupName(String value) {
+		super(value);
+	}
+
+	@Override
+	public void setValue(String value) {
+		if ((value != null) && (value.length() >= 25))
+			value = value.substring(0, 25);
+		super.setValue(value);
+	}
 }

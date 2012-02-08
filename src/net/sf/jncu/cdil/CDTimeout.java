@@ -38,6 +38,8 @@ public class CDTimeout extends TimerTask {
 	 */
 	public CDTimeout(CDPipe<? extends CDPacket> pipe) {
 		super();
+		if (pipe == null)
+			throw new IllegalArgumentException("pipe required");
 		this.pipe = pipe;
 	}
 

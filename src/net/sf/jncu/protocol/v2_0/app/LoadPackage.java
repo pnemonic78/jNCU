@@ -83,25 +83,22 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 			// loader.kill();
 			DOperationCanceledAck ack = new DOperationCanceledAck();
 			write(ack);
-			commandEOF();
-			state = State.Cancelled;
 		} else if (DResult.COMMAND.equals(cmd)) {
-			final DResult result = (DResult) command;
+			DResult result = (DResult) command;
+			int code = result.getErrorCode();
 			// Upload can begin or was finished?
-			if (result.getErrorCode() == DResult.OK) {
+			if (code == DResult.OK) {
 				if (state == State.Requested) {
 					state = State.Loading;
 					loadPackage(file);
 				} else if (state == State.Loaded) {
 					DOperationDone done = new DOperationDone();
 					write(done);
-					commandEOF();
-					state = State.Finished;
 				}
 			} else {
 				commandEOF();
 				state = State.Cancelled;
-				showError(result.getError().getMessage() + "\nCode: " + result.getErrorCode());
+				showError(result.getError().getMessage() + "\nCode: " + code);
 			}
 		} else if (DLoadPackageFile.COMMAND.equals(cmd)) {
 			state = State.Loading;
@@ -121,6 +118,12 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 			state = State.Requested;
 		} else if (DLoadPackage.COMMAND.equals(cmd)) {
 			state = State.Loaded;
+		} else if (DOperationDone.COMMAND.equals(cmd)) {
+			commandEOF();
+			state = State.Finished;
+		} else if (DOperationCanceledAck.COMMAND.equals(cmd)) {
+			commandEOF();
+			state = State.Cancelled;
 		}
 	}
 

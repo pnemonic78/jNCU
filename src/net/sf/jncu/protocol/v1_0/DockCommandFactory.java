@@ -271,9 +271,8 @@ public class DockCommandFactory {
 	public IDockCommand create(InputStream in) throws IOException {
 		byte[] cmdName = new byte[DockCommand.COMMAND_NAME_LENGTH];
 		int count = in.read(cmdName);
-		if (count == -1) {
+		if (count < DockCommand.COMMAND_NAME_LENGTH)
 			throw new EOFException();
-		}
 		return create(cmdName);
 	}
 

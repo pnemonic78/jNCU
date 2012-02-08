@@ -19,6 +19,9 @@
  */
 package net.sf.jncu.newton.stream;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * Newton Streamed Object Format - Object.
  * 
@@ -84,4 +87,19 @@ public abstract class NSOFObject extends NewtonStreamedObjectFormat {
 		return nsClass;
 	}
 
+	/**
+	 * Read into the whole array.
+	 * 
+	 * @param in
+	 *            the input.
+	 * @param b
+	 *            the destination buffer.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected void readAll(InputStream in, byte[] b) throws IOException {
+		int count = 0;
+		while (count < b.length)
+			count += in.read(b, count, b.length - count);
+	}
 }

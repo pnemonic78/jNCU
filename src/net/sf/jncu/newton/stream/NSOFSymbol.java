@@ -68,7 +68,7 @@ public class NSOFSymbol extends NSOFString {
 		int len = XLong.decodeValue(in);
 		// Name (bytes)
 		byte[] name = new byte[len];
-		in.read(name);
+		readAll(in, name);
 		setValue(new String(name, ENCODING));
 	}
 

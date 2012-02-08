@@ -144,11 +144,27 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 		int lo = readByte(in);
 		int c = ((hi & 0xFF) << 8) | (lo & 0xFF);
 		while (c != 0) {
-			buf.append((char) c);
+			buf.appendCodePoint(c);
 			hi = readByte(in);
 			lo = readByte(in);
 			c = ((hi & 0xFF) << 8) | (lo & 0xFF);
 		}
 		return buf.toString();
+	}
+
+	/**
+	 * Read into the whole array.
+	 * 
+	 * @param in
+	 *            the input.
+	 * @param b
+	 *            the destination buffer.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected void readAll(InputStream in, byte[] b) throws IOException {
+		int count = 0;
+		while (count < b.length)
+			count += in.read(b, count, b.length - count);
 	}
 }

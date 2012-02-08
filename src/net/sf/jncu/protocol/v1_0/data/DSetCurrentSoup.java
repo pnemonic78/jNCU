@@ -34,7 +34,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * <pre>
  * 'ssou'
  * length
- * soup name
+ * soup name	// C string
  * </pre>
  * 
  * @author moshew
@@ -44,7 +44,10 @@ public class DSetCurrentSoup extends DockCommandToNewton {
 	/** <tt>kDSetCurrentSoup</tt> */
 	public static final String COMMAND = "ssou";
 
-	/** Soup not found. */
+	/**
+	 * Soup not found.<br>
+	 * <tt>kDSoupNotFound</tt>
+	 */
 	public static final int ERROR_NOT_FOUND = -28015;
 
 	private String name;

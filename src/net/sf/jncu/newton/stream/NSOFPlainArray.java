@@ -58,6 +58,8 @@ public class NSOFPlainArray extends NSOFArray {
 	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
+		setValue(null);
+
 		// Number of slots (xlong)
 		int len = XLong.decodeValue(in);
 		NSOFObject[] entries = new NSOFObject[len];
