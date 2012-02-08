@@ -31,6 +31,8 @@ import net.sf.jncu.io.RewriteByteArrayOutputStream;
  */
 public abstract class DockCommandToNewton extends DockCommand implements IDockCommandToNewton {
 
+	private static final String CHARSET = "UTF-16";
+
 	/**
 	 * Creates a new docking command from Newton.
 	 * 
@@ -145,11 +147,11 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 	 */
 	public static void writeString(String s, OutputStream out) throws IOException {
 		if ((s != null) && (s.length() > 0)) {
-			byte[] utf16 = s.getBytes("UTF-16");
+			byte[] utf16 = s.getBytes(CHARSET);
 			// The 1st and 2nd bytes are UTF-16 header 0xFE and 0xFF.
 			out.write(utf16, 2, utf16.length - 2);
 		}
-		// Null-terminated string.
+		// Null-terminator.
 		out.write(0);
 		out.write(0);
 	}

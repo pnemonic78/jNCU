@@ -20,7 +20,6 @@
 package net.sf.jncu.newton.stream;
 
 import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -83,9 +82,7 @@ public class NSOFBinaryObject extends NSOFObject implements Precedent {
 		setNSClass(symbol);
 
 		// Data
-		if (in.read(v) != length) {
-			throw new EOFException();
-		}
+		readAll(in, v);
 		setValue(v);
 	}
 

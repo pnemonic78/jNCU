@@ -25,6 +25,7 @@ import net.sf.jncu.newton.stream.NSOFInteger;
 import net.sf.jncu.newton.stream.NSOFObject;
 import net.sf.jncu.newton.stream.NSOFString;
 import net.sf.jncu.newton.stream.NSOFSymbol;
+import net.sf.jncu.newton.stream.contrib.NSOFSoupName;
 
 /**
  * Soup information.
@@ -91,8 +92,9 @@ public class Soup {
 	 */
 	public NSOFFrame toFrame() {
 		NSOFFrame frame = new NSOFFrame();
-		frame.put(SLOT_NAME, new NSOFString(getName()));
-		frame.put(SLOT_SIGNATURE, new NSOFInteger(getSignature()));
+		frame.put(SLOT_NAME, new NSOFSoupName(getName()));
+		if (getSignature() != 0)
+			frame.put(SLOT_SIGNATURE, new NSOFInteger(getSignature()));
 		return frame;
 	}
 

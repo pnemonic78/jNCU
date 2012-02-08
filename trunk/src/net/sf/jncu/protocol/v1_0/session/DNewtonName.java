@@ -65,7 +65,7 @@ public class DNewtonName extends DockCommandFromNewton {
 		// Clone the information buffer in case not all fields are read and we
 		// still need to reach the name.
 		byte[] infoBuf = new byte[versionInfoLength];
-		data.read(infoBuf);
+		readAll(data, infoBuf);
 		setInformation(decodeInfo(new ByteArrayInputStream(infoBuf)));
 		setName(decodeName(data));
 	}

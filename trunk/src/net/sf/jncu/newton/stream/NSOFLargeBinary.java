@@ -70,7 +70,7 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	 * Arguments for instantiating the specified compander. In the current
 	 * implementation, always pass nil as the value of this parameter.
 	 * <p>
-	 *"Because both companders provided by the current system initialize
+	 * "Because both companders provided by the current system initialize
 	 * themselves automatically, you must always pass nil as the value of the
 	 * companderArgs parameter."
 	 */
@@ -113,7 +113,7 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 			setCompanderName(null);
 		} else {
 			byte[] companderName = new byte[numBytesCompanderName];
-			in.read(companderName);
+			readAll(in, companderName);
 			setCompanderName(new String(companderName));
 		}
 		// Compander parameters (bytes)
@@ -121,7 +121,7 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 			setCompanderArguments(null);
 		} else {
 			byte[] companderArgs = new byte[numBytesCompanderArgs];
-			in.read(companderArgs);
+			readAll(in, companderArgs);
 			setCompanderArguments(companderArgs);
 		}
 		// Data (bytes)
@@ -129,7 +129,7 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 			setValue(null);
 		} else {
 			byte[] data = new byte[numBytesData];
-			in.read(data);
+			readAll(in, data);
 			setValue(data);
 		}
 	}

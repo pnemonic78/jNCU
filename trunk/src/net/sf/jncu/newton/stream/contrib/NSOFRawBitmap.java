@@ -132,7 +132,7 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 		setRight(ntohs(in));
 		// 16-* bits pixel data, 1 for "on" pixel, 0 for "off"
 		byte[] pixels = new byte[in.available()];
-		in.read(pixels);
+		readAll(in, pixels);
 		setPixels(pixels);
 	}
 

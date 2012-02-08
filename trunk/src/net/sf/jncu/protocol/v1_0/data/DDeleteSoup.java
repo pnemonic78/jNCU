@@ -31,7 +31,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * <pre>
  * 'dsou'
  * length
- * soup name
+ * soup name	// C string
  * </pre>
  * 
  * @author moshew

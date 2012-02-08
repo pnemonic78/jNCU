@@ -409,9 +409,8 @@ public class CDLayer {
 	 *            the state.
 	 */
 	public void setState(CDPipe<? extends CDPacket> pipe, CDState state) {
-		if (pipe == null) {
-			throw new IllegalArgumentException();
-		}
+		if (pipe == null)
+			throw new IllegalArgumentException("pipe required");
 		this.state = state;
 	}
 }

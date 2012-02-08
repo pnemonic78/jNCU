@@ -163,7 +163,9 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	protected void restartTimeout() {
 		if (timeoutTask != null)
 			timeoutTask.cancel();
-		this.timeoutTask = new CDTimeout(null);
+		if (pipe == null)
+			return;
+		this.timeoutTask = new CDTimeout(pipe);
 		timer.schedule(timeoutTask, timeout * 1000L);
 	}
 

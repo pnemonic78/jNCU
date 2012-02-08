@@ -32,6 +32,7 @@ public class NSOFString extends NSOFObject implements Comparable<NSOFString>, Pr
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("string");
 
+	protected static final String CHARSET = "UTF-16";
 	protected static final char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 	private String value;
@@ -68,8 +69,13 @@ public class NSOFString extends NSOFObject implements Comparable<NSOFString>, Pr
 		// String (halfwords)
 		byte[] buf = new byte[numBytes];
 
-		in.read(buf);
-		setValue(new String(buf, 0, numBytes - 2, "UTF-16"));
+		int count = 0;
+		while (count < numBytes)
+			count += in.read(buf, count, numBytes - count);
+		// Trim?
+		while ((numBytes >= 2) && (buf[numBytes - 2] == 0) && (buf[numBytes - 1] == 0))
+			numBytes -= 2;
+		setValue(new String(buf, 0, numBytes, CHARSET));
 	}
 
 	/*
@@ -85,12 +91,12 @@ public class NSOFString extends NSOFObject implements Comparable<NSOFString>, Pr
 			// Number of bytes in string (xlong)
 			XLong.encode(0, out);
 		} else {
-			// Bytes [0] and [1] are 0xFE and 0xFF
-			byte[] buf = s.getBytes("UTF-16");
+			byte[] buf = s.getBytes(CHARSET);
 			// Number of bytes in string (xlong)
 			// 2-bytes per character + null-terminated
 			XLong.encode(buf.length, out);
 			// String (halfwords)
+			// Bytes [0] and [1] are 0xFE and 0xFF
 			if (buf.length >= 2)
 				out.write(buf, 2, buf.length - 2);
 			out.write(0);

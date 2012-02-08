@@ -74,7 +74,9 @@ import java.util.TooManyListenersException;
  */
 public class CommTrace implements SerialPortEventListener {
 
+	/** Incoming bytes. */
 	public static final char CHAR_DIRECTION_1TO2 = '>';
+	/** Outgoing bytes. */
 	public static final char CHAR_DIRECTION_2TO1 = '<';
 	private static final char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 

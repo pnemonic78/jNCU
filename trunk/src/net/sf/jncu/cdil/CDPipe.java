@@ -368,7 +368,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	 * If the Newton device is sending data very rapidly, you must call this
 	 * function frequently to buffer that data. The CDIL uses a dynamically
 	 * sized buffer, but the underlying communication tool may use a statically
-	 * sized one. If you don�t call <tt>CD_Idle</tt> frequently enough, you may
+	 * sized one. If you don't call <tt>CD_Idle</tt> frequently enough, you may
 	 * lose data. On the other hand, you unnecessarily slow down your
 	 * application if you call this function too frequently. Frequencies on the
 	 * order of a tenth of second should be adequate. In general you calling
@@ -388,6 +388,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	public void idle() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		layer.checkInitialized();
 		idleImpl();
+		Thread.yield();
 	}
 
 	/**
