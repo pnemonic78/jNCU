@@ -23,7 +23,6 @@ import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.util.TooManyListenersException;
 import java.util.concurrent.TimeoutException;
@@ -32,6 +31,7 @@ import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDCommandLayer;
 import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.CDLayer;
+import net.sf.jncu.cdil.CDPacketLayer;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.cdil.PipeDisconnectedException;
@@ -88,7 +88,6 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	protected final CommPortIdentifier portId;
 	protected final int baud;
 	protected final MNPSerialPort port;
-	private MNPSerialPacketLayer packetLayer;
 	/** MNP handshaking state. */
 	protected MNPState stateMNP = MNPState.MNP_HANDSHAKE_LR_LISTEN;
 
@@ -120,21 +119,6 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 		} catch (IOException ioe) {
 			throw new ServiceNotSupportedException(ioe);
 		}
-	}
-
-	@Override
-	public void run() {
-		do {
-			try {
-				getPacketLayer().listen();
-			} catch (EOFException eofe) {
-				disconnectQuiet();
-			} catch (IOException ioe) {
-				if (docking.getState() != DockingState.DISCONNECTED) {
-					ioe.printStackTrace();
-				}
-			}
-		} while (docking.getState() != DockingState.DISCONNECTED);
 	}
 
 	@Override
@@ -279,7 +263,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	 *             if timeout occurs.
 	 */
 	protected void sendAndAcknowledge(MNPPacket packet) throws TimeoutException {
-		getPacketLayer().sendQueued(packet);
+		getSerialPacketLayer().sendQueued(packet);
 	}
 
 	/**
@@ -410,14 +394,8 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 		return stateMNP;
 	}
 
-	/**
-	 * Create a packet layer.
-	 * 
-	 * @param port
-	 *            the serial port.
-	 * @return the packet layer.
-	 */
-	protected MNPSerialPacketLayer createPacketLayer(MNPSerialPort port) {
+	@Override
+	protected CDPacketLayer<MNPPacket> createPacketLayer() {
 		return new MNPSerialPacketLayer(this, port);
 	}
 
@@ -427,8 +405,8 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	 * @see net.sf.jncu.cdil.CDPipe#createCommandLayer()
 	 */
 	@Override
-	protected CDCommandLayer<MNPPacket> createCommandLayer() {
-		return new MNPSerialCommandLayer(getPacketLayer());
+	protected CDCommandLayer<MNPPacket> createCommandLayer(CDPacketLayer<MNPPacket> packetLayer) {
+		return new MNPSerialCommandLayer((MNPSerialPacketLayer) packetLayer);
 	}
 
 	/**
@@ -459,11 +437,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	 * 
 	 * @return the packet layer.
 	 */
-	protected MNPSerialPacketLayer getPacketLayer() {
-		if (packetLayer == null) {
-			packetLayer = createPacketLayer(port);
-			packetLayer.addPacketListener(this);
-		}
-		return packetLayer;
+	protected MNPSerialPacketLayer getSerialPacketLayer() {
+		return (MNPSerialPacketLayer) getPacketLayer();
 	}
 }

@@ -31,6 +31,16 @@ import net.sf.jncu.cdil.CDPacketLayer;
  */
 public class TCPPacketLayer extends CDPacketLayer<TCPPacket> {
 
+	/**
+	 * Constructs a new packet layer.
+	 * 
+	 * @param pipe
+	 *            the pipe.
+	 */
+	public TCPPacketLayer(TCPPipe pipe) {
+		super(pipe);
+	}
+
 	@Override
 	protected TCPPacket createPacket(byte[] payload) {
 		// TODO Auto-generated method stub

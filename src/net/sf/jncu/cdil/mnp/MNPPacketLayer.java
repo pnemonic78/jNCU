@@ -45,8 +45,6 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 	/** Packet escape character. */
 	protected static final byte DELIMITER_ESCAPE = ControlCharacter.DLE;
 
-	protected final byte CREDIT = 7;
-
 	/** Send packets. */
 	protected MNPPacketSender sender;
 
@@ -57,7 +55,7 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 	 *            the pipe.
 	 */
 	public MNPPacketLayer(MNPPipe pipe) {
-		super();
+		super(pipe);
 		this.sender = new MNPPacketSender(pipe, this);
 		this.sender.start();
 		addPacketListener(this);
@@ -219,7 +217,6 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 			MNPLinkTransferPacket packetLT = (MNPLinkTransferPacket) packet;
 			MNPLinkAcknowledgementPacket ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
 			ack.setSequence(packetLT.getSequence());
-			ack.setCredit(CREDIT);
 			try {
 				send(ack);
 			} catch (Exception e) {

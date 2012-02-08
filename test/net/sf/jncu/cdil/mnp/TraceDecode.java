@@ -19,8 +19,9 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
  */
 public class TraceDecode {
 
-	private static final char DIRECTION_1TO2 = CommTrace.CHAR_DIRECTION_1TO2;
-	private static final char DIRECTION_2TO1 = CommTrace.CHAR_DIRECTION_2TO1;
+	private static final char DIRECTION_IN = CommTrace.CHAR_DIRECTION_1TO2;
+	private static final char DIRECTION_OUT = CommTrace.CHAR_DIRECTION_2TO1;
+
 	private static final String HEX = "0123456789ABCDEF";
 
 	/**
@@ -48,7 +49,7 @@ public class TraceDecode {
 		}
 	}
 
-	public void parse(File file) throws IOException {
+	public void parse(File file) throws Exception {
 		Reader reader = null;
 		try {
 			reader = new FileReader(file);
@@ -64,14 +65,14 @@ public class TraceDecode {
 		}
 	}
 
-	public void parse(Reader reader) throws IOException {
+	public void parse(Reader reader) throws Exception {
 		PipedInputStream in1To2 = new PipedInputStream();
 		PipedInputStream in2To1 = new PipedInputStream();
 		PipedOutputStream buf1To2 = new PipedOutputStream(in1To2);
 		PipedOutputStream buf2To1 = new PipedOutputStream(in2To1);
 
-		ProcessPayload pp1 = new ProcessPayload(DIRECTION_1TO2, in1To2);
-		ProcessPayload pp2 = new ProcessPayload(DIRECTION_2TO1, in2To1);
+		DecodePayload pp1 = new DecodePayload(DIRECTION_IN, in1To2);
+		DecodePayload pp2 = new DecodePayload(DIRECTION_OUT, in2To1);
 
 		pp1.start();
 		pp2.start();
@@ -79,16 +80,16 @@ public class TraceDecode {
 		char c;
 		int hex;
 		int value;
-		char direction = DIRECTION_1TO2;
+		char direction = DIRECTION_IN;
 		int b = reader.read();
 
 		while (b != -1) {
 			c = (char) b;
 
-			if (c == CommTrace.CHAR_DIRECTION_1TO2) {
-				direction = DIRECTION_1TO2;
-			} else if (c == CommTrace.CHAR_DIRECTION_2TO1) {
-				direction = DIRECTION_2TO1;
+			if (c == DIRECTION_IN) {
+				direction = DIRECTION_IN;
+			} else if (c == DIRECTION_OUT) {
+				direction = DIRECTION_OUT;
 			} else if (Character.isLetterOrDigit(c)) {
 				hex = HEX.indexOf(c);
 				value = hex;
@@ -96,10 +97,10 @@ public class TraceDecode {
 				c = (char) b;
 				hex = HEX.indexOf(c);
 				value = (value << 4) | hex;
-				if (direction == DIRECTION_1TO2) {
+				if (direction == DIRECTION_IN) {
 					buf1To2.write(value);
 					buf1To2.flush();
-				} else if (direction == DIRECTION_2TO1) {
+				} else if (direction == DIRECTION_OUT) {
 					buf2To1.write(value);
 					buf2To1.flush();
 				}
@@ -113,23 +114,26 @@ public class TraceDecode {
 		buf2To1.close();
 	}
 
-	private class ProcessPayload extends Thread implements MNPPacketListener, DockCommandListener {
+	private class DecodePayload extends Thread implements MNPPacketListener, DockCommandListener {
 
 		private final char direction;
 		private final MNPPacketLayer packetLayer;
 		private final MNPCommandLayer cmdLayer;
 		private boolean running;
 
-		public ProcessPayload(char direction, final InputStream in) {
+		public DecodePayload(char direction, final InputStream in) throws Exception {
 			super();
-			setName("ProcessPayload-" + direction);
+			setName("DecodePayload-" + direction);
 			this.direction = direction;
+
 			this.packetLayer = new MNPPacketLayer(null) {
 				protected InputStream getInput() throws IOException {
 					return in;
 				}
 			};
 			packetLayer.addPacketListener(this);
+			// packetLayer.start();
+
 			this.cmdLayer = new MNPCommandLayer(packetLayer);
 			cmdLayer.addCommandListener(this);
 			cmdLayer.start();
@@ -157,10 +161,12 @@ public class TraceDecode {
 
 		@Override
 		public void packetSent(MNPPacket packet) {
+			processPacket(direction, packet);
 		}
 
 		@Override
 		public void packetEOF() {
+			System.out.println(direction + "\tEOF packet");
 			running = false;
 			packetLayer.close();
 		}
@@ -177,8 +183,8 @@ public class TraceDecode {
 
 		@Override
 		public void commandEOF() {
+			System.out.println(direction + "\tEOF cmd");
 			cmdLayer.close();
-			System.out.println(direction + "\teof cmd");
 		}
 
 		private void processPacket(char direction, MNPPacket packet) {
@@ -196,18 +202,18 @@ public class TraceDecode {
 		}
 
 		private void processLA(char direction, MNPLinkAcknowledgementPacket packet) {
-			System.out.println(direction + " type:(LA)" + packet.getType() + " trans:" + packet.getTransmitted() + " credit:" + packet.getCredit() + " seq:"
-					+ packet.getSequence());
+			System.out
+					.println(direction + " type:(LA)" + packet.getType() + " trans:" + packet.getTransmitted() + " credit:" + packet.getCredit() + " seq:" + packet.getSequence());
 		}
 
 		private void processLD(char direction, MNPLinkDisconnectPacket packet) {
-			System.out.println(direction + " type:(LD)" + packet.getType() + " trans:" + packet.getTransmitted() + " reason:" + packet.getReasonCode()
-					+ " user:" + packet.getUserCode());
+			System.out.println(direction + " type:(LD)" + packet.getType() + " trans:" + packet.getTransmitted() + " reason:" + packet.getReasonCode() + " user:"
+					+ packet.getUserCode());
 		}
 
 		private void processLR(char direction, MNPLinkRequestPacket packet) {
-			System.out.println(direction + " type:(LR)" + packet.getType() + " trans:" + packet.getTransmitted() + " dpo:" + packet.getDataPhaseOpt()
-					+ " framing:" + packet.getFramingMode() + " info:" + packet.getMaxInfoLength() + " outstanding:" + packet.getMaxOutstanding());
+			System.out.println(direction + " type:(LR)" + packet.getType() + " trans:" + packet.getTransmitted() + " dpo:" + packet.getDataPhaseOpt() + " framing:"
+					+ packet.getFramingMode() + " info:" + packet.getMaxInfoLength() + " outstanding:" + packet.getMaxOutstanding());
 		}
 
 		private void processLT(char direction, MNPLinkTransferPacket packet) {
