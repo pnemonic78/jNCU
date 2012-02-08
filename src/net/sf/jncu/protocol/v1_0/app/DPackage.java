@@ -53,8 +53,8 @@ public class DPackage extends DockCommandFromNewton {
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
 		setId(ntohl(data));
-		byte[] b = new byte[data.available()];
-		data.read(b);
+		byte[] b = new byte[getLength() - 4];
+		readAll(data, b);
 		setData(b);
 	}
 
