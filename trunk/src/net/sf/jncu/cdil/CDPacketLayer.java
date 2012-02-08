@@ -28,13 +28,16 @@ import java.util.Collection;
 import java.util.Timer;
 import java.util.concurrent.TimeoutException;
 
+import net.sf.jncu.protocol.v2_0.session.DockingState;
+
 /**
  * CD packet layer.
  * 
  * @author Moshe
  */
-public abstract class CDPacketLayer<T extends CDPacket> {
+public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 
+	private final CDPipe<T> pipe;
 	private boolean finished;
 	private int timeout = 30;
 	private final Timer timer = new Timer();
@@ -44,9 +47,13 @@ public abstract class CDPacketLayer<T extends CDPacket> {
 
 	/**
 	 * Constructs a new packet layer.
+	 * 
+	 * @param pipe
+	 *            the pipe.
 	 */
-	public CDPacketLayer() {
+	public CDPacketLayer(CDPipe<T> pipe) {
 		super();
+		this.pipe = pipe;
 	}
 
 	/**
@@ -323,8 +330,7 @@ public abstract class CDPacketLayer<T extends CDPacket> {
 	 * @throws TimeoutException
 	 *             if timeout occurs.
 	 */
-	public void setTimeout(int timeoutInSecs) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
-			TimeoutException {
+	public void setTimeout(int timeoutInSecs) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		this.timeout = timeoutInSecs;
 		restartTimeout();
 	}
@@ -336,5 +342,22 @@ public abstract class CDPacketLayer<T extends CDPacket> {
 	 */
 	public int getTimeout() {
 		return timeout;
+	}
+
+	@Override
+	public void run() {
+		if (pipe == null)
+			throw new NullPointerException("pipe required");
+		do {
+			try {
+				listen();
+			} catch (EOFException eofe) {
+				pipe.disconnectQuiet();
+			} catch (IOException ioe) {
+				if (pipe.getDockingState() != DockingState.DISCONNECTED) {
+					ioe.printStackTrace();
+				}
+			}
+		} while (pipe.getDockingState() != DockingState.DISCONNECTED);
 	}
 }

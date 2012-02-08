@@ -31,6 +31,16 @@ import net.sf.jncu.cdil.CDPacketLayer;
  */
 public class ADSPPacketLayer extends CDPacketLayer<ADSPPacket> {
 
+	/**
+	 * Constructs a new packet layer.
+	 * 
+	 * @param pipe
+	 *            the pipe.
+	 */
+	public ADSPPacketLayer(ADSPPipe pipe) {
+		super(pipe);
+	}
+
 	@Override
 	protected ADSPPacket createPacket(byte[] payload) {
 		// TODO Auto-generated method stub

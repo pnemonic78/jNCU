@@ -21,6 +21,7 @@ package net.sf.jncu.cdil.adsp;
 
 import net.sf.jncu.cdil.CDCommandLayer;
 import net.sf.jncu.cdil.CDLayer;
+import net.sf.jncu.cdil.CDPacketLayer;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 
@@ -61,13 +62,18 @@ public class ADSPPipe extends CDPipe<ADSPPacket> {
 		this.type = type;
 	}
 
+	@Override
+	protected CDPacketLayer<ADSPPacket> createPacketLayer() {
+		return new ADSPPacketLayer(this);
+	}
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.jncu.cdil.CDPipe#createCommandLayer()
 	 */
 	@Override
-	protected CDCommandLayer<ADSPPacket> createCommandLayer() {
-		// TODO Auto-generated method stub
+	protected CDCommandLayer<ADSPPacket> createCommandLayer(CDPacketLayer<ADSPPacket> packetLayer) {
 		return null;
 	}
 

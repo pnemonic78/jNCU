@@ -31,6 +31,7 @@ import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
+import net.sf.jncu.protocol.v2_0.session.DockingState;
 
 /**
  * CDIL pipe.
@@ -44,6 +45,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	protected final CDLayer layer;
 	private PipedOutputStream pipeSource;
 	private PipedInputStream pipeSink;
+	private CDPacketLayer<P> packetLayer;
 	private CDCommandLayer<P> cmdLayer;
 	protected DockingProtocol docking;
 	private final Timer timer = new Timer();
@@ -180,10 +182,16 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 		if (getCDState() != CDState.DISCONNECTED) {
 			throw new BadPipeStateException();
 		}
-		getCommandLayer();
 		this.docking = new DockingProtocol(this);
 		start();
 		layer.setState(CDState.LISTENING);
+	}
+
+	@Override
+	public void run() {
+		super.run();
+		getPacketLayer().start();
+		getCommandLayer().start();
 	}
 
 	/**
@@ -231,7 +239,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	 * <p>
 	 * Note that a pipe need not be connected in order for bytes to be read from
 	 * it. It is possible for a pipe to have buffered data received from a
-	 * Newton OS device before the connection was broken. As long as the pipe’s
+	 * Newton OS device before the connection was broken. As long as the pipeï¿½s
 	 * state is <tt>kCD_Connected</tt> or <tt>kCD_DisconnectPending</tt>,
 	 * clients of the CDIL are still able to retrieve these bytes.
 	 * 
@@ -324,8 +332,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	 * @throws TimeoutException
 	 *             if timeout occurs.
 	 */
-	public void write(byte[] b, int offset, int count) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
-			TimeoutException {
+	public void write(byte[] b, int offset, int count) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		layer.checkConnected();
 	}
 
@@ -345,8 +352,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	 * @throws TimeoutException
 	 *             if timeout occurs.
 	 */
-	public void write(IDockCommandToNewton cmd) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
-			TimeoutException {
+	public void write(IDockCommandToNewton cmd) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		layer.checkConnected();
 		try {
 			getCommandLayer().write(cmd);
@@ -362,7 +368,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	 * If the Newton device is sending data very rapidly, you must call this
 	 * function frequently to buffer that data. The CDIL uses a dynamically
 	 * sized buffer, but the underlying communication tool may use a statically
-	 * sized one. If you don’t call <tt>CD_Idle</tt> frequently enough, you may
+	 * sized one. If you donï¿½t call <tt>CD_Idle</tt> frequently enough, you may
 	 * lose data. On the other hand, you unnecessarily slow down your
 	 * application if you call this function too frequently. Frequencies on the
 	 * order of a tenth of second should be adequate. In general you calling
@@ -423,8 +429,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	 * @throws TimeoutException
 	 *             if timeout occurs.
 	 */
-	public void setTimeout(int timeoutInSecs) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
-			TimeoutException {
+	public void setTimeout(int timeoutInSecs) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		layer.checkInitialized();
 		getCommandLayer().setTimeout(timeoutInSecs);
 	}
@@ -476,6 +481,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see
 	 * net.sf.jncu.protocol.DockCommandListener#commandReceived(net.sf.jncu.
 	 * protocol.IDockCommandFromNewton)
@@ -489,6 +495,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see
 	 * net.sf.jncu.protocol.DockCommandListener#commandSent(net.sf.jncu.protocol
 	 * .IDockCommandToNewton)
@@ -502,6 +509,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.jncu.protocol.DockCommandListener#commandEOF()
 	 */
 	@Override
@@ -519,11 +527,20 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	}
 
 	/**
-	 * Create a command layer.
+	 * Create a packet layer.
 	 * 
 	 * @return the command layer.
 	 */
-	protected abstract CDCommandLayer<P> createCommandLayer();
+	protected abstract CDPacketLayer<P> createPacketLayer();
+
+	/**
+	 * Create a command layer.
+	 * 
+	 * @param packetLayer
+	 *            the packet layer.
+	 * @return the command layer.
+	 */
+	protected abstract CDCommandLayer<P> createCommandLayer(CDPacketLayer<P> packetLayer);
 
 	/**
 	 * Can send?
@@ -536,15 +553,26 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	}
 
 	/**
+	 * Get the packet layer. Creates layer if {@code null}.
+	 * 
+	 * @return the packet layer.
+	 */
+	protected CDPacketLayer<P> getPacketLayer() {
+		if (packetLayer == null) {
+			packetLayer = createPacketLayer();
+		}
+		return packetLayer;
+	}
+
+	/**
 	 * Get the command layer. Creates layer if {@code null}.
 	 * 
-	 * @return the the command layer.
+	 * @return the command layer.
 	 */
 	protected CDCommandLayer<P> getCommandLayer() {
 		if (cmdLayer == null) {
-			cmdLayer = createCommandLayer();
+			cmdLayer = createCommandLayer(getPacketLayer());
 			cmdLayer.addCommandListener(this);
-			cmdLayer.start();
 		}
 		return cmdLayer;
 	}
@@ -614,5 +642,14 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 			this.pingTask = new CDPing(this);
 			timer.schedule(pingTask, PING_TIME);
 		}
+	}
+
+	/**
+	 * Get the docking state.
+	 * 
+	 * @return the state.
+	 */
+	public DockingState getDockingState() {
+		return docking.getState();
 	}
 }

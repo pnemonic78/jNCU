@@ -31,6 +31,16 @@ import net.sf.jncu.cdil.CDPacketLayer;
  */
 public class CTBPacketLayer extends CDPacketLayer<CTBPacket> {
 
+	/**
+	 * Constructs a new packet layer.
+	 * 
+	 * @param pipe
+	 *            the pipe.
+	 */
+	public CTBPacketLayer(CTBPipe pipe) {
+		super(pipe);
+	}
+
 	@Override
 	protected CTBPacket createPacket(byte[] payload) {
 		// TODO Auto-generated method stub

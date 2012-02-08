@@ -27,10 +27,13 @@ package net.sf.jncu.cdil.mnp;
 public class MNPPacketFactory {
 
 	/**
-	 * Maximum date length per packet before having to split into multiple
+	 * Maximum data length per packet before having to split into multiple
 	 * packets.
 	 */
 	protected static final short MAX_DATA_LENGTH = 256;
+
+	/** Maximum outstanding credit. */
+	protected final byte CREDIT = 8;
 
 	private static MNPPacketFactory instance;
 
@@ -164,7 +167,9 @@ public class MNPPacketFactory {
 	 * @return the packet.
 	 */
 	protected MNPLinkAcknowledgementPacket createLA() {
-		return new MNPLinkAcknowledgementPacket();
+		MNPLinkAcknowledgementPacket packetLA = new MNPLinkAcknowledgementPacket();
+		packetLA.setCredit(CREDIT);
+		return packetLA;
 	}
 
 	/**
@@ -184,6 +189,7 @@ public class MNPPacketFactory {
 	protected MNPLinkRequestPacket createLR() {
 		MNPLinkRequestPacket packetLR = new MNPLinkRequestPacket();
 		packetLR.setMaxInfoLength(MAX_DATA_LENGTH);
+		packetLR.setMaxOutstanding(CREDIT);
 		return packetLR;
 	}
 
