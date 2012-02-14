@@ -19,14 +19,13 @@
  */
 package net.sf.jncu.fdil;
 
-import net.sf.jncu.dil.DILException;
 
 /**
  * Unsupported store version error - <tt>kFD_UnsupportedStoreVersion</tt>.
  * 
  * @author Moshe
  */
-public class UnsupportedStoreVersionException extends DILException {
+public class UnsupportedStoreVersionException extends FDILException {
 
 	public UnsupportedStoreVersionException() {
 		super();

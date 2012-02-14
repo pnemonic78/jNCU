@@ -19,14 +19,12 @@
  */
 package net.sf.jncu.fdil;
 
-import net.sf.jncu.dil.DILException;
-
 /**
  * Error creating store - <tt>kFD_ErrorCreatingStore</tt>.
  * 
  * @author Moshe
  */
-public class ErrorCreatingStoreException extends DILException {
+public class ErrorCreatingStoreException extends FDILException {
 
 	public ErrorCreatingStoreException() {
 		super();

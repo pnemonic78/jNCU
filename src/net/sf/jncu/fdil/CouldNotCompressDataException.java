@@ -19,14 +19,13 @@
  */
 package net.sf.jncu.fdil;
 
-import net.sf.jncu.dil.DILException;
 
 /**
  * Could not compress data error - <tt>kFD_CouldNotCompressData</tt>.
  * 
  * @author Moshe
  */
-public class CouldNotCompressDataException extends DILException {
+public class CouldNotCompressDataException extends FDILException {
 
 	public CouldNotCompressDataException() {
 		super();
