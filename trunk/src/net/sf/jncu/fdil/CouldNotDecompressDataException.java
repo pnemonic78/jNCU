@@ -19,14 +19,12 @@
  */
 package net.sf.jncu.fdil;
 
-import net.sf.jncu.dil.DILException;
-
 /**
  * Unknown stream version error - <tt>kFD_UnknownStreamVersion</tt>.
  * 
  * @author Moshe
  */
-public class CouldNotDecompressDataException extends DILException {
+public class CouldNotDecompressDataException extends FDILException {
 
 	public CouldNotDecompressDataException() {
 		super();

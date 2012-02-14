@@ -19,14 +19,12 @@
  */
 package net.sf.jncu.fdil;
 
-import net.sf.jncu.dil.DILException;
-
 /**
  * Unsupported compression error - <tt>kFD_UnsupportedCompression</tt>.
  * 
  * @author Moshe
  */
-public class UnsupportedCompressionException extends DILException {
+public class UnsupportedCompressionException extends FDILException {
 
 	public UnsupportedCompressionException() {
 		super();

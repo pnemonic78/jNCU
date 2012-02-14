@@ -19,14 +19,12 @@
  */
 package net.sf.jncu.fdil;
 
-import net.sf.jncu.dil.DILException;
-
 /**
  * Stream corrupted error - <tt>kFD_StreamCorrupted</tt>.
  * 
  * @author Moshe
  */
-public class StreamCorruptedException extends DILException {
+public class StreamCorruptedException extends FDILException {
 
 	public StreamCorruptedException() {
 		super();

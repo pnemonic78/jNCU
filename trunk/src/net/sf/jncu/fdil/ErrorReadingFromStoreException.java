@@ -19,14 +19,13 @@
  */
 package net.sf.jncu.fdil;
 
-import net.sf.jncu.dil.DILException;
 
 /**
  * Error reading from store - <tt>kFD_ErrorReadingFromStore</tt>.
  * 
  * @author Moshe
  */
-public class ErrorReadingFromStoreException extends DILException {
+public class ErrorReadingFromStoreException extends FDILException {
 
 	public ErrorReadingFromStoreException() {
 		super();

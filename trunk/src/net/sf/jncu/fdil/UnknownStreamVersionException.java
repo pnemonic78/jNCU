@@ -19,14 +19,12 @@
  */
 package net.sf.jncu.fdil;
 
-import net.sf.jncu.dil.DILException;
-
 /**
  * Unknown stream version error - <tt>kFD_UnknownStreamVersion</tt>.
  * 
  * @author Moshe
  */
-public class UnknownStreamVersionException extends DILException {
+public class UnknownStreamVersionException extends FDILException {
 
 	public UnknownStreamVersionException() {
 		super();

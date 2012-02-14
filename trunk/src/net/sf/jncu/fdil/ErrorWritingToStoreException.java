@@ -19,14 +19,12 @@
  */
 package net.sf.jncu.fdil;
 
-import net.sf.jncu.dil.DILException;
-
 /**
  * Error writing to store - <tt>kFD_ErrorWritingToStore</tt>.
  * 
  * @author Moshe
  */
-public class ErrorWritingToStoreException extends DILException {
+public class ErrorWritingToStoreException extends FDILException {
 
 	public ErrorWritingToStoreException() {
 		super();
