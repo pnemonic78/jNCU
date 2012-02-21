@@ -60,7 +60,7 @@ import net.sf.jncu.protocol.v2_0.session.DockingState;
  */
 public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 
-	/** State for MNP. */
+	/** State for MNP pipe. */
 	protected enum MNPState {
 		/** Listen for LR from Newton. */
 		MNP_HANDSHAKE_LR_LISTEN,
@@ -109,7 +109,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 		this.portId = portId;
 		this.baud = baud;
 		try {
-			this.port = new MNPSerialPort(portId, baud, PORT_TIMEOUT);
+			this.port = (portId == null) ? null : new MNPSerialPort(portId, baud, PORT_TIMEOUT);
 		} catch (PortInUseException piue) {
 			throw new PlatformException(piue);
 		} catch (TooManyListenersException tmle) {
@@ -144,10 +144,13 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	}
 
 	@Override
-	protected void disconnectImpl() throws PlatformException, TimeoutException {
+	protected void disconnectImpl() {
 		MNPLinkDisconnectPacket packet = (MNPLinkDisconnectPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LD);
-		sendAndAcknowledge(packet);
-		getPacketLayer().removePacketListener(this);
+		try {
+			sendAndAcknowledge(packet);
+		} catch (TimeoutException te) {
+			te.printStackTrace();
+		}
 		super.disconnectImpl();
 	}
 
@@ -155,7 +158,6 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	 * Disconnect request was sent, so now we can actually disconnect.
 	 */
 	protected void disconnectSent() {
-		getPacketLayer().close();
 		try {
 			docking.setState(DockingState.DISCONNECTED);
 			setState(MNPState.MNP_DISCONNECTED);
@@ -173,6 +175,8 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	 */
 	@Override
 	public void packetReceived(MNPPacket packet) {
+		super.packetReceived(packet);
+
 		byte packetType = packet.getType();
 		MNPState oldState = stateMNP;
 		MNPState newState = oldState;
@@ -207,6 +211,8 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	 */
 	@Override
 	public void packetSent(MNPPacket packet) {
+		super.packetSent(packet);
+
 		byte packetType = packet.getType();
 
 		try {
@@ -228,19 +234,10 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.jncu.cdil.mnp.MNPPacketListener#packetEOF()
-	 */
-	@Override
-	public void packetEOF() {
-	}
-
 	@Override
 	protected void acceptImpl() throws PlatformException, PipeDisconnectedException, TimeoutException {
 		super.acceptImpl();
-		if ((stateMNP == MNPState.MNP_HANDSHAKE_DOCK) && (docking.getState() == DockingState.HANDSHAKE_DONE)) {
+		if ((stateMNP == MNPState.MNP_HANDSHAKE_DOCK) && (getDockingState() == DockingState.HANDSHAKE_DONE)) {
 			layer.setState(this, CDState.CONNECTED);
 			setState(MNPState.MNP_ACCEPTED);
 		}
@@ -263,7 +260,8 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	 *             if timeout occurs.
 	 */
 	protected void sendAndAcknowledge(MNPPacket packet) throws TimeoutException {
-		getSerialPacketLayer().sendQueued(packet);
+		if (allowSend())
+			getSerialPacketLayer().sendQueued(packet);
 	}
 
 	/**
@@ -295,7 +293,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 		case MNP_DISCONNECTED:
 			// TODO throw new PipeDisconnectedException();
 		default:
-			throw new BadPipeStateException("bad state " + stateMNP);
+			throw new BadPipeStateException("state " + stateMNP);
 		}
 	}
 
@@ -344,8 +342,6 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 					MNPLinkRequestPacket reply = (MNPLinkRequestPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LR);
 					reply.setDataPhaseOpt(lr.getDataPhaseOpt());
 					reply.setFramingMode(lr.getFramingMode());
-					// reply.setMaxInfoLength(lr.getMaxInfoLength());
-					reply.setMaxOutstanding(lr.getMaxOutstanding());
 					reply.setTransmitted(lr.getTransmitted());
 					docking.setState(DockingState.HANDSHAKE_LR_SENDING, null);
 					setState(state, MNPState.MNP_HANDSHAKE_LR_SENDING, reply);
@@ -378,6 +374,14 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 		}
 	}
 
+	/**
+	 * Set the MNP state.
+	 * 
+	 * @param state
+	 *            the state.
+	 * @throws PipeDisconnectedException
+	 *             if the pipe is disconnected.
+	 */
 	private void setState(MNPState state) throws PipeDisconnectedException {
 		if (this.stateMNP == MNPState.MNP_DISCONNECTED) {
 			throw new PipeDisconnectedException();
@@ -409,14 +413,12 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 		return new MNPSerialCommandLayer((MNPSerialPacketLayer) packetLayer);
 	}
 
-	/**
-	 * Process the command.
-	 * 
-	 * @param command
-	 *            the received command.
-	 */
+	@Override
 	protected void processCommand(IDockCommandFromNewton command) {
+		super.processCommand(command);
+
 		String cmdName = command.getCommand();
+
 		if (DDisconnect.COMMAND.equals(cmdName)) {
 			disconnectQuiet();
 		}
@@ -428,8 +430,8 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	 * @see net.sf.jncu.cdil.CDPipe#canSend()
 	 */
 	@Override
-	public boolean canSend() {
-		return (getMNPState() != MNPState.MNP_DISCONNECTED) && super.canSend();
+	public boolean allowSend() {
+		return super.allowSend() && (getMNPState() != MNPState.MNP_DISCONNECTED);
 	}
 
 	/**

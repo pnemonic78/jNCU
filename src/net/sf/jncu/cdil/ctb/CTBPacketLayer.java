@@ -21,6 +21,8 @@ package net.sf.jncu.cdil.ctb;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import net.sf.jncu.cdil.CDPacketLayer;
 
@@ -39,6 +41,18 @@ public class CTBPacketLayer extends CDPacketLayer<CTBPacket> {
 	 */
 	public CTBPacketLayer(CTBPipe pipe) {
 		super(pipe);
+	}
+
+	@Override
+	protected InputStream getInput() throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected OutputStream getOutput() throws IOException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

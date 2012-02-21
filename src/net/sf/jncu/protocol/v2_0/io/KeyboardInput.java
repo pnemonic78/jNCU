@@ -25,10 +25,10 @@ import java.awt.event.WindowListener;
 
 import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
-import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
+import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 
@@ -37,7 +37,7 @@ import net.sf.jncu.protocol.v2_0.session.DOperationDone;
  * 
  * @author Moshe
  */
-public class KeyboardInput extends Thread implements DockCommandListener, WindowListener, KeyboardInputListener {
+public class KeyboardInput extends IconModule implements WindowListener, KeyboardInputListener {
 
 	/** Windows EOL. */
 	protected static final String CRLF = "\r\n";
@@ -50,7 +50,8 @@ public class KeyboardInput extends Thread implements DockCommandListener, Window
 		None, Initialised, Input, Cancelled, Finished
 	}
 
-	private final CDPipe<? extends CDPacket> pipe;
+	private static final String TITLE = "Keyboard Input";
+
 	private State state = State.None;
 	private KeyboardInputDialog dialog;
 
@@ -58,11 +59,8 @@ public class KeyboardInput extends Thread implements DockCommandListener, Window
 	 * Constructs a new object.
 	 */
 	public KeyboardInput(CDPipe<? extends CDPacket> pipe) {
-		super();
+		super(TITLE, pipe);
 		setName("KeyboardInput-" + getId());
-		if (pipe == null)
-			throw new IllegalArgumentException("pipe required");
-		this.pipe = pipe;
 		pipe.addCommandListener(this);
 
 		state = State.Initialised;
@@ -84,27 +82,24 @@ public class KeyboardInput extends Thread implements DockCommandListener, Window
 
 	@Override
 	public void commandReceived(IDockCommandFromNewton command) {
-		if (state == State.Cancelled)
+		if (!isEnabled())
 			return;
-		if (state == State.Finished)
-			return;
+
+		super.commandReceived(command);
 
 		String cmd = command.getCommand();
 
 		if (DOperationCanceled.COMMAND.equals(cmd)) {
-			DOperationCanceledAck ack = new DOperationCanceledAck();
-			send(ack);
-			commandEOF();
 			state = State.Cancelled;
 		}
 	}
 
 	@Override
 	public void commandSent(IDockCommandToNewton command) {
-		if (state == State.Cancelled)
+		if (!isEnabled())
 			return;
-		if (state == State.Finished)
-			return;
+
+		super.commandSent(command);
 
 		String cmd = command.getCommand();
 
@@ -112,31 +107,6 @@ public class KeyboardInput extends Thread implements DockCommandListener, Window
 			state = State.Finished;
 		} else if (DOperationCanceledAck.COMMAND.equals(cmd)) {
 			state = State.Cancelled;
-		}
-	}
-
-	@Override
-	public void commandEOF() {
-		pipe.removeCommandListener(this);
-		if (state == State.Input) {
-			dialog.close();
-		}
-		dialog.removeInputListener(this);
-	}
-
-	/**
-	 * Send a command.
-	 * 
-	 * @param command
-	 *            the command.
-	 */
-	protected void send(IDockCommandToNewton command) {
-		try {
-			if (pipe.canSend())
-				pipe.write(command);
-		} catch (Exception e) {
-			e.printStackTrace();
-			commandEOF();
 		}
 	}
 
@@ -155,7 +125,7 @@ public class KeyboardInput extends Thread implements DockCommandListener, Window
 		DKeyboardChar cmd = new DKeyboardChar();
 		cmd.setCharacter(c);
 		cmd.setState(flags);
-		send(cmd);
+		write(cmd);
 	}
 
 	/**
@@ -170,7 +140,7 @@ public class KeyboardInput extends Thread implements DockCommandListener, Window
 
 		DKeyboardString cmd = new DKeyboardString();
 		cmd.setString(s);
-		send(cmd);
+		write(cmd);
 	}
 
 	@Override
@@ -179,16 +149,7 @@ public class KeyboardInput extends Thread implements DockCommandListener, Window
 
 	@Override
 	public void windowClosing(WindowEvent we) {
-		if (state == State.Input) {
-			DOperationDone done = new DOperationDone();
-			try {
-				if (pipe.canSend())
-					pipe.write(done);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		commandEOF();
+		done();
 	}
 
 	@Override
@@ -235,5 +196,25 @@ public class KeyboardInput extends Thread implements DockCommandListener, Window
 		text = text.replaceAll(CRLF, CR);
 		text = text.replace(LF, DKeyboardChar.RETURN);
 		writeString(text);
+	}
+
+	@Override
+	protected void done() {
+		if (state == State.Input) {
+			dialog.close();
+			DOperationDone done = new DOperationDone();
+			write(done);
+		}
+		dialog.removeInputListener(this);
+		super.done();
+	}
+
+	@Override
+	protected boolean isEnabled() {
+		if (state == State.Cancelled)
+			return false;
+		if (state == State.Finished)
+			return false;
+		return super.isEnabled();
 	}
 }

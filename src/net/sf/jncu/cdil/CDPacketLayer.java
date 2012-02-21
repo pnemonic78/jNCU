@@ -23,6 +23,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PipedInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Timer;
@@ -35,15 +36,15 @@ import net.sf.jncu.protocol.v2_0.session.DockingState;
  * 
  * @author Moshe
  */
-public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
+public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 
-	private final CDPipe<T> pipe;
-	private boolean finished;
-	private int timeout = 30;
+	private final CDPipe<P> pipe;
+	private boolean running;
+	private int timeout;
 	private final Timer timer = new Timer();
 	private CDTimeout timeoutTask;
 	/** List of packet listeners. */
-	private final Collection<CDPacketListener<T>> listeners = new ArrayList<CDPacketListener<T>>();
+	private final Collection<CDPacketListener<P>> listeners = new ArrayList<CDPacketListener<P>>();
 
 	/**
 	 * Constructs a new packet layer.
@@ -51,9 +52,11 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	 * @param pipe
 	 *            the pipe.
 	 */
-	public CDPacketLayer(CDPipe<T> pipe) {
+	public CDPacketLayer(CDPipe<P> pipe) {
 		super();
+		setName("CDPacketLayer-" + getId());
 		this.pipe = pipe;
+		setTimeout(30);
 	}
 
 	/**
@@ -63,9 +66,7 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected OutputStream getOutput() throws IOException {
-		return null;
-	}
+	protected abstract OutputStream getOutput() throws IOException;
 
 	/**
 	 * Get the input stream for packets.
@@ -74,9 +75,7 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected InputStream getInput() throws IOException {
-		return null;
-	}
+	protected abstract InputStream getInput() throws IOException;
 
 	/**
 	 * Is finished?
@@ -84,7 +83,7 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	 * @return finished.
 	 */
 	protected boolean isFinished() {
-		return finished;
+		return !running;
 	}
 
 	/**
@@ -93,7 +92,7 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	 * @param listener
 	 *            the listener to add.
 	 */
-	public void addPacketListener(CDPacketListener<T> listener) {
+	public void addPacketListener(CDPacketListener<P> listener) {
 		if (!listeners.contains(listener)) {
 			listeners.add(listener);
 		}
@@ -105,7 +104,7 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	 * @param listener
 	 *            the listener to remove.
 	 */
-	public void removePacketListener(CDPacketListener<T> listener) {
+	public void removePacketListener(CDPacketListener<P> listener) {
 		listeners.remove(listener);
 	}
 
@@ -115,10 +114,10 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	 * @param packet
 	 *            the received packet.
 	 */
-	protected void firePacketReceived(T packet) {
+	protected void firePacketReceived(P packet) {
 		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<CDPacketListener<T>> listenersCopy = new ArrayList<CDPacketListener<T>>(listeners);
-		for (CDPacketListener<T> listener : listenersCopy) {
+		Collection<CDPacketListener<P>> listenersCopy = new ArrayList<CDPacketListener<P>>(listeners);
+		for (CDPacketListener<P> listener : listenersCopy) {
 			listener.packetReceived(packet);
 		}
 	}
@@ -129,10 +128,10 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	 * @param packet
 	 *            the sent packet.
 	 */
-	protected void firePacketSent(T packet) {
+	protected void firePacketSent(P packet) {
 		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<CDPacketListener<T>> listenersCopy = new ArrayList<CDPacketListener<T>>(listeners);
-		for (CDPacketListener<T> listener : listenersCopy) {
+		Collection<CDPacketListener<P>> listenersCopy = new ArrayList<CDPacketListener<P>>(listeners);
+		for (CDPacketListener<P> listener : listenersCopy) {
 			listener.packetSent(packet);
 		}
 	}
@@ -142,8 +141,8 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	 */
 	protected void firePacketEOF() {
 		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<CDPacketListener<T>> listenersCopy = new ArrayList<CDPacketListener<T>>(listeners);
-		for (CDPacketListener<T> listener : listenersCopy) {
+		Collection<CDPacketListener<P>> listenersCopy = new ArrayList<CDPacketListener<P>>(listeners);
+		for (CDPacketListener<P> listener : listenersCopy) {
 			listener.packetEOF();
 		}
 	}
@@ -152,9 +151,9 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	 * Close the layer and release resources.
 	 */
 	public void close() {
+		running = false;
 		timer.cancel();
 		listeners.clear();
-		finished = true;
 	}
 
 	/**
@@ -176,12 +175,13 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	 *             if an I/O error occurs.
 	 * @return the packet.
 	 */
-	public T receive() throws IOException {
-		if (finished)
+	public P receive() throws IOException {
+		if (isFinished())
 			return null;
-		T packet = null;
+		P packet = null;
+		byte[] payload;
 		try {
-			byte[] payload = read();
+			payload = read();
 			packet = createPacket(payload);
 			if (packet != null) {
 				restartTimeout();
@@ -205,7 +205,7 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	protected abstract byte[] read() throws EOFException, IOException;
 
 	/**
-	 * Read a byte.
+	 * Read a byte from the default input.
 	 * 
 	 * @return the byte value.
 	 * @throws EOFException
@@ -214,20 +214,32 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	 *             if an I/O error occurs.
 	 */
 	protected int readByte() throws IOException {
-		InputStream in = getInput();
+		return readByte(getInput());
+	}
+
+	/**
+	 * Read a byte.
+	 * 
+	 * @param in
+	 *            the input.
+	 * @return the byte value.
+	 * @throws EOFException
+	 *             if end of stream is reached.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected int readByte(InputStream in) throws IOException {
 		int b;
 		try {
 			b = in.read();
 		} catch (IOException ioe) {
 			// PipedInputStream throws IOException instead of returning -1.
-			if (in.available() == 0) {
-				throw new EOFException();
-			}
+			if ((in.available() == 0) && (in instanceof PipedInputStream))
+				throw new EOFException(ioe.getMessage());
 			throw ioe;
 		}
-		if (b == -1) {
+		if (b == -1)
 			throw new EOFException();
-		}
 		return b;
 	}
 
@@ -238,7 +250,7 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	 *            the payload.
 	 * @return the packet.
 	 */
-	protected abstract T createPacket(byte[] payload);
+	protected abstract P createPacket(byte[] payload);
 
 	/**
 	 * Listen for incoming packets until no more packets are available.
@@ -247,9 +259,10 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	 *             if an I/O error occurs.
 	 */
 	public void listen() throws IOException {
-		T packet;
+		P packet;
 		do {
 			packet = receive();
+			yield();
 		} while (packet != null);
 	}
 
@@ -260,9 +273,11 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	 *            the packet.
 	 * @throws IOException
 	 *             if an I/O error occurs.
+	 * @throws TimeoutException
+	 *             if a timeout occurs.
 	 */
-	public void send(T packet) throws IOException, TimeoutException {
-		if (finished)
+	public void send(P packet) throws IOException, TimeoutException {
+		if (isFinished())
 			return;
 		byte[] payload = packet.serialize();
 		try {
@@ -281,7 +296,7 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected void write(byte[] payload) throws IOException {
+	protected final void write(byte[] payload) throws IOException {
 		write(payload, 0, payload.length);
 	}
 
@@ -320,19 +335,8 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	 * The timeout does not occur, if the data is presently being transferred.
 	 * That is, a long operation does not fail due to a timeout. Note that an
 	 * attempt is made to send data even if the timeout is set to zero seconds.
-	 * 
-	 * @throws CDILNotInitializedException
-	 *             if CDIL is not initialised.
-	 * @throws PlatformException
-	 *             if a platform error occurs.
-	 * @throws BadPipeStateException
-	 *             if pipe is in an incorrect state.
-	 * @throws PipeDisconnectedException
-	 *             if the pipe is disconnected.
-	 * @throws TimeoutException
-	 *             if timeout occurs.
 	 */
-	public void setTimeout(int timeoutInSecs) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
+	public void setTimeout(int timeoutInSecs) {
 		this.timeout = timeoutInSecs;
 		restartTimeout();
 	}
@@ -350,16 +354,32 @@ public abstract class CDPacketLayer<T extends CDPacket> extends Thread {
 	public void run() {
 		if (pipe == null)
 			throw new NullPointerException("pipe required");
+
+		running = true;
 		do {
 			try {
 				listen();
 			} catch (EOFException eofe) {
-				pipe.disconnectQuiet();
+				firePacketEOF();
 			} catch (IOException ioe) {
-				if (pipe.getDockingState() != DockingState.DISCONNECTED) {
+				if (isConnected()) {
 					ioe.printStackTrace();
 				}
 			}
-		} while (pipe.getDockingState() != DockingState.DISCONNECTED);
+		} while (running && isConnected());
+		running = false;
+	}
+
+	/**
+	 * Is the pipe connected?
+	 * 
+	 * @return {@code true} if connecting or connected.
+	 */
+	protected boolean isConnected() {
+		final CDState state = pipe.getLayer().getState();
+		if ((state == CDState.CONNECT_PENDING) || (state == CDState.CONNECTED))
+			return true;
+		final DockingState dockingState = pipe.getDockingState();
+		return (dockingState != DockingState.DISCONNECTING) && (dockingState != DockingState.DISCONNECTED);
 	}
 }

@@ -39,7 +39,7 @@ import net.sf.jncu.cdil.tcp.TCPPipe;
 public class CDLayer {
 
 	private static CDLayer instance;
-	private List<CommPortIdentifier> serialPorts = new ArrayList<CommPortIdentifier>();
+	private final List<CommPortIdentifier> serialPorts = new ArrayList<CommPortIdentifier>();
 	private CDState state = CDState.UNINITIALIZED;
 
 	/**
@@ -91,7 +91,7 @@ public class CDLayer {
 	 * This function must be called once for every time you called
 	 * <tt>CD_Startup</tt>. Usually, you just call it once at the end of your
 	 * program. However, you can call it as many times as you want, as long as
-	 * you don’t call it more times that you’ve called <tt>CD_Startup</tt>. If
+	 * you donï¿½t call it more times that youï¿½ve called <tt>CD_Startup</tt>. If
 	 * this is the last call to <tt>CD_Shutdown</tt>, then all memory allocated
 	 * by the CDIL since <tt>CD_Startup</tt> was called is deallocated.
 	 * 
@@ -304,12 +304,12 @@ public class CDLayer {
 	 * Initialise MNP.
 	 */
 	protected void initMNP() throws PlatformException {
-		serialPorts = new ArrayList<CommPortIdentifier>();
+		serialPorts.clear();
 		CommPorts commPorts = new CommPorts();
 		try {
 			serialPorts.addAll(commPorts.getPortIdentifiers(CommPortIdentifier.PORT_SERIAL));
 		} catch (NoSuchPortException nspe) {
-			// no ports found
+			throw new PlatformException(nspe);
 		}
 	}
 
@@ -336,7 +336,6 @@ public class CDLayer {
 	 */
 	protected void disposeMNP() {
 		serialPorts.clear();
-		serialPorts = null;
 	}
 
 	/**
@@ -411,6 +410,6 @@ public class CDLayer {
 	public void setState(CDPipe<? extends CDPacket> pipe, CDState state) {
 		if (pipe == null)
 			throw new IllegalArgumentException("pipe required");
-		this.state = state;
+		setState(state);
 	}
 }

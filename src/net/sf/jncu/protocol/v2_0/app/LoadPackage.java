@@ -60,6 +60,7 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 	 */
 	public LoadPackage(CDPipe<? extends CDPacket> pipe, boolean requested) {
 		super(TITLE, pipe);
+		setName("LoadPackage-" + getId());
 
 		state = State.Initialised;
 
@@ -70,10 +71,10 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 
 	@Override
 	public void commandReceived(IDockCommandFromNewton command) {
-		if (state == State.Cancelled)
+		if (!isEnabled())
 			return;
-		if (state == State.Finished)
-			return;
+
+		super.commandReceived(command);
 
 		String cmd = command.getCommand();
 
@@ -81,8 +82,6 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 			// TODO Stop sending the package command.
 			// pipe.cancel(load);
 			// loader.kill();
-			DOperationCanceledAck ack = new DOperationCanceledAck();
-			write(ack);
 		} else if (DResult.COMMAND.equals(cmd)) {
 			DResult result = (DResult) command;
 			int code = result.getErrorCode();
@@ -96,7 +95,7 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 					write(done);
 				}
 			} else {
-				commandEOF();
+				done();
 				state = State.Cancelled;
 				showError(result.getError().getMessage() + "\nCode: " + code);
 			}
@@ -107,10 +106,10 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 
 	@Override
 	public void commandSent(IDockCommandToNewton command) {
-		if (state == State.Cancelled)
+		if (!isEnabled())
 			return;
-		if (state == State.Finished)
-			return;
+
+		super.commandSent(command);
 
 		String cmd = command.getCommand();
 
@@ -119,17 +118,10 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 		} else if (DLoadPackage.COMMAND.equals(cmd)) {
 			state = State.Loaded;
 		} else if (DOperationDone.COMMAND.equals(cmd)) {
-			commandEOF();
 			state = State.Finished;
 		} else if (DOperationCanceledAck.COMMAND.equals(cmd)) {
-			commandEOF();
 			state = State.Cancelled;
 		}
-	}
-
-	@Override
-	public void commandEOF() {
-		super.commandEOF();
 	}
 
 	/**
@@ -166,5 +158,14 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 			load.setFile(file);
 			write(load);
 		}
+	}
+
+	@Override
+	protected boolean isEnabled() {
+		if (state == State.Cancelled)
+			return false;
+		if (state == State.Finished)
+			return false;
+		return super.isEnabled();
 	}
 }

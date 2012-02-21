@@ -61,13 +61,6 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	public void decode(InputStream data) throws IOException {
 		int length = ntohl(data);
 		setLength(length);
-		if (length == 0x010000) {
-			length = readByte(data);
-		}
-		/*
-		 * if ((length != -1) && (data.available() < length)) { throw new
-		 * ArrayIndexOutOfBoundsException("length " + length); }
-		 */
 		if (length > 0) {
 			decodeData(data);
 			// Commands are 4-byte aligned.

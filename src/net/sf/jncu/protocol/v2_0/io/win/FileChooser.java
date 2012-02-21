@@ -51,7 +51,6 @@ import net.sf.jncu.protocol.v2_0.io.DInternalStore;
 import net.sf.jncu.protocol.v2_0.io.DPath;
 import net.sf.jncu.protocol.v2_0.io.DRequestToBrowse;
 import net.sf.jncu.protocol.v2_0.io.DSetPath;
-import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.swing.AcceptAllFileFilter;
 import net.sf.swing.SwingUtils;
@@ -87,12 +86,12 @@ public class FileChooser extends IconModule {
 	public static final NSOFSymbol PACKAGES = DRequestToBrowse.PACKAGES;
 	public static final NSOFSymbol SYNC_FILES = DRequestToBrowse.SYNC_FILES;
 
+	/** Property key for default path. */
+	protected static final String KEY_PATH = "FileChooser.path";
+
 	private static enum State {
 		None, Initialised, Browsing, Cancelled, Selected, Finished
 	}
-
-	/** Property key for default path. */
-	protected static final String KEY_PATH = "FileChooser.path";
 
 	private static final String TITLE = "File Chooser";
 
@@ -116,6 +115,7 @@ public class FileChooser extends IconModule {
 	 */
 	public FileChooser(CDPipe<? extends CDPacket> pipe, Collection<NSOFString> types) {
 		super(TITLE, pipe);
+		setName("FileChooser-" + getId());
 
 		if ((types == null) || types.isEmpty())
 			throw new IllegalArgumentException("types required");
@@ -134,6 +134,7 @@ public class FileChooser extends IconModule {
 	 */
 	public FileChooser(CDPipe<? extends CDPacket> pipe, NSOFString type) {
 		super(TITLE, pipe);
+		setName("FileChooser-" + getId());
 
 		if (type == null)
 			throw new IllegalArgumentException("type required");
@@ -169,10 +170,10 @@ public class FileChooser extends IconModule {
 
 	@Override
 	public void commandReceived(IDockCommandFromNewton command) {
-		if (state == State.Cancelled)
+		if (!isEnabled())
 			return;
-		if (state == State.Finished)
-			return;
+
+		super.commandReceived(command);
 
 		String cmd = command.getCommand();
 
@@ -222,7 +223,7 @@ public class FileChooser extends IconModule {
 			this.command = command;
 			state = State.Selected;
 			fireApproved(this.file, command);
-			commandEOF();
+			done();
 		} else if (DRestoreFile.COMMAND.equals(cmd)) {
 			DRestoreFile cmdGet = (DRestoreFile) command;
 			String filename = cmdGet.getFilename();
@@ -230,7 +231,7 @@ public class FileChooser extends IconModule {
 			this.command = command;
 			state = State.Selected;
 			fireApproved(this.file, command);
-			commandEOF();
+			done();
 		} else if (DLoadPackageFile.COMMAND.equals(cmd)) {
 			DLoadPackageFile cmdGet = (DLoadPackageFile) command;
 			String filename = cmdGet.getFilename();
@@ -238,39 +239,34 @@ public class FileChooser extends IconModule {
 			this.command = command;
 			state = State.Selected;
 			fireApproved(this.file, command);
-			commandEOF();
+			done();
 		} else if (DOperationCanceled.COMMAND.equals(cmd)) {
-			DOperationCanceledAck ack = new DOperationCanceledAck();
-			write(ack);
 			fireCancelled();
-			commandEOF();
 			state = State.Cancelled;
 		}
 	}
 
 	@Override
 	public void commandSent(IDockCommandToNewton command) {
-		if (state == State.Cancelled)
+		if (!isEnabled())
 			return;
-		if (state == State.Finished)
-			return;
+
+		super.commandSent(command);
 
 		String cmd = command.getCommand();
 
 		if (DResult.COMMAND.equals(cmd)) {
 			state = State.Browsing;
 		} else if (DOperationCanceled.COMMAND.equals(cmd)) {
-			commandEOF();
 			state = State.Cancelled;
 		} else if (DOperationDone.COMMAND.equals(cmd)) {
-			commandEOF();
-			state = State.Cancelled;
+			state = State.Finished;
 		}
 	}
 
 	@Override
-	public void commandEOF() {
-		super.commandEOF();
+	protected void done() {
+		super.done();
 		state = State.Finished;
 	}
 
@@ -352,7 +348,7 @@ public class FileChooser extends IconModule {
 	 * 
 	 * @return the command - {@code null} if browsing was cancelled.
 	 */
-	public IDockCommandFromNewton getSelectedeCommand() {
+	public IDockCommandFromNewton getSelectedCommand() {
 		return command;
 	}
 
@@ -412,5 +408,14 @@ public class FileChooser extends IconModule {
 	 */
 	public Store getInternalStore() {
 		return internalStore;
+	}
+
+	@Override
+	protected boolean isEnabled() {
+		if (state == State.Cancelled)
+			return false;
+		if (state == State.Finished)
+			return false;
+		return super.isEnabled();
 	}
 }

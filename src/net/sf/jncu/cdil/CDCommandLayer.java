@@ -127,8 +127,8 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 	 */
 	public void close() {
 		running = false;
-		listeners.clear();
 		packetLayer.removePacketListener(this);
+		listeners.clear();
 		try {
 			getInput().close();
 		} catch (IOException ioe) {
@@ -185,12 +185,14 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 						fireCommandSent((IDockCommandToNewton) cmd);
 					}
 				}
+				yield();
 			} while (running && (cmd != null));
 		} catch (EOFException eofe) {
 			fireCommandEOF();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
+		running = false;
 	}
 
 	/**
@@ -221,8 +223,7 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 	 * @throws TimeoutException
 	 *             if timeout occurs.
 	 */
-	public void setTimeout(int timeoutInSecs) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException,
-			TimeoutException {
+	public void setTimeout(int timeoutInSecs) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		packetLayer.setTimeout(timeoutInSecs);
 	}
 
@@ -233,5 +234,17 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 	 */
 	public int getTimeout() {
 		return packetLayer.getTimeout();
+	}
+
+	@Override
+	public void packetReceived(P packet) {
+	}
+
+	@Override
+	public void packetSent(P packet) {
+	}
+
+	@Override
+	public void packetEOF() {
 	}
 }
