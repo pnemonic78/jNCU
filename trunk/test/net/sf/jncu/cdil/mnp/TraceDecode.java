@@ -1,5 +1,6 @@
 package net.sf.jncu.cdil.mnp;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -8,6 +9,9 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.Reader;
 
+import net.sf.jncu.cdil.CDCommandLayer;
+import net.sf.jncu.cdil.CDLayer;
+import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
@@ -24,11 +28,23 @@ public class TraceDecode {
 
 	private static final String HEX = "0123456789ABCDEF";
 
+	private File file;
+	private PipedInputStream receivedFromNewton;
+	private PipedInputStream sentToNewton;
+	private PipedOutputStream bufFromNewton;
+	private PipedOutputStream bufToNewton;
+
 	/**
 	 * Creates a new decoder.
 	 */
-	public TraceDecode() {
+	public TraceDecode() throws IOException {
 		super();
+		Thread t = Thread.currentThread();
+		t.setName("TraceDecode-" + t.getId());
+		receivedFromNewton = new PipedInputStream();
+		sentToNewton = new PipedInputStream();
+		bufFromNewton = new PipedOutputStream(receivedFromNewton);
+		bufToNewton = new PipedOutputStream(sentToNewton);
 	}
 
 	/**
@@ -38,15 +54,23 @@ public class TraceDecode {
 	 *            the array of arguments.
 	 */
 	public static void main(String[] args) {
-		File f;
-		TraceDecode decoder = new TraceDecode();
-
+		File f = new File(args[0]);
+		TraceDecode decoder;
 		try {
-			f = new File(args[0]);
-			decoder.parse(f);
+			decoder = new TraceDecode();
+			decoder.setFile(f);
+			decoder.run();
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
+	}
+
+	private void setFile(File f) {
+		this.file = f;
+	}
+
+	public void run() throws Exception {
+		parse(file);
 	}
 
 	public void parse(File file) throws Exception {
@@ -66,21 +90,13 @@ public class TraceDecode {
 	}
 
 	public void parse(Reader reader) throws Exception {
-		PipedInputStream in1To2 = new PipedInputStream();
-		PipedInputStream in2To1 = new PipedInputStream();
-		PipedOutputStream buf1To2 = new PipedOutputStream(in1To2);
-		PipedOutputStream buf2To1 = new PipedOutputStream(in2To1);
-
-		DecodePayload pp1 = new DecodePayload(DIRECTION_IN, in1To2);
-		DecodePayload pp2 = new DecodePayload(DIRECTION_OUT, in2To1);
-
-		pp1.start();
-		pp2.start();
+		DecodePayload dp = new DecodePayload(receivedFromNewton, sentToNewton);
+		dp.start();
 
 		char c;
 		int hex;
 		int value;
-		char direction = DIRECTION_IN;
+		char direction = 0;
 		int b = reader.read();
 
 		while (b != -1) {
@@ -98,93 +114,123 @@ public class TraceDecode {
 				hex = HEX.indexOf(c);
 				value = (value << 4) | hex;
 				if (direction == DIRECTION_IN) {
-					buf1To2.write(value);
-					buf1To2.flush();
+					bufFromNewton.write(value);
+					bufFromNewton.flush();
 				} else if (direction == DIRECTION_OUT) {
-					buf2To1.write(value);
-					buf2To1.flush();
+					bufToNewton.write(value);
+					bufToNewton.flush();
 				}
 			}
 
-			Thread.yield();
 			b = reader.read();
 		}
 
-		buf1To2.close();
-		buf2To1.close();
+		Thread.sleep(2000);// Wait for commands to finish.
+
+		bufFromNewton.close();
+		bufToNewton.close();
 	}
 
-	private class DecodePayload extends Thread implements MNPPacketListener, DockCommandListener {
+	class DecodePayload extends Thread implements MNPPacketListener, DockCommandListener {
 
-		private final char direction;
-		private final MNPPacketLayer packetLayer;
-		private final MNPCommandLayer cmdLayer;
-		private boolean running;
+		private boolean runReceived;
+		private boolean runSent;
+		private CDLayer layer;
+		private MNPPipe pipe;
+		private final TraceDecodePacketLayer packetLayer;
+		private final CDCommandLayer<MNPPacket> cmdLayer;
 
-		public DecodePayload(char direction, final InputStream in) throws Exception {
+		public DecodePayload(InputStream receivedFromNewton, InputStream sentToNewton) throws Exception {
 			super();
-			setName("DecodePayload-" + direction);
-			this.direction = direction;
+			setName("DecodePayload-" + getId());
 
-			this.packetLayer = new MNPPacketLayer(null) {
-				protected InputStream getInput() throws IOException {
-					return in;
-				}
-			};
+			this.layer = CDLayer.getInstance();
+			this.pipe = new TraceDecodePipe(layer, receivedFromNewton, sentToNewton);
+
+			this.packetLayer = (TraceDecodePacketLayer) pipe.getPacketLayer();
 			packetLayer.addPacketListener(this);
-			// packetLayer.start();
 
-			this.cmdLayer = new MNPCommandLayer(packetLayer);
+			this.cmdLayer = pipe.getCommandLayer();
 			cmdLayer.addCommandListener(this);
-			cmdLayer.start();
+
+			layer.setState(pipe, CDState.DISCONNECTED);
+			pipe.startListening();
+			runReceived = true;
 		}
 
+		/**
+		 * Reader is running in packet layer, so writer can run here.<br>
+		 * Read bytes and re-construct the MNP packets sent.
+		 */
 		@Override
 		public void run() {
-			running = true;
+			runSent = true;
+
+			byte[] payload;
 			MNPPacket packet;
+
 			try {
 				do {
-					packet = packetLayer.receive();
-				} while (running && (packet != null));
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
+					payload = packetLayer.readSent();
+					packet = MNPPacketFactory.getInstance().createLinkPacket(payload);
+					if (runSent && (packet != null))
+						packetLayer.send(packet);
+				} while (runSent && (packet != null));
+			} catch (EOFException eofe) {
+				// ignore
+				System.err.println("EOF");
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 
+			runSent = false;
+			notifyDone();
 			System.out.println("End run " + getName());
+		}
+
+		protected void notifyDone() {
+			if (!runReceived && !runSent) {
+				try {
+					pipe.disconnect();
+					pipe.dispose();
+					layer.shutDown();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
 
 		@Override
 		public void packetReceived(MNPPacket packet) {
-			processPacket(direction, packet);
+			processPacket(DIRECTION_IN, packet);
 		}
 
 		@Override
 		public void packetSent(MNPPacket packet) {
-			processPacket(direction, packet);
+			processPacket(DIRECTION_OUT, packet);
 		}
 
 		@Override
 		public void packetEOF() {
-			System.out.println(direction + "\tEOF packet");
-			running = false;
-			packetLayer.close();
+			System.out.println("packet EOF");
+			runReceived = false;
+			runSent = false;
+			notifyDone();
 		}
 
 		@Override
 		public void commandReceived(IDockCommandFromNewton command) {
-			System.out.println(direction + "\trcv cmd:" + command);
+			System.out.println(DIRECTION_IN + "\tcmd rcv:" + command);
 		}
 
 		@Override
 		public void commandSent(IDockCommandToNewton command) {
-			System.out.println(direction + "\tsnt cmd:" + command);
+			System.out.println(DIRECTION_OUT + "\tcmd snt:" + command);
 		}
 
 		@Override
 		public void commandEOF() {
-			System.out.println(direction + "\tEOF cmd");
-			cmdLayer.close();
+			System.out.println("cmd EOF");
 		}
 
 		private void processPacket(char direction, MNPPacket packet) {
@@ -197,7 +243,7 @@ public class TraceDecode {
 			} else if (packet instanceof MNPLinkTransferPacket) {
 				processLT(direction, (MNPLinkTransferPacket) packet);
 			} else {
-				throw new ClassCastException();
+				throw new ClassCastException("unknown packet type");
 			}
 		}
 
@@ -231,7 +277,7 @@ public class TraceDecode {
 				}
 				b = data[i] & 0xFF;
 				if ((b >= 0x020) && (b <= 0x7E)) {
-					buf.append((char) b);
+					buf.appendCodePoint(b);
 				} else {
 					buf.append("0x");
 					if (b < 0x10) {
