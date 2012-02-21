@@ -8,7 +8,10 @@ import javax.swing.JOptionPane;
 import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.protocol.DockCommandListener;
+import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
+import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.swing.SwingUtils;
 
@@ -17,7 +20,7 @@ import net.sf.swing.SwingUtils;
  * 
  * @author Moshe
  */
-public abstract class IconModule implements DockCommandListener {
+public abstract class IconModule extends Thread implements DockCommandListener {
 
 	static {
 		SwingUtils.init();
@@ -36,6 +39,7 @@ public abstract class IconModule implements DockCommandListener {
 	 */
 	public IconModule(String title, CDPipe<? extends CDPacket> pipe) {
 		super();
+		setName("IconModule-" + getId());
 		this.title = title;
 		if (pipe == null)
 			throw new IllegalArgumentException("pipe required");
@@ -45,7 +49,7 @@ public abstract class IconModule implements DockCommandListener {
 
 	@Override
 	public void commandEOF() {
-		pipe.removeCommandListener(this);
+		done();
 	}
 
 	/**
@@ -56,7 +60,7 @@ public abstract class IconModule implements DockCommandListener {
 	 */
 	protected void write(IDockCommandToNewton command) {
 		try {
-			if (pipe.canSend())
+			if (pipe.allowSend())
 				pipe.write(command);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -64,7 +68,6 @@ public abstract class IconModule implements DockCommandListener {
 				DOperationDone cancel = new DOperationDone();
 				write(cancel);
 			}
-			commandEOF();
 			showError(e.getMessage());
 		}
 	}
@@ -81,5 +84,50 @@ public abstract class IconModule implements DockCommandListener {
 				JOptionPane.showMessageDialog(null, msg, title, JOptionPane.ERROR_MESSAGE);
 			}
 		}.start();
+	}
+
+	/**
+	 * Module is finished.
+	 */
+	protected void done() {
+		pipe.removeCommandListener(this);
+	}
+
+	/**
+	 * Is the module enabled and active?
+	 * 
+	 * @return {@code true} if enabled.
+	 */
+	protected boolean isEnabled() {
+		return true;
+	}
+
+	@Override
+	public void commandReceived(IDockCommandFromNewton command) {
+		if (!isEnabled())
+			return;
+
+		String cmd = command.getCommand();
+
+		if (DOperationCanceled.COMMAND.equals(cmd)) {
+			DOperationCanceledAck ack = new DOperationCanceledAck();
+			write(ack);
+		}
+	}
+
+	@Override
+	public void commandSent(IDockCommandToNewton command) {
+		if (!isEnabled())
+			return;
+
+		String cmd = command.getCommand();
+
+		if (DOperationDone.COMMAND.equals(cmd)) {
+			done();
+		} else if (DOperationCanceled.COMMAND.equals(cmd)) {
+			done();
+		} else if (DOperationCanceledAck.COMMAND.equals(cmd)) {
+			done();
+		}
 	}
 }

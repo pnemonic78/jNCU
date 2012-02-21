@@ -26,6 +26,7 @@ import javax.crypto.Cipher;
 import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.CDPacket;
+import net.sf.jncu.cdil.CDPacketListener;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
@@ -42,9 +43,9 @@ import net.sf.jncu.protocol.v1_0.query.DResult;
  * 
  * @author moshew
  */
-public class DockingProtocol implements DockCommandListener {
+public class DockingProtocol<P extends CDPacket> implements DockCommandListener, CDPacketListener<P> {
 
-	private final CDPipe<? extends CDPacket> pipe;
+	private final CDPipe<P> pipe;
 	/** Internal state. */
 	private DockingState state = DockingState.HANDSHAKE_LR_LISTEN;
 	/** Newton information. */
@@ -66,6 +67,10 @@ public class DockingProtocol implements DockCommandListener {
 	 * up.
 	 */
 	private static final int MAX_PASSWORD_ATTEMPTS = 3;
+
+	private static final int ERROR_COMM_TIMEDOUT = -10021;
+	private static final int ERROR_DISCONNECTED = -16005;
+
 	private int challengePasswordAttempt = 0;
 
 	/**
@@ -74,11 +79,12 @@ public class DockingProtocol implements DockCommandListener {
 	 * @param pipe
 	 *            the pipe.
 	 */
-	public DockingProtocol(CDPipe<? extends CDPacket> pipe) {
+	public DockingProtocol(CDPipe<P> pipe) {
 		super();
 		if (pipe == null)
 			throw new IllegalArgumentException("pipe required");
 		this.pipe = pipe;
+		pipe.addPacketListener(this);
 		pipe.addCommandListener(this);
 		this.crypto = new DESNewton();
 		crypto.init(Cipher.ENCRYPT_MODE);
@@ -116,8 +122,8 @@ public class DockingProtocol implements DockCommandListener {
 	 * @throws CDILNotInitializedException
 	 * @throws BadPipeStateException
 	 */
-	public void setState(DockingState state, IDockCommandFromNewton cmd) throws PipeDisconnectedException, TimeoutException, BadPipeStateException,
-			CDILNotInitializedException, PlatformException {
+	public void setState(DockingState state, IDockCommandFromNewton cmd) throws PipeDisconnectedException, TimeoutException, BadPipeStateException, CDILNotInitializedException,
+			PlatformException {
 		setState(getState(), state, cmd);
 	}
 
@@ -138,8 +144,8 @@ public class DockingProtocol implements DockCommandListener {
 	 * @throws CDILNotInitializedException
 	 * @throws BadPipeStateException
 	 */
-	protected void setState(DockingState oldDockingState, DockingState state, IDockCommandFromNewton command) throws PipeDisconnectedException,
-			TimeoutException, BadPipeStateException, CDILNotInitializedException, PlatformException {
+	protected void setState(DockingState oldDockingState, DockingState state, IDockCommandFromNewton command) throws PipeDisconnectedException, TimeoutException,
+			BadPipeStateException, CDILNotInitializedException, PlatformException {
 		// Only move the previous state to the next state.
 		int compare = state.compareTo(oldDockingState);
 		if (compare < 0) {
@@ -243,8 +249,7 @@ public class DockingProtocol implements DockCommandListener {
 			this.challengeNewtonCiphered = crypto.cipher(challengeNewton);
 
 			DWhichIcons cmdWhichIcons = new DWhichIcons();
-			cmdWhichIcons.setIcons(DWhichIcons.BACKUP | DWhichIcons.IMPORT | DWhichIcons.INSTALL | DWhichIcons.KEYBOARD | DWhichIcons.RESTORE
-					| DWhichIcons.SYNC);
+			cmdWhichIcons.setIcons(DWhichIcons.BACKUP | DWhichIcons.IMPORT | DWhichIcons.INSTALL | DWhichIcons.KEYBOARD | DWhichIcons.RESTORE | DWhichIcons.SYNC);
 			setState(state, DockingState.HANDSHAKE_ICONS_SENDING, command);
 			pipe.write(cmdWhichIcons);
 			break;
@@ -328,13 +333,13 @@ public class DockingProtocol implements DockCommandListener {
 			setState(state, DockingState.HANDSHAKE_DONE, null);
 			break;
 		case HANDSHAKE_DONE:
-			pipe.removeCommandListener(this);
+			done();
 			break;
 		case DISCONNECTING:
 			pipe.disconnect();
 			break;
 		case DISCONNECTED:
-			pipe.removeCommandListener(this);
+			commandEOF();
 			break;
 		default:
 			throw new BadPipeStateException("bad state from " + oldDockingState + " to " + state);
@@ -377,21 +382,16 @@ public class DockingProtocol implements DockCommandListener {
 			default:
 				throw new BadPipeStateException("bad state " + state);
 			}
-		} catch (BadPipeStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (PipeDisconnectedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CDILNotInitializedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (PlatformException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (BadPipeStateException be) {
+			be.printStackTrace();
+		} catch (PipeDisconnectedException pde) {
+			pde.printStackTrace();
+		} catch (CDILNotInitializedException ce) {
+			ce.printStackTrace();
+		} catch (PlatformException pe) {
+			pe.printStackTrace();
+		} catch (TimeoutException te) {
+			te.printStackTrace();
 		}
 	}
 
@@ -428,27 +428,22 @@ public class DockingProtocol implements DockCommandListener {
 				}
 				break;
 			}
-		} catch (BadPipeStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (PipeDisconnectedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CDILNotInitializedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (PlatformException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (BadPipeStateException bpse) {
+			bpse.printStackTrace();
+		} catch (PipeDisconnectedException pde) {
+			pde.printStackTrace();
+		} catch (CDILNotInitializedException cnie) {
+			cnie.printStackTrace();
+		} catch (PlatformException pe) {
+			pe.printStackTrace();
+		} catch (TimeoutException te) {
+			te.printStackTrace();
 		}
 	}
 
 	@Override
 	public void commandEOF() {
-		pipe.removeCommandListener(this);
+		done();
 	}
 
 	/**
@@ -480,8 +475,7 @@ public class DockingProtocol implements DockCommandListener {
 	 * @throws PipeDisconnectedException
 	 * @throws TimeoutException
 	 */
-	protected void handleError(DResult cmd) throws BadPipeStateException, CDILNotInitializedException, PlatformException, PipeDisconnectedException,
-			TimeoutException {
+	protected void handleError(DResult cmd) throws BadPipeStateException, CDILNotInitializedException, PlatformException, PipeDisconnectedException, TimeoutException {
 		handleError(cmd.getError());
 	}
 
@@ -496,8 +490,7 @@ public class DockingProtocol implements DockCommandListener {
 	 * @throws PipeDisconnectedException
 	 * @throws TimeoutException
 	 */
-	protected void handleError(int errorCode) throws BadPipeStateException, CDILNotInitializedException, PlatformException, PipeDisconnectedException,
-			TimeoutException {
+	protected void handleError(int errorCode) throws BadPipeStateException, CDILNotInitializedException, PlatformException, PipeDisconnectedException, TimeoutException {
 		handleError(new NewtonError(errorCode));
 	}
 
@@ -512,16 +505,36 @@ public class DockingProtocol implements DockCommandListener {
 	 * @throws PipeDisconnectedException
 	 * @throws TimeoutException
 	 */
-	protected void handleError(NewtonError error) throws BadPipeStateException, CDILNotInitializedException, PlatformException, PipeDisconnectedException,
-			TimeoutException {
+	protected void handleError(NewtonError error) throws BadPipeStateException, CDILNotInitializedException, PlatformException, PipeDisconnectedException, TimeoutException {
 		switch (error.getErrorCode()) {
-		case -16005:
+		case ERROR_DISCONNECTED:
 			pipe.disconnect();
 			break;
-		case -10021:
+		case ERROR_COMM_TIMEDOUT:
 			throw new TimeoutException(error.getMessage());
 		default:
 			throw new BadPipeStateException(error);
 		}
+	}
+
+	@Override
+	public void packetReceived(P packet) {
+	}
+
+	@Override
+	public void packetSent(P packet) {
+	}
+
+	@Override
+	public void packetEOF() {
+		done();
+	}
+
+	/**
+	 * Docking protocol is finished.
+	 */
+	protected void done() {
+		pipe.removePacketListener(this);
+		pipe.removeCommandListener(this);
 	}
 }

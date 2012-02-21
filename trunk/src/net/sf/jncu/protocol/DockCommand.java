@@ -86,19 +86,11 @@ public abstract class DockCommand implements IDockCommand {
 		this.command = new String(commandBytes);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.jncu.protocol.IDockCommand#getCommand()
-	 */
 	@Override
 	public String getCommand() {
 		return command;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.jncu.protocol.IDockCommand#getLength()
-	 */
 	@Override
 	public int getLength() {
 		return length;

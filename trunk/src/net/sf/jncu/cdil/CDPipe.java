@@ -38,7 +38,7 @@ import net.sf.jncu.protocol.v2_0.session.DockingState;
  * 
  * @author moshew
  */
-public abstract class CDPipe<P extends CDPacket> extends Thread implements DockCommandListener {
+public abstract class CDPipe<P extends CDPacket> extends Thread implements DockCommandListener, CDPacketListener<P> {
 
 	protected static final long PING_TIME = 10000L;
 
@@ -47,7 +47,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	private PipedInputStream pipeSink;
 	private CDPacketLayer<P> packetLayer;
 	private CDCommandLayer<P> cmdLayer;
-	protected DockingProtocol docking;
+	protected DockingProtocol<P> docking;
 	private final Timer timer = new Timer();
 	private CDPing pingTask;
 	private boolean pingFixed;
@@ -63,9 +63,8 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	public CDPipe(CDLayer layer) throws ServiceNotSupportedException {
 		super();
 		setName("CDPipe-" + getId());
-		if (layer == null) {
-			throw new ServiceNotSupportedException();
-		}
+		if (layer == null)
+			throw new ServiceNotSupportedException("layer required");
 		this.layer = layer;
 		this.pipeSource = new PipedOutputStream();
 		layer.setState(CDState.DISCONNECTED);
@@ -132,17 +131,16 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 
 	/**
 	 * Disconnection implementation.
-	 * 
-	 * @throws PlatformException
-	 *             if a platform error occurs.
-	 * @throws TimeoutException
-	 *             if timeout occurs.
 	 */
-	protected void disconnectImpl() throws PlatformException, TimeoutException {
+	protected void disconnectImpl() {
 		stopPing();
 		getCommandLayer().close();
+		getPacketLayer().close();
 	}
 
+	/**
+	 * Disconnect quietly.
+	 */
 	public void disconnectQuiet() {
 		try {
 			disconnect();
@@ -182,7 +180,8 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 		if (getCDState() != CDState.DISCONNECTED) {
 			throw new BadPipeStateException();
 		}
-		this.docking = new DockingProtocol(this);
+		this.docking = createDockingProtocol();
+		getPacketLayer().addPacketListener(docking);
 		start();
 		layer.setState(CDState.LISTENING);
 	}
@@ -217,7 +216,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	public void accept() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		layer.checkInitialized();
 		if (getCDState() != CDState.CONNECT_PENDING) {
-			throw new BadPipeStateException();
+			throw new BadPipeStateException("state " + getCDState().toString());
 		}
 		acceptImpl();
 	}
@@ -301,7 +300,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	 * @throws TimeoutException
 	 *             if timeout occurs.
 	 */
-	public void write(byte[] b) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
+	public final void write(byte[] b) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		write(b, 0, b.length);
 	}
 
@@ -472,12 +471,45 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 		layer.setState(CDState.CONNECT_PENDING);
 	}
 
+	/**
+	 * Get the CD state.
+	 * 
+	 * @return the state.
+	 */
 	protected CDState getCDState() {
 		return layer.getState();
 	}
 
+	/**
+	 * Set the CD state.
+	 * 
+	 * @param state
+	 *            the state.
+	 */
 	protected void setCDState(CDState state) {
 		layer.setState(this, state);
+	}
+
+	/**
+	 * Get the docking state.
+	 * 
+	 * @return the state.
+	 */
+	public DockingState getDockingState() {
+		return docking.getState();
+	}
+
+	@Override
+	public void packetReceived(P packet) {
+	}
+
+	@Override
+	public void packetSent(P packet) {
+	}
+
+	@Override
+	public void packetEOF() {
+		disconnectQuiet();
 	}
 
 	/*
@@ -515,7 +547,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	 */
 	@Override
 	public void commandEOF() {
-		stopPing();
+		disconnectQuiet();
 	}
 
 	/**
@@ -544,12 +576,12 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	protected abstract CDCommandLayer<P> createCommandLayer(CDPacketLayer<P> packetLayer);
 
 	/**
-	 * Can send?
+	 * Can send packets to Newton?
 	 * 
-	 * @return true if connected or connection pending.
+	 * @return {@code true} if connected or connection pending.
 	 */
-	public boolean canSend() {
-		CDState stateCD = getLayer().getState();
+	public boolean allowSend() {
+		CDState stateCD = getCDState();
 		return (stateCD == CDState.CONNECT_PENDING) || (stateCD == CDState.CONNECTED) || (stateCD == CDState.LISTENING);
 	}
 
@@ -558,9 +590,10 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	 * 
 	 * @return the packet layer.
 	 */
-	protected CDPacketLayer<P> getPacketLayer() {
+	public CDPacketLayer<P> getPacketLayer() {
 		if (packetLayer == null) {
 			packetLayer = createPacketLayer();
+			packetLayer.addPacketListener(this);
 		}
 		return packetLayer;
 	}
@@ -570,12 +603,32 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	 * 
 	 * @return the command layer.
 	 */
-	protected CDCommandLayer<P> getCommandLayer() {
+	public CDCommandLayer<P> getCommandLayer() {
 		if (cmdLayer == null) {
 			cmdLayer = createCommandLayer(getPacketLayer());
 			cmdLayer.addCommandListener(this);
 		}
 		return cmdLayer;
+	}
+
+	/**
+	 * Add a packet listener.
+	 * 
+	 * @param listener
+	 *            the listener to add.
+	 */
+	public void addPacketListener(CDPacketListener<P> listener) {
+		getPacketLayer().addPacketListener(listener);
+	}
+
+	/**
+	 * Remove a packet listener.
+	 * 
+	 * @param listener
+	 *            the listener to remove.
+	 */
+	public void removePacketListener(CDPacketListener<P> listener) {
+		getPacketLayer().removePacketListener(listener);
 	}
 
 	/**
@@ -646,11 +699,20 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	}
 
 	/**
-	 * Get the docking state.
+	 * Create a docking protocol handler.
 	 * 
-	 * @return the state.
+	 * @return the docker.
 	 */
-	public DockingState getDockingState() {
-		return docking.getState();
+	protected DockingProtocol<P> createDockingProtocol() {
+		return new DockingProtocol<P>(this);
+	}
+
+	/**
+	 * Process the command.
+	 * 
+	 * @param command
+	 *            the received command.
+	 */
+	protected void processCommand(IDockCommandFromNewton command) {
 	}
 }

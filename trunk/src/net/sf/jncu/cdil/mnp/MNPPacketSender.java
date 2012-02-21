@@ -92,7 +92,8 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 			try {
 				next = queueSend.take();
 			} catch (InterruptedException ie) {
-				ie.printStackTrace();
+				if (!queueSend.isEmpty())
+					ie.printStackTrace();
 			}
 
 			if (next != null) {
@@ -109,27 +110,29 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 				packet = next;
 
 				do {
-					try {
-						timeout = System.currentTimeMillis() + 5000L;
-						packetLayer.send(packet);
-						// TODO move this section to #packetSent
-						if (sequenceToAcknowledge >= 0) {
-							// Wait for acknowledgement.
-							do {
-								yield();
-								resend &= (sequenceAcknowledged < sequenceToAcknowledge);
-								resend &= running;
-								now = System.currentTimeMillis();
-							} while (resend && (now < timeout));
-						} else {
-							resend = false;
+					if (pipe.allowSend()) {
+						try {
+							timeout = System.currentTimeMillis() + 5000L;
+							packetLayer.send(packet);
+							// TODO move this section to #packetSent
+							if (sequenceToAcknowledge >= 0) {
+								// Wait for acknowledgement.
+								do {
+									yield();
+									resend &= (sequenceAcknowledged < sequenceToAcknowledge);
+									resend &= running;
+									now = System.currentTimeMillis();
+								} while (resend && (now < timeout));
+							} else {
+								resend = false;
+							}
+						} catch (IOException ioe) {
+							ioe.printStackTrace();
 						}
-					} catch (IOException ioe) {
-						ioe.printStackTrace();
 					}
 
 					resend &= running;
-					resend &= pipe.canSend();
+					resend &= pipe.allowSend();
 					if (resend) {
 						retry--;
 						if (retry < 0) {
@@ -165,9 +168,11 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 	 * Cancel all sending requests.
 	 */
 	public void cancel() {
-		queueSend.clear();
-		packetLayer.removePacketListener(this);
 		running = false;
+		packetLayer.removePacketListener(this);
+		queueSend.clear();
+		// Kill "queueSend.take();"
+		interrupt();
 	}
 
 	@Override
@@ -180,6 +185,7 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 			// Notify the pipe that error occurred.
 			packetEOF();
 		}
+		running = false;
 	}
 
 }

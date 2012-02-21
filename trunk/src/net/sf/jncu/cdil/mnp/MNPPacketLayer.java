@@ -56,20 +56,46 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 	 */
 	public MNPPacketLayer(MNPPipe pipe) {
 		super(pipe);
+		setName("MNPPacketLayer-" + getId());
 		this.sender = new MNPPacketSender(pipe, this);
 		this.sender.start();
 		addPacketListener(this);
 	}
 
 	@Override
+	protected InputStream getInput() throws IOException {
+		return null;
+	}
+
+	@Override
+	protected OutputStream getOutput() throws IOException {
+		return null;
+	}
+
+	@Override
 	protected byte[] read() throws EOFException, IOException {
+		return read(getInput());
+	}
+
+	/**
+	 * Receive a MNP packet payload.
+	 * 
+	 * @param in
+	 *            the input.
+	 * @return the payload - {@code null} otherwise.
+	 * @throws EOFException
+	 *             if end of stream is reached.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected byte[] read(InputStream in) throws EOFException, IOException {
 		int delimiterLength = PACKET_HEAD.length;
 		int state = 0;
 		int b;
 
 		/* Read header. */
 		while (state < delimiterLength) {
-			b = readByte();
+			b = readByte(in);
 			if (b == PACKET_HEAD[state]) {
 				state++;
 			} else {
@@ -84,7 +110,7 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 		delimiterLength = PACKET_TAIL.length;
 		state = 0;
 		while (state < delimiterLength) {
-			b = readByte();
+			b = readByte(in);
 			if (b == DELIMITER_ESCAPE) {
 				if (isEscape) {
 					buf.write(b);
@@ -109,9 +135,9 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 		crc.update(PACKET_TAIL, 1, PACKET_TAIL.length - 1);
 
 		/* Read the FCS. */
-		b = readByte();
+		b = readByte(in);
 		long crcWord = b;
-		b = readByte();
+		b = readByte(in);
 		crcWord = (b << 8) | crcWord;
 		if (crcWord != crc.getValue()) {
 			// throw new ProtocolException("CRC error on input framing");
@@ -214,23 +240,37 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 	@Override
 	public void packetReceived(MNPPacket packet) {
 		if (packet.getType() == MNPPacket.LT) {
-			MNPLinkTransferPacket packetLT = (MNPLinkTransferPacket) packet;
-			MNPLinkAcknowledgementPacket ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
-			ack.setSequence(packetLT.getSequence());
-			try {
-				send(ack);
-			} catch (Exception e) {
-				e.printStackTrace();
-				firePacketEOF();
+			if (allowAcknowledge()) {
+				MNPLinkTransferPacket packetLT = (MNPLinkTransferPacket) packet;
+				MNPLinkAcknowledgementPacket ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
+				ack.setSequence(packetLT.getSequence());
+				try {
+					send(ack);
+				} catch (Exception e) {
+					e.printStackTrace();
+					firePacketEOF();
+				}
 			}
 		}
 	}
 
 	@Override
 	public void packetSent(MNPPacket packet) {
+		// Nothing to do.
 	}
 
 	@Override
 	public void packetEOF() {
+		// Nothing to do.
+	}
+
+	/**
+	 * Can send a link acknowledgement packet after receiving a link transfer
+	 * packet?
+	 * 
+	 * @return {@code true} if can send.
+	 */
+	protected boolean allowAcknowledge() {
+		return true;
 	}
 }

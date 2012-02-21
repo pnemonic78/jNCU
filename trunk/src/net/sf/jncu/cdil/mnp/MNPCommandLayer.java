@@ -39,7 +39,7 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
 public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 
 	/** Stream for packets to populate commands. */
-	private final PipedOutputStream packets = new PipedOutputStream();
+	private final PipedOutputStream commandPackets = new PipedOutputStream();
 	/** Stream of commands that have been populated from packets. */
 	private InputStream in;
 	/** Queue of outgoing commands. */
@@ -53,8 +53,9 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 	 */
 	public MNPCommandLayer(MNPPacketLayer packetLayer) {
 		super(packetLayer);
+		setName("MNPCommandLayer-" + getId());
 		try {
-			this.in = new PipedInputStream(packets);
+			this.in = new PipedInputStream(commandPackets);
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
@@ -62,6 +63,7 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.jncu.cdil.CDCommandLayer#getInput()
 	 */
 	@Override
@@ -71,6 +73,7 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.jncu.cdil.CDCommandLayer#getOutput()
 	 */
 	@Override
@@ -80,20 +83,23 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.jncu.cdil.CDCommandLayer#close()
 	 */
 	@Override
 	public void close() {
 		try {
-			packets.close();
+			commandPackets.close();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
+		interrupt();
 		super.close();
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @seenet.sf.jncu.cdil.CDCommandLayer#write(net.sf.jncu.protocol.
 	 * IDockCommandToNewton)
 	 */
@@ -111,42 +117,24 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * net.sf.jncu.cdil.mnp.MNPPacketListener#packetReceived(net.sf.jncu.cdil
-	 * .mnp.MNPPacket)
-	 */
 	@Override
 	public void packetReceived(MNPPacket packet) {
-		byte type = packet.getType();
-		if (type == MNPPacket.LA) {
+		super.packetReceived(packet);
+
+		switch (packet.getType()) {
+		case MNPPacket.LA:
 			packetReceivedLA((MNPLinkAcknowledgementPacket) packet);
-		} else if (type == MNPPacket.LD) {
+			break;
+		case MNPPacket.LD:
 			packetReceivedLD((MNPLinkDisconnectPacket) packet);
-		} else if (type == MNPPacket.LT) {
+			break;
+		case MNPPacket.LR:
+			packetReceivedLR((MNPLinkRequestPacket) packet);
+			break;
+		case MNPPacket.LT:
 			packetReceivedLT((MNPLinkTransferPacket) packet);
+			break;
 		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * net.sf.jncu.cdil.mnp.MNPPacketListener#packetSent(net.sf.jncu.cdil.mnp
-	 * .MNPPacket)
-	 */
-	@Override
-	public void packetSent(MNPPacket packet) {
-		// Nothing to do.
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.jncu.cdil.mnp.MNPPacketListener#packetEOF()
-	 */
-	@Override
-	public void packetEOF() {
-		// Nothing to do.
 	}
 
 	/**
@@ -174,6 +162,15 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 	}
 
 	/**
+	 * Received a link request packet.
+	 * 
+	 * @param packet
+	 *            the packet.
+	 */
+	protected void packetReceivedLR(MNPLinkRequestPacket packet) {
+	}
+
+	/**
 	 * Received a link transfer packet.
 	 * 
 	 * @param packet
@@ -183,8 +180,8 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 		byte[] payload = packet.getData();
 
 		try {
-			packets.write(payload);
-			packets.flush();
+			commandPackets.write(payload);
+			commandPackets.flush();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}

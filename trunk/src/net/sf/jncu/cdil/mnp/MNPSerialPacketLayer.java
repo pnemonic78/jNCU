@@ -42,6 +42,7 @@ public class MNPSerialPacketLayer extends MNPPacketLayer {
 	 */
 	public MNPSerialPacketLayer(MNPPipe pipe, MNPSerialPort port) {
 		super(pipe);
+		setName("MNPSerialPacketLayer-" + getId());
 		this.port = port;
 	}
 
@@ -67,7 +68,8 @@ public class MNPSerialPacketLayer extends MNPPacketLayer {
 	@Override
 	public void close() {
 		super.close();
-		port.close();
+		if (port != null)
+			port.close();
 	}
 
 }
