@@ -718,4 +718,17 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	 */
 	protected void processCommand(IDockCommandFromNewton command) {
 	}
+
+	/**
+	 * Is the pipe connected?
+	 * 
+	 * @return {@code true} if connecting or connected.
+	 */
+	public boolean isConnected() {
+		final CDState state = getLayer().getState();
+		if ((state == CDState.CONNECT_PENDING) || (state == CDState.CONNECTED))
+			return true;
+		final DockingState dockingState = getDockingState();
+		return (dockingState != DockingState.DISCONNECTING) && (dockingState != DockingState.DISCONNECTED);
+	}
 }

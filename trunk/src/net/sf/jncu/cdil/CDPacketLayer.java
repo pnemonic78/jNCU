@@ -29,8 +29,6 @@ import java.util.Collection;
 import java.util.Timer;
 import java.util.concurrent.TimeoutException;
 
-import net.sf.jncu.protocol.v2_0.session.DockingState;
-
 /**
  * CD packet layer.
  * 
@@ -390,10 +388,6 @@ public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 	 * @return {@code true} if connecting or connected.
 	 */
 	protected boolean isConnected() {
-		final CDState state = pipe.getLayer().getState();
-		if ((state == CDState.CONNECT_PENDING) || (state == CDState.CONNECTED))
-			return true;
-		final DockingState dockingState = pipe.getDockingState();
-		return (dockingState != DockingState.DISCONNECTING) && (dockingState != DockingState.DISCONNECTED);
+		return pipe.isConnected();
 	}
 }

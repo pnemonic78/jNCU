@@ -220,7 +220,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 			switch (state) {
 			case MNP_HANDSHAKE_LR_SENDING:
 				if (packetType == MNPPacket.LR) {
-					docking.setState(DockingState.HANDSHAKE_RTDK_LISTEN);
+					docking.setState(DockingState.HANDSHAKE_RTDK);
 					setState(MNPState.MNP_HANDSHAKE_DOCK);
 				}
 				break;
