@@ -43,6 +43,15 @@ public interface CDPacketListener<T extends CDPacket> {
 	public void packetSent(T packet);
 
 	/**
+	 * Notification that a packet was acknowledged by the receiver after we sent
+	 * it.
+	 * 
+	 * @param packet
+	 *            the sent packet.
+	 */
+	public void packetAcknowledged(T packet);
+
+	/**
 	 * Notification that no more packets will be available.
 	 */
 	public void packetEOF();

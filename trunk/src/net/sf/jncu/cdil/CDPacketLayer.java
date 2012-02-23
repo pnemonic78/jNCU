@@ -38,7 +38,7 @@ import net.sf.jncu.protocol.v2_0.session.DockingState;
  */
 public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 
-	private final CDPipe<P> pipe;
+	protected final CDPipe<P> pipe;
 	private boolean running;
 	private int timeout;
 	private final Timer timer = new Timer();
@@ -133,6 +133,20 @@ public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 		Collection<CDPacketListener<P>> listenersCopy = new ArrayList<CDPacketListener<P>>(listeners);
 		for (CDPacketListener<P> listener : listenersCopy) {
 			listener.packetSent(packet);
+		}
+	}
+
+	/**
+	 * Notify all the listeners that a packet has been acknowledged.
+	 * 
+	 * @param packet
+	 *            the sent packet.
+	 */
+	protected void firePacketAcknowledged(P packet) {
+		// Make copy of listeners to avoid ConcurrentModificationException.
+		Collection<CDPacketListener<P>> listenersCopy = new ArrayList<CDPacketListener<P>>(listeners);
+		for (CDPacketListener<P> listener : listenersCopy) {
+			listener.packetAcknowledged(packet);
 		}
 	}
 

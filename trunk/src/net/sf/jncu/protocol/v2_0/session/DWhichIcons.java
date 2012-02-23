@@ -84,6 +84,10 @@ public class DWhichIcons extends DockCommandToNewton {
 	 * <tt>kKeyboardIcon</tt>
 	 */
 	public static final int KEYBOARD = 32;
+	/**
+	 * All icons.
+	 */
+	public static final int ALL = BACKUP | IMPORT | INSTALL | KEYBOARD | RESTORE | SYNC;
 
 	/**
 	 * Creates a new command.

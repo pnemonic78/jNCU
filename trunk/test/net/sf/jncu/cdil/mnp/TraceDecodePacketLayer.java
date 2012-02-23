@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import net.sf.jncu.cdil.PipeDisconnectedException;
+import net.sf.jncu.cdil.mnp.MNPPipe.MNPState;
 import net.sf.jncu.io.NullOutputStream;
 
 public class TraceDecodePacketLayer extends MNPSerialPacketLayer {
@@ -41,4 +43,13 @@ public class TraceDecodePacketLayer extends MNPSerialPacketLayer {
 		return false;
 	}
 
+	@Override
+	public void run() {
+		try {
+			((MNPPipe) pipe).setState(MNPState.MNP_HANDSHAKE_LR_LISTEN);
+		} catch (PipeDisconnectedException pde) {
+			pde.printStackTrace();
+		}
+		super.run();
+	}
 }
