@@ -19,6 +19,10 @@
  */
 package net.sf.jncu.newton.stream.contrib;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+
 import net.sf.jncu.newton.stream.NSOFString;
 
 /**
@@ -52,5 +56,37 @@ public class NSOFSoupName extends NSOFString {
 		if ((value != null) && (value.length() >= 25))
 			value = value.substring(0, 25);
 		super.setValue(value);
+	}
+
+	/**
+	 * Encode a soup name without using an encoder.
+	 * 
+	 * @param name
+	 *            the name.
+	 * @param out
+	 *            the output.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	public static void encode(String name, OutputStream out) throws IOException {
+		try {
+			byte[] buf = name.getBytes(CHARSET);
+			int len = name.length();
+			// Bytes [0] and [1] are 0xFE and 0xFF
+			if (buf.length >= 2)
+				out.write(buf, 2, buf.length - 2);
+			// Word align.
+			switch (len & 3) {
+			case 1:
+				out.write(0);
+			case 2:
+				out.write(0);
+			case 3:
+				out.write(0);
+				break;
+			}
+		} catch (UnsupportedEncodingException uee) {
+			throw new IOException(uee);
+		}
 	}
 }

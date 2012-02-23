@@ -22,6 +22,7 @@ package net.sf.jncu.protocol.v1_0.data;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import net.sf.jncu.newton.stream.contrib.NSOFSoupName;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
@@ -80,7 +81,7 @@ public class DSetCurrentSoup extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		writeString(getName(), data);
+		NSOFSoupName.encode(getName(), data);
 	}
 
 }

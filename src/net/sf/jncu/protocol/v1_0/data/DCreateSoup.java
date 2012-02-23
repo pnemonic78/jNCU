@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import net.sf.jncu.newton.stream.NSOFArray;
 import net.sf.jncu.newton.stream.NSOFEncoder;
 import net.sf.jncu.newton.stream.NSOFPlainArray;
+import net.sf.jncu.newton.stream.contrib.NSOFSoupName;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
@@ -95,7 +96,7 @@ public class DCreateSoup extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		writeString(getName(), data);
+		NSOFSoupName.encode(getName(), data);
 		NSOFEncoder encoder = new NSOFEncoder();
 		encoder.encode(getIndex(), data);
 	}
