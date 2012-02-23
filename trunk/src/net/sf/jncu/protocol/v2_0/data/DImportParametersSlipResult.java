@@ -19,8 +19,8 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
-import net.sf.jncu.newton.stream.NSOFFrame;
-import net.sf.jncu.newton.stream.NSOFSymbol;
+import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**

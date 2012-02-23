@@ -22,10 +22,10 @@ package net.sf.jncu.protocol.v1_0.data;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import net.sf.jncu.newton.stream.NSOFArray;
-import net.sf.jncu.newton.stream.NSOFEncoder;
-import net.sf.jncu.newton.stream.NSOFPlainArray;
-import net.sf.jncu.newton.stream.contrib.NSOFSoupName;
+import net.sf.jncu.fdil.NSOFArray;
+import net.sf.jncu.fdil.NSOFEncoder;
+import net.sf.jncu.fdil.NSOFPlainArray;
+import net.sf.jncu.fdil.contrib.NSOFSoupName;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**

@@ -23,12 +23,12 @@ import java.io.File;
 
 import javax.swing.filechooser.FileSystemView;
 
-import net.sf.jncu.newton.stream.NSOFFrame;
-import net.sf.jncu.newton.stream.NSOFImmediate;
-import net.sf.jncu.newton.stream.NSOFInteger;
-import net.sf.jncu.newton.stream.NSOFObject;
-import net.sf.jncu.newton.stream.NSOFString;
-import net.sf.jncu.newton.stream.NSOFSymbol;
+import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.fdil.NSOFImmediate;
+import net.sf.jncu.fdil.NSOFInteger;
+import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.swing.SwingUtils;
 
 /**

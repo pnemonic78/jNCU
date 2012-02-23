@@ -21,7 +21,7 @@ package net.sf.jncu.protocol.v1_0.sync;
 
 import java.io.IOException;
 
-import net.sf.jncu.newton.stream.NSOFObject;
+import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;

@@ -24,14 +24,14 @@ import java.io.OutputStream;
 import java.util.Set;
 import java.util.TreeSet;
 
-import net.sf.jncu.newton.stream.NSOFArray;
-import net.sf.jncu.newton.stream.NSOFEncoder;
-import net.sf.jncu.newton.stream.NSOFFrame;
-import net.sf.jncu.newton.stream.NSOFInteger;
-import net.sf.jncu.newton.stream.NSOFObject;
-import net.sf.jncu.newton.stream.NSOFPlainArray;
-import net.sf.jncu.newton.stream.NSOFString;
-import net.sf.jncu.newton.stream.NSOFSymbol;
+import net.sf.jncu.fdil.NSOFArray;
+import net.sf.jncu.fdil.NSOFEncoder;
+import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.fdil.NSOFInteger;
+import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.fdil.NSOFPlainArray;
+import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**

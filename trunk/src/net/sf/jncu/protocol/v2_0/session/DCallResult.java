@@ -19,7 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
-import net.sf.jncu.newton.stream.NSOFObject;
+import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**

@@ -1,6 +1,6 @@
 package net.sf.jncu.protocol.v2_0.data;
 
-import net.sf.jncu.newton.stream.NSOFImmediate;
+import net.sf.jncu.fdil.NSOFImmediate;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**

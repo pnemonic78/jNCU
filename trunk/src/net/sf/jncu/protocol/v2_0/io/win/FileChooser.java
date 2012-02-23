@@ -30,8 +30,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import net.sf.jncu.Preferences;
 import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
-import net.sf.jncu.newton.stream.NSOFString;
-import net.sf.jncu.newton.stream.NSOFSymbol;
+import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.io.Store;
@@ -52,6 +52,7 @@ import net.sf.jncu.protocol.v2_0.io.DPath;
 import net.sf.jncu.protocol.v2_0.io.DRequestToBrowse;
 import net.sf.jncu.protocol.v2_0.io.DSetPath;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
+import net.sf.jncu.translate.TranslatorFactory;
 import net.sf.swing.AcceptAllFileFilter;
 import net.sf.swing.SwingUtils;
 
@@ -290,12 +291,7 @@ public class FileChooser extends IconModule {
 		// TODO Load the strings from resources bundle like the
 		// AcceptAllFileFilter.
 		if (types.contains(IMPORT)) {
-			filter = new FileNameExtensionFilter("Rich Text Format", "rtf", "RTF");
-			filters.add(filter);
-			filter = new FileNameExtensionFilter("Text Only", "txt", "TXT");
-			filters.add(filter);
-			filter = new FileNameExtensionFilter("Windows MetaFile", "wmf", "WMF");
-			filters.add(filter);
+			filters.addAll(TranslatorFactory.getInstance().getFileFilters());
 		}
 		if (types.contains(PACKAGES)) {
 			filter = new FileNameExtensionFilter("Packages", "pkg", "PKG");
