@@ -25,62 +25,47 @@ public enum DockingState {
 	NONE,
 	/** Link request from Newton. */
 	HANDSHAKE_LR,
-	/** Listen for <tt>kDRequestToDock</tt> from Newton. */
-	HANDSHAKE_RTDK_LISTEN,
 	/**
+	 * Listen for <tt>kDRequestToDock</tt> from Newton.<br>
 	 * Newton sent <tt>kDRequestToDock</tt>.<br>
 	 * Send LA to Newton.
 	 */
-	HANDSHAKE_RTDK_RECEIVED,
+	HANDSHAKE_RTDK,
 	/** Send <tt>kDInitiateDocking</tt> to Newton. */
-	HANDSHAKE_DOCK_SENDING,
-	/** Newton sent LA. */
-	HANDSHAKE_DOCK_SENT,
-	/** Listen for <tt>kDNewtonName</tt> from Newton. */
-	HANDSHAKE_NAME_LISTEN,
+	HANDSHAKE_DOCK,
 	/**
+	 * Listen for <tt>kDNewtonName</tt> from Newton.<br>
 	 * Newton sent <tt>kDNewtonName</tt>.<br>
 	 * Send LA to Newton.
 	 */
-	HANDSHAKE_NAME_RECEIVED,
+	HANDSHAKE_NNAME,
 	/** Send <tt>kDDesktopInfo</tt> to Newton. */
-	HANDSHAKE_DINFO_SENDING,
-	/** Newton sent LA. */
-	HANDSHAKE_DINFO_SENT,
-	/** Listen for <tt>kDNewtonInfo</tt> from Newton. */
-	HANDSHAKE_NINFO_LISTEN,
+	HANDSHAKE_DINFO,
 	/**
+	 * Listen for <tt>kDNewtonInfo</tt> from Newton.<br>
 	 * Newton sent <tt>kDNewtonInfo</tt>.<br>
 	 * Send LA to Newton.
 	 */
-	HANDSHAKE_NINFO_RECEIVED,
+	HANDSHAKE_NINFO,
 	/** Send <tt>kDWhichIcons</tt> to Newton (optional). */
-	HANDSHAKE_ICONS_SENDING,
-	/** Newton sent LA. */
-	HANDSHAKE_ICONS_SENT,
-	/** Listen for <tt>kDResult</tt> from Newton (for <tt>kDWhichIcons</tt>). */
-	HANDSHAKE_ICONS_RESULT_LISTEN,
+	HANDSHAKE_ICONS,
 	/**
+	 * Listen for <tt>kDResult</tt> from Newton (for <tt>kDWhichIcons</tt>).<br>
 	 * Newton sent <tt>kDResult</tt> (for <tt>kDWhichIcons</tt> in previous
 	 * step).<br>
 	 * Send LA to Newton.
 	 */
-	HANDSHAKE_ICONS_RESULT_RECEIVED,
+	HANDSHAKE_ICONS_RESULT,
 	/** Send <tt>kDSetTimeout</tt> to Newton. */
-	HANDSHAKE_TIMEOUT_SENDING,
-	/** Newton sent LA. */
-	HANDSHAKE_TIMEOUT_SENT,
-	/** Listen for <tt>kDPassword</tt> from Newton. */
-	HANDSHAKE_PASS_LISTEN,
+	HANDSHAKE_TIMEOUT,
 	/**
+	 * Listen for <tt>kDPassword</tt> from Newton.<br>
 	 * Newton sent <tt>kDPassword</tt>.<br>
 	 * Send LA to Newton.
 	 */
-	HANDSHAKE_PASS_RECEIVED,
+	HANDSHAKE_PASS,
 	/** Send <tt>kDPassword</tt> to Newton. */
-	HANDSHAKE_PASS_SENDING,
-	/** Newton sent LA. */
-	HANDSHAKE_PASS_SENT,
+	HANDSHAKE_PASS_REPLY,
 	/** Finished handshaking. */
 	HANDSHAKE_DONE,
 	/** Disconnecting. */
