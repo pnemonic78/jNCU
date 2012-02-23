@@ -126,7 +126,6 @@ public class DFileInfo extends DockCommandToNewton {
 		if (description != null)
 			frame.put(SLOT_KIND, new NSOFString(description));
 
-		// NSOFBinaryObject icon = getIcon(file);
 		NSOFBitmap icon = getIcon(file);
 		if (icon != null)
 			frame.put(SLOT_ICON, icon);
@@ -139,9 +138,6 @@ public class DFileInfo extends DockCommandToNewton {
 		frame.put(SLOT_SIZE, new NSOFInteger(size));
 		return frame;
 	}
-
-//	private static NSOFBitmap bmp = null;
-//	private static final byte[] row = { (byte) 0xFF, 0x55, (byte) 0xAA, 0x00 };
 
 	/**
 	 * Get the file icon.
@@ -156,29 +152,10 @@ public class DFileInfo extends DockCommandToNewton {
 		// if (icon == null) {
 		// return null;
 		// }
-		NSOFBitmap bin = null;
+		NSOFBitmap bmp = null;
 		// Convert "Java Icon" to "Newton bitmap" or "Apple PICT image".
 		// see "developer/QAs-2.x/html/newtbitm.htm"
-		// NSOFBitmap bmp = new NSOFBitmap();
-		// if (bmp == null) {
-		// byte[] pixels = new byte[120];
-		// for (int r = 0, pixelsOffset = 0; r < 30; r++, pixelsOffset +=
-		// row.length)
-		// System.arraycopy(row, 0, pixels, pixelsOffset, row.length);
-		//
-		// NSOFSmallRect bounds = new NSOFSmallRect(0, 0, 30, 30);
-		//
-		// NSOFRawBitmap bits = new NSOFRawBitmap();
-		// bits.setBounds(bounds);
-		// bits.setPixels(pixels);
-		//
 		// bmp = new NSOFBitmap();
-		// bmp.setBits(bits);
-		// bmp.setBounds(bounds);
-		// }
-		// bin = new NSOFBinaryObject(bmp);
-		// bin.setNSClass(bmp.getNSClass());
-		// bin = bmp;
-		return bin;
+		return bmp;
 	}
 }
