@@ -260,6 +260,11 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 	}
 
 	@Override
+	public void packetAcknowledged(MNPPacket packet) {
+		// Nothing to do.
+	}
+
+	@Override
 	public void packetEOF() {
 		// Nothing to do.
 	}
@@ -272,5 +277,21 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 	 */
 	protected boolean allowAcknowledge() {
 		return true;
+	}
+
+	/**
+	 * Packet has been acknowledged. Run this in a separate thread because most
+	 * likely it will be called from within a {@code packetReceived} event.
+	 * 
+	 * @param packet
+	 *            the packet.
+	 */
+	public void runAcknowledged(final MNPPacket packet) {
+		new Thread() {
+			@Override
+			public void run() {
+				firePacketAcknowledged(packet);
+			}
+		}.start();
 	}
 }

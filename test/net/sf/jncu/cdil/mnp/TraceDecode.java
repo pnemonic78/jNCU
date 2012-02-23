@@ -211,6 +211,10 @@ public class TraceDecode {
 		}
 
 		@Override
+		public void packetAcknowledged(MNPPacket packet) {
+		}
+
+		@Override
 		public void packetEOF() {
 			System.out.println("packet EOF");
 			runReceived = false;

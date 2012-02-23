@@ -178,10 +178,9 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	public void startListening() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		layer.checkInitialized();
 		if (getCDState() != CDState.DISCONNECTED) {
-			throw new BadPipeStateException();
+			throw new BadPipeStateException("pipe connected");
 		}
 		this.docking = createDockingProtocol();
-		getPacketLayer().addPacketListener(docking);
 		start();
 		layer.setState(CDState.LISTENING);
 	}
@@ -505,6 +504,10 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 
 	@Override
 	public void packetSent(P packet) {
+	}
+
+	@Override
+	public void packetAcknowledged(P packet) {
 	}
 
 	@Override

@@ -36,6 +36,7 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 	protected final BlockingQueue<MNPPacket> queueSend = new LinkedBlockingQueue<MNPPacket>();
 	protected boolean running = false;
 	private int sequenceAcknowledged = -1;
+	private MNPPacket packetAcknowledge = null;
 
 	/**
 	 * Creates a new packet sender.
@@ -97,13 +98,20 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 			}
 
 			if (next != null) {
+				packetAcknowledge = null;
 				// LA and LD packets don't need acknowledgement.
-				if (next.getType() == MNPPacket.LR) {
+				switch (next.getType()) {
+				case MNPPacket.LR:
 					sequenceToAcknowledge = 0;
-				} else if (next.getType() == MNPPacket.LT) {
+					packetAcknowledge = next;
+					break;
+				case MNPPacket.LT:
 					sequenceToAcknowledge = ((MNPLinkTransferPacket) next).getSequence();
-				} else {
+					packetAcknowledge = next;
+					break;
+				default:
 					sequenceToAcknowledge = -1;
+					break;
 				}
 				retry = 5;
 				resend = true;
@@ -149,13 +157,22 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 		byte packetType = packet.getType();
 
 		if (packetType == MNPPacket.LA) {
-			MNPLinkAcknowledgementPacket packetLA = (MNPLinkAcknowledgementPacket) packet;
-			sequenceAcknowledged = Math.max(sequenceAcknowledged, packetLA.getSequence());
+			MNPLinkAcknowledgementPacket ack = (MNPLinkAcknowledgementPacket) packet;
+			sequenceAcknowledged = Math.max(sequenceAcknowledged, ack.getSequence());
+			if (packetAcknowledge != null) {
+				packetLayer.runAcknowledged(packetAcknowledge);
+				packetAcknowledge = null;
+			}
 		}
 	}
 
 	@Override
 	public void packetSent(MNPPacket packet) {
+		// Nothing to do.
+	}
+
+	@Override
+	public void packetAcknowledged(MNPPacket packet) {
 		// Nothing to do.
 	}
 

@@ -154,72 +154,26 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 		super.disconnectImpl();
 	}
 
-	/**
-	 * Disconnect request was sent, so now we can actually disconnect.
-	 */
-	protected void disconnectSent() {
-		try {
-			docking.setState(DockingState.DISCONNECTED);
-			setState(MNPState.MNP_DISCONNECTED);
-		} catch (PipeDisconnectedException pde) {
-			// ignore - we are already disconnected
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * net.sf.jncu.cdil.mnp.MNPPacketListener#packetReceived(net.sf.jncu.cdil
-	 * .mnp.MNPPacket)
-	 */
 	@Override
 	public void packetReceived(MNPPacket packet) {
 		super.packetReceived(packet);
 
 		byte packetType = packet.getType();
-		MNPState oldState = stateMNP;
-		MNPState newState = oldState;
 
 		try {
-			if (packetType == MNPPacket.LR) {
-				newState = MNPState.MNP_HANDSHAKE_LR_RECEIVED;
-			} else if (packetType == MNPPacket.LD) {
-				newState = MNPState.MNP_DISCONNECTING;
-			}
-			setState(oldState, newState, packet);
-		} catch (BadPipeStateException bpse) {
-			bpse.printStackTrace();
-		} catch (CDILNotInitializedException cnie) {
-			cnie.printStackTrace();
-		} catch (PipeDisconnectedException pde) {
-			disconnectQuiet();
-		} catch (PlatformException pe) {
-			pe.printStackTrace();
-		} catch (TimeoutException te) {
-			// Probably connection was disconnected by Newton.
-			disconnectQuiet();
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * net.sf.jncu.cdil.mnp.MNPPacketListener#packetSent(net.sf.jncu.cdil.mnp
-	 * .MNPPacket)
-	 */
-	@Override
-	public void packetSent(MNPPacket packet) {
-		super.packetSent(packet);
-
-		byte packetType = packet.getType();
-
-		try {
-			if (packetType == MNPPacket.LD) {
-				disconnectSent();
-			} else if (packetType == MNPPacket.LA) {
-				setState(stateMNP, stateMNP, packet);
+			switch (packetType) {
+			case MNPPacket.LA:
+				packetReceivedLA((MNPLinkAcknowledgementPacket) packet);
+				break;
+			case MNPPacket.LD:
+				packetReceivedLD((MNPLinkDisconnectPacket) packet);
+				break;
+			case MNPPacket.LR:
+				packetReceivedLR((MNPLinkRequestPacket) packet);
+				break;
+			case MNPPacket.LT:
+				packetReceivedLT((MNPLinkTransferPacket) packet);
+				break;
 			}
 		} catch (BadPipeStateException bpse) {
 			bpse.printStackTrace();
@@ -231,6 +185,50 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 			pe.printStackTrace();
 		} catch (TimeoutException te) {
 			te.printStackTrace();
+		}
+	}
+
+	@Override
+	public void packetSent(MNPPacket packet) {
+		super.packetSent(packet);
+
+		try {
+			switch (packet.getType()) {
+			case MNPPacket.LD:
+				docking.setState(DockingState.DISCONNECTED);
+				setState(MNPState.MNP_DISCONNECTED);
+				break;
+			case MNPPacket.LR:
+				setState(MNPState.MNP_HANDSHAKE_LR_SENT);
+				break;
+			}
+		} catch (BadPipeStateException bpse) {
+			bpse.printStackTrace();
+		} catch (PipeDisconnectedException pde) {
+			pde.printStackTrace();
+		}
+	}
+
+	@Override
+	public void packetAcknowledged(MNPPacket packet) {
+		super.packetAcknowledged(packet);
+
+		byte packetType = packet.getType();
+		MNPState state = getMNPState();
+
+		try {
+			switch (state) {
+			case MNP_HANDSHAKE_LR_SENDING:
+				if (packetType == MNPPacket.LR) {
+					docking.setState(DockingState.HANDSHAKE_RTDK_LISTEN);
+					setState(MNPState.MNP_HANDSHAKE_DOCK);
+				}
+				break;
+			}
+		} catch (BadPipeStateException bpse) {
+			bpse.printStackTrace();
+		} catch (PipeDisconnectedException pde) {
+			pde.printStackTrace();
 		}
 	}
 
@@ -298,79 +296,25 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	}
 
 	/**
-	 * Flow to the next state.
+	 * Check that the state transition is valid.
 	 * 
 	 * @param oldState
 	 *            the old state.
-	 * @param state
+	 * @param newState
 	 *            the new state.
-	 * @param packet
-	 *            the packet.
-	 * @param cmd
-	 *            the command.
-	 * @throws PipeDisconnectedException
-	 *             if pipe is disconnected.
-	 * @throws TimeoutException
-	 *             if a timeout occurs.
-	 * @throws PlatformException
-	 * @throws CDILNotInitializedException
 	 * @throws BadPipeStateException
+	 *             if the transition is invalid.
+	 * @throws PipeDisconnectedException
+	 *             if the pipe is disconnected.
 	 */
-	protected void setState(MNPState oldState, MNPState state, MNPPacket packet) throws PipeDisconnectedException, TimeoutException, BadPipeStateException,
-			CDILNotInitializedException, PlatformException {
-		byte packetType = (packet == null) ? 0 : packet.getType();
-
+	protected void validateState(MNPState oldState, MNPState newState) throws BadPipeStateException, PipeDisconnectedException {
 		// Only move the previous state to the next state, or to its own state.
-		int compare = state.compareTo(oldState);
-		if ((compare != 0) && (compare != 1) && (state != MNPState.MNP_DISCONNECTING)) {
-			throw new BadPipeStateException("bad state from " + oldState + " to " + state);
+		if (oldState == MNPState.MNP_DISCONNECTED) {
+			throw new PipeDisconnectedException();
 		}
-
-		setState(state);
-
-		switch (state) {
-		case MNP_HANDSHAKE_LR_LISTEN:
-			break;
-		case MNP_HANDSHAKE_LR_RECEIVED:
-			// Can start connecting again as long we are not busy handshaking.
-			if ((packetType == MNPPacket.LR) && (state.compareTo(MNPState.MNP_HANDSHAKE_LR_SENT) < 0)) {
-				docking.setState(DockingState.HANDSHAKE_LR_RECEIVED, null);
-
-				if (packet != null) {
-					MNPLinkRequestPacket lr = (MNPLinkRequestPacket) packet;
-					MNPPacketFactory.getInstance().resetSequence();
-					MNPLinkRequestPacket reply = (MNPLinkRequestPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LR);
-					reply.setDataPhaseOpt(lr.getDataPhaseOpt());
-					reply.setFramingMode(lr.getFramingMode());
-					reply.setTransmitted(lr.getTransmitted());
-					docking.setState(DockingState.HANDSHAKE_LR_SENDING, null);
-					setState(state, MNPState.MNP_HANDSHAKE_LR_SENDING, reply);
-					sendAndAcknowledge(reply);
-				}
-			}
-			break;
-		case MNP_HANDSHAKE_LR_SENDING:
-			if (packetType == MNPPacket.LA) {
-				docking.setState(DockingState.HANDSHAKE_LR_SENT, null);
-				setState(state, MNPState.MNP_HANDSHAKE_LR_SENT, packet);
-			}
-			break;
-		case MNP_HANDSHAKE_LR_SENT:
-			docking.setState(DockingState.HANDSHAKE_RTDK_LISTEN, null);
-			setState(state, MNPState.MNP_HANDSHAKE_DOCK, packet);
-			break;
-		case MNP_HANDSHAKE_DOCK:
-
-		case MNP_ACCEPTED:
-		case MNP_IDLE:
-			break;
-		case MNP_DISCONNECTING:
-			disconnectQuiet();
-			break;
-		case MNP_DISCONNECTED:
-			break;
-		default:
-			throw new BadPipeStateException("bad state from " + oldState + " to " + state);
+		int compare = newState.compareTo(oldState);
+		if ((compare != 0) && (compare != 1) && (newState != MNPState.MNP_DISCONNECTING)) {
+			throw new BadPipeStateException("bad state from " + oldState + " to " + newState);
 		}
 	}
 
@@ -382,10 +326,8 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	 * @throws PipeDisconnectedException
 	 *             if the pipe is disconnected.
 	 */
-	private void setState(MNPState state) throws PipeDisconnectedException {
-		if (this.stateMNP == MNPState.MNP_DISCONNECTED) {
-			throw new PipeDisconnectedException();
-		}
+	protected void setState(MNPState state) throws PipeDisconnectedException {
+		validateState(this.stateMNP, state);
 		this.stateMNP = state;
 	}
 
@@ -441,5 +383,62 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	 */
 	protected MNPSerialPacketLayer getSerialPacketLayer() {
 		return (MNPSerialPacketLayer) getPacketLayer();
+	}
+
+	/**
+	 * Received a LA packet.
+	 */
+	protected void packetReceivedLA(MNPLinkAcknowledgementPacket packet) {
+	}
+
+	/**
+	 * Received a LD packet.
+	 */
+	protected void packetReceivedLD(MNPLinkDisconnectPacket packet) {
+		try {
+			setState(MNPState.MNP_DISCONNECTING);
+			disconnectQuiet();
+		} catch (PipeDisconnectedException pde) {
+			// Already disconnected.
+		}
+	}
+
+	/**
+	 * Received a LR packet.
+	 * 
+	 * @throws PipeDisconnectedException
+	 * @throws TimeoutException
+	 * @throws PlatformException
+	 * @throws CDILNotInitializedException
+	 * @throws BadPipeStateException
+	 */
+	protected void packetReceivedLR(MNPLinkRequestPacket packet) throws PipeDisconnectedException, BadPipeStateException, CDILNotInitializedException, PlatformException,
+			TimeoutException {
+		final MNPState oldState = getMNPState();
+		MNPState state = MNPState.MNP_HANDSHAKE_LR_RECEIVED;
+
+		validateState(oldState, state);
+		setState(state);
+
+		// Can start connecting again as long we are not busy handshaking.
+		if (state.compareTo(MNPState.MNP_HANDSHAKE_LR_SENT) < 0) {
+			docking.setState(DockingState.HANDSHAKE_LR);
+
+			MNPLinkRequestPacket lr = (MNPLinkRequestPacket) packet;
+			MNPPacketFactory.getInstance().resetSequence();
+			MNPLinkRequestPacket reply = (MNPLinkRequestPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LR);
+			reply.setDataPhaseOpt(lr.getDataPhaseOpt());
+			reply.setFramingMode(lr.getFramingMode());
+			reply.setTransmitted(lr.getTransmitted());
+
+			setState(MNPState.MNP_HANDSHAKE_LR_SENDING);
+			sendAndAcknowledge(reply);
+		}
+	}
+
+	/**
+	 * Received a LT packet.
+	 */
+	protected void packetReceivedLT(MNPLinkTransferPacket packet) {
 	}
 }
