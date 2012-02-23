@@ -345,11 +345,6 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 		return new MNPSerialPacketLayer(this, port);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.jncu.cdil.CDPipe#createCommandLayer()
-	 */
 	@Override
 	protected CDCommandLayer<MNPPacket> createCommandLayer(CDPacketLayer<MNPPacket> packetLayer) {
 		return new MNPSerialCommandLayer((MNPSerialPacketLayer) packetLayer);
@@ -366,11 +361,6 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.jncu.cdil.CDPipe#canSend()
-	 */
 	@Override
 	public boolean allowSend() {
 		return super.allowSend() && (getMNPState() != MNPState.MNP_DISCONNECTED);
@@ -424,12 +414,11 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 		if (state.compareTo(MNPState.MNP_HANDSHAKE_LR_SENT) < 0) {
 			docking.setState(DockingState.HANDSHAKE_LR);
 
-			MNPLinkRequestPacket lr = (MNPLinkRequestPacket) packet;
 			MNPPacketFactory.getInstance().resetSequence();
 			MNPLinkRequestPacket reply = (MNPLinkRequestPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LR);
-			reply.setDataPhaseOpt(lr.getDataPhaseOpt());
-			reply.setFramingMode(lr.getFramingMode());
-			reply.setTransmitted(lr.getTransmitted());
+			reply.setDataPhaseOpt(packet.getDataPhaseOpt());
+			reply.setFramingMode(packet.getFramingMode());
+			reply.setTransmitted(packet.getTransmitted());
 
 			setState(MNPState.MNP_HANDSHAKE_LR_SENDING);
 			sendAndAcknowledge(reply);

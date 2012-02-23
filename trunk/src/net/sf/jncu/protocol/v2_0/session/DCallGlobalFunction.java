@@ -94,20 +94,8 @@ public class DCallGlobalFunction extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		NSOFEncoder encoder = new NSOFEncoder(false);
-
-		// data.write(getFunctionName().length());
-		// data.write(getFunctionName().getBytes("MacRoman"));
+		NSOFEncoder encoder = new NSOFEncoder();
 		encoder.encode(new NSOFSymbol(getFunctionName()), data);
-		// data.write(3);
-		// data.write(0);
-		Object[] args = getArguments();
-		// if ((args == null) || (args.length == 0)) {
-		// encoder.encode(new NSOFNil(), data);
-		// } else {
-		// args = new Object[0];
-		encoder.encode(NSOFEncoder.toNS(args), data);
-		// }
-		// encoder.encode(new NSOFPlainArray(), data);
+		encoder.encode(NSOFEncoder.toNS(getArguments()), data);
 	}
 }
