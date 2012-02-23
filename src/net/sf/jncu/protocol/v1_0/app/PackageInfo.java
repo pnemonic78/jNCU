@@ -1,13 +1,13 @@
 package net.sf.jncu.protocol.v1_0.app;
 
-import net.sf.jncu.newton.stream.NSOFFrame;
-import net.sf.jncu.newton.stream.NSOFImmediate;
-import net.sf.jncu.newton.stream.NSOFInteger;
-import net.sf.jncu.newton.stream.NSOFNil;
-import net.sf.jncu.newton.stream.NSOFObject;
-import net.sf.jncu.newton.stream.NSOFString;
-import net.sf.jncu.newton.stream.NSOFSymbol;
-import net.sf.jncu.newton.stream.NSOFTrue;
+import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.fdil.NSOFImmediate;
+import net.sf.jncu.fdil.NSOFInteger;
+import net.sf.jncu.fdil.NSOFNil;
+import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.fdil.NSOFSymbol;
+import net.sf.jncu.fdil.NSOFTrue;
 
 /**
  * Package information.

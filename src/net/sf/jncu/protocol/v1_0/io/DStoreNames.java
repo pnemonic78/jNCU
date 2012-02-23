@@ -24,10 +24,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.jncu.newton.stream.NSOFArray;
-import net.sf.jncu.newton.stream.NSOFDecoder;
-import net.sf.jncu.newton.stream.NSOFFrame;
-import net.sf.jncu.newton.stream.NSOFObject;
+import net.sf.jncu.fdil.NSOFArray;
+import net.sf.jncu.fdil.NSOFDecoder;
+import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**

@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.sf.jncu.newton.stream.NSOFEncoder;
-import net.sf.jncu.newton.stream.NSOFPlainArray;
-import net.sf.jncu.newton.stream.NSOFString;
+import net.sf.jncu.fdil.NSOFEncoder;
+import net.sf.jncu.fdil.NSOFPlainArray;
+import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**

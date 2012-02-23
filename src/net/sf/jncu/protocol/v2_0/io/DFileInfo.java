@@ -23,12 +23,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import net.sf.jncu.newton.stream.NSOFEncoder;
-import net.sf.jncu.newton.stream.NSOFFrame;
-import net.sf.jncu.newton.stream.NSOFInteger;
-import net.sf.jncu.newton.stream.NSOFString;
-import net.sf.jncu.newton.stream.NSOFSymbol;
-import net.sf.jncu.newton.stream.contrib.NSOFBitmap;
+import net.sf.jncu.fdil.NSOFEncoder;
+import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.fdil.NSOFInteger;
+import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.fdil.NSOFSymbol;
+import net.sf.jncu.fdil.contrib.NSOFBitmap;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.util.NewtonDateUtils;
 import net.sf.swing.SwingUtils;
@@ -126,6 +126,7 @@ public class DFileInfo extends DockCommandToNewton {
 		if (description != null)
 			frame.put(SLOT_KIND, new NSOFString(description));
 
+		// NSOFBinaryObject icon = getIcon(file);
 		NSOFBitmap icon = getIcon(file);
 		if (icon != null)
 			frame.put(SLOT_ICON, icon);
@@ -138,6 +139,9 @@ public class DFileInfo extends DockCommandToNewton {
 		frame.put(SLOT_SIZE, new NSOFInteger(size));
 		return frame;
 	}
+
+//	private static NSOFBitmap bmp = null;
+//	private static final byte[] row = { (byte) 0xFF, 0x55, (byte) 0xAA, 0x00 };
 
 	/**
 	 * Get the file icon.
@@ -152,10 +156,29 @@ public class DFileInfo extends DockCommandToNewton {
 		// if (icon == null) {
 		// return null;
 		// }
-		NSOFBitmap bmp = null;
+		NSOFBitmap bin = null;
 		// Convert "Java Icon" to "Newton bitmap" or "Apple PICT image".
 		// see "developer/QAs-2.x/html/newtbitm.htm"
+		// NSOFBitmap bmp = new NSOFBitmap();
+		// if (bmp == null) {
+		// byte[] pixels = new byte[120];
+		// for (int r = 0, pixelsOffset = 0; r < 30; r++, pixelsOffset +=
+		// row.length)
+		// System.arraycopy(row, 0, pixels, pixelsOffset, row.length);
+		//
+		// NSOFSmallRect bounds = new NSOFSmallRect(0, 0, 30, 30);
+		//
+		// NSOFRawBitmap bits = new NSOFRawBitmap();
+		// bits.setBounds(bounds);
+		// bits.setPixels(pixels);
+		//
 		// bmp = new NSOFBitmap();
-		return bmp;
+		// bmp.setBits(bits);
+		// bmp.setBounds(bounds);
+		// }
+		// bin = new NSOFBinaryObject(bmp);
+		// bin.setNSClass(bmp.getNSClass());
+		// bin = bmp;
+		return bin;
 	}
 }

@@ -19,7 +19,7 @@
  */
 package net.sf.jncu.protocol.v1_0.data;
 
-import net.sf.jncu.newton.stream.NSOFArray;
+import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**

@@ -22,8 +22,8 @@ package net.sf.jncu.protocol.v2_0.io;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jncu.newton.stream.NSOFDecoder;
-import net.sf.jncu.newton.stream.NSOFString;
+import net.sf.jncu.fdil.NSOFDecoder;
+import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**

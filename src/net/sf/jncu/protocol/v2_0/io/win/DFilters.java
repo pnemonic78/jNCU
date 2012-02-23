@@ -28,10 +28,10 @@ import java.util.List;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import net.sf.jncu.newton.stream.NSOFArray;
-import net.sf.jncu.newton.stream.NSOFEncoder;
-import net.sf.jncu.newton.stream.NSOFPlainArray;
-import net.sf.jncu.newton.stream.NSOFString;
+import net.sf.jncu.fdil.NSOFArray;
+import net.sf.jncu.fdil.NSOFEncoder;
+import net.sf.jncu.fdil.NSOFPlainArray;
+import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**

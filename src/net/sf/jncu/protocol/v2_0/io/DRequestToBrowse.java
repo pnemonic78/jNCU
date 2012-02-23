@@ -24,10 +24,10 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.TreeSet;
 
-import net.sf.jncu.newton.stream.NSOFDecoder;
-import net.sf.jncu.newton.stream.NSOFObject;
-import net.sf.jncu.newton.stream.NSOFString;
-import net.sf.jncu.newton.stream.NSOFSymbol;
+import net.sf.jncu.fdil.NSOFDecoder;
+import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
