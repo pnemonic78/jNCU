@@ -134,6 +134,7 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 		} catch (IOException ioe) {
 			// Ignore.
 		}
+		interrupt();
 	}
 
 	/**
@@ -177,12 +178,24 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 		try {
 			do {
 				in = getInput();
-				cmd = DockCommandFactory.getInstance().deserializeCommand(in);
-				if (cmd != null) {
-					if (cmd instanceof IDockCommandFromNewton) {
-						fireCommandReceived((IDockCommandFromNewton) cmd);
-					} else if (cmd instanceof IDockCommandToNewton) {
-						fireCommandSent((IDockCommandToNewton) cmd);
+				while (running && (in.available() == 0)) {
+					synchronized (in) {
+						try {
+							in.wait();
+						} catch (InterruptedException ie) {
+							// Probably received some data, or closed.
+						}
+					}
+				}
+				cmd = null;
+				if (running) {
+					cmd = DockCommandFactory.getInstance().deserializeCommand(in);
+					if (cmd != null) {
+						if (cmd instanceof IDockCommandFromNewton) {
+							fireCommandReceived((IDockCommandFromNewton) cmd);
+						} else if (cmd instanceof IDockCommandToNewton) {
+							fireCommandSent((IDockCommandToNewton) cmd);
+						}
 					}
 				}
 				yield();
