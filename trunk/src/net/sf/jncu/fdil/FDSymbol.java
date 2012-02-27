@@ -23,8 +23,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Symbols
- * <p>
  * A symbol object is a variable-size object used as a token or as an
  * identifier. Most often it is used as a slot name or object class. It is
  * composed of ASCII characters with values between 32 and 127 inclusive,

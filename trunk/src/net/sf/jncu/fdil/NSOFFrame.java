@@ -31,7 +31,7 @@ import java.util.Set;
  * 
  * @author Moshe
  */
-public class NSOFFrame extends NSOFObject implements Precedent {
+public class NSOFFrame extends NSOFPointer {
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("frame");
 

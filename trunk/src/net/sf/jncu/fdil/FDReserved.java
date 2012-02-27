@@ -20,8 +20,9 @@
 package net.sf.jncu.fdil;
 
 /**
- * Reserved immediates are only used internally by the FDIL. You should never
- * see such an object.
+ * Reserved immediates
+ * <em>are only used internally by the FDIL. You should never
+ * see such an object.</em>
  * 
  * @author moshew
  */

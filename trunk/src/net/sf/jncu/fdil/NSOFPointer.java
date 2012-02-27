@@ -20,31 +20,19 @@
 package net.sf.jncu.fdil;
 
 /**
- * Newton Streamed Object Format - True.
+ * FDIL pointer object.
+ * <p>
+ * <em>Pointers are only used internally by the FDIL. You should never
+ * see such an object.</em>
  * 
  * @author moshew
  */
-public class NSOFTrue extends NSOFBoolean {
-
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("TRUE");
+public abstract class NSOFPointer extends NSOFObject implements Precedent {
 
 	/**
-	 * Creates a new True.
+	 * Creates a new magic pointer.
 	 */
-	public NSOFTrue() {
+	public NSOFPointer() {
 		super();
-		setNSClass(NS_CLASS);
-		setType(IMMEDIATE_TRUE);
-		setValue(0x1A);
-	}
-
-	@Override
-	public String toString() {
-		return Boolean.TRUE.toString();
-	}
-
-	@Override
-	public boolean isTrue() {
-		return true;
 	}
 }

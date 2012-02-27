@@ -29,7 +29,7 @@ import java.io.OutputStream;
  * 
  * @author Moshe
  */
-public class NSOFBinaryObject extends NSOFObject implements Precedent {
+public class NSOFBinaryObject extends NSOFPointer {
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("binary");
 

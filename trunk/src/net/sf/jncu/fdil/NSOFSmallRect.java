@@ -29,7 +29,7 @@ import java.io.OutputStream;
  * 
  * @author Moshe
  */
-public class NSOFSmallRect extends NSOFObject implements Precedent {
+public class NSOFSmallRect extends NSOFPointer {
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("smallRect");
 
