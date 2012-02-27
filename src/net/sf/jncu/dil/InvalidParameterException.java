@@ -20,7 +20,8 @@
 package net.sf.jncu.dil;
 
 /**
- * Invalid parameters - <tt>kDIL_InvalidParameter</tt>.
+ * Invalid parameter(s).<br>
+ * <tt>kDIL_InvalidParameter</tt>.
  * 
  * @author moshew
  */
@@ -34,4 +35,11 @@ public class InvalidParameterException extends IllegalArgumentException {
 		super(message);
 	}
 
+	public InvalidParameterException(Throwable cause) {
+		super(cause);
+	}
+
+	public InvalidParameterException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

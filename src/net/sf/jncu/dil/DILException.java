@@ -20,21 +20,22 @@
 package net.sf.jncu.dil;
 
 /**
- * CDIL Error - <tt>DIL_Error</tt>.
+ * DIL Error.<br>
+ * <tt>DIL_Error</tt>.
  * 
  * @author moshew
  */
 public class DILException extends Exception {
 
 	/**
-	 * Creates a new CDIL exception.
+	 * Creates a new DIL exception.
 	 */
 	public DILException() {
 		super();
 	}
 
 	/**
-	 * Creates a new CDIL exception.
+	 * Creates a new DIL exception.
 	 * 
 	 * @param message
 	 *            the detail message.
@@ -44,7 +45,7 @@ public class DILException extends Exception {
 	}
 
 	/**
-	 * Creates a new CDIL exception.
+	 * Creates a new DIL exception.
 	 * 
 	 * @param cause
 	 *            the cause.
@@ -54,7 +55,7 @@ public class DILException extends Exception {
 	}
 
 	/**
-	 * Creates a new CDIL exception.
+	 * Creates a new DIL exception.
 	 * 
 	 * @param message
 	 *            the detail message.

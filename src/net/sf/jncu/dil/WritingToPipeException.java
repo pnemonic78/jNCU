@@ -22,7 +22,8 @@ package net.sf.jncu.dil;
 import java.io.IOException;
 
 /**
- * Error writing to pipe - <tt>kDIL_ErrorWritingToPipe</tt>.
+ * Error writing to pipe.<br>
+ * <tt>kDIL_ErrorWritingToPipe</tt>.
  * 
  * @author moshew
  */
@@ -43,5 +44,4 @@ public class WritingToPipeException extends IOException {
 	public WritingToPipeException(String message, Throwable cause) {
 		super(message, cause);
 	}
-
 }

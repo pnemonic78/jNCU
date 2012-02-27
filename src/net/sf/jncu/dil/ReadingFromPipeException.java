@@ -22,7 +22,8 @@ package net.sf.jncu.dil;
 import java.io.IOException;
 
 /**
- * Error reading from pipe - <tt>kDIL_ErrorReadingFromPipe</tt>.
+ * Error reading from pipe.<br>
+ * <tt>kDIL_ErrorReadingFromPipe</tt>.
  * 
  * @author moshew
  */
@@ -43,5 +44,4 @@ public class ReadingFromPipeException extends IOException {
 	public ReadingFromPipeException(String message, Throwable cause) {
 		super(message, cause);
 	}
-
 }
