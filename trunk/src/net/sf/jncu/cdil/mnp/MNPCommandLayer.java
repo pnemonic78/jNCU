@@ -61,31 +61,16 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.jncu.cdil.CDCommandLayer#getInput()
-	 */
 	@Override
 	protected InputStream getInput() {
 		return in;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.jncu.cdil.CDCommandLayer#getOutput()
-	 */
 	@Override
 	protected OutputStream getOutput() throws IOException {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.jncu.cdil.CDCommandLayer#close()
-	 */
 	@Override
 	public void close() {
 		try {
@@ -97,12 +82,6 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 		super.close();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seenet.sf.jncu.cdil.CDCommandLayer#write(net.sf.jncu.protocol.
-	 * IDockCommandToNewton)
-	 */
 	@Override
 	public void write(IDockCommandToNewton cmd) throws IOException, TimeoutException {
 		final byte[] payload = cmd.getPayload();

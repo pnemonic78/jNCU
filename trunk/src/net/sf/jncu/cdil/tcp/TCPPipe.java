@@ -58,11 +58,6 @@ public class TCPPipe extends CDPipe<TCPPacket> {
 		return new TCPPacketLayer(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.jncu.cdil.CDPipe#createCommandLayer()
-	 */
 	@Override
 	protected CDCommandLayer<TCPPacket> createCommandLayer(CDPacketLayer<TCPPacket> packetLayer) {
 		return null;

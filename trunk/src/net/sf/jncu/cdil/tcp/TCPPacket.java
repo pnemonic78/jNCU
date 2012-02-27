@@ -35,10 +35,6 @@ public class TCPPacket extends CDPacket {
 		super();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.jncu.cdil.CDPacket#serialize()
-	 */
 	@Override
 	public byte[] serialize() {
 		// TODO Auto-generated method stub

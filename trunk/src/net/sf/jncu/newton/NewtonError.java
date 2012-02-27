@@ -68,10 +68,6 @@ public class NewtonError extends Exception {
 		this.errorCode = errorCode;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Throwable#getMessage()
-	 */
 	@Override
 	public String getMessage() {
 		return errors.get(errorCode);

@@ -39,10 +39,6 @@ public class MNPSerialCommandLayer extends MNPCommandLayer {
 		super(packetLayer);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.jncu.cdil.mnp.MNPCommandLayer#getOutput()
-	 */
 	@Override
 	protected OutputStream getOutput() throws IOException {
 		return ((MNPSerialPacketLayer) packetLayer).getPort().getOutputStream();

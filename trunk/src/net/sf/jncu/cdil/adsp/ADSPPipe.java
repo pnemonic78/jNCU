@@ -67,11 +67,6 @@ public class ADSPPipe extends CDPipe<ADSPPacket> {
 		return new ADSPPacketLayer(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.jncu.cdil.CDPipe#createCommandLayer()
-	 */
 	@Override
 	protected CDCommandLayer<ADSPPacket> createCommandLayer(CDPacketLayer<ADSPPacket> packetLayer) {
 		return null;

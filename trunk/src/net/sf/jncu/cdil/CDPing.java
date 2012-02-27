@@ -45,10 +45,6 @@ public class CDPing extends TimerTask {
 		this.pipe = pipe;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.util.TimerTask#run()
-	 */
 	@Override
 	public void run() {
 		DHello hello = new DHello();

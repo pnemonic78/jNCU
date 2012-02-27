@@ -54,10 +54,6 @@ public class DQuery extends DockCommandToNewton {
 		super(COMMAND);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.jncu.protocol.DockCommandToNewton#getCommandData()
-	 */
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
 	}
