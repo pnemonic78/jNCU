@@ -91,7 +91,7 @@ public class CDLayer {
 	 * This function must be called once for every time you called
 	 * <tt>CD_Startup</tt>. Usually, you just call it once at the end of your
 	 * program. However, you can call it as many times as you want, as long as
-	 * you don�t call it more times that you�ve called <tt>CD_Startup</tt>. If
+	 * you don't call it more times that you've called <tt>CD_Startup</tt>. If
 	 * this is the last call to <tt>CD_Shutdown</tt>, then all memory allocated
 	 * by the CDIL since <tt>CD_Startup</tt> was called is deallocated.
 	 * 
