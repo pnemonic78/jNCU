@@ -19,9 +19,9 @@
  */
 package net.sf.jncu.fdil;
 
-
 /**
- * Unsupported store version error - <tt>kFD_UnsupportedStoreVersion</tt>.
+ * Unsupported store version error.<br>
+ * <tt>kFD_UnsupportedStoreVersion (kFD_ErrorBase - 6)</tt>
  * 
  * @author Moshe
  */

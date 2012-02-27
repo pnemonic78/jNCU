@@ -22,7 +22,8 @@ package net.sf.jncu.fdil;
 import net.sf.jncu.dil.DILException;
 
 /**
- * FDIL error - <tt>kFD_ErrorBase</tt>.
+ * FDIL error.<br>
+ * <tt>kFD_ErrorBase (kDIL_ErrorBase - 400)</tt>
  * 
  * @author Moshe
  */

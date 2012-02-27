@@ -19,12 +19,15 @@
  */
 package net.sf.jncu.fdil;
 
+import java.util.zip.ZipException;
+
 /**
- * Unsupported compression error - <tt>kFD_UnsupportedCompression</tt>.
+ * Unsupported compression error.<br>
+ * <tt>kFD_UnsupportedCompression (kFD_ErrorBase - 3)</tt>
  * 
  * @author Moshe
  */
-public class UnsupportedCompressionException extends FDILException {
+public class UnsupportedCompressionException extends ZipException {
 
 	public UnsupportedCompressionException() {
 		super();
@@ -33,13 +36,4 @@ public class UnsupportedCompressionException extends FDILException {
 	public UnsupportedCompressionException(String message) {
 		super(message);
 	}
-
-	public UnsupportedCompressionException(Throwable cause) {
-		super(cause);
-	}
-
-	public UnsupportedCompressionException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
 }

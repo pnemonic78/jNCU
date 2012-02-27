@@ -19,27 +19,21 @@
  */
 package net.sf.jncu.fdil;
 
+import java.io.ObjectStreamException;
+
 /**
- * Error writing to store - <tt>kFD_ErrorWritingToStore</tt>.
+ * Error writing to store.<br>
+ * <tt>kFD_ErrorWritingToStore (kFD_ErrorBase - 8)</tt>
  * 
  * @author Moshe
  */
-public class ErrorWritingToStoreException extends FDILException {
+public class WritingToStoreException extends ObjectStreamException {
 
-	public ErrorWritingToStoreException() {
+	public WritingToStoreException() {
 		super();
 	}
 
-	public ErrorWritingToStoreException(String message) {
+	public WritingToStoreException(String message) {
 		super(message);
 	}
-
-	public ErrorWritingToStoreException(Throwable cause) {
-		super(cause);
-	}
-
-	public ErrorWritingToStoreException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
 }
