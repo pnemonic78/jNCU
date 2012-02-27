@@ -23,7 +23,7 @@ import java.io.IOException;
 
 /**
  * Error reading from pipe.<br>
- * <tt>kDIL_ErrorReadingFromPipe</tt>.
+ * <tt>kDIL_ErrorReadingFromPipe</tt>
  * 
  * @author moshew
  */

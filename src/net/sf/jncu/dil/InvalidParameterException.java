@@ -21,7 +21,7 @@ package net.sf.jncu.dil;
 
 /**
  * Invalid parameter(s).<br>
- * <tt>kDIL_InvalidParameter</tt>.
+ * <tt>kDIL_InvalidParameter</tt>
  * 
  * @author moshew
  */

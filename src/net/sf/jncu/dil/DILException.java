@@ -21,7 +21,8 @@ package net.sf.jncu.dil;
 
 /**
  * DIL Error.<br>
- * <tt>DIL_Error</tt>.
+ * <tt>DIL_Error</tt><br>
+ * <tt>kDIL_ErrorBase</tt>
  * 
  * @author moshew
  */

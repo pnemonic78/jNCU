@@ -19,29 +19,27 @@
  */
 package net.sf.jncu.dil;
 
-import java.io.IOException;
-
 /**
- * Error writing to pipe.<br>
- * <tt>kDIL_ErrorWritingToPipe</tt>
+ * Invalid handle.<br>
+ * <tt>kDIL_InvalidHandle</tt>
  * 
  * @author moshew
  */
-public class WritingToPipeException extends IOException {
+public class InvalidHandleException extends IllegalArgumentException {
 
-	public WritingToPipeException() {
+	public InvalidHandleException() {
 		super();
 	}
 
-	public WritingToPipeException(String message) {
+	public InvalidHandleException(String message) {
 		super(message);
 	}
 
-	public WritingToPipeException(Throwable cause) {
+	public InvalidHandleException(Throwable cause) {
 		super(cause);
 	}
 
-	public WritingToPipeException(String message, Throwable cause) {
+	public InvalidHandleException(String message, Throwable cause) {
 		super(message, cause);
 	}
 }
