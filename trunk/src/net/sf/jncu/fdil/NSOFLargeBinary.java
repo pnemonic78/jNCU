@@ -84,11 +84,6 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 		setNSClass(NS_CLASS);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
-	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Class (object)
@@ -134,11 +129,6 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
-	 */
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(LARGE_BINARY);

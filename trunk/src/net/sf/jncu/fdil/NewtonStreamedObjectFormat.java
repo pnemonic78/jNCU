@@ -32,7 +32,7 @@ import java.io.OutputStream;
  * versions may not be backward compatible.)<br>
  * The rest of the coded object is a recursive description of the DAG of
  * objects, beginning with the root object.<br>
- * The beginning of each object’s description is a tag byte that specifies the
+ * The beginning of each object's description is a tag byte that specifies the
  * encoding type used for the object.<br>
  * The tag byte is followed an ID, called a <em>precedent ID</em>. The IDs are
  * assigned consecutively, starting with 0 for the root object, and are used by
