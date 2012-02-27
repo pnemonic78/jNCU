@@ -20,31 +20,40 @@
 package net.sf.jncu.fdil;
 
 /**
- * Newton Streamed Object Format - True.
+ * Newton Streamed Object Format - Boolean.
  * 
  * @author moshew
  */
-public class NSOFTrue extends NSOFBoolean {
+public class NSOFBoolean extends NSOFImmediate {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("TRUE");
+	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("boolean");
 
 	/**
-	 * Creates a new True.
+	 * Creates a new boolean.
 	 */
-	public NSOFTrue() {
+	public NSOFBoolean() {
 		super();
 		setNSClass(NS_CLASS);
-		setType(IMMEDIATE_TRUE);
-		setValue(0x1A);
+	}
+
+	@Override
+	public void setValue(int value) {
+		super.setValue(value);
+		setType((value == 0) ? IMMEDIATE_NIL : IMMEDIATE_TRUE);
 	}
 
 	@Override
 	public String toString() {
-		return Boolean.TRUE.toString();
+		return (getValue() == 0) ? Boolean.FALSE.toString() : Boolean.TRUE.toString();
+	}
+
+	@Override
+	public boolean isNil() {
+		return getValue() == 0;
 	}
 
 	@Override
 	public boolean isTrue() {
-		return true;
+		return getValue() != 0;
 	}
 }

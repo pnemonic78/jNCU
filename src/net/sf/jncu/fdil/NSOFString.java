@@ -28,7 +28,7 @@ import java.io.OutputStream;
  * 
  * @author Moshe
  */
-public class NSOFString extends NSOFObject implements Comparable<NSOFString>, Precedent {
+public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("string");
 
