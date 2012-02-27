@@ -515,13 +515,6 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 		disconnectQuiet();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * net.sf.jncu.protocol.DockCommandListener#commandReceived(net.sf.jncu.
-	 * protocol.IDockCommandFromNewton)
-	 */
 	@Override
 	public void commandReceived(IDockCommandFromNewton command) {
 		// We keep connection alive either by pinging.
@@ -529,13 +522,6 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 			restartPing();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * net.sf.jncu.protocol.DockCommandListener#commandSent(net.sf.jncu.protocol
-	 * .IDockCommandToNewton)
-	 */
 	@Override
 	public void commandSent(IDockCommandToNewton command) {
 		// We keep connection alive either by pinging.
@@ -543,11 +529,6 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 			restartPing();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.jncu.protocol.DockCommandListener#commandEOF()
-	 */
 	@Override
 	public void commandEOF() {
 		disconnectQuiet();

@@ -39,12 +39,6 @@ public abstract class DockCommandFromNewtonBlank extends DockCommandFromNewton {
 		super(cmd);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * net.sf.jncu.protocol.DockCommandFromNewton#decodeData(java.io.InputStream
-	 * )
-	 */
 	@Override
 	protected final void decodeData(InputStream data) throws IOException {
 	}

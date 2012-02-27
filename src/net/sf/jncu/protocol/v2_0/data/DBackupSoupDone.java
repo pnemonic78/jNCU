@@ -47,12 +47,6 @@ public class DBackupSoupDone extends DockCommandFromNewton {
 		super(COMMAND);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * net.sf.jncu.protocol.DockCommandFromNewton#decodeData(java.io.InputStream
-	 * )
-	 */
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
 	}

@@ -143,11 +143,6 @@ public class DockCommandFactory extends net.sf.jncu.protocol.v1_0.DockCommandFac
 		super();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * net.sf.jncu.protocol.v1_0.DockCommandFactory#registerFrom(java.util.Map)
-	 */
 	@Override
 	protected void registerFrom(Map<String, Class<? extends IDockCommandFromNewton>> registry) {
 		super.registerFrom(registry);
@@ -192,11 +187,6 @@ public class DockCommandFactory extends net.sf.jncu.protocol.v1_0.DockCommandFac
 		registry.put(DUnknownCommand.COMMAND, DUnknownCommand.class);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * net.sf.jncu.protocol.v1_0.DockCommandFactory#registerTo(java.util.Map)
-	 */
 	@Override
 	protected void registerTo(Map<String, Class<? extends IDockCommandToNewton>> registry) {
 		super.registerTo(registry);

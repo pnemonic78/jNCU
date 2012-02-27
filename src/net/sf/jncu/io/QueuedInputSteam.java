@@ -45,10 +45,6 @@ public class QueuedInputSteam extends InputStream {
 		this.q = queue;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.io.InputStream#read()
-	 */
 	@Override
 	public int read() throws IOException {
 		Byte b;

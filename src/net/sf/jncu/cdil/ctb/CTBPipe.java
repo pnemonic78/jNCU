@@ -59,11 +59,6 @@ public class CTBPipe extends CDPipe<CTBPacket> {
 		return new CTBPacketLayer(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.jncu.cdil.CDPipe#createCommandLayer()
-	 */
 	@Override
 	protected CDCommandLayer<CTBPacket> createCommandLayer(CDPacketLayer<CTBPacket> packetLayer) {
 		return null;

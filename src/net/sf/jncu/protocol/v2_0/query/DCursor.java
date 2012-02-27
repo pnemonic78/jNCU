@@ -43,10 +43,6 @@ public abstract class DCursor extends DockCommandToNewton {
 		super(cmd);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.jncu.protocol.DockCommandToNewton#getCommandData()
-	 */
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
 		htonl(getCursorId(), data);

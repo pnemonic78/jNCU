@@ -63,12 +63,6 @@ public class DBackupIDs extends DockCommandFromNewton {
 		super(COMMAND);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * net.sf.jncu.protocol.DockCommandFromNewton#decodeData(java.io.InputStream
-	 * )
-	 */
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
 		Set<Short> ids = new TreeSet<Short>();

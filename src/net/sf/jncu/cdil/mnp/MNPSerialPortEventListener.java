@@ -69,10 +69,6 @@ public class MNPSerialPortEventListener implements SerialPortEventListener {
 		this.q = null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see gnu.io.SerialPortEventListener#serialEvent(gnu.io.SerialPortEvent)
-	 */
 	@Override
 	public void serialEvent(SerialPortEvent event) {
 		switch (event.getEventType()) {
