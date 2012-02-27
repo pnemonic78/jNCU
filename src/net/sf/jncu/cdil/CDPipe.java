@@ -237,7 +237,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	 * <p>
 	 * Note that a pipe need not be connected in order for bytes to be read from
 	 * it. It is possible for a pipe to have buffered data received from a
-	 * Newton OS device before the connection was broken. As long as the pipe�s
+	 * Newton OS device before the connection was broken. As long as the pipe's
 	 * state is <tt>kCD_Connected</tt> or <tt>kCD_DisconnectPending</tt>,
 	 * clients of the CDIL are still able to retrieve these bytes.
 	 * 
