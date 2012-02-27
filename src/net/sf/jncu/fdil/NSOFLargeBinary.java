@@ -23,10 +23,17 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.Blob;
+import java.sql.SQLException;
+
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
+
+import net.sf.jncu.dil.InvalidParameterException;
 
 /**
  * Newton Streamed Object Format - Large Binary Object.<br>
- * Also known as Virtual Binary Object (VBO).
+ * Also known as Virtual Binary Object (VBO), or BLOB.
  * <p>
  * A compandor/compander (compressor-expander) is an object that transparently
  * compresses data as it is stored and expands data as it is read.
@@ -50,10 +57,10 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	 */
 	public static final String COMPANDER_PIXELMAP = "TPixelMapCompander";
 
-	/** Data is compressed. */
-	protected static final byte FLAG_COMPRESSED = 1;
 	/** Data is not compressed. */
-	protected static final byte FLAG_UNCOMPRESSED = 0;
+	protected static final byte UNCOMPRESSED = 0;
+	/** Data is compressed. */
+	protected static final byte COMPRESSED = 1;
 
 	private boolean compressed = false;
 	/**
@@ -68,11 +75,11 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	private String companderName;
 	/**
 	 * Arguments for instantiating the specified compander. In the current
-	 * implementation, always pass nil as the value of this parameter.
+	 * implementation, always pass {@code nil} as the value of this parameter.
 	 * <p>
 	 * "Because both companders provided by the current system initialize
-	 * themselves automatically, you must always pass nil as the value of the
-	 * companderArgs parameter."
+	 * themselves automatically, you must always pass {@code nil} as the value
+	 * of the {@code companderArgs} parameter."
 	 */
 	private byte[] companderArgs;
 
@@ -94,7 +101,7 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 		if (compressed == -1) {
 			throw new EOFException();
 		}
-		setCompressed(compressed != FLAG_UNCOMPRESSED);
+		setCompressed(compressed != UNCOMPRESSED);
 		// Number of bytes of data (long)
 		int numBytesData = ntohl(in);
 		// Number of characters in compander name (long)
@@ -121,11 +128,19 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 		}
 		// Data (bytes)
 		if (numBytesData == 0) {
-			setValue(null);
+			setValue((Blob) null);
 		} else {
 			byte[] data = new byte[numBytesData];
 			readAll(in, data);
-			setValue(data);
+			Blob blob = null;
+			try {
+				blob = new SerialBlob(data);
+				setValue(blob);
+			} catch (SerialException se) {
+				throw new IOException(se);
+			} catch (SQLException se) {
+				throw new IOException(se);
+			}
 		}
 	}
 
@@ -135,13 +150,21 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 		String companderName = getCompanderName();
 		byte[] companderNameBytes = (companderName == null) ? null : companderName.getBytes();
 		byte[] args = getCompanderArguments();
-		byte[] data = getValue();
+		Blob data = getBlob();
+		int numBytesData = 0;
+		if (data != null) {
+			try {
+				numBytesData = (int) data.length();
+			} catch (SQLException se) {
+				throw new IOException(se);
+			}
+		}
 		// Class (object)
 		encoder.encode(getNSClass(), out);
 		// compressed? (non-zero means compressed) (byte)
-		out.write(isCompressed() ? FLAG_UNCOMPRESSED : FLAG_UNCOMPRESSED);
+		out.write(isCompressed() ? COMPRESSED : UNCOMPRESSED);
 		// Number of bytes of data (long)
-		htonl((data == null) ? 0 : data.length, out);
+		htonl(numBytesData, out);
 		// Number of characters in compander name (long)
 		htonl((companderNameBytes == null) ? 0 : companderNameBytes.length, out);
 		// Number of bytes of compander parameters (long)
@@ -158,7 +181,14 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 		}
 		// Data (bytes)
 		if (data != null) {
-			out.write(data);
+			InputStream in;
+			try {
+				in = data.getBinaryStream();
+			} catch (SQLException se) {
+				throw new IOException(se);
+			}
+			for (int i = 0; i < numBytesData; i++)
+				out.write(in.read());
 		}
 	}
 
@@ -219,4 +249,46 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 		this.companderArgs = companderArgs;
 	}
 
+	public Blob getBlob() {
+		Blob blob = null;
+		try {
+			blob = new SerialBlob(getValue());
+		} catch (SerialException se) {
+			throw new InvalidParameterException(se);
+		} catch (SQLException se) {
+			throw new InvalidParameterException(se);
+		}
+		return blob;
+	}
+
+	/**
+	 * Set the value.
+	 * 
+	 * @param value
+	 *            the value.
+	 */
+	public void setBlob(Blob value) {
+		byte[] buf;
+		try {
+			buf = value.getBytes(0, (int) value.length());
+		} catch (SQLException se) {
+			throw new InvalidParameterException(se);
+		}
+		setValue(buf);
+	}
+
+	/**
+	 * Set the value.
+	 * 
+	 * @param value
+	 *            the value.
+	 */
+	public void setValue(Blob value) {
+		setBlob(value);
+	}
+
+	@Override
+	public void setObject(NSOFObject value) {
+		super.setObject(null);
+	}
 }

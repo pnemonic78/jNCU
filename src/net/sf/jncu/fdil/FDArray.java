@@ -29,8 +29,6 @@ import java.util.List;
  * end of an array.
  * <p>
  * The array's slots are initialised to <tt>kFD_NIL</tt>.
- * <p>
- * Array objects are limited to a size of 16 MB.
  * 
  * @author moshew
  */
