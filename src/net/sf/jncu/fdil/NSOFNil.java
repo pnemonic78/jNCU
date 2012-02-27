@@ -31,6 +31,9 @@ public class NSOFNil extends NSOFImmediate {
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("NIL");
 
+	/** The nil object. */
+	public static final NSOFNil FD_NIL = new NSOFNil();
+
 	/**
 	 * Constructs a new Nil.
 	 */
@@ -40,11 +43,6 @@ public class NSOFNil extends NSOFImmediate {
 		setType(IMMEDIATE_NIL);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
-	 */
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(NIL);

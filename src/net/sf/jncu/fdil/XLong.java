@@ -51,23 +51,11 @@ public class XLong extends NewtonStreamedObjectFormat {
 		this.value = value;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.mmw.newton.nsof.NewtonStreamedObjectFormat#decode(java.io.InputStream
-	 * )
-	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
 		setValue(decodeValue(in));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.mmw.newton.nsof.NewtonStreamedObjectFormat#encode(java.io.OutputStream
-	 * )
-	 */
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		encode(getValue(), out);

@@ -19,7 +19,6 @@
  */
 package net.sf.jncu.fdil;
 
-
 /**
  * Newton Streamed Object Format - Character.
  * 
@@ -70,10 +69,6 @@ public class NSOFCharacter extends NSOFImmediate {
 		setValue(value);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		int value = getValue();

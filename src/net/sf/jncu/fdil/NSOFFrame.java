@@ -45,11 +45,6 @@ public class NSOFFrame extends NSOFObject implements Precedent {
 		setNSClass(NS_CLASS);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
-	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
 		this.slots.clear();
@@ -75,11 +70,6 @@ public class NSOFFrame extends NSOFObject implements Precedent {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
-	 */
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(FRAME);

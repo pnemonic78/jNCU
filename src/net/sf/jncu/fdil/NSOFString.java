@@ -57,11 +57,6 @@ public class NSOFString extends NSOFObject implements Comparable<NSOFString>, Pr
 		setValue(value);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
-	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Number of bytes in string (xlong)
@@ -78,11 +73,6 @@ public class NSOFString extends NSOFObject implements Comparable<NSOFString>, Pr
 		setValue(new String(buf, 0, numBytes, CHARSET));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
-	 */
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(STRING);
@@ -124,10 +114,6 @@ public class NSOFString extends NSOFObject implements Comparable<NSOFString>, Pr
 		this.toString = null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		return (value == null) ? 0 : value.hashCode();
@@ -137,7 +123,7 @@ public class NSOFString extends NSOFObject implements Comparable<NSOFString>, Pr
 	 * <code>" [ { stringChar | escSeq } ]* [ truncEscape ] ] "</code>
 	 * <p>
 	 * stringChar Consists of a tab character or any ASCII character with code
-	 * 32–127 except the double quote (") or backslash (\).<br>
+	 * 32-127 except the double quote (") or backslash (\).<br>
 	 * escSeq Consists of either a special character specification sequence or a
 	 * Unicode specification sequence. The special character specification
 	 * sequence is: backslash (\) followed by a quote ("), backslash (\), the

@@ -57,11 +57,6 @@ public class NSOFSymbol extends NSOFString {
 		setValue(name);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
-	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Number of characters in name (xlong)
@@ -72,11 +67,6 @@ public class NSOFSymbol extends NSOFString {
 		setValue(new String(name, ENCODING));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
-	 */
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(SYMBOL);
@@ -94,10 +84,6 @@ public class NSOFSymbol extends NSOFString {
 		this.valueLower = (value == null) ? null : value.toLowerCase(Locale.ENGLISH);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		return (valueLower == null) ? 0 : valueLower.hashCode();

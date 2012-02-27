@@ -65,22 +65,12 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 		setId(id);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
-	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Precedent ID (xlong)
 		setId(XLong.decodeValue(in));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
-	 */
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(PRECEDENT);

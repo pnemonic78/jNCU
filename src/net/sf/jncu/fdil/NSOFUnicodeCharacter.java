@@ -52,11 +52,6 @@ public class NSOFUnicodeCharacter extends NSOFAsciiCharacter {
 		setValue(value);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
-	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
 		setValue('\u0000');
@@ -71,11 +66,6 @@ public class NSOFUnicodeCharacter extends NSOFAsciiCharacter {
 		setValue((char) c);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
-	 */
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(UNICODE_CHARACTER);
@@ -86,10 +76,6 @@ public class NSOFUnicodeCharacter extends NSOFAsciiCharacter {
 		out.write((val >> 0) & 0xFF);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		int value = getValue();

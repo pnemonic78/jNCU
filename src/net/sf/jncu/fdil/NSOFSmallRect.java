@@ -86,11 +86,6 @@ public class NSOFSmallRect extends NSOFObject implements Precedent {
 		setRight(right);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.mmw.newton.NewtonStreamedObjectFormat#decode(java.io.InputStream)
-	 */
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Top value (byte)
@@ -122,11 +117,6 @@ public class NSOFSmallRect extends NSOFObject implements Precedent {
 		setRight(right);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.mmw.newton.NewtonStreamedObjectFormat#encode(java.io.OutputStream)
-	 */
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(SMALL_RECT);
@@ -256,10 +246,6 @@ public class NSOFSmallRect extends NSOFObject implements Precedent {
 		setTop((int) top);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		return (top << 24) | (left << 16) | (bottom << 8) | (right << 0);
@@ -269,16 +255,11 @@ public class NSOFSmallRect extends NSOFObject implements Precedent {
 	public boolean equals(Object obj) {
 		if (obj instanceof NSOFSmallRect) {
 			NSOFSmallRect that = (NSOFSmallRect) obj;
-			return (this.getBottom() == that.getBottom()) && (this.getLeft() == that.getLeft()) && (this.getRight() == that.getRight())
-					&& (this.getTop() == that.getTop());
+			return (this.getBottom() == that.getBottom()) && (this.getLeft() == that.getLeft()) && (this.getRight() == that.getRight()) && (this.getTop() == that.getTop());
 		}
 		return super.equals(obj);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		return "{left: " + left + ", top: " + top + ", right: " + right + ", bottom: " + bottom + "}";
