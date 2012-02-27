@@ -17,10 +17,8 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.fdil.contrib;
+package net.sf.jncu.fdil;
 
-import net.sf.jncu.fdil.NSOFBinaryObject;
-import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.util.NumberUtils;
 
 /**

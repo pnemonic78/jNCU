@@ -37,6 +37,27 @@ public abstract class FDImmediate extends FDObject {
 	public static final CharSequence CLASS = "immediate";
 
 	/**
+	 * A special immediate.<br>
+	 * <tt>kImmedSpecial</tt>
+	 */
+	public static final int SPECIAL = 0x00;
+	/**
+	 * A character.<br>
+	 * <tt>kImmedCharacter</tt>
+	 */
+	public static final int CHARACTER = 0x01;
+	/**
+	 * A Boolean.<br>
+	 * <tt>kImmedBoolean</tt>
+	 */
+	public static final int BOOLEAN = 0x02;
+	/**
+	 * A reserved immediate.<br>
+	 * <tt>kImmedReserved</tt>
+	 */
+	public static final int RESERVED = 0x03;
+
+	/**
 	 * Creates a new immediate.
 	 */
 	public FDImmediate() {

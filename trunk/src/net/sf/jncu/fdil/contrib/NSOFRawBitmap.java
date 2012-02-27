@@ -23,9 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import net.sf.jncu.fdil.NSOFBinaryObject;
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFEncoder;
+import net.sf.jncu.fdil.NSOFLargeBinary;
 import net.sf.jncu.fdil.NSOFSmallRect;
 import net.sf.jncu.fdil.NSOFSymbol;
 
@@ -95,7 +95,7 @@ import net.sf.jncu.fdil.NSOFSymbol;
  * 
  * @author Moshe
  */
-public class NSOFRawBitmap extends NSOFBinaryObject {
+public class NSOFRawBitmap extends NSOFLargeBinary {
 
 	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("bits");
 

@@ -30,7 +30,6 @@ import net.sf.jncu.fdil.contrib.NSOFBitmap;
 import net.sf.jncu.fdil.contrib.NSOFInstructions;
 import net.sf.jncu.fdil.contrib.NSOFLiterals;
 import net.sf.jncu.fdil.contrib.NSOFRawBitmap;
-import net.sf.jncu.fdil.contrib.NSOFReal;
 
 /**
  * Newton Streamed Object Format decoder.

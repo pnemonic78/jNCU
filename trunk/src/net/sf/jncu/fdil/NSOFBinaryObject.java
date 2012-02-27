@@ -69,16 +69,16 @@ public class NSOFBinaryObject extends NSOFPointer {
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Number of bytes of data (xlong)
-		int length = XLong.decodeValue(in);
-		byte[] v = new byte[length];
+		int numBytesData = XLong.decodeValue(in);
+		byte[] data = new byte[numBytesData];
 
 		// Class (object)
 		NSOFSymbol symbol = (NSOFSymbol) decoder.decode(in);
 		setNSClass(symbol);
 
 		// Data
-		readAll(in, v);
-		setValue(v);
+		readAll(in, data);
+		setValue(data);
 	}
 
 	@Override
