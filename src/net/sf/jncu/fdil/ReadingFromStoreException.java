@@ -19,28 +19,21 @@
  */
 package net.sf.jncu.fdil;
 
+import java.io.ObjectStreamException;
 
 /**
- * Error reading from store - <tt>kFD_ErrorReadingFromStore</tt>.
+ * Error reading from store.<br>
+ * <tt>kFD_ErrorReadingFromStore (kFD_ErrorBase - 9)</tt>
  * 
  * @author Moshe
  */
-public class ErrorReadingFromStoreException extends FDILException {
+public class ReadingFromStoreException extends ObjectStreamException {
 
-	public ErrorReadingFromStoreException() {
+	public ReadingFromStoreException() {
 		super();
 	}
 
-	public ErrorReadingFromStoreException(String message) {
+	public ReadingFromStoreException(String message) {
 		super(message);
 	}
-
-	public ErrorReadingFromStoreException(Throwable cause) {
-		super(cause);
-	}
-
-	public ErrorReadingFromStoreException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
 }

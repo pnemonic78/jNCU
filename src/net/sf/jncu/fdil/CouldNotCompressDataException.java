@@ -19,13 +19,15 @@
  */
 package net.sf.jncu.fdil;
 
+import java.util.zip.ZipException;
 
 /**
- * Could not compress data error - <tt>kFD_CouldNotCompressData</tt>.
+ * Could not compress data error.<br>
+ * <tt>kFD_CouldNotCompressData (kFD_ErrorBase - 4)</tt>.
  * 
  * @author Moshe
  */
-public class CouldNotCompressDataException extends FDILException {
+public class CouldNotCompressDataException extends ZipException {
 
 	public CouldNotCompressDataException() {
 		super();
@@ -34,13 +36,4 @@ public class CouldNotCompressDataException extends FDILException {
 	public CouldNotCompressDataException(String message) {
 		super(message);
 	}
-
-	public CouldNotCompressDataException(Throwable cause) {
-		super(cause);
-	}
-
-	public CouldNotCompressDataException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
 }

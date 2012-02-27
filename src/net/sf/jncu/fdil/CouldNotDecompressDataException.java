@@ -19,12 +19,15 @@
  */
 package net.sf.jncu.fdil;
 
+import java.util.zip.ZipException;
+
 /**
- * Unknown stream version error - <tt>kFD_UnknownStreamVersion</tt>.
+ * Could not decompress data error.<br>
+ * <tt>kFD_CouldNotDecompressData (kFD_ErrorBase - 5)</tt>
  * 
  * @author Moshe
  */
-public class CouldNotDecompressDataException extends FDILException {
+public class CouldNotDecompressDataException extends ZipException {
 
 	public CouldNotDecompressDataException() {
 		super();
@@ -33,13 +36,4 @@ public class CouldNotDecompressDataException extends FDILException {
 	public CouldNotDecompressDataException(String message) {
 		super(message);
 	}
-
-	public CouldNotDecompressDataException(Throwable cause) {
-		super(cause);
-	}
-
-	public CouldNotDecompressDataException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
 }

@@ -20,11 +20,12 @@
 package net.sf.jncu.fdil;
 
 /**
- * Stream corrupted error - <tt>kFD_StreamCorrupted</tt>.
+ * Stream corrupted error.<br>
+ * <tt>kFD_StreamCorrupted (kFD_ErrorBase - 2)</tt>
  * 
  * @author Moshe
  */
-public class StreamCorruptedException extends FDILException {
+public class StreamCorruptedException extends java.io.StreamCorruptedException {
 
 	public StreamCorruptedException() {
 		super();
@@ -33,13 +34,4 @@ public class StreamCorruptedException extends FDILException {
 	public StreamCorruptedException(String message) {
 		super(message);
 	}
-
-	public StreamCorruptedException(Throwable cause) {
-		super(cause);
-	}
-
-	public StreamCorruptedException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
 }

@@ -20,7 +20,8 @@
 package net.sf.jncu.fdil;
 
 /**
- * Unknown stream version error - <tt>kFD_UnknownStreamVersion</tt>.
+ * Unknown stream version error.<br>
+ * <tt>kFD_UnknownStreamVersion (kFD_ErrorBase - 1)</tt>
  * 
  * @author Moshe
  */

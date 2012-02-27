@@ -19,27 +19,21 @@
  */
 package net.sf.jncu.fdil;
 
+import java.io.FileNotFoundException;
+
 /**
- * Error creating store - <tt>kFD_ErrorCreatingStore</tt>.
+ * Error creating store.<br>
+ * <tt>kFD_ErrorCreatingStore (kFD_ErrorBase - 7)</tt>.
  * 
  * @author Moshe
  */
-public class ErrorCreatingStoreException extends FDILException {
+public class CreatingStoreException extends FileNotFoundException {
 
-	public ErrorCreatingStoreException() {
+	public CreatingStoreException() {
 		super();
 	}
 
-	public ErrorCreatingStoreException(String message) {
+	public CreatingStoreException(String message) {
 		super(message);
 	}
-
-	public ErrorCreatingStoreException(Throwable cause) {
-		super(cause);
-	}
-
-	public ErrorCreatingStoreException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
 }
