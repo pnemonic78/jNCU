@@ -75,7 +75,7 @@ public class FDBinaryObject extends FDPointer {
 	 * <tt>DIL_Error FD_SetLength(FD_Handle obj, long newSize)</tt>
 	 * <p>
 	 * You can change the size of a binary object with the <tt>FD_SetLength</tt>
-	 * function. However, any pointers to a binary object’s contents are
+	 * function. However, any pointers to a binary object's contents are
 	 * invalidated by calling <tt>FD_SetLength</tt>, since the data might have
 	 * been moved.
 	 * 

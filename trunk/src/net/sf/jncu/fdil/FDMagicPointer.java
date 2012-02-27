@@ -32,6 +32,12 @@ package net.sf.jncu.fdil;
  */
 public class FDMagicPointer extends FDObject {
 
+	/**
+	 * Default magic pointer class.<br>
+	 * <tt>kFD_SymMagicPointer</tt>
+	 */
+	public static final CharSequence CLASS = "magicptr";
+
 	private final int value;
 
 	/**

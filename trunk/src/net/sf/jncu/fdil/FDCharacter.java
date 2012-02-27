@@ -27,6 +27,12 @@ package net.sf.jncu.fdil;
  */
 public class FDCharacter extends FDImmediate {
 
+	/**
+	 * Default character class.<br>
+	 * <tt>kFD_SymChar</tt>
+	 */
+	public static final CharSequence CLASS = "character";
+
 	protected static final char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 	private final char value;
@@ -62,19 +68,11 @@ public class FDCharacter extends FDImmediate {
 		return value;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		return value;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		char hex0 = HEX[value & 0x000F];

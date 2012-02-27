@@ -24,17 +24,23 @@ import java.util.List;
 
 /**
  * An array object is a variable-size object whose contents are divided into a
- * series of other objects. Each division is called a “slot”. Each slot consists
+ * series of other objects. Each division is called a "slot". Each slot consists
  * of an FDIL object. Objects can be inserted into an array or appended to the
  * end of an array.
  * <p>
- * The array’s slots are initialised to <tt>kFD_NIL</tt>.
+ * The array's slots are initialised to <tt>kFD_NIL</tt>.
  * <p>
  * Array objects are limited to a size of 16 MB.
  * 
  * @author moshew
  */
 public class FDArray extends FDPointer {
+
+	/**
+	 * Default array class.<br>
+	 * <tt>kFD_SymArray</tt>
+	 */
+	public static final CharSequence CLASS = "array";
 
 	private final List<FDObject> slots;
 
@@ -165,7 +171,7 @@ public class FDArray extends FDPointer {
 		if (lengthOld < lengthNew) {
 			// Append blank slots.
 			for (int i = lengthOld; i < lengthNew; i++) {
-				slots.add(FDNil.kFD_NIL);
+				slots.add(FDNil.NIL);
 			}
 		} else {
 			// Remove slots.

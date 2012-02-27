@@ -29,6 +29,12 @@ package net.sf.jncu.fdil;
 public class FDInteger extends FDObject {
 
 	/**
+	 * Default integer class.<br>
+	 * <tt>kFD_SymInteger</tt>
+	 */
+	public static final CharSequence CLASS = "integer";
+
+	/**
 	 * A constant holding the minimum value an <code>integer</code> can have,
 	 * -2<sup>29</sup>.
 	 */

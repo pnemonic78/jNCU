@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /**
- * A frame is an aggregate object where each element, called a “slot,” contains
+ * A frame is an aggregate object where each element, called a "slot," contains
  * any FDIL object, and is indexed by name. The slot name itself is a symbol.
  * Rather than using an integer index to retrieve a value that's been added to a
  * frame (as you would with an array), you specify the slot name to get the slot
@@ -37,7 +37,13 @@ import java.util.TreeMap;
  */
 public class FDFrame extends FDPointer {
 
-	private final Map<String, FDObject> slots = new TreeMap<String, FDObject>();
+	/**
+	 * Default frame class.<br>
+	 * <tt>kFD_SymFrame</tt>
+	 */
+	public static final CharSequence CLASS = "frame";
+
+	private final Map<CharSequence, FDObject> slots = new TreeMap<CharSequence, FDObject>();
 
 	/**
 	 * Creates an empty frame.
@@ -60,9 +66,9 @@ public class FDFrame extends FDPointer {
 	 * @return the replaced FDIL object or <tt>kFD_NIL</tt> if the slot does not
 	 *         exist.
 	 */
-	public FDObject set(String slotName, FDObject item) {
+	public FDObject set(CharSequence slotName, FDObject item) {
 		FDObject slot = slots.put(slotName, item);
-		return (slot == null) ? FDNil.kFD_NIL : slot;
+		return (slot == null) ? FDNil.NIL : slot;
 	}
 
 	/**
@@ -73,9 +79,9 @@ public class FDFrame extends FDPointer {
 	 *            the slot name.
 	 * @return an FDIL object or <tt>kFD_NIL</tt> if the slot does not exist.
 	 */
-	public FDObject get(String slotName) {
+	public FDObject get(CharSequence slotName) {
 		FDObject slot = slots.get(slotName);
-		return (slot == null) ? FDNil.kFD_NIL : slot;
+		return (slot == null) ? FDNil.NIL : slot;
 	}
 
 	/**
@@ -86,7 +92,7 @@ public class FDFrame extends FDPointer {
 	 *            the slot name.
 	 * @return true if slot found.
 	 */
-	public boolean hasSlot(String slotName) {
+	public boolean hasSlot(CharSequence slotName) {
 		return slots.containsKey(slotName);
 	}
 
@@ -99,9 +105,9 @@ public class FDFrame extends FDPointer {
 	 * @return the FDIL object in the slot, if the slot exists, <tt>kFD_NIL</tt>
 	 *         , otherwise.
 	 */
-	public FDObject remove(String slotName) {
+	public FDObject remove(CharSequence slotName) {
 		FDObject slot = slots.remove(slotName);
-		return (slot == null) ? FDNil.kFD_NIL : slot;
+		return (slot == null) ? FDNil.NIL : slot;
 	}
 
 	/**
@@ -120,7 +126,7 @@ public class FDFrame extends FDPointer {
 	 * 
 	 * @return the slot names.
 	 */
-	public Set<String> getSlotNames() {
+	public Set<CharSequence> getSlotNames() {
 		return slots.keySet();
 	}
 
