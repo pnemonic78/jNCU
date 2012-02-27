@@ -27,10 +27,22 @@ package net.sf.jncu.fdil;
  */
 public class FDBoolean extends FDImmediate {
 
-	/** The true object. */
-	public static final FDBoolean kFD_False = new FDBoolean(false);
-	/** The true object. */
-	public static final FDBoolean kFD_True = new FDBoolean(true);
+	/**
+	 * Default boolean class.<br>
+	 * <tt>kFD_SymBoolean</tt>
+	 */
+	public static final CharSequence CLASS = "boolean";
+
+	/**
+	 * The true object.<br>
+	 * <tt>kFD_True</tt>
+	 */
+	public static final FDBoolean TRUE = new FDBoolean(true);
+	/**
+	 * The false object.<br>
+	 * <tt>kFD_False</tt>
+	 */
+	public static final FDBoolean FALSE = new FDBoolean(false);
 
 	private final boolean value;
 

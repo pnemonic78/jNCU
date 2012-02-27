@@ -19,7 +19,6 @@
  */
 package net.sf.jncu.fdil;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -44,7 +43,7 @@ public class FDSymbol extends FDBinaryObject {
 	 * version of the symbol exists. Note that this comparison of strings is
 	 * case-insensitive.
 	 */
-	private static final Map<String, FDSymbol> pool = new TreeMap<String, FDSymbol>();
+	private static final Map<CharSequence, FDSymbol> pool = new TreeMap<CharSequence, FDSymbol>();
 
 	private final String name;
 
@@ -53,10 +52,10 @@ public class FDSymbol extends FDBinaryObject {
 	 * 
 	 * @param name
 	 *            the name.
-	 * @throws UnsupportedEncodingException
+	 * @throws IllegalCharInSymbolException
 	 *             if invalid characters are found.
 	 */
-	protected FDSymbol(String name) throws UnsupportedEncodingException {
+	protected FDSymbol(String name) throws IllegalCharInSymbolException {
 		super();
 		int len = name.length();
 		if (len > 254) {
@@ -66,7 +65,7 @@ public class FDSymbol extends FDBinaryObject {
 		for (int i = 0; i < len; i++) {
 			c = name.charAt(i);
 			if ((c < 32) || (c > 127)) {
-				throw new UnsupportedEncodingException();
+				throw new IllegalCharInSymbolException(c);
 			}
 		}
 		this.name = name;
@@ -89,10 +88,10 @@ public class FDSymbol extends FDBinaryObject {
 	 * @param name
 	 *            the name.
 	 * @return the symbol.
-	 * @throws UnsupportedEncodingException
+	 * @throws IllegalCharInSymbolException
 	 *             if invalid characters are found.
 	 */
-	public static FDSymbol getSymbol(String name) throws UnsupportedEncodingException {
+	public static FDSymbol getSymbol(String name) throws IllegalCharInSymbolException {
 		FDSymbol symbol = pool.get(name);
 		if (symbol == null) {
 			symbol = new FDSymbol(name);

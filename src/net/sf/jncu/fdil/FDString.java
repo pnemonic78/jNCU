@@ -28,6 +28,12 @@ import net.sf.lang.ControlCharacter;
  */
 public class FDString extends FDBinaryObject {
 
+	/**
+	 * Default string class.<br>
+	 * <tt>kFD_SymString</tt>
+	 */
+	public static final CharSequence CLASS = "string";
+
 	/** Character in place of the embedded ink for 16-bit strings. */
 	protected static final char INK = 0xF700;
 	/** Character in place of the embedded ink for 8-bit strings. */

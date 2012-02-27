@@ -20,6 +20,8 @@
 package net.sf.jncu.fdil;
 
 /**
+ * Immediate object.
+ * <p>
  * Other than characters, the only immediate objects that you need are the true
  * object and the nil object, which are specified by the <tt>kFD_True</tt> and
  * <tt>kFD_NIL</tt> constants.
@@ -27,6 +29,12 @@ package net.sf.jncu.fdil;
  * @author moshew
  */
 public abstract class FDImmediate extends FDObject {
+
+	/**
+	 * Default immediate class.<br>
+	 * <tt>kFD_SymWeird_Immediate</tt>
+	 */
+	public static final CharSequence CLASS = "immediate";
 
 	/**
 	 * Creates a new immediate.

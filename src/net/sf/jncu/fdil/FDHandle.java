@@ -20,25 +20,40 @@
 package net.sf.jncu.fdil;
 
 /**
- * There is only one special immediate object that you encounter, the nil
- * object. This object, which you can refer to with the constant
- * <tt>kFD_NIL</tt>, is used to signify the lack of information.
+ * FDIL object handle.
  * 
- * @author moshew
+ * @author Moshe
  */
-public class FDNil extends FDImmediate {
+public class FDHandle extends Object implements Comparable<FDHandle> {
+
+	private final int value;
 
 	/**
-	 * The nil object.<br>
-	 * <tt>kFD_NIL</tt>
+	 * Creates a new handle.
+	 * 
+	 * @param value
+	 *            the handle value.
 	 */
-	public static final FDNil NIL = new FDNil();
-
-	/**
-	 * Creates a new nil.
-	 */
-	private FDNil() {
+	public FDHandle(int value) {
 		super();
+		this.value = value;
 	}
 
+	@Override
+	public int hashCode() {
+		return value;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof FDHandle) {
+			return value == ((FDHandle) obj).value;
+		}
+		return false;
+	}
+
+	@Override
+	public int compareTo(FDHandle that) {
+		return this.value - that.value;
+	}
 }
