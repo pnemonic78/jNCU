@@ -83,4 +83,20 @@ public class NSOFPlainArray extends NSOFArray {
 			}
 		}
 	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		NSOFPlainArray copy = new NSOFPlainArray();
+		copy.setValue(this.getValue());
+		return copy;
+	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		NSOFPlainArray copy = new NSOFPlainArray();
+		int length = this.getLength();
+		for (int i = 0; i < length; i++)
+			copy.add(this.get(i).deepClone());
+		return copy;
+	}
 }

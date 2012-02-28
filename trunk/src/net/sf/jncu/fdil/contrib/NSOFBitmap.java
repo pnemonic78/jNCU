@@ -25,6 +25,7 @@ import java.io.InputStream;
 
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFSmallRect;
 import net.sf.jncu.fdil.NSOFSymbol;
 
@@ -125,5 +126,23 @@ public class NSOFBitmap extends NSOFFrame {
 		setBounds(bmp.getBounds());
 		setMask(bmp.getMask());
 		setObjectClass(bmp.getObjectClass());
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		NSOFBitmap copy = new NSOFBitmap();
+		copy.setBits(this.getBits());
+		copy.setBounds(this.getBounds());
+		copy.setMask(this.getMask());
+		return copy;
+	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		NSOFBitmap copy = new NSOFBitmap();
+		copy.setBits((NSOFRawBitmap) this.getBits().deepClone());
+		copy.setBounds((NSOFSmallRect) this.getBounds().deepClone());
+		copy.setMask((NSOFRawBitmap) this.getMask().deepClone());
+		return copy;
 	}
 }

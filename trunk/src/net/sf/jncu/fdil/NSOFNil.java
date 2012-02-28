@@ -67,4 +67,9 @@ public class NSOFNil extends NSOFImmediate {
 	public boolean isNil() {
 		return true;
 	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		return NIL;
+	}
 }

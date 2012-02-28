@@ -85,4 +85,9 @@ public class NSOFCharacter extends NSOFImmediate {
 		char hex3 = HEX[(value >> 12) & 0x000F];
 		return "$\\" + hex3 + hex2 + hex1 + hex0;
 	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		return new NSOFCharacter(this.getChar());
+	}
 }

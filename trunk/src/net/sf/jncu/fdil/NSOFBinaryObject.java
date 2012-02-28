@@ -159,4 +159,24 @@ public class NSOFBinaryObject extends NSOFPointer {
 		return object;
 	}
 
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		NSOFBinaryObject copy = new NSOFBinaryObject();
+		copy.setObjectClass(this.getObjectClass());
+		copy.object = this.object;
+		copy.value = this.value;
+		return copy;
+	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		NSOFBinaryObject copy = new NSOFBinaryObject();
+		copy.setObjectClass(this.getObjectClass());
+		copy.object = (this.object == null) ? null : this.object.deepClone();
+		if (this.value != null) {
+			copy.value = new byte[this.value.length];
+			System.arraycopy(this.value, 0, copy.value, 0, this.value.length);
+		}
+		return copy;
+	}
 }

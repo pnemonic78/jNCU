@@ -19,7 +19,6 @@
  */
 package net.sf.jncu.fdil;
 
-
 /**
  * Newton Streamed Object Format - Object.
  * 
@@ -68,29 +67,31 @@ public abstract class NSOFObject extends NewtonStreamedObjectFormat implements C
 	/**
 	 * Shallow copy.
 	 * <p>
-	 * The <tt>FD_Clone</tt> creates a duplicate of the FDIL object. If the
-	 * object is an aggregate object, that is an array or frame,
-	 * <tt>FD_Clone</tt> only copies the top level objects.
+	 * Creates a duplicate of the FDIL object. If the object is an aggregate
+	 * object, that is an array or frame, <tt>clone</tt> only copies the top
+	 * level objects.
 	 * 
-	 * @return the clone.
+	 * @return the clone. The default implementation returns a deep copy.
+	 * @throws CloneNotSupportedException
+	 *             if the object could not or should not be cloned.
+	 * @see #deepClone()
 	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		// TODO implement me!
-		return this;
+		return deepClone();
 	}
 
 	/**
 	 * Deep copy.
 	 * <p>
-	 * The <tt>FD_DeepClone</tt> create duplicates of the FDIL object.
-	 * <tt>FD_DeepClone</tt> also makes copies of any nested objects,
-	 * recursively.
+	 * Create duplicates of the FDIL object. <tt>deepClone</tt> also makes
+	 * copies of any nested objects, recursively.
 	 * 
 	 * @return the clone.
+	 * @throws CloneNotSupportedException
+	 *             if the object could not or should not be cloned.
 	 */
-	public NSOFObject deepClone() {
-		// TODO implement me!
+	public NSOFObject deepClone() throws CloneNotSupportedException {
 		return this;
 	}
 }

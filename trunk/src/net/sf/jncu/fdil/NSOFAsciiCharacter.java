@@ -81,4 +81,9 @@ public class NSOFAsciiCharacter extends NSOFCharacter {
 		// Character code (byte)
 		out.write(getValue() & 0xFF);
 	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		return new NSOFAsciiCharacter(this.getChar());
+	}
 }

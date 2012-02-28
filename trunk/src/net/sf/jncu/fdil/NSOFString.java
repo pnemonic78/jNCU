@@ -262,4 +262,9 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 	public boolean isRich() {
 		return (value.indexOf(INK) >= 0);
 	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		return new NSOFString(getValue());
+	}
 }

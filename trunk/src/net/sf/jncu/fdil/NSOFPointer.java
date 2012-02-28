@@ -38,4 +38,9 @@ public abstract class NSOFPointer extends NSOFObject implements Precedent {
 	public NSOFPointer() {
 		super();
 	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		throw new CloneNotSupportedException();
+	}
 }

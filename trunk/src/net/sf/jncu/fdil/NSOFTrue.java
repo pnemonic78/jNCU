@@ -47,4 +47,9 @@ public class NSOFTrue extends NSOFBoolean {
 	public boolean isTrue() {
 		return true;
 	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		return new NSOFTrue();
+	}
 }

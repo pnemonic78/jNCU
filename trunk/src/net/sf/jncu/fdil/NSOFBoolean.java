@@ -52,7 +52,7 @@ public class NSOFBoolean extends NSOFImmediate {
 	 * @param value
 	 *            the value.
 	 */
-	public NSOFBoolean(boolean value) {
+	protected NSOFBoolean(boolean value) {
 		super();
 		setObjectClass(CLASS_BOOLEAN);
 		setValue(value ? 0x1A : 0);
@@ -77,5 +77,10 @@ public class NSOFBoolean extends NSOFImmediate {
 	@Override
 	public boolean isTrue() {
 		return getValue() != 0;
+	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		return isTrue() ? TRUE : FALSE;
 	}
 }

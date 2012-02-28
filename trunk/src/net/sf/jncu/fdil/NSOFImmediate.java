@@ -240,8 +240,6 @@ public class NSOFImmediate extends NSOFObject {
 	/**
 	 * Decoder can test if the immediate is a character.
 	 * 
-	 * @param r
-	 *            the Ref of an Immediate.
 	 * @return true if a character.
 	 */
 	public boolean isCharacter() {
@@ -251,8 +249,6 @@ public class NSOFImmediate extends NSOFObject {
 	/**
 	 * Decoder can test if the immediate is an integer.
 	 * 
-	 * @param r
-	 *            the Ref of an Immediate.
 	 * @return true if an integer.
 	 */
 	public boolean isInteger() {
@@ -262,8 +258,6 @@ public class NSOFImmediate extends NSOFObject {
 	/**
 	 * Decoder can test if the immediate is an integer.
 	 * 
-	 * @param r
-	 *            the Ref of an Immediate.
 	 * @return true if an integer.
 	 */
 	public boolean isMagicPointer() {
@@ -273,8 +267,6 @@ public class NSOFImmediate extends NSOFObject {
 	/**
 	 * Decoder can test if the immediate is a NIL.
 	 * 
-	 * @param r
-	 *            the Ref of an Immediate.
 	 * @return true if NIL.
 	 */
 	public boolean isNil() {
@@ -284,8 +276,6 @@ public class NSOFImmediate extends NSOFObject {
 	/**
 	 * Decoder can test if the immediate is TRUE.
 	 * 
-	 * @param r
-	 *            the Ref of an Immediate.
 	 * @return true if TRUE.
 	 */
 	public boolean isTrue() {
@@ -295,5 +285,12 @@ public class NSOFImmediate extends NSOFObject {
 	@Override
 	public String toString() {
 		return String.valueOf(getValue());
+	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		NSOFImmediate copy = new NSOFImmediate(this.getValue());
+		copy.setType(this.getType());
+		return copy;
 	}
 }

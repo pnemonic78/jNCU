@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFLargeBinary;
+import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFSmallRect;
 import net.sf.jncu.fdil.NSOFSymbol;
 
@@ -296,5 +297,36 @@ public class NSOFRawBitmap extends NSOFLargeBinary {
 	 */
 	public void setPixels(byte[] pixels) {
 		this.pixels = pixels;
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		NSOFRawBitmap copy = new NSOFRawBitmap();
+		copy.bottom = this.bottom;
+		copy.header = this.header;
+		copy.rowBytes = this.rowBytes;
+		copy.top = this.top;
+		copy.left = this.left;
+		copy.bottom = this.bottom;
+		copy.right = this.right;
+		copy.pixels = this.pixels;
+		return copy;
+	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		NSOFRawBitmap copy = new NSOFRawBitmap();
+		copy.bottom = this.bottom;
+		copy.header = this.header;
+		copy.rowBytes = this.rowBytes;
+		copy.top = this.top;
+		copy.left = this.left;
+		copy.bottom = this.bottom;
+		copy.right = this.right;
+		if (this.pixels != null) {
+			copy.pixels = new byte[this.pixels.length];
+			System.arraycopy(this.pixels, 0, copy.pixels, 0, this.pixels.length);
+		}
+		return copy;
 	}
 }

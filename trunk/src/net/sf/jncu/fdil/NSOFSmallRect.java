@@ -263,7 +263,11 @@ public class NSOFSmallRect extends NSOFPointer {
 
 	@Override
 	public String toString() {
-		return "{left: " + left + ", top: " + top + ", right: " + right + ", bottom: " + bottom + "}";
+		return "{top: " + top + ", left: " + left + ", bottom: " + bottom + ", right: " + right + "}";
 	}
 
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		return new NSOFSmallRect(top, left, bottom, right);
+	}
 }

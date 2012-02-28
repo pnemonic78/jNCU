@@ -123,4 +123,14 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 		}
 		return this.getId() - that.getId();
 	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		throw new CloneNotSupportedException();
+	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		throw new CloneNotSupportedException();
+	}
 }
