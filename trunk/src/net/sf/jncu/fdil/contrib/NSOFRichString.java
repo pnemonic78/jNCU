@@ -22,8 +22,6 @@ package net.sf.jncu.fdil.contrib;
 import net.sf.jncu.fdil.NSOFString;
 
 /**
- * Rich Strings
- * <p>
  * Rich strings extend the string object class by embedding ink information
  * within the object. Within the unicode, a special character <tt>kInkChar</tt>
  * is used to mark the position of an ink word. The ink data is stored after the

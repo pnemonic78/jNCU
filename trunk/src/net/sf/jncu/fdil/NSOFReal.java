@@ -32,20 +32,21 @@ import net.sf.jncu.util.NumberUtils;
  */
 public class NSOFReal extends NSOFBinaryObject {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("real");
+	/** Default real number class. */
+	public static final NSOFSymbol CLASS_REAL = new NSOFSymbol("real");
 
 	private double value;
 
 	/**
-	 * Creates a new real.
+	 * Creates a new real number.
 	 */
 	public NSOFReal() {
 		super();
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_REAL);
 	}
 
 	/**
-	 * Creates a new real.
+	 * Creates a new real number.
 	 * 
 	 * @param value
 	 *            the value.
@@ -77,8 +78,8 @@ public class NSOFReal extends NSOFBinaryObject {
 
 	@Override
 	public void setValue(byte[] value) {
-		super.setValue(value);
 		setReal(Double.longBitsToDouble(NumberUtils.toLong(value)));
+		super.setValue(value);
 	}
 
 }

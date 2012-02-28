@@ -31,7 +31,8 @@ import java.io.OutputStream;
  */
 public class NSOFSmallRect extends NSOFPointer {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("smallRect");
+	/** Default small rectangle class. */
+	public static final NSOFSymbol CLASS_SMALL_RECT = new NSOFSymbol("smallRect");
 
 	private int top;
 	private int left;
@@ -59,7 +60,7 @@ public class NSOFSmallRect extends NSOFPointer {
 	 */
 	public NSOFSmallRect(int top, int left, int bottom, int right) {
 		super();
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_SMALL_RECT);
 		setTop(top);
 		setLeft(left);
 		setBottom(bottom);
@@ -119,7 +120,7 @@ public class NSOFSmallRect extends NSOFPointer {
 
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
-		out.write(SMALL_RECT);
+		out.write(NSOF_SMALL_RECT);
 		// Top value (byte)
 		out.write(getTop());
 		// Left value (byte)

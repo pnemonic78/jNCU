@@ -97,7 +97,7 @@ import net.sf.jncu.dil.WritingToPipeException;
  */
 public class FDILibrary {
 
-	private static Map<FDHandle, FDObject> handles;
+	private static Map<FDHandle, NSOFObject> handles;
 
 	private FDILibrary() {
 	}
@@ -1627,7 +1627,7 @@ public class FDILibrary {
 	 */
 	public static void startup() {
 		// TODO implement me!
-		handles = new HashMap<FDHandle, FDObject>();
+		handles = new HashMap<FDHandle, NSOFObject>();
 	}
 
 	/**

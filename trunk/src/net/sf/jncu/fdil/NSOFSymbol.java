@@ -25,16 +25,21 @@ import java.io.OutputStream;
 import java.util.Locale;
 
 /**
- * Newton Streamed Object Format - Symbol.<br>
- * Symbols are case insensitive.
+ * Newton Streamed Object Format - Symbol.
+ * <p>
+ * A symbol object is a variable-size object used as a token or as an
+ * identifier. Most often it is used as a slot name or object class. It is
+ * composed of ASCII characters with values between 32 and 127 inclusive,
+ * excluding the vertical bar (<tt>|</tt>) and backslash (<tt>\</tt>)
+ * characters. A symbol must be shorter than 254 characters. When symbols are
+ * compared to each other, a case-insensitive comparison is performed.
  * 
  * @author Moshe
  */
 public class NSOFSymbol extends NSOFString {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("symbol");
-
-	protected static final String ENCODING = "MacRoman";
+	/** Default symbol class. */
+	public static final NSOFSymbol CLASS_SYMBOL = new NSOFSymbol("symbol");
 
 	private String valueLower;
 
@@ -43,7 +48,7 @@ public class NSOFSymbol extends NSOFString {
 	 */
 	public NSOFSymbol() {
 		super();
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_SYMBOL);
 	}
 
 	/**
@@ -64,24 +69,40 @@ public class NSOFSymbol extends NSOFString {
 		// Name (bytes)
 		byte[] name = new byte[len];
 		readAll(in, name);
-		setValue(new String(name, ENCODING));
+		setValue(new String(name, CHARSET_MAC));
 	}
 
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
-		out.write(SYMBOL);
+		out.write(NSOF_SYMBOL);
 
 		String name = getValue();
 		// Number of characters in name (xlong)
 		XLong.encode(name.length(), out);
 		// Name (bytes)
-		out.write(name.getBytes(ENCODING));
+		out.write(name.getBytes(CHARSET_MAC));
 	}
 
 	@Override
 	public void setValue(String value) {
-		super.setValue(value);
-		this.valueLower = (value == null) ? null : value.toLowerCase(Locale.ENGLISH);
+		if (value == null) {
+			super.setValue(value);
+			this.valueLower = null;
+		} else {
+			int len = value.length();
+			if (len > 254)
+				throw new SymbolTooLongException();
+			char c;
+			for (int i = 0; i < len; i++) {
+				c = value.charAt(i);
+				if ((c < 32) || (c > 127))
+					throw new IllegalCharInSymbolException(c);
+				if ((c == '|') || (c == '\\'))
+					throw new IllegalCharInSymbolException(c);
+			}
+			super.setValue(value);
+			this.valueLower = value.toLowerCase(Locale.ENGLISH);
+		}
 	}
 
 	@Override
@@ -90,14 +111,17 @@ public class NSOFSymbol extends NSOFString {
 	}
 
 	@Override
-	public int compareTo(NSOFString that) {
-		String valThis = this.valueLower;
-		String valThat = that.getValue();
-		if (that instanceof NSOFSymbol)
-			valThat = ((NSOFSymbol) that).valueLower;
-		if (valThis == null)
-			return (valThat == null) ? 0 : -1;
-		return valThis.toLowerCase(Locale.ENGLISH).compareTo(valThat);
+	public int compareTo(NSOFString other) {
+		if (other == null)
+			return +1;
+		if (other instanceof NSOFSymbol) {
+			NSOFSymbol that = (NSOFSymbol) other;
+			String valThis = this.valueLower;
+			String valThat = that.valueLower;
+			if (valThis == null)
+				return (valThat == null) ? 0 : -1;
+			return valThis.compareTo(valThat);
+		}
+		return super.compareTo(other);
 	}
-
 }

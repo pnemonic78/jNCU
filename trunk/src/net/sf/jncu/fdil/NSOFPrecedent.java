@@ -42,7 +42,8 @@ import java.io.OutputStream;
  */
 public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPrecedent> {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("precedent");
+	/** Default precedent class. */
+	public static final NSOFSymbol CLASS_PRECEDENT = new NSOFSymbol("precedent");
 
 	private int id;
 
@@ -51,7 +52,7 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 	 */
 	public NSOFPrecedent() {
 		super();
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_PRECEDENT);
 	}
 
 	/**
@@ -73,7 +74,7 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
-		out.write(PRECEDENT);
+		out.write(NSOF_PRECEDENT);
 		// Precedent ID (xlong)
 		XLong.encode(getId(), out);
 	}
@@ -99,7 +100,7 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 
 	@Override
 	public int hashCode() {
-		return getId();
+		return id;
 	}
 
 	@Override

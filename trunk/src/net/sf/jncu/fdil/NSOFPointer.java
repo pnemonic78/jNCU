@@ -24,13 +24,16 @@ package net.sf.jncu.fdil;
  * <p>
  * <em>Pointers are only used internally by the FDIL. You should never
  * see such an object.</em>
+ * <p>
+ * A pointer object is an object whose <tt>FD_Handle</tt> contains a reference
+ * to the data comprising the object.
  * 
  * @author moshew
  */
 public abstract class NSOFPointer extends NSOFObject implements Precedent {
 
 	/**
-	 * Creates a new magic pointer.
+	 * Creates a new pointer.
 	 */
 	public NSOFPointer() {
 		super();

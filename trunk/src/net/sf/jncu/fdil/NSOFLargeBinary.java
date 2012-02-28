@@ -35,6 +35,10 @@ import net.sf.jncu.dil.InvalidParameterException;
  * Newton Streamed Object Format - Large Binary Object.<br>
  * Also known as Virtual Binary Object (VBO), or BLOB.
  * <p>
+ * A large binary object mimics the functionality of a virtual binary object
+ * (VBO). It contains a large amount of unformatted binary data, that is paged
+ * in from a backing store, and optionally compressed.
+ * <p>
  * A compandor/compander (compressor-expander) is an object that transparently
  * compresses data as it is stored and expands data as it is read.
  * 
@@ -42,7 +46,8 @@ import net.sf.jncu.dil.InvalidParameterException;
  */
 public class NSOFLargeBinary extends NSOFBinaryObject {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("largeBinary");
+	/** Default large binary class. */
+	public static final NSOFSymbol CLASS_LARGE_BINARY = new NSOFSymbol("largeBinary");
 
 	/**
 	 * Specifies the use of the Lempel-Ziv compressor-expander.
@@ -88,14 +93,14 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	 */
 	public NSOFLargeBinary() {
 		super();
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_LARGE_BINARY);
 	}
 
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Class (object)
 		NSOFSymbol symbol = (NSOFSymbol) decoder.decode(in);
-		setNSClass(symbol);
+		setObjectClass(symbol);
 		// compressed? (non-zero means compressed) (byte)
 		int compressed = in.read();
 		if (compressed == -1) {
@@ -146,7 +151,7 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
-		out.write(LARGE_BINARY);
+		out.write(NSOF_LARGE_BINARY);
 		String companderName = getCompanderName();
 		byte[] companderNameBytes = (companderName == null) ? null : companderName.getBytes();
 		byte[] args = getCompanderArguments();
@@ -160,7 +165,7 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 			}
 		}
 		// Class (object)
-		encoder.encode(getNSClass(), out);
+		encoder.encode(getObjectClass(), out);
 		// compressed? (non-zero means compressed) (byte)
 		out.write(isCompressed() ? COMPRESSED : UNCOMPRESSED);
 		// Number of bytes of data (long)

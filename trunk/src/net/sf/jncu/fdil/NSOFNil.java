@@ -24,28 +24,38 @@ import java.io.OutputStream;
 
 /**
  * Newton Streamed Object Format - NIL.
+ * <p>
+ * There is only one special FDIL immediate object that you encounter, the nil
+ * object. This object, which you can refer to with the constant
+ * <tt>kFD_NIL</tt>, is used to signify the lack of information.
  * 
  * @author Moshe
  */
 public class NSOFNil extends NSOFImmediate {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("NIL");
+	/**
+	 * Default nil class.
+	 */
+	public static final NSOFSymbol CLASS_NIL = new NSOFSymbol("NIL");
 
-	/** The nil object. */
-	public static final NSOFNil FD_NIL = new NSOFNil();
+	/**
+	 * The nil object.<br>
+	 * <tt>kFD_NIL</tt>
+	 */
+	public static final NSOFNil NIL = new NSOFNil();
 
 	/**
 	 * Constructs a new Nil.
 	 */
 	public NSOFNil() {
 		super();
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_NIL);
 		setType(IMMEDIATE_NIL);
 	}
 
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
-		out.write(NIL);
+		out.write(NSOF_NIL);
 	}
 
 	@Override

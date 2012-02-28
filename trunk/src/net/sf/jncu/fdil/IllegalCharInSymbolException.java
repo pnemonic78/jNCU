@@ -19,7 +19,7 @@
  */
 package net.sf.jncu.fdil;
 
-import java.nio.charset.CharacterCodingException;
+import java.nio.charset.UnsupportedCharsetException;
 
 /**
  * Illegal character in symbol error.<br>
@@ -28,16 +28,21 @@ import java.nio.charset.CharacterCodingException;
  * @author moshe
  * 
  */
-public class IllegalCharInSymbolException extends CharacterCodingException {
+public class IllegalCharInSymbolException extends UnsupportedCharsetException {
 
 	private final char c;
 
 	public IllegalCharInSymbolException(char c) {
-		super();
+		super("ASCII");
 		this.c = c;
 	}
 
 	public char getCharacter() {
 		return c;
+	}
+
+	@Override
+	public String getMessage() {
+		return "Bad character = 0x" + Integer.toHexString(c);
 	}
 }

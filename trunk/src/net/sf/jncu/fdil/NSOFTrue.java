@@ -26,16 +26,16 @@ package net.sf.jncu.fdil;
  */
 public class NSOFTrue extends NSOFBoolean {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("TRUE");
+	/** Default True boolean class. */
+	public static final NSOFSymbol CLASS_TRUE = new NSOFSymbol("TRUE");
 
 	/**
 	 * Creates a new True.
 	 */
 	public NSOFTrue() {
-		super();
-		setNSClass(NS_CLASS);
+		super(true);
+		setObjectClass(CLASS_TRUE);
 		setType(IMMEDIATE_TRUE);
-		setValue(0x1A);
 	}
 
 	@Override

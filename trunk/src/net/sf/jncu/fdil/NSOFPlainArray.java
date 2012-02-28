@@ -30,14 +30,15 @@ import java.io.OutputStream;
  */
 public class NSOFPlainArray extends NSOFArray {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("plainArray");
+	/** Default plain array class. */
+	public static final NSOFSymbol CLASS_PLAIN_ARRAY = new NSOFSymbol("plainArray");
 
 	/**
 	 * Constructs a new array.
 	 */
 	public NSOFPlainArray() {
 		super();
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_PLAIN_ARRAY);
 	}
 
 	/**
@@ -48,18 +49,18 @@ public class NSOFPlainArray extends NSOFArray {
 	 */
 	public NSOFPlainArray(NSOFObject[] value) {
 		super(value);
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_PLAIN_ARRAY);
 	}
 
 	@Override
 	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
-		setValue(null);
+		setValue((NSOFObject[]) null);
 
 		// Number of slots (xlong)
-		int len = XLong.decodeValue(in);
-		NSOFObject[] entries = new NSOFObject[len];
+		int length = XLong.decodeValue(in);
+		NSOFObject[] entries = new NSOFObject[length];
 		// Slot values in ascending order (objects)
-		for (int i = 0; i < len; i++) {
+		for (int i = 0; i < length; i++) {
 			entries[i] = decoder.decode(in);
 		}
 		setValue(entries);
@@ -67,7 +68,7 @@ public class NSOFPlainArray extends NSOFArray {
 
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
-		out.write(PLAIN_ARRAY);
+		out.write(NSOF_PLAIN_ARRAY);
 
 		NSOFObject[] slots = getValue();
 		if (slots == null) {

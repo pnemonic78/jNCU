@@ -44,8 +44,24 @@ public class NSOFAsciiCharacter extends NSOFCharacter {
 	 * @param value
 	 *            the character.
 	 */
+	public NSOFAsciiCharacter(byte value) {
+		super((char) (value & 0xFF));
+	}
+
+	/**
+	 * Constructs a new character.
+	 * 
+	 * @param value
+	 *            the character.
+	 */
 	public NSOFAsciiCharacter(char value) {
 		super(value);
+	}
+
+	@Override
+	public String toString() {
+		final int value = getValue();
+		return "$\\" + HEX[value & 0x000F] + HEX[(value >> 4) & 0x000F];
 	}
 
 	@Override
@@ -61,7 +77,7 @@ public class NSOFAsciiCharacter extends NSOFCharacter {
 
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
-		out.write(CHARACTER);
+		out.write(NSOF_CHARACTER);
 		// Character code (byte)
 		out.write(getValue() & 0xFF);
 	}

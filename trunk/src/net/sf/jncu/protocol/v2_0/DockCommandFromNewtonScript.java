@@ -80,7 +80,7 @@ public abstract class DockCommandFromNewtonScript<T extends NSOFObject> extends 
 		if (result == null) {
 			s.append((String) null);
 		} else {
-			s.append(result.getNSClass());
+			s.append(result.getObjectClass());
 			s.append('=');
 			s.append(result.toString());
 		}

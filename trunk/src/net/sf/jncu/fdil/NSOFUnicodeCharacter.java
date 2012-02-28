@@ -29,16 +29,17 @@ import java.io.OutputStream;
  * 
  * @author Moshe
  */
-public class NSOFUnicodeCharacter extends NSOFAsciiCharacter {
+public class NSOFUnicodeCharacter extends NSOFCharacter {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("uniChar");
+	/** Default Unicode character class. */
+	public static final NSOFSymbol CLASS_UNICODE = new NSOFSymbol("uniChar");
 
 	/**
 	 * Constructs a new Unicode character.
 	 */
 	public NSOFUnicodeCharacter() {
 		super();
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_UNICODE);
 	}
 
 	/**
@@ -48,6 +49,17 @@ public class NSOFUnicodeCharacter extends NSOFAsciiCharacter {
 	 *            the character.
 	 */
 	public NSOFUnicodeCharacter(char value) {
+		this();
+		setValue(value);
+	}
+
+	/**
+	 * Constructs a new Unicode character.
+	 * 
+	 * @param value
+	 *            the code point.
+	 */
+	public NSOFUnicodeCharacter(int value) {
 		this();
 		setValue(value);
 	}
@@ -68,24 +80,11 @@ public class NSOFUnicodeCharacter extends NSOFAsciiCharacter {
 
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
-		out.write(UNICODE_CHARACTER);
+		out.write(NSOF_UNICODE_CHARACTER);
 		int val = getValue() & 0xFFFF;
 		// High byte of character code (byte)
 		out.write((val >> 8) & 0xFF);
 		// Low byte of character code (byte)
 		out.write((val >> 0) & 0xFF);
-	}
-
-	@Override
-	public String toString() {
-		int value = getValue();
-		char hex0 = HEX[value & 0x000F];
-		value >>= 4;
-		char hex1 = HEX[value & 0x000F];
-		value >>= 4;
-		char hex2 = HEX[value & 0x000F];
-		value >>= 4;
-		char hex3 = HEX[value & 0x000F];
-		return "$\\u" + hex3 + hex2 + hex1 + hex0;
 	}
 }

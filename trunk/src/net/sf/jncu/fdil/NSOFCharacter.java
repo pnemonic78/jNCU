@@ -21,12 +21,19 @@ package net.sf.jncu.fdil;
 
 /**
  * Newton Streamed Object Format - Character.
+ * <p>
+ * Character objects are immediate objects which contain a 16 bit Unicode
+ * character.
  * 
  * @author Moshe
  */
 public class NSOFCharacter extends NSOFImmediate {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("character");
+	/**
+	 * Default character class.<br>
+	 * <tt>kFD_SymChar</tt>
+	 */
+	public static final NSOFSymbol CLASS_CHARACTER = new NSOFSymbol("character");
 
 	protected static final char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
@@ -45,7 +52,7 @@ public class NSOFCharacter extends NSOFImmediate {
 	 */
 	public NSOFCharacter(char value) {
 		super();
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_CHARACTER);
 		setType(IMMEDIATE_CHARACTER);
 		setValue(value);
 	}
@@ -71,7 +78,11 @@ public class NSOFCharacter extends NSOFImmediate {
 
 	@Override
 	public String toString() {
-		int value = getValue();
-		return "$\\" + HEX[value & 0x000F] + HEX[(value >> 4) & 0x000F];
+		final int value = getValue();
+		char hex0 = HEX[value & 0x000F];
+		char hex1 = HEX[(value >> 4) & 0x000F];
+		char hex2 = HEX[(value >> 8) & 0x000F];
+		char hex3 = HEX[(value >> 12) & 0x000F];
+		return "$\\" + hex3 + hex2 + hex1 + hex0;
 	}
 }
