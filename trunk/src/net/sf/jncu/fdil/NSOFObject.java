@@ -41,7 +41,7 @@ public abstract class NSOFObject extends NewtonStreamedObjectFormat implements C
 	 * @param oClass
 	 *            the object class.
 	 */
-	public void setObjectClass(NSOFSymbol oClass) {
+	protected void setObjectClass(NSOFSymbol oClass) {
 		this.oClass = oClass;
 	}
 
@@ -51,7 +51,7 @@ public abstract class NSOFObject extends NewtonStreamedObjectFormat implements C
 	 * @param nsClassName
 	 *            the object class name.
 	 */
-	public void setObjectClass(String nsClassName) {
+	protected void setObjectClass(String nsClassName) {
 		setObjectClass(new NSOFSymbol(nsClassName));
 	}
 

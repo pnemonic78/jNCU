@@ -72,7 +72,7 @@ public class NSOFCharacter extends NSOFImmediate {
 	 * @param value
 	 *            the character.
 	 */
-	public void setChar(char value) {
+	protected void setChar(char value) {
 		setValue(value);
 	}
 

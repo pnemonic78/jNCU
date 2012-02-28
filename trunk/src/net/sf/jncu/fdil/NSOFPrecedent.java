@@ -94,7 +94,7 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 	 * @param id
 	 *            the id.
 	 */
-	public void setId(int id) {
+	protected void setId(int id) {
 		this.id = id;
 	}
 

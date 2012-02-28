@@ -59,7 +59,7 @@ public class NSOFBoolean extends NSOFImmediate {
 	}
 
 	@Override
-	public void setValue(int value) {
+	protected void setValue(int value) {
 		super.setValue(value);
 		setType((value == 0) ? IMMEDIATE_NIL : IMMEDIATE_TRUE);
 	}

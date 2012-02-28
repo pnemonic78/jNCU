@@ -145,7 +145,7 @@ public class NSOFImmediate extends NSOFObject {
 	 * @param value
 	 *            the value.
 	 */
-	public void setValue(int value) {
+	protected void setValue(int value) {
 		this.value = value;
 	}
 
@@ -178,7 +178,7 @@ public class NSOFImmediate extends NSOFObject {
 	 * @param type
 	 *            the type.
 	 */
-	public void setType(int type) {
+	protected void setType(int type) {
 		this.type = type;
 	}
 
