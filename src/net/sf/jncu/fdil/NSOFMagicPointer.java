@@ -49,8 +49,24 @@ public class NSOFMagicPointer extends NSOFImmediate {
 		setType(IMMEDIATE_MAGIC_POINTER);
 	}
 
+	/**
+	 * Creates a new magic pointer.
+	 * 
+	 * @param value
+	 *            the value.
+	 */
+	public NSOFMagicPointer(int value) {
+		this();
+		setValue(value);
+	}
+
 	@Override
 	public boolean isMagicPointer() {
 		return true;
+	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		return new NSOFMagicPointer(this.getValue());
 	}
 }

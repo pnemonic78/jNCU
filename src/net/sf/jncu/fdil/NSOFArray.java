@@ -272,4 +272,19 @@ public class NSOFArray extends NSOFPointer {
 	public NSOFObject remove(int pos) {
 		return value.remove(pos);
 	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		NSOFArray copy = new NSOFArray();
+		copy.value.addAll(this.value);
+		return copy;
+	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		NSOFArray copy = new NSOFArray(this.getLength());
+		for (NSOFObject item : this.value)
+			copy.add(item.deepClone());
+		return copy;
+	}
 }

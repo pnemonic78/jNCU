@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.fdil.contrib;
 
+import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFString;
 
 /**
@@ -48,4 +49,8 @@ public class NSOFRichString extends NSOFString {
 		super(value);
 	}
 
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		return new NSOFRichString(this.getValue());
+	}
 }

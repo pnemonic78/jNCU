@@ -296,4 +296,31 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	public void setObject(NSOFObject value) {
 		super.setObject(null);
 	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		NSOFLargeBinary copy = new NSOFLargeBinary();
+		copy.setObjectClass(this.getObjectClass());
+		copy.setValue(this.getValue());
+		copy.companderArgs = this.companderArgs;
+		copy.companderName = this.companderName;
+		copy.compressed = this.compressed;
+		return copy;
+	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		NSOFLargeBinary copy = new NSOFLargeBinary();
+		copy.setObjectClass(this.getObjectClass());
+		byte[] value = this.getValue();
+		if (value != null) {
+			byte[] value2 = new byte[value.length];
+			System.arraycopy(value, 0, value2, 0, value.length);
+			copy.setValue(value2);
+		}
+		copy.companderArgs = this.companderArgs;
+		copy.companderName = this.companderName;
+		copy.compressed = this.compressed;
+		return copy;
+	}
 }

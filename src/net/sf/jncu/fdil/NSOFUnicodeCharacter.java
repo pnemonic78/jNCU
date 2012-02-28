@@ -87,4 +87,9 @@ public class NSOFUnicodeCharacter extends NSOFCharacter {
 		// Low byte of character code (byte)
 		out.write((val >> 0) & 0xFF);
 	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		return new NSOFUnicodeCharacter(this.getChar());
+	}
 }

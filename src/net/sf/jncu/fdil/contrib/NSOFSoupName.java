@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
+import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.SymbolTooLongException;
 
@@ -89,5 +90,10 @@ public class NSOFSoupName extends NSOFString {
 		} catch (UnsupportedEncodingException uee) {
 			throw new IOException(uee);
 		}
+	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		return new NSOFSoupName(this.getValue());
 	}
 }

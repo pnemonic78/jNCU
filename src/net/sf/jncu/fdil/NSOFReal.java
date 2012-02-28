@@ -82,4 +82,8 @@ public class NSOFReal extends NSOFBinaryObject {
 		super.setValue(value);
 	}
 
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		return new NSOFReal(this.getReal());
+	}
 }

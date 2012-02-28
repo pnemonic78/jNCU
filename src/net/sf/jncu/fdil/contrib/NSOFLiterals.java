@@ -20,6 +20,7 @@
 package net.sf.jncu.fdil.contrib;
 
 import net.sf.jncu.fdil.NSOFArray;
+import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFSymbol;
 
 /**
@@ -40,4 +41,19 @@ public class NSOFLiterals extends NSOFArray {
 		setObjectClass(CLASS_LITERALS);
 	}
 
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		NSOFLiterals copy = new NSOFLiterals();
+		copy.setValue(this.getValue());
+		return copy;
+	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		NSOFLiterals copy = new NSOFLiterals();
+		int length = this.getLength();
+		for (int i = 0; i < length; i++)
+			copy.add(this.get(i).deepClone());
+		return copy;
+	}
 }

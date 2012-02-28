@@ -45,7 +45,7 @@ public class NSOFFrame extends NSOFPointer {
 	 */
 	public static final NSOFSymbol CLASS_FRAME = new NSOFSymbol("frame");
 
-	protected final Map<NSOFSymbol, NSOFObject> slots = new HashMap<NSOFSymbol, NSOFObject>();
+	private final Map<NSOFSymbol, NSOFObject> slots = new HashMap<NSOFSymbol, NSOFObject>();
 
 	/**
 	 * Constructs a new frame.
@@ -239,5 +239,21 @@ public class NSOFFrame extends NSOFPointer {
 	 */
 	public boolean hasSlot(String slotName) {
 		return hasSlot(new NSOFSymbol(slotName));
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		NSOFFrame copy = new NSOFFrame();
+		copy.slots.putAll(this.slots);
+		return copy;
+	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		NSOFFrame copy = new NSOFFrame();
+		for (NSOFSymbol name : this.slots.keySet()) {
+			copy.slots.put(name, this.slots.get(name).deepClone());
+		}
+		return copy;
 	}
 }

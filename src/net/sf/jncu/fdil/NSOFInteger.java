@@ -73,4 +73,9 @@ public class NSOFInteger extends NSOFImmediate {
 			throw new ValueOutOfRangeException();
 		super.setValue(value);
 	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		return new NSOFInteger(this.getValue());
+	}
 }

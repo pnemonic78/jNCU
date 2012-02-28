@@ -124,4 +124,9 @@ public class NSOFSymbol extends NSOFString {
 		}
 		return super.compareTo(other);
 	}
+
+	@Override
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		return new NSOFSymbol(getValue());
+	}
 }
