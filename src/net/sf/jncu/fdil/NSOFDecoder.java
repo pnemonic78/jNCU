@@ -87,42 +87,42 @@ public class NSOFDecoder {
 		NSOFObject object = null;
 
 		switch (dataType) {
-		case NewtonStreamedObjectFormat.ARRAY:
+		case NewtonStreamedObjectFormat.NSOF_ARRAY:
 			object = new NSOFArray();
 			break;
-		case NewtonStreamedObjectFormat.BINARY_OBJECT:
+		case NewtonStreamedObjectFormat.NSOF_BINARY:
 			object = new NSOFBinaryObject();
 			break;
-		case NewtonStreamedObjectFormat.CHARACTER:
+		case NewtonStreamedObjectFormat.NSOF_CHARACTER:
 			object = new NSOFAsciiCharacter();
-		case NewtonStreamedObjectFormat.FRAME:
+		case NewtonStreamedObjectFormat.NSOF_FRAME:
 			object = new NSOFFrame();
 			break;
-		case NewtonStreamedObjectFormat.IMMEDIATE:
+		case NewtonStreamedObjectFormat.NSOF_IMMEDIATE:
 			object = decodeImmediate(in);
 			break;
-		case NewtonStreamedObjectFormat.LARGE_BINARY:
+		case NewtonStreamedObjectFormat.NSOF_LARGE_BINARY:
 			object = new NSOFLargeBinary();
 			break;
-		case NewtonStreamedObjectFormat.NIL:
+		case NewtonStreamedObjectFormat.NSOF_NIL:
 			object = new NSOFNil();
 			break;
-		case NewtonStreamedObjectFormat.PLAIN_ARRAY:
+		case NewtonStreamedObjectFormat.NSOF_PLAIN_ARRAY:
 			object = new NSOFPlainArray();
 			break;
-		case NewtonStreamedObjectFormat.PRECEDENT:
+		case NewtonStreamedObjectFormat.NSOF_PRECEDENT:
 			object = new NSOFPrecedent();
 			break;
-		case NewtonStreamedObjectFormat.SMALL_RECT:
+		case NewtonStreamedObjectFormat.NSOF_SMALL_RECT:
 			object = new NSOFSmallRect();
 			break;
-		case NewtonStreamedObjectFormat.STRING:
+		case NewtonStreamedObjectFormat.NSOF_STRING:
 			object = new NSOFString();
 			break;
-		case NewtonStreamedObjectFormat.SYMBOL:
+		case NewtonStreamedObjectFormat.NSOF_SYMBOL:
 			object = new NSOFSymbol();
 			break;
-		case NewtonStreamedObjectFormat.UNICODE_CHARACTER:
+		case NewtonStreamedObjectFormat.NSOF_UNICODE_CHARACTER:
 			object = new NSOFUnicodeCharacter();
 			break;
 		}
@@ -156,37 +156,37 @@ public class NSOFDecoder {
 		NSOFSymbol nsClass;
 
 		switch (dataType) {
-		case NewtonStreamedObjectFormat.PRECEDENT:
+		case NewtonStreamedObjectFormat.NSOF_PRECEDENT:
 			NSOFPrecedent id = (NSOFPrecedent) object;
 			Precedent p = precedents.get(id);
 			object = (NSOFObject) p;
 			break;
-		case NewtonStreamedObjectFormat.BINARY_OBJECT:
+		case NewtonStreamedObjectFormat.NSOF_BINARY:
 			NSOFBinaryObject bin = (NSOFBinaryObject) object;
-			nsClass = object.getNSClass();
+			nsClass = object.getObjectClass();
 
-			if (NSOFBitmap.NS_CLASS.equals(nsClass)) {
+			if (NSOFBitmap.CLASS_BITMAP.equals(nsClass)) {
 				NSOFBitmap bin2 = new NSOFBitmap();
 				bin2.setValue(bin.getValue(), this);
 				object = bin2;
-			} else if (NSOFInstructions.NS_CLASS.equals(nsClass)) {
+			} else if (NSOFInstructions.CLASS_INSTRUCTIONS.equals(nsClass)) {
 				NSOFInstructions bin2 = new NSOFInstructions();
 				bin2.setValue(bin.getValue());
 				object = bin2;
-			} else if (NSOFRawBitmap.NS_CLASS.equals(nsClass)) {
+			} else if (NSOFRawBitmap.CLASS_BITS.equals(nsClass)) {
 				NSOFRawBitmap bin2 = new NSOFRawBitmap();
 				bin2.setValue(bin.getValue());
 				object = bin2;
-			} else if (NSOFReal.NS_CLASS.equals(nsClass)) {
+			} else if (NSOFReal.CLASS_REAL.equals(nsClass)) {
 				NSOFReal bin2 = new NSOFReal();
 				bin2.setValue(bin.getValue());
 				object = bin2;
 			}
 			break;
-		case NewtonStreamedObjectFormat.ARRAY:
+		case NewtonStreamedObjectFormat.NSOF_ARRAY:
 			NSOFArray arr = (NSOFArray) object;
-			nsClass = object.getNSClass();
-			if (NSOFLiterals.NS_CLASS.equals(nsClass)) {
+			nsClass = object.getObjectClass();
+			if (NSOFLiterals.CLASS_LITERALS.equals(nsClass)) {
 				NSOFLiterals arr2 = new NSOFLiterals();
 				arr2.setValue(arr.getValue());
 				object = arr2;

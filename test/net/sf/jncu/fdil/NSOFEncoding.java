@@ -27,7 +27,7 @@ public class NSOFEncoding extends SFTestCase {
 	 * Test character encoding.
 	 */
 	public void testEncoding() {
-		Charset cs = Charset.forName(NSOFSymbol.ENCODING);
+		Charset cs = Charset.forName(NSOFString.CHARSET_MAC);
 		assertNotNull(cs);
 
 		CharBuffer mac = CharBuffer.allocate(256);

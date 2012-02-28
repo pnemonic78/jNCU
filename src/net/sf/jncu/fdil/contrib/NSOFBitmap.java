@@ -35,7 +35,8 @@ import net.sf.jncu.fdil.NSOFSymbol;
  */
 public class NSOFBitmap extends NSOFFrame {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("bitmap");
+	/** Default bitmap class. */
+	public static final NSOFSymbol CLASS_BITMAP = new NSOFSymbol("bitmap");
 
 	public static final NSOFSymbol SLOT_BOUNDS = new NSOFSymbol("bounds");
 	public static final NSOFSymbol SLOT_BITS = new NSOFSymbol("bits");
@@ -46,7 +47,7 @@ public class NSOFBitmap extends NSOFFrame {
 	 */
 	public NSOFBitmap() {
 		super();
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_BITMAP);
 	}
 
 	/**
@@ -123,6 +124,6 @@ public class NSOFBitmap extends NSOFFrame {
 		setBits(bmp.getBits());
 		setBounds(bmp.getBounds());
 		setMask(bmp.getMask());
-		setNSClass(bmp.getNSClass());
+		setObjectClass(bmp.getObjectClass());
 	}
 }

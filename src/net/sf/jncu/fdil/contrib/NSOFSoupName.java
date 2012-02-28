@@ -24,11 +24,12 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
 import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.fdil.SymbolTooLongException;
 
 /**
  * Soup name.
  * <p>
- * Soup names must be < 25 characters.
+ * A soup name must be shorter than 25 characters.
  * 
  * @author Moshe
  */
@@ -54,7 +55,7 @@ public class NSOFSoupName extends NSOFString {
 	@Override
 	public void setValue(String value) {
 		if ((value != null) && (value.length() >= 25))
-			value = value.substring(0, 25);
+			throw new SymbolTooLongException();
 		super.setValue(value);
 	}
 
@@ -70,7 +71,7 @@ public class NSOFSoupName extends NSOFString {
 	 */
 	public static void encode(String name, OutputStream out) throws IOException {
 		try {
-			byte[] buf = name.getBytes(CHARSET);
+			byte[] buf = name.getBytes(CHARSET_UTF16);
 			int len = name.length();
 			// Bytes [0] and [1] are 0xFE and 0xFF
 			if (buf.length >= 2)

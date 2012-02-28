@@ -21,19 +21,41 @@ package net.sf.jncu.fdil;
 
 /**
  * Newton Streamed Object Format - Boolean.
+ * <p>
+ * There are two Boolean objects: the true object, and the false object. The nil
+ * object <tt>kFD_NIL</tt> is not the same as the false object.
  * 
  * @author moshew
  */
 public class NSOFBoolean extends NSOFImmediate {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("boolean");
+	/**
+	 * Default boolean class.<br>
+	 * <tt>kFD_SymBoolean</tt>
+	 */
+	public static final NSOFSymbol CLASS_BOOLEAN = new NSOFSymbol("boolean");
+
+	/**
+	 * The true object.<br>
+	 * <tt>kFD_True</tt>
+	 */
+	public static final NSOFBoolean TRUE = new NSOFBoolean(true);
+	/**
+	 * The false object.<br>
+	 * <tt>kFD_False</tt>
+	 */
+	public static final NSOFBoolean FALSE = new NSOFBoolean(false);
 
 	/**
 	 * Creates a new boolean.
+	 * 
+	 * @param value
+	 *            the value.
 	 */
-	public NSOFBoolean() {
+	public NSOFBoolean(boolean value) {
 		super();
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_BOOLEAN);
+		setValue(value ? 0x1A : 0);
 	}
 
 	@Override
@@ -44,7 +66,7 @@ public class NSOFBoolean extends NSOFImmediate {
 
 	@Override
 	public String toString() {
-		return (getValue() == 0) ? Boolean.FALSE.toString() : Boolean.TRUE.toString();
+		return isTrue() ? Boolean.TRUE.toString() : Boolean.FALSE.toString();
 	}
 
 	@Override

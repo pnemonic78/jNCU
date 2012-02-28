@@ -25,12 +25,24 @@ import java.io.OutputStream;
 
 /**
  * Newton Streamed Object Format - Immediate.
+ * <p>
+ * <p>
+ * Other than characters, the only immediate objects that you need are the true
+ * object and the nil object, which are specified by the <tt>kFD_True</tt> and
+ * <tt>kFD_NIL</tt> constants.
+ * <p>
+ * 2 bits are used for the immediate type, leaving a maximum of 30 bits for the
+ * immediate value.
  * 
  * @author Moshe
  */
 public class NSOFImmediate extends NSOFObject {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("immediate");
+	/**
+	 * Default immediate class.<br>
+	 * <tt>kFD_SymWeird_Immediate</tt>
+	 */
+	public static final NSOFSymbol CLASS_IMMEDIATE = new NSOFSymbol("immediate");
 
 	/** Integer immediate. */
 	public static final int IMMEDIATE_INTEGER = 0x0;
@@ -42,6 +54,27 @@ public class NSOFImmediate extends NSOFObject {
 	public static final int IMMEDIATE_NIL = 0x2;
 	/** Magic Pointer immediate. */
 	public static final int IMMEDIATE_MAGIC_POINTER = 0x3;
+
+	/**
+	 * A special immediate.<br>
+	 * <tt>kImmedSpecial</tt>
+	 */
+	public static final int FD_SPECIAL = 0x00;
+	/**
+	 * A character.<br>
+	 * <tt>kImmedCharacter</tt>
+	 */
+	public static final int FD_CHARACTER = 0x01;
+	/**
+	 * A Boolean.<br>
+	 * <tt>kImmedBoolean</tt>
+	 */
+	public static final int FD_BOOLEAN = 0x02;
+	/**
+	 * A reserved immediate.<br>
+	 * <tt>kImmedReserved</tt>
+	 */
+	public static final int FD_RESERVED = 0x03;
 
 	private int value;
 	private int type = IMMEDIATE_INTEGER;
@@ -61,7 +94,7 @@ public class NSOFImmediate extends NSOFObject {
 	 */
 	public NSOFImmediate(int value) {
 		super();
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_IMMEDIATE);
 		setValue(value);
 	}
 
@@ -72,7 +105,7 @@ public class NSOFImmediate extends NSOFObject {
 
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
-		out.write(IMMEDIATE);
+		out.write(NSOF_IMMEDIATE);
 
 		// Immediate Ref (xlong)
 		int val = getValue();

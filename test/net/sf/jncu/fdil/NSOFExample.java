@@ -38,9 +38,9 @@ import net.sf.junit.SFTestCase;
  * This streamed representation translates as:
  * 
  * <pre>
- * 02—version number
- * 06—kFrame [ID 0]
- * 06—length, 6 slots
+ * 02ï¿½version number
+ * 06ï¿½kFrame [ID 0]
+ * 06ï¿½length, 6 slots
  * Slot tags:
  *    07 (kSymbol) 04 (length of name) 6E616D65 ("name") [ID 1]
  *    07 04 63617473 ("cats") [ID 2]
@@ -49,28 +49,28 @@ import net.sf.junit.SFTestCase;
  *    07 06 70686F6E6573 ("phones") [ID 5]
  *    07 09 6E616D65416761696E ("nameAgain") [ID 6]
  * Slot values:
- *    08—kString [ID 7]
- *    1A—length, 26 bytes
+ *    08ï¿½kString [ID 7]
+ *    1Aï¿½length, 26 bytes
  *    00570061006C00740065007200200053006D0069007400680000 ("Walter Smith")
- *    00—kImmediate
- *    08—Ref of the integer 2
- *    0B—kSmallRect [ID 8]
+ *    00ï¿½kImmediate
+ *    08ï¿½Ref of the integer 2
+ *    0Bï¿½kSmallRect [ID 8]
  *       0E (top=14) 0A (left=10) 64 (bottom=100) 28 (right=40)
- *       02—kUnicodeCharacter
- *       2022—The character code
- *       05—kPlainArray [ID 9]
- *       02—length, 2 slots
+ *       02ï¿½kUnicodeCharacter
+ *       2022ï¿½The character code
+ *       05ï¿½kPlainArray [ID 9]
+ *       02ï¿½length, 2 slots
  *    Slot values:
- *       08—kString [ID 10]
- *       1A—length, 26 bytes
+ *       08ï¿½kString [ID 10]
+ *       1Aï¿½length, 26 bytes
  *       003400300038002D003900390036002D00310030003100300000 ("408-996-1010")
- *       03—kBinaryObject [ID 11]
- *       1A—length, 26 bytes
+ *       03ï¿½kBinaryObject [ID 11]
+ *       1Aï¿½length, 26 bytes
  *       Class:
  *          07(kSymbol) 08 (length of name) 66617850686F6E65 ("faxPhone")[ID 12]
  *       003400300038002D003900370034002D00390030003900340000 ("408-974-9094")
- *    09—kPrecedent
- *    07—ID 7 ("Walter Smith" object above)
+ *    09ï¿½kPrecedent
+ *    07ï¿½ID 7 ("Walter Smith" object above)
  * </pre>
  * 
  * @author moshew
@@ -99,7 +99,7 @@ public class NSOFExample extends SFTestCase {
 	public void testEncode() throws IOException {
 		NSOFObject[] phones = new NSOFObject[] { new NSOFString("408-996-1010"), null };
 		NSOFBinaryObject faxPhone = new NSOFBinaryObject();
-		faxPhone.setClass("faxPhone");
+		faxPhone.setObjectClass("faxPhone");
 		byte[] utf16 = "408-974-9094".getBytes("UTF-16");
 		System.arraycopy(utf16, 2, utf16, 0, utf16.length - 2);
 		utf16[utf16.length - 2] = 0;

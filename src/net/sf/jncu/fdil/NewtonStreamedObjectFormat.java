@@ -35,43 +35,44 @@ import java.io.OutputStream;
  * The beginning of each object's description is a tag byte that specifies the
  * encoding type used for the object.<br>
  * The tag byte is followed an ID, called a <em>precedent ID</em>. The IDs are
- * assigned consecutively, starting with 0 for the root object, and are used by
- * the kPrecedent tag to generate backward pointer references to objects that
- * have already been introduced. Note that no object may be traversed more than
- * once; any pointers to previously traversed objects must be represented with
- * kPrecedent. Immediate objects cannot be precedents; all precedents are heap
- * objects (binary objects, arrays, and frames).
+ * assigned consecutively, starting with {@code 0} for the root object, and are
+ * used by the <tt>kPrecedent</tt> tag to generate backward pointer references
+ * to objects that have already been introduced. Note that no object may be
+ * traversed more than once; any pointers to previously traversed objects must
+ * be represented with <tt>kPrecedent</tt>. Immediate objects cannot be
+ * precedents; all precedents are heap objects (binary objects, arrays, and
+ * frames).
  * 
  * @author Moshe
  */
 public abstract class NewtonStreamedObjectFormat {
 
 	/** <tt>kImmediate</tt> */
-	public static final int IMMEDIATE = 0;
+	public static final int NSOF_IMMEDIATE = 0;
 	/** <tt>kCharacter</tt> */
-	public static final int CHARACTER = 1;
+	public static final int NSOF_CHARACTER = 1;
 	/** <tt>kUnicodeCharacter</tt> */
-	public static final int UNICODE_CHARACTER = 2;
+	public static final int NSOF_UNICODE_CHARACTER = 2;
 	/** <tt>kBinaryObject</tt> */
-	public static final int BINARY_OBJECT = 3;
+	public static final int NSOF_BINARY = 3;
 	/** <tt>kArray</tt> */
-	public static final int ARRAY = 4;
+	public static final int NSOF_ARRAY = 4;
 	/** <tt>kPlainArray</tt> */
-	public static final int PLAIN_ARRAY = 5;
+	public static final int NSOF_PLAIN_ARRAY = 5;
 	/** <tt>kFrame</tt> */
-	public static final int FRAME = 6;
+	public static final int NSOF_FRAME = 6;
 	/** <tt>kSymbol</tt> */
-	public static final int SYMBOL = 7;
+	public static final int NSOF_SYMBOL = 7;
 	/** <tt>kString</tt> */
-	public static final int STRING = 8;
+	public static final int NSOF_STRING = 8;
 	/** <tt>kPrecedent</tt> */
-	public static final int PRECEDENT = 9;
+	public static final int NSOF_PRECEDENT = 9;
 	/** <tt>kNIL</tt> */
-	public static final int NIL = 10;
+	public static final int NSOF_NIL = 10;
 	/** <tt>kSmallRect</tt> */
-	public static final int SMALL_RECT = 11;
+	public static final int NSOF_SMALL_RECT = 11;
 	/** <tt>kLargeBinary</tt> */
-	public static final int LARGE_BINARY = 12;
+	public static final int NSOF_LARGE_BINARY = 12;
 
 	/** NSOF version. */
 	public static final int VERSION = 2;
@@ -207,5 +208,21 @@ public abstract class NewtonStreamedObjectFormat {
 	protected static void htons(int n, OutputStream out) throws IOException {
 		out.write((n >> 8) & 0xFF);
 		out.write((n >> 0) & 0xFF);
+	}
+
+	/**
+	 * Read into the whole array.
+	 * 
+	 * @param in
+	 *            the input.
+	 * @param b
+	 *            the destination buffer.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected void readAll(InputStream in, byte[] b) throws IOException {
+		int count = 0;
+		while (count < b.length)
+			count += in.read(b, count, b.length - count);
 	}
 }

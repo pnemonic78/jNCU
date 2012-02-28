@@ -22,17 +22,41 @@ package net.sf.jncu.fdil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+
+import net.sf.lang.ControlCharacter;
 
 /**
  * Newton Streamed Object Format - String.
+ * <p>
+ * An array of Unicode characters.
  * 
  * @author Moshe
  */
 public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("string");
+	/**
+	 * Default string class.<br>
+	 * <tt>kFD_SymString</tt>
+	 */
+	public static final NSOFSymbol CLASS_STRING = new NSOFSymbol("string");
 
-	protected static final String CHARSET = "UTF-16";
+	/** 16-bit Unicode character encoding. */
+	protected static final String CHARSET_UTF16 = "UTF-16";
+	/** MacRoman character encoding. */
+	protected static final String CHARSET_MAC = "MacRoman";
+
+	/**
+	 * Character in place of the embedded ink for 16-bit strings.<br>
+	 * <tt>kInkChar</tt>
+	 */
+	protected static final char INK = 0xF700;
+	/**
+	 * Character in place of the embedded ink for 8-bit strings.<br>
+	 * <tt>kInkChar</tt>
+	 */
+	protected static final char INK8 = ControlCharacter.SUB;
+
 	protected static final char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 	private String value;
@@ -43,7 +67,7 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 	 */
 	public NSOFString() {
 		super();
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_STRING);
 	}
 
 	/**
@@ -64,24 +88,22 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 		// String (halfwords)
 		byte[] buf = new byte[numBytes];
 
-		int count = 0;
-		while (count < numBytes)
-			count += in.read(buf, count, numBytes - count);
+		readAll(in, buf);
 		// Trim?
 		while ((numBytes >= 2) && (buf[numBytes - 2] == 0) && (buf[numBytes - 1] == 0))
 			numBytes -= 2;
-		setValue(new String(buf, 0, numBytes, CHARSET));
+		setValue(new String(buf, 0, numBytes, CHARSET_UTF16));
 	}
 
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
-		out.write(STRING);
+		out.write(NSOF_STRING);
 		String s = getValue();
 		if (s == null) {
 			// Number of bytes in string (xlong)
 			XLong.encode(0, out);
 		} else {
-			byte[] buf = s.getBytes(CHARSET);
+			byte[] buf = s.getBytes(CHARSET_UTF16);
 			// Number of bytes in string (xlong)
 			// 2-bytes per character + null-terminated
 			XLong.encode(buf.length, out);
@@ -114,6 +136,41 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 		this.toString = null;
 	}
 
+	/**
+	 * Set the value.
+	 * 
+	 * @param value
+	 *            the value.
+	 */
+	public void setValue(char[] value) {
+		setValue(new String(value));
+	}
+
+	/**
+	 * Set the value.
+	 * 
+	 * @param value
+	 *            the <tt>null</tt>-terminated series of ASCII characters.
+	 */
+	public void setValue(byte[] value) {
+		int length = value.length;
+		for (int i = 0; i < length; i++) {
+			if (value[i] == 0) {
+				length = i;
+				break;
+			}
+		}
+		String s;
+		try {
+			s = new String(value, 0, length, CHARSET_MAC);
+		} catch (UnsupportedEncodingException uee) {
+			// Should never arrive here!
+			s = new String(value, 0, length);
+		}
+		s = s.replace(INK8, INK);
+		setValue(s);
+	}
+
 	@Override
 	public int hashCode() {
 		return (value == null) ? 0 : value.hashCode();
@@ -139,9 +196,11 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 		if (toString == null) {
 			if (value != null) {
 				StringBuffer buf = new StringBuffer();
-				char[] chars = value.toCharArray();
+				int len = value.length();
+				char c;
 
-				for (char c : chars) {
+				for (int i = 0; i < len; i++) {
+					c = value.charAt(i);
 					if ((c >= 32) && (c <= 127)) {
 						buf.append(c);
 					} else if (c == '\n') {
@@ -170,6 +229,8 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 
 	@Override
 	public int compareTo(NSOFString that) {
+		if (that == null)
+			return +1;
 		String valThis = this.getValue();
 		String valThat = that.getValue();
 		if (valThis == null) {
@@ -186,4 +247,19 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 		return super.equals(obj);
 	}
 
+	/**
+	 * Is this a rich string?
+	 * <p>
+	 * You may receive a rich string from a Newton device. A rich string is a
+	 * string with embedded ink data. You cannot create a rich string, nor
+	 * interpret the data in the ink portion of a rich string. When translating
+	 * rich strings, a {@code 0xF700} or {@code 0x1A} character is inserted in
+	 * the place of the embedded ink, depending on whether you are extracting
+	 * 16-bit or 8-bit characters.
+	 * 
+	 * @return true if rich string.
+	 */
+	public boolean isRich() {
+		return (value.indexOf(INK) >= 0);
+	}
 }

@@ -29,14 +29,15 @@ import net.sf.jncu.fdil.NSOFSymbol;
  */
 public class NSOFLiterals extends NSOFArray {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("literals");
+	/** Default literals class. */
+	public static final NSOFSymbol CLASS_LITERALS = new NSOFSymbol("literals");
 
 	/**
 	 * Constructs a new literals array.
 	 */
 	public NSOFLiterals() {
 		super();
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_LITERALS);
 	}
 
 }

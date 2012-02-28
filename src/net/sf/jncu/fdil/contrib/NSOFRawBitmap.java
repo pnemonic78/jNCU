@@ -97,7 +97,8 @@ import net.sf.jncu.fdil.NSOFSymbol;
  */
 public class NSOFRawBitmap extends NSOFLargeBinary {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("bits");
+	/** Default bitmap bits class. */
+	public static final NSOFSymbol CLASS_BITS = new NSOFSymbol("bits");
 
 	private int header;
 	private int rowBytes;
@@ -109,7 +110,7 @@ public class NSOFRawBitmap extends NSOFLargeBinary {
 	 */
 	public NSOFRawBitmap() {
 		super();
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_BITS);
 	}
 
 	@Override

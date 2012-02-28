@@ -29,14 +29,15 @@ import net.sf.jncu.fdil.NSOFSymbol;
  */
 public class NSOFInstructions extends NSOFBinaryObject {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("instructions");
+	/** Default instructions class. */
+	public static final NSOFSymbol CLASS_INSTRUCTIONS = new NSOFSymbol("instructions");
 
 	/**
 	 * Constructs a new instructions.
 	 */
 	public NSOFInstructions() {
 		super();
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_INSTRUCTIONS);
 	}
 
 }

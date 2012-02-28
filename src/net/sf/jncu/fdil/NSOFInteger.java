@@ -30,18 +30,21 @@ package net.sf.jncu.fdil;
  */
 public class NSOFInteger extends NSOFImmediate {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("integer");
+	/**
+	 * Default integer class.
+	 */
+	public static final NSOFSymbol CLASS_INTEGER = new NSOFSymbol("integer");
 
 	/**
 	 * A constant holding the minimum value an <code>integer</code> can have,
 	 * -2<sup>29</sup>.
 	 */
-	public static final int MIN_VALUE = -536870912;
+	public static final int MIN_VALUE = -0x20000000;
 	/**
 	 * A constant holding the maximum value an <code>integer</code> can have,
 	 * 2<sup>29</sup>-1.
 	 */
-	public static final int MAX_VALUE = 536870911;
+	public static final int MAX_VALUE = 0x1FFFFFFF;
 
 	/**
 	 * Creates a new integer with value {@code 0}.
@@ -58,21 +61,16 @@ public class NSOFInteger extends NSOFImmediate {
 	 */
 	public NSOFInteger(int value) {
 		super(value);
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_INTEGER);
 		setType(IMMEDIATE_INTEGER);
-	}
-
-	@Override
-	public int getValue() {
-		return super.getValue();
 	}
 
 	@Override
 	public void setValue(int value) {
 		if (value < MIN_VALUE)
-			throw new IndexOutOfBoundsException();
+			throw new ValueOutOfRangeException();
 		if (value > MAX_VALUE)
-			throw new IndexOutOfBoundsException();
+			throw new ValueOutOfRangeException();
 		super.setValue(value);
 	}
 }

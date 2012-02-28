@@ -22,27 +22,37 @@ package net.sf.jncu.fdil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 /**
  * Newton Streamed Object Format - Frame.
+ * <p>
+ * A frame is an aggregate object where each element, called a "slot," contains
+ * any FDIL object, and is indexed by name. The slot name itself is a symbol.
+ * Rather than using an integer index to retrieve a value that's been added to a
+ * frame (as you would with an array), you specify the slot name to get the slot
+ * value.
  * 
  * @author Moshe
  */
 public class NSOFFrame extends NSOFPointer {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("frame");
+	/**
+	 * Default frame class.<br>
+	 * <tt>kFD_SymFrame</tt>
+	 */
+	public static final NSOFSymbol CLASS_FRAME = new NSOFSymbol("frame");
 
-	protected final Map<NSOFSymbol, NSOFObject> slots = new LinkedHashMap<NSOFSymbol, NSOFObject>();
+	protected final Map<NSOFSymbol, NSOFObject> slots = new HashMap<NSOFSymbol, NSOFObject>();
 
 	/**
 	 * Constructs a new frame.
 	 */
 	public NSOFFrame() {
 		super();
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_FRAME);
 	}
 
 	@Override
@@ -72,7 +82,7 @@ public class NSOFFrame extends NSOFPointer {
 
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
-		out.write(FRAME);
+		out.write(NSOF_FRAME);
 
 		// Number of slots (xlong)
 		XLong.encode(slots.size(), out);
@@ -85,7 +95,7 @@ public class NSOFFrame extends NSOFPointer {
 		// Slot values in ascending order (objects)
 		NSOFObject slot;
 		for (NSOFSymbol sym : slots.keySet()) {
-			slot = slots.get(sym);
+			slot = get(sym);
 			encoder.encode(slot, out);
 		}
 	}
@@ -120,60 +130,69 @@ public class NSOFFrame extends NSOFPointer {
 	}
 
 	/**
-	 * Associates the specified slot value with the specified symbol.
+	 * Adds a key/value pair to the frame.
+	 * <p>
+	 * If a pair with the specified key already exists in the frame, its
+	 * corresponding value object is replaced.
 	 * 
-	 * @param key
-	 *            the slot symbol.
+	 * @param slotName
+	 *            the slot name.
 	 * @param value
 	 *            the slot value.
+	 * @return the replaced object or <tt>NIL</tt> if the slot does not exist.
 	 */
-	public void put(NSOFSymbol key, NSOFObject value) {
-		slots.put(key, value);
+	public NSOFObject put(NSOFSymbol name, NSOFObject value) {
+		NSOFObject old = slots.put(name, (value == null) ? NSOFNil.NIL : value);
+		return (old == null) ? NSOFNil.NIL : old;
 	}
 
 	/**
 	 * Associates the specified slot value with the specified symbol.
 	 * 
-	 * @param key
-	 *            the slot symbol name.
+	 * @param slotName
+	 *            the slot name.
 	 * @param value
 	 *            the slot value.
+	 * @see #put(NSOFSymbol, NSOFObject)
 	 */
-	public void put(String key, NSOFObject value) {
-		put(new NSOFSymbol(key), value);
+	public void put(String slotName, NSOFObject value) {
+		put(new NSOFSymbol(slotName), value);
 	}
 
 	/**
 	 * Get the mapped slot value for the specified key.
 	 * 
-	 * @param key
-	 *            the slot symbol.
-	 * @return the slot value - {@code null} otherwise.
+	 * @param slotName
+	 *            the slot name.
+	 * @return the slot value - {@code NIL} otherwise.
 	 */
-	public NSOFObject get(NSOFSymbol key) {
-		return slots.get(key);
+	public NSOFObject get(NSOFSymbol slotName) {
+		NSOFObject value = slots.get(slotName);
+		return (value == null) ? NSOFNil.NIL : value;
 	}
 
 	/**
 	 * Get the mapped slot value for the specified key.
 	 * 
-	 * @param key
-	 *            the slot symbol name.
-	 * @return the slot value - {@code null} otherwise.
+	 * @param slotName
+	 *            the slot name.
+	 * @return the slot value - {@code NIL} otherwise.
+	 * @see #get(NSOFSymbol)
 	 */
-	public NSOFObject get(String key) {
-		return get(new NSOFSymbol(key));
+	public NSOFObject get(String slotName) {
+		return get(new NSOFSymbol(slotName));
 	}
 
 	/**
-	 * Remove a slot entry.
+	 * Removes the slot/value pair.
 	 * 
-	 * @param key
-	 *            the slot symbol.
-	 * @return the removed slot value.
+	 * @param slotName
+	 *            the slot name.
+	 * @return the removed slot value - {@code NIL} otherwise.
 	 */
-	public NSOFObject remove(NSOFSymbol key) {
-		return slots.remove(key);
+	public NSOFObject remove(NSOFSymbol slotName) {
+		NSOFObject value = slots.remove(slotName);
+		return (value == null) ? NSOFNil.NIL : value;
 	}
 
 	@Override
@@ -191,11 +210,34 @@ public class NSOFFrame extends NSOFPointer {
 	}
 
 	/**
-	 * Get the slot symbols.
+	 * Get the set of slot names for traversal.
 	 * 
-	 * @return the symbols.
+	 * @return the names.
 	 */
-	public Set<NSOFSymbol> getSymbols() {
+	public Set<NSOFSymbol> getNames() {
 		return slots.keySet();
+	}
+
+	/**
+	 * Returns whether or not a slot with the given name exists in the frame.
+	 * 
+	 * @param slotName
+	 *            the slot name.
+	 * @return true if slot found.
+	 */
+	public boolean hasSlot(NSOFSymbol slotName) {
+		return slots.containsKey(slotName);
+	}
+
+	/**
+	 * Returns whether or not a slot with the given name exists in the frame.
+	 * 
+	 * @param slotName
+	 *            the slot name.
+	 * @return true if slot found.
+	 * @see #hasSlot(NSOFSymbol)
+	 */
+	public boolean hasSlot(String slotName) {
+		return hasSlot(new NSOFSymbol(slotName));
 	}
 }

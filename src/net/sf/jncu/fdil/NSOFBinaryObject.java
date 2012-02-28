@@ -26,12 +26,17 @@ import java.io.OutputStream;
 
 /**
  * Newton Streamed Object Format - Binary Object.
+ * <p>
+ * A binary object consist of a series of raw bytes. You may store any data you
+ * wish in a binary object. The object may also contain a class symbol
+ * identifying the data.
  * 
  * @author Moshe
  */
 public class NSOFBinaryObject extends NSOFPointer {
 
-	public static final NSOFSymbol NS_CLASS = new NSOFSymbol("binary");
+	/** Default binary object class. */
+	public static final NSOFSymbol CLASS_BINARY = new NSOFSymbol("binary");
 
 	private byte[] value;
 	private NSOFObject object;
@@ -41,7 +46,7 @@ public class NSOFBinaryObject extends NSOFPointer {
 	 */
 	public NSOFBinaryObject() {
 		super();
-		setNSClass(NS_CLASS);
+		setObjectClass(CLASS_BINARY);
 	}
 
 	/**
@@ -74,7 +79,7 @@ public class NSOFBinaryObject extends NSOFPointer {
 
 		// Class (object)
 		NSOFSymbol symbol = (NSOFSymbol) decoder.decode(in);
-		setNSClass(symbol);
+		setObjectClass(symbol);
 
 		// Data
 		readAll(in, data);
@@ -83,7 +88,7 @@ public class NSOFBinaryObject extends NSOFPointer {
 
 	@Override
 	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
-		out.write(BINARY_OBJECT);
+		out.write(NSOF_BINARY);
 
 		byte[] v = getValue();
 		NSOFObject o = getObject();
@@ -101,13 +106,13 @@ public class NSOFBinaryObject extends NSOFPointer {
 			XLong.encode(0, out);
 
 			// Class (object)
-			encoder.encode(getNSClass(), out);
+			encoder.encode(getObjectClass(), out);
 		} else {
 			// Number of bytes of data (xlong)
 			XLong.encode(v.length, out);
 
 			// Class (object)
-			encoder.encode(getNSClass(), out);
+			encoder.encode(getObjectClass(), out);
 
 			// Data
 			out.write(v);
