@@ -54,7 +54,7 @@ public class NSOFSoupName extends NSOFString {
 	}
 
 	@Override
-	public void setValue(String value) {
+	protected void setValue(String value) {
 		if ((value != null) && (value.length() >= 25))
 			throw new SymbolTooLongException();
 		super.setValue(value);

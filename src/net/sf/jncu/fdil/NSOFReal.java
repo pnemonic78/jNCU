@@ -71,13 +71,13 @@ public class NSOFReal extends NSOFBinaryObject {
 	 * @param value
 	 *            the value.
 	 */
-	public void setReal(double value) {
+	protected void setReal(double value) {
 		this.value = value;
 		super.setValue(NumberUtils.toBytes(Double.doubleToRawLongBits(value)));
 	}
 
 	@Override
-	public void setValue(byte[] value) {
+	protected void setValue(byte[] value) {
 		setReal(Double.longBitsToDouble(NumberUtils.toLong(value)));
 		super.setValue(value);
 	}

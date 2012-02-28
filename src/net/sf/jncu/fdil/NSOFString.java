@@ -131,7 +131,7 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 	 * @param value
 	 *            the value.
 	 */
-	public void setValue(String value) {
+	protected void setValue(String value) {
 		this.value = value;
 		this.toString = null;
 	}
@@ -142,7 +142,7 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 	 * @param value
 	 *            the value.
 	 */
-	public void setValue(char[] value) {
+	protected void setValue(char[] value) {
 		setValue(new String(value));
 	}
 
@@ -152,7 +152,7 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 	 * @param value
 	 *            the <tt>null</tt>-terminated series of ASCII characters.
 	 */
-	public void setValue(byte[] value) {
+	protected void setValue(byte[] value) {
 		int length = value.length;
 		for (int i = 0; i < length; i++) {
 			if (value[i] == 0) {

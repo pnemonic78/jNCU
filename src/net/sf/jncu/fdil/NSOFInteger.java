@@ -66,7 +66,7 @@ public class NSOFInteger extends NSOFImmediate {
 	}
 
 	@Override
-	public void setValue(int value) {
+	protected void setValue(int value) {
 		if (value < MIN_VALUE)
 			throw new ValueOutOfRangeException();
 		if (value > MAX_VALUE)

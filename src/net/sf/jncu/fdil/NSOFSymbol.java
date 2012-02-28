@@ -84,7 +84,7 @@ public class NSOFSymbol extends NSOFString {
 	}
 
 	@Override
-	public void setValue(String value) {
+	protected void setValue(String value) {
 		if (value == null) {
 			super.setValue(value);
 			this.valueLower = null;

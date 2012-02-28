@@ -134,7 +134,7 @@ public class NSOFBinaryObject extends NSOFPointer {
 	 * @param value
 	 *            the value.
 	 */
-	public void setValue(byte[] value) {
+	protected void setValue(byte[] value) {
 		this.value = value;
 		this.object = null;
 	}
@@ -145,7 +145,7 @@ public class NSOFBinaryObject extends NSOFPointer {
 	 * @param value
 	 *            the value.
 	 */
-	public void setObject(NSOFObject value) {
+	protected void setObject(NSOFObject value) {
 		this.value = null;
 		this.object = value;
 	}
