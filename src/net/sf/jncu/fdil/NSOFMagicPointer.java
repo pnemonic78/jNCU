@@ -42,22 +42,13 @@ public class NSOFMagicPointer extends NSOFImmediate {
 
 	/**
 	 * Creates a new magic pointer.
-	 */
-	public NSOFMagicPointer() {
-		super();
-		setObjectClass(CLASS_MAGIC_POINTER);
-		setType(IMMEDIATE_MAGIC_POINTER);
-	}
-
-	/**
-	 * Creates a new magic pointer.
 	 * 
 	 * @param value
 	 *            the value.
 	 */
 	public NSOFMagicPointer(int value) {
-		this();
-		setValue(value);
+		super(value, IMMEDIATE_MAGIC_POINTER);
+		setObjectClass(CLASS_MAGIC_POINTER);
 	}
 
 	@Override

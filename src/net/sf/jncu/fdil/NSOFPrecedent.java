@@ -46,6 +46,7 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 	public static final NSOFSymbol CLASS_PRECEDENT = new NSOFSymbol("precedent");
 
 	private int id;
+	private boolean idSet;
 
 	/**
 	 * Constructs a new precedent.
@@ -67,13 +68,13 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 	}
 
 	@Override
-	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
+	public void inflate(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Precedent ID (xlong)
 		setId(XLong.decodeValue(in));
 	}
 
 	@Override
-	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
+	public void flatten(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(NSOF_PRECEDENT);
 		// Precedent ID (xlong)
 		XLong.encode(getId(), out);
@@ -95,7 +96,10 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 	 *            the id.
 	 */
 	protected void setId(int id) {
+		if (idSet)
+			throw new IllegalArgumentException("id already set");
 		this.id = id;
+		this.idSet = true;
 	}
 
 	@Override
@@ -106,7 +110,7 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof NSOFPrecedent) {
-			return this.getId() == ((NSOFPrecedent) obj).getId();
+			return compareTo((NSOFPrecedent) obj) == 0;
 		}
 		return super.equals(obj);
 	}

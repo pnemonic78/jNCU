@@ -65,8 +65,7 @@ public class NSOFAsciiCharacter extends NSOFCharacter {
 	}
 
 	@Override
-	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
-		setValue('\u0000');
+	public void inflate(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Character code (byte)
 		int c = in.read();
 		if (c == -1) {
@@ -76,7 +75,7 @@ public class NSOFAsciiCharacter extends NSOFCharacter {
 	}
 
 	@Override
-	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
+	public void flatten(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(NSOF_CHARACTER);
 		// Character code (byte)
 		out.write(getValue() & 0xFF);

@@ -67,6 +67,6 @@ public abstract class DockCommandToNewtonScript<T extends NSOFObject> extends Do
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
 		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.encode(getObject(), data);
+		encoder.flatten(getObject(), data);
 	}
 }

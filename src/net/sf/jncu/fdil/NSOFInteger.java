@@ -60,9 +60,8 @@ public class NSOFInteger extends NSOFImmediate {
 	 *            the integer value.
 	 */
 	public NSOFInteger(int value) {
-		super(value);
+		super(value, IMMEDIATE_INTEGER);
 		setObjectClass(CLASS_INTEGER);
-		setType(IMMEDIATE_INTEGER);
 	}
 
 	@Override

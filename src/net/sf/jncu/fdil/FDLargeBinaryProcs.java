@@ -43,39 +43,6 @@ package net.sf.jncu.fdil;
 public interface FDLargeBinaryProcs {
 
 	/**
-	 * Store data in RAM.<br>
-	 * <tt>kFD_MemoryStoreProcs</tt>
-	 */
-	public static final int MEMORY_STORE_PROCS = 0;
-	/**
-	 * Store data on disk.<br>
-	 * <tt>kFD_DiskStoreProcs</tt>
-	 */
-	public static final int DISK_STORE_PROCS = 1;
-	/**
-	 * Discards data.<br>
-	 * <tt>kFD_NullStoreProcs</tt>
-	 */
-	public static final int NULL_STORE_PROCS = 2;
-
-	/**
-	 * Don’t compress data.<br>
-	 * <tt>kFD_NoCompression</tt>
-	 */
-	public static final int NO_COMPRESSION = 0;
-	/**
-	 * Use Lempel-Ziv (LZ) compression. This is the only type of compression you
-	 * should use when calling <tt>FD_MakeLargeBinary</tt>. <br>
-	 * <tt>kFD_LZCompression</tt>
-	 */
-	public static final int LZ_COMPRESSION = 1;
-	/**
-	 * Use Zippy compression. You should never use this value.<br>
-	 * <tt>kFD_ZippyCompression</tt>
-	 */
-	public static final int ZIPPY_COMPRESSION = 2;
-
-	/**
 	 * The <tt>Create</tt> function is called when a large binary object is
 	 * being created, in response to a call to <tt>FD_MakeLargeBinary</tt> or
 	 * <tt>FD_Unflatten</tt>.<br>

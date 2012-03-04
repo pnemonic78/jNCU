@@ -24,7 +24,28 @@ package net.sf.jncu.fdil;
  * 
  * @author Moshe
  */
-public class FDHandle extends Object implements Comparable<FDHandle> {
+public class FDHandle extends Object implements Comparable<FDHandle>, FDConstants {
+
+	public static final int TYPE_INTEGER = 0x00;
+	public static final int TYPE_POINTER = 0x01;
+	public static final int TYPE_IMMEDIATE = 0x02;
+	public static final int TYPE_MAGIC = 0x03;
+	public static final int TYPE_IMMEDIATE_SPECIAL = (FD_IMMED_SPECIAL << 2) | TYPE_IMMEDIATE;
+	public static final int TYPE_IMMEDIATE_CHARACTER = (FD_IMMED_CHARACTER << 2) | TYPE_IMMEDIATE;
+	public static final int TYPE_IMMEDIATE_BOOLEAN = (FD_IMMED_BOOLEAN << 2) | TYPE_IMMEDIATE;
+	public static final int TYPE_IMMEDIATE_RESERVED = (FD_IMMED_RESERVED << 2) | TYPE_IMMEDIATE;
+
+	public static final int FLAG_BINARY = 0x00;
+	public static final int FLAG_ARRAY = 0x01;
+	public static final int FLAG_BLOB = 0x02;
+	public static final int FLAG_FRAME = 0x03;
+
+	public static final int MASK_TYPE = 0x03;
+	public static final int MASK_TYPE_IMMEDIATE = 0x0F;
+	public static final int MASK_FLAG_TYPE = 0x03;
+
+	protected static final int MASK_28 = 0x0FFFFFFF;
+	protected static final int MASK_30 = 0x3FFFFFFF;
 
 	/**
 	 * The {@code ref} field is the same long as in the non-debug
@@ -60,7 +81,7 @@ public class FDHandle extends Object implements Comparable<FDHandle> {
 	 * {@code 10} = large binary object<br>
 	 * {@code 11} = frame
 	 */
-	private int flags;
+	private final int flags;
 	/**
 	 * The {@code size} field specifies the object’s size. For binary objects,
 	 * this is the number of user bytes in the object. For arrays and frames,
@@ -78,17 +99,22 @@ public class FDHandle extends Object implements Comparable<FDHandle> {
 	 * difference between a frame map and a regular array. A frame map contains
 	 * the value zero in its {@code oClass} field.
 	 */
-	private FDHandle oClass;
+	private final FDHandle oClass;
+
+	private int pointer;
 
 	/**
 	 * Creates a new handle.
 	 * 
-	 * @param ref
-	 *            the handle reference.
+	 * @param obj
+	 *            the object to handle.
 	 */
-	public FDHandle(int ref) {
+	public FDHandle(NSOFObject obj) {
 		super();
-		this.ref = ref;
+		this.ref = generateRef(obj);
+		this.flags = generateFlags(obj);
+		this.oClass = generateClass(obj);
+		this.size = calculateSize(obj);
 	}
 
 	/**
@@ -135,13 +161,134 @@ public class FDHandle extends Object implements Comparable<FDHandle> {
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof FDHandle) {
-			return ref == ((FDHandle) obj).ref;
+			return compareTo((FDHandle) obj) == 0;
 		}
 		return false;
 	}
 
 	@Override
 	public int compareTo(FDHandle that) {
-		return this.ref - that.ref;
+		int n = this.ref - that.ref;
+		if (n == 0)
+			n = this.flags - that.flags;
+		if (n == 0)
+			n = this.pointer - that.pointer;
+		if (n == 0)
+			n = this.size - that.size;
+		return n;
+	}
+
+	@Override
+	public String toString() {
+		return String.valueOf(ref);
+	}
+
+	/**
+	 * Generate the handle reference.
+	 * 
+	 * @param obj
+	 *            the object.
+	 * @return the reference.
+	 */
+	private int generateRef(NSOFObject obj) {
+		int value = 0;
+		int type = 0;
+		if (obj instanceof NSOFInteger) {
+			NSOFInteger i = (NSOFInteger) obj;
+			type = TYPE_INTEGER;
+			value = (i.getValue() & MASK_30) << 2;
+		} else if (obj instanceof NSOFImmediate) {
+			NSOFImmediate i = (NSOFImmediate) obj;
+			type = TYPE_IMMEDIATE;
+			if (i.isCharacter()) {
+				type = TYPE_IMMEDIATE_CHARACTER;
+				value = (i.getValue() & MASK_28) << 4;
+			} else if (i.isInteger()) {
+				type = TYPE_INTEGER;
+				value = (i.getValue() & MASK_30) << 2;
+			} else if (i.isMagicPointer()) {
+				type = TYPE_MAGIC;
+				value = (i.getValue() & MASK_30) << 2;
+			} else if (i.isNil()) {
+				type = TYPE_IMMEDIATE_SPECIAL;
+				value = (i.getValue() & MASK_28) << 4;
+			} else if (i.isTrue()) {
+				type = TYPE_IMMEDIATE_BOOLEAN;
+				value = (i.getValue() & MASK_28) << 4;
+			}
+		} else if (obj instanceof NSOFPointer) {
+			type = TYPE_POINTER;
+			value = (++pointer) << 2;
+		}
+		return value | type;
+	}
+
+	/**
+	 * Generate the handle flags.
+	 * 
+	 * @param obj
+	 *            the object.
+	 * @return the flags.
+	 */
+	private int generateFlags(NSOFObject obj) {
+		int flags = 0;
+		if (obj instanceof NSOFArray) {
+			flags |= FLAG_ARRAY;
+		} else if (obj instanceof NSOFBinaryObject) {
+			if (obj instanceof NSOFLargeBinary) {
+				flags |= FLAG_BLOB;
+			} else {
+				flags |= FLAG_BINARY;
+			}
+		} else if (obj instanceof NSOFFrame) {
+			flags |= FLAG_FRAME;
+		}
+		return flags;
+	}
+
+	/**
+	 * Generate the handle object class.
+	 * 
+	 * @param obj
+	 *            the object.
+	 * @return the class handle.
+	 */
+	private FDHandle generateClass(NSOFObject obj) {
+		final NSOFSymbol cls = obj.getObjectClass();
+		if (cls == null)
+			return null;
+		FDHandle oClass = FDHandles.getInstance().find(cls);
+		if (oClass == null)
+			oClass = FDHandles.getInstance().create(cls);
+		return oClass;
+	}
+
+	/**
+	 * Calculate the object size.
+	 * 
+	 * @param obj
+	 *            the object.
+	 * @return the size.
+	 */
+	private int calculateSize(NSOFObject obj) {
+		if (obj instanceof NSOFImmediate) {
+			return 4;
+		}
+		if (obj instanceof NSOFArray) {
+			return ((NSOFArray) obj).getLength();
+		}
+		if (obj instanceof NSOFFrame) {
+			return ((NSOFFrame) obj).size();
+		}
+		if (obj instanceof NSOFBinaryObject) {
+			byte[] data = ((NSOFBinaryObject) obj).getValue();
+			if (data != null)
+				return data.length;
+		}
+		if (obj instanceof NSOFString) {
+			String s = ((NSOFString) obj).getValue();
+			return (s == null) ? 0 : (s.length() << 1);
+		}
+		return 0;
 	}
 }

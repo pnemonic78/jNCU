@@ -96,7 +96,7 @@ public class DCallRootMethod extends DockCommandToNewton {
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
 		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.encode(new NSOFSymbol(getMethodName()), data);
-		encoder.encode(NSOFEncoder.toNS(getArguments()), data);
+		encoder.flatten(new NSOFSymbol(getMethodName()), data);
+		encoder.flatten(NSOFEncoder.toNS(getArguments()), data);
 	}
 }

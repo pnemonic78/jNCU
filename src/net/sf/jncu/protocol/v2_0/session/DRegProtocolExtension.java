@@ -105,6 +105,6 @@ public class DRegProtocolExtension extends DockCommandToNewton {
 		data.write(cmdName[2] & 0xFF);
 		data.write(cmdName[3] & 0xFF);
 		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.encode(getFunction(), data);
+		encoder.flatten(getFunction(), data);
 	}
 }

@@ -73,7 +73,7 @@ public class DFilters extends DockCommandToNewton {
 		}
 		NSOFArray arr = new NSOFPlainArray(entries);
 		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.encode(arr, data);
+		encoder.flatten(arr, data);
 	}
 
 	/**

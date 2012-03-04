@@ -22,7 +22,9 @@ package net.sf.jncu.fdil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -56,7 +58,7 @@ public class NSOFFrame extends NSOFPointer {
 	}
 
 	@Override
-	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
+	public void inflate(InputStream in, NSOFDecoder decoder) throws IOException {
 		this.slots.clear();
 
 		// Number of slots (xlong)
@@ -66,7 +68,7 @@ public class NSOFFrame extends NSOFPointer {
 
 		// Slot tags in ascending order (symbol objects)
 		for (int i = 0; i < length; i++) {
-			str = (NSOFString) decoder.decode(in);
+			str = (NSOFString) decoder.inflate(in);
 			if (str instanceof NSOFSymbol) {
 				symbols[i] = (NSOFSymbol) str;
 			} else {
@@ -76,12 +78,12 @@ public class NSOFFrame extends NSOFPointer {
 
 		// Slot values in ascending order (objects)
 		for (int i = 0; i < length; i++) {
-			put(symbols[i], decoder.decode(in));
+			put(symbols[i], decoder.inflate(in));
 		}
 	}
 
 	@Override
-	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
+	public void flatten(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(NSOF_FRAME);
 
 		// Number of slots (xlong)
@@ -89,14 +91,14 @@ public class NSOFFrame extends NSOFPointer {
 
 		// Slot tags in ascending order (symbol objects)
 		for (NSOFSymbol sym : slots.keySet()) {
-			encoder.encode(sym, out);
+			encoder.flatten(sym, out);
 		}
 
 		// Slot values in ascending order (objects)
 		NSOFObject slot;
 		for (NSOFSymbol sym : slots.keySet()) {
 			slot = get(sym);
-			encoder.encode(slot, out);
+			encoder.flatten(slot, out);
 		}
 	}
 
@@ -181,6 +183,23 @@ public class NSOFFrame extends NSOFPointer {
 	 */
 	public NSOFObject get(String slotName) {
 		return get(new NSOFSymbol(slotName));
+	}
+
+	/**
+	 * Get the mapped slot value at the specified index.
+	 * <p>
+	 * The order in which the objects are returned is not defined. In
+	 * particular, you should not expect to retrieve them in the order in which
+	 * they were inserted.
+	 * 
+	 * @param pos
+	 *            an index into the frame.
+	 * @return the slot value - {@code NIL} otherwise.
+	 */
+	public NSOFObject get(int pos) {
+		List<NSOFSymbol> names = new ArrayList<NSOFSymbol>(slots.keySet());
+		NSOFSymbol key = names.get(pos);
+		return get(key);
 	}
 
 	/**

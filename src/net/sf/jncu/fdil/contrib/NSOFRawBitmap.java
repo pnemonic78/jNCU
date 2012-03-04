@@ -115,8 +115,8 @@ public class NSOFRawBitmap extends NSOFLargeBinary {
 	}
 
 	@Override
-	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
-		super.decode(in, decoder);
+	public void inflate(InputStream in, NSOFDecoder decoder) throws IOException {
+		super.inflate(in, decoder);
 
 		// 0-3 long ignored
 		this.header = ntohl(in);
@@ -139,8 +139,8 @@ public class NSOFRawBitmap extends NSOFLargeBinary {
 	}
 
 	@Override
-	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
-		super.encode(out, encoder);
+	public void flatten(OutputStream out, NSOFEncoder encoder) throws IOException {
+		super.flatten(out, encoder);
 
 		// 0-3 long ignored
 		htonl(header, out);

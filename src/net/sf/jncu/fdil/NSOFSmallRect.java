@@ -29,15 +29,15 @@ import java.io.OutputStream;
  * 
  * @author Moshe
  */
-public class NSOFSmallRect extends NSOFPointer {
+public class NSOFSmallRect extends NSOFFrame {
 
 	/** Default small rectangle class. */
 	public static final NSOFSymbol CLASS_SMALL_RECT = new NSOFSymbol("smallRect");
 
-	private int top;
-	private int left;
-	private int bottom;
-	private int right;
+	protected static final NSOFSymbol SLOT_TOP = new NSOFSymbol("top");
+	protected static final NSOFSymbol SLOT_LEFT = new NSOFSymbol("left");
+	protected static final NSOFSymbol SLOT_BOTTOM = new NSOFSymbol("bottom");
+	protected static final NSOFSymbol SLOT_RIGHT = new NSOFSymbol("right");
 
 	/**
 	 * Constructs a new small rectangle.
@@ -88,7 +88,7 @@ public class NSOFSmallRect extends NSOFPointer {
 	}
 
 	@Override
-	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
+	public void inflate(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Top value (byte)
 		int top = in.read();
 		if (top == -1) {
@@ -119,7 +119,7 @@ public class NSOFSmallRect extends NSOFPointer {
 	}
 
 	@Override
-	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
+	public void flatten(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(NSOF_SMALL_RECT);
 		// Top value (byte)
 		out.write(getTop());
@@ -137,7 +137,7 @@ public class NSOFSmallRect extends NSOFPointer {
 	 * @return the bottom
 	 */
 	public int getBottom() {
-		return bottom;
+		return ((NSOFInteger) get(SLOT_BOTTOM)).getValue();
 	}
 
 	/**
@@ -147,7 +147,7 @@ public class NSOFSmallRect extends NSOFPointer {
 	 *            the bottom.
 	 */
 	public void setBottom(int bottom) {
-		this.bottom = bottom & 0xFF;
+		put(SLOT_BOTTOM, new NSOFInteger(bottom & 0xFF));
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class NSOFSmallRect extends NSOFPointer {
 	 * @return the left
 	 */
 	public int getLeft() {
-		return left;
+		return ((NSOFInteger) get(SLOT_LEFT)).getValue();
 	}
 
 	/**
@@ -176,7 +176,7 @@ public class NSOFSmallRect extends NSOFPointer {
 	 *            the left.
 	 */
 	public void setLeft(int left) {
-		this.left = left & 0xFF;
+		put(SLOT_LEFT, new NSOFInteger(left & 0xFF));
 	}
 
 	/**
@@ -195,7 +195,7 @@ public class NSOFSmallRect extends NSOFPointer {
 	 * @return the right
 	 */
 	public int getRight() {
-		return right;
+		return ((NSOFInteger) get(SLOT_RIGHT)).getValue();
 	}
 
 	/**
@@ -205,7 +205,7 @@ public class NSOFSmallRect extends NSOFPointer {
 	 *            the right.
 	 */
 	public void setRight(int right) {
-		this.right = right & 0xFF;
+		put(SLOT_RIGHT, new NSOFInteger(right & 0xFF));
 	}
 
 	/**
@@ -224,7 +224,7 @@ public class NSOFSmallRect extends NSOFPointer {
 	 * @return the top
 	 */
 	public int getTop() {
-		return top;
+		return ((NSOFInteger) get(SLOT_TOP)).getValue();
 	}
 
 	/**
@@ -234,7 +234,7 @@ public class NSOFSmallRect extends NSOFPointer {
 	 *            the top.
 	 */
 	public void setTop(int top) {
-		this.top = top & 0xFF;
+		put(SLOT_TOP, new NSOFInteger(top & 0xFF));
 	}
 
 	/**
@@ -249,7 +249,7 @@ public class NSOFSmallRect extends NSOFPointer {
 
 	@Override
 	public int hashCode() {
-		return (top << 24) | (left << 16) | (bottom << 8) | (right << 0);
+		return (getTop() << 24) | (getLeft() << 16) | (getBottom() << 8) | (getRight() << 0);
 	}
 
 	@Override
@@ -263,11 +263,24 @@ public class NSOFSmallRect extends NSOFPointer {
 
 	@Override
 	public String toString() {
-		return "{top: " + top + ", left: " + left + ", bottom: " + bottom + ", right: " + right + "}";
+		return "{top: " + getTop() + ", left: " + getLeft() + ", bottom: " + getBottom() + ", right: " + getRight() + "}";
 	}
 
 	@Override
 	public NSOFObject deepClone() throws CloneNotSupportedException {
-		return new NSOFSmallRect(top, left, bottom, right);
+		return new NSOFSmallRect(getTop(), getLeft(), getBottom(), getRight());
+	}
+
+	@Override
+	public NSOFObject put(NSOFSymbol name, NSOFObject value) {
+		if (SLOT_BOTTOM.equals(name))
+			return super.put(name, value);
+		if (SLOT_LEFT.equals(name))
+			return super.put(name, value);
+		if (SLOT_RIGHT.equals(name))
+			return super.put(name, value);
+		if (SLOT_TOP.equals(name))
+			return super.put(name, value);
+		throw new UnsupportedOperationException("invalid slot: " + name);
 	}
 }

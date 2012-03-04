@@ -57,6 +57,17 @@ public class NSOFReal extends NSOFBinaryObject {
 	}
 
 	/**
+	 * Creates a new real number.
+	 * 
+	 * @param value
+	 *            the value.
+	 */
+	public NSOFReal(byte[] value) {
+		this();
+		setValue(value);
+	}
+
+	/**
 	 * Get the value.
 	 * 
 	 * @return the value
@@ -77,7 +88,7 @@ public class NSOFReal extends NSOFBinaryObject {
 	}
 
 	@Override
-	protected void setValue(byte[] value) {
+	public void setValue(byte[] value) {
 		setReal(Double.longBitsToDouble(NumberUtils.toLong(value)));
 		super.setValue(value);
 	}

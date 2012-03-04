@@ -73,7 +73,7 @@ public class DSetPath extends DockCommandFromNewton {
 	protected void decodeData(InputStream data) throws IOException {
 		setPath(null);
 		NSOFDecoder decoder = new NSOFDecoder();
-		NSOFArray arr = (NSOFArray) decoder.decode(data);
+		NSOFArray arr = (NSOFArray) decoder.inflate(data);
 		NSOFObject[] entries = arr.getValue();
 		NSOFString path = (NSOFString) entries[0];
 		File file = new File(path.getValue() + File.separatorChar);

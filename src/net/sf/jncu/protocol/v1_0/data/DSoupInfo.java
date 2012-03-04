@@ -72,7 +72,7 @@ public class DSoupInfo extends DockCommandFromNewtonScript<NSOFFrame> {
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
 		NSOFDecoder decoder = new NSOFDecoder();
-		NSOFFrame frame = (NSOFFrame) decoder.decode(data);
+		NSOFFrame frame = (NSOFFrame) decoder.inflate(data);
 		Soup soup = null;
 		if (frame != null) {
 			soup = new Soup();

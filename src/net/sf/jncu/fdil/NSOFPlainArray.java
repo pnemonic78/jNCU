@@ -44,6 +44,17 @@ public class NSOFPlainArray extends NSOFArray {
 	/**
 	 * Constructs a new array.
 	 * 
+	 * @param size
+	 *            the initial size, number of slots, of the array.
+	 */
+	public NSOFPlainArray(int size) {
+		super(size);
+		setObjectClass(CLASS_PLAIN_ARRAY);
+	}
+
+	/**
+	 * Constructs a new array.
+	 * 
 	 * @param value
 	 *            the value.
 	 */
@@ -53,7 +64,7 @@ public class NSOFPlainArray extends NSOFArray {
 	}
 
 	@Override
-	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
+	public void inflate(InputStream in, NSOFDecoder decoder) throws IOException {
 		setValue((NSOFObject[]) null);
 
 		// Number of slots (xlong)
@@ -61,13 +72,13 @@ public class NSOFPlainArray extends NSOFArray {
 		NSOFObject[] entries = new NSOFObject[length];
 		// Slot values in ascending order (objects)
 		for (int i = 0; i < length; i++) {
-			entries[i] = decoder.decode(in);
+			entries[i] = decoder.inflate(in);
 		}
 		setValue(entries);
 	}
 
 	@Override
-	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
+	public void flatten(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(NSOF_PLAIN_ARRAY);
 
 		NSOFObject[] slots = getValue();
@@ -79,7 +90,7 @@ public class NSOFPlainArray extends NSOFArray {
 			XLong.encode(slots.length, out);
 			// Slot values in ascending order (objects)
 			for (int i = 0; i < slots.length; i++) {
-				encoder.encode(slots[i], out);
+				encoder.flatten(slots[i], out);
 			}
 		}
 	}

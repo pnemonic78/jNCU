@@ -74,7 +74,7 @@ public class DPackageInfo extends DockCommandFromNewton {
 	protected void decodeData(InputStream data) throws IOException {
 		NSOFDecoder decoder = new NSOFDecoder();
 		PackageInfo pkg = new PackageInfo();
-		pkg.decode((NSOFFrame)decoder.decode(data));
+		pkg.decode((NSOFFrame)decoder.inflate(data));
 		setInfo(pkg);
 	}
 

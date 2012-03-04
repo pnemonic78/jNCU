@@ -64,6 +64,8 @@ public class NSOFArray extends NSOFPointer {
 		super();
 		setObjectClass(CLASS_ARRAY);
 		this.value = new ArrayList<NSOFObject>(size);
+		for (int i = 0; i < size; i++)
+			add(null);
 	}
 
 	/**
@@ -96,23 +98,23 @@ public class NSOFArray extends NSOFPointer {
 	}
 
 	@Override
-	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
+	public void inflate(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Number of slots (xlong)
 		int length = XLong.decodeValue(in);
 		List<NSOFObject> slots = new ArrayList<NSOFObject>(length);
 
 		// Class (object)
-		setObjectClass((NSOFSymbol) decoder.decode(in));
+		setObjectClass((NSOFSymbol) decoder.inflate(in));
 
 		// Slot values in ascending order (objects)
 		for (int i = 0; i < length; i++) {
-			slots.add(decoder.decode(in));
+			slots.add(decoder.inflate(in));
 		}
 		setValue(slots);
 	}
 
 	@Override
-	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
+	public void flatten(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(NSOF_ARRAY);
 
 		NSOFObject[] slots = getValue();
@@ -122,12 +124,12 @@ public class NSOFArray extends NSOFPointer {
 		XLong.encode(length, out);
 
 		// Class (object)
-		encoder.encode(getObjectClass(), out);
+		encoder.flatten(getObjectClass(), out);
 
 		// Slot values in ascending order (objects)
 		if (slots != null) {
 			for (int i = 0; i < length; i++) {
-				encoder.encode(slots[i], out);
+				encoder.flatten(slots[i], out);
 			}
 		}
 	}
@@ -270,7 +272,11 @@ public class NSOFArray extends NSOFPointer {
 	 * @return the element removed.
 	 */
 	public NSOFObject remove(int pos) {
-		return value.remove(pos);
+		try {
+			return value.remove(pos);
+		} catch (IndexOutOfBoundsException e) {
+			throw new ValueOutOfRangeException(e.getMessage());
+		}
 	}
 
 	@Override

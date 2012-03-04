@@ -86,7 +86,7 @@ public class DFileInfo extends DockCommandToNewton {
 	protected void writeCommandData(OutputStream data) throws IOException {
 		NSOFEncoder encoder = new NSOFEncoder();
 		NSOFFrame frame = getFrame(getFile());
-		encoder.encode(frame, data);
+		encoder.flatten(frame, data);
 	}
 
 	/**

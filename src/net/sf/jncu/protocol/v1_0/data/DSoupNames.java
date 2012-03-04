@@ -63,7 +63,7 @@ public class DSoupNames extends DockCommandFromNewton {
 		setSignatures(null);
 
 		NSOFDecoder decoder = new NSOFDecoder();
-		NSOFArray arr = (NSOFArray) decoder.decode(data);
+		NSOFArray arr = (NSOFArray) decoder.inflate(data);
 		List<String> names = new ArrayList<String>();
 		NSOFObject[] entries = arr.getValue();
 		for (NSOFObject entry : entries) {
@@ -72,7 +72,7 @@ public class DSoupNames extends DockCommandFromNewton {
 		setNames(names);
 
 		decoder = new NSOFDecoder();
-		arr = (NSOFArray) decoder.decode(data);
+		arr = (NSOFArray) decoder.inflate(data);
 		List<Integer> signatures = new ArrayList<Integer>();
 		entries = arr.getValue();
 		for (NSOFObject entry : entries) {
