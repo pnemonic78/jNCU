@@ -90,16 +90,16 @@ public class FDHandle extends Object implements Comparable<FDHandle>, FDConstant
 	 * <tt>sizeof(FD_LargeBinaryData)</tt>.
 	 */
 	private int size;
-	/**
-	 * The next field is the object’s class, {@code oClass}, if the object is
-	 * anything but a frame, or the frame map, {@code map}, if the object is a
-	 * frame. If the object is a frame it’s class is stored in a slot named "
-	 * <tt>class</tt>" containing a symbol. A frame’s map is simply an array of
-	 * symbols containing the slot names used in the frame. There is one
-	 * difference between a frame map and a regular array. A frame map contains
-	 * the value zero in its {@code oClass} field.
-	 */
-	private final FDHandle oClass;
+//	/**
+//	 * The next field is the object’s class, {@code oClass}, if the object is
+//	 * anything but a frame, or the frame map, {@code map}, if the object is a
+//	 * frame. If the object is a frame it’s class is stored in a slot named "
+//	 * <tt>class</tt>" containing a symbol. A frame’s map is simply an array of
+//	 * symbols containing the slot names used in the frame. There is one
+//	 * difference between a frame map and a regular array. A frame map contains
+//	 * the value zero in its {@code oClass} field.
+//	 */
+//	private final FDHandle oClass;
 
 	private int pointer;
 
@@ -113,7 +113,7 @@ public class FDHandle extends Object implements Comparable<FDHandle>, FDConstant
 		super();
 		this.ref = generateRef(obj);
 		this.flags = generateFlags(obj);
-		this.oClass = generateClass(obj);
+//		this.oClass = generateClass(obj);
 		this.size = calculateSize(obj);
 	}
 
@@ -144,14 +144,14 @@ public class FDHandle extends Object implements Comparable<FDHandle>, FDConstant
 		return size;
 	}
 
-	/**
-	 * Get the symbol object for the class.
-	 * 
-	 * @return the class.
-	 */
-	public FDHandle getObjectClass() {
-		return oClass;
-	}
+//	/**
+//	 * Get the symbol object for the class.
+//	 * 
+//	 * @return the class.
+//	 */
+//	public FDHandle getObjectClass() {
+//		return oClass;
+//	}
 
 	@Override
 	public int hashCode() {
@@ -197,6 +197,10 @@ public class FDHandle extends Object implements Comparable<FDHandle>, FDConstant
 			NSOFInteger i = (NSOFInteger) obj;
 			type = TYPE_INTEGER;
 			value = (i.getValue() & MASK_30) << 2;
+		} else if (obj instanceof NSOFMagicPointer) {
+			NSOFMagicPointer m = (NSOFMagicPointer) obj;
+			type = TYPE_MAGIC;
+			value = (m.getValue() & MASK_30) << 2;
 		} else if (obj instanceof NSOFImmediate) {
 			NSOFImmediate i = (NSOFImmediate) obj;
 			type = TYPE_IMMEDIATE;
@@ -246,22 +250,22 @@ public class FDHandle extends Object implements Comparable<FDHandle>, FDConstant
 		return flags;
 	}
 
-	/**
-	 * Generate the handle object class.
-	 * 
-	 * @param obj
-	 *            the object.
-	 * @return the class handle.
-	 */
-	private FDHandle generateClass(NSOFObject obj) {
-		final NSOFSymbol cls = obj.getObjectClass();
-		if (cls == null)
-			return null;
-		FDHandle oClass = FDHandles.getInstance().find(cls);
-		if (oClass == null)
-			oClass = FDHandles.getInstance().create(cls);
-		return oClass;
-	}
+//	/**
+//	 * Generate the handle object class.
+//	 * 
+//	 * @param obj
+//	 *            the object.
+//	 * @return the class handle.
+//	 */
+//	private FDHandle generateClass(NSOFObject obj) {
+//		final NSOFSymbol cls = obj.getObjectClass();
+//		if (cls == null)
+//			return null;
+//		FDHandle oClass = FDHandles.getInstance().find(cls);
+//		if (oClass == null)
+//			oClass = FDHandles.getInstance().create(cls);
+//		return oClass;
+//	}
 
 	/**
 	 * Calculate the object size.

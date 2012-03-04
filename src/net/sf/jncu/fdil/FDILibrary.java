@@ -1422,8 +1422,17 @@ public class FDILibrary implements FDConstants {
 	 */
 	public static void readFromLargeBinary(FDHandle obj, int offset, byte[] buffer, int count) throws FDILNotInitializedException, ExpectedLargeBinaryException,
 			ExpectedNonNegativeValueException, NullPointerException, CouldNotDecompressDataException, ReadingFromStoreException {
-		checkInitialized();
-		// TODO implement me!
+		if (!isLargeBinary(obj))
+			throw new ExpectedLargeBinaryException();
+		if (offset < 0)
+			throw new ExpectedNonNegativeValueException();
+		if (count < 0)
+			throw new ExpectedNonNegativeValueException();
+		NSOFLargeBinary l = (NSOFLargeBinary) handles.get(obj);
+		if (l == null)
+			throw new NullPointerException();
+		byte[] val = l.getValue();
+		System.arraycopy(val, offset, buffer, 0, count);
 	}
 
 	/**
@@ -1449,8 +1458,21 @@ public class FDILibrary implements FDConstants {
 	 */
 	public static void readFromLargeBinary(FDHandle obj, int offset, OutputStream buffer, int count) throws FDILNotInitializedException, ExpectedLargeBinaryException,
 			ExpectedNonNegativeValueException, NullPointerException, CouldNotDecompressDataException, ReadingFromStoreException {
-		checkInitialized();
-		// TODO implement me!
+		if (!isLargeBinary(obj))
+			throw new ExpectedLargeBinaryException();
+		if (offset < 0)
+			throw new ExpectedNonNegativeValueException();
+		if (count < 0)
+			throw new ExpectedNonNegativeValueException();
+		NSOFLargeBinary l = (NSOFLargeBinary) handles.get(obj);
+		if (l == null)
+			throw new NullPointerException();
+		byte[] val = l.getValue();
+		try {
+			buffer.write(val, 0, count);
+		} catch (IOException ioe) {
+			throw new ReadingFromStoreException(ioe.getMessage());
+		}
 	}
 
 	/**
@@ -1476,8 +1498,23 @@ public class FDILibrary implements FDConstants {
 	 */
 	public static void writeToLargeBinary(FDHandle obj, int offset, final byte[] buffer, int count) throws FDILNotInitializedException, ExpectedLargeBinaryException,
 			ExpectedNonNegativeValueException, NullPointerException, CouldNotDecompressDataException, WritingToStoreException {
-		checkInitialized();
-		// TODO implement me!
+		if (!isLargeBinary(obj))
+			throw new ExpectedLargeBinaryException();
+		if (offset < 0)
+			throw new ExpectedNonNegativeValueException();
+		if (count < 0)
+			throw new ExpectedNonNegativeValueException();
+		NSOFLargeBinary l = (NSOFLargeBinary) handles.get(obj);
+		if (l == null)
+			throw new NullPointerException();
+		byte[] val = l.getValue();
+		if (offset + count > val.length) {
+			byte[] val2 = new byte[offset + count];
+			System.arraycopy(val, 0, val2, 0, val.length);
+			val = val2;
+			l.setValue(val);
+		}
+		System.arraycopy(buffer, 0, val, offset, count);
 	}
 
 	/**
@@ -1503,8 +1540,37 @@ public class FDILibrary implements FDConstants {
 	 */
 	public static void writeToLargeBinary(FDHandle obj, int offset, InputStream buffer, int count) throws FDILNotInitializedException, ExpectedLargeBinaryException,
 			ExpectedNonNegativeValueException, NullPointerException, CouldNotDecompressDataException, WritingToStoreException {
-		checkInitialized();
-		// TODO implement me!
+		if (!isLargeBinary(obj))
+			throw new ExpectedLargeBinaryException();
+		if (offset < 0)
+			throw new ExpectedNonNegativeValueException();
+		if (count < 0)
+			throw new ExpectedNonNegativeValueException();
+		NSOFLargeBinary l = (NSOFLargeBinary) handles.get(obj);
+		if (l == null)
+			throw new NullPointerException();
+		byte[] val = l.getValue();
+		if (offset + count > val.length) {
+			byte[] val2 = new byte[offset + count];
+			System.arraycopy(val, 0, val2, 0, val.length);
+			val = val2;
+			l.setValue(val);
+		}
+		int r;
+		while (count >= 0) {
+			try {
+				r = buffer.read(val, offset, count);
+				if (r == -1) {
+					if (count > 0)
+						throw new WritingToStoreException();
+					break;
+				}
+				offset += r;
+				count -= r;
+			} catch (IOException ioe) {
+				throw new WritingToStoreException(ioe.getMessage());
+			}
+		}
 	}
 
 	/**
