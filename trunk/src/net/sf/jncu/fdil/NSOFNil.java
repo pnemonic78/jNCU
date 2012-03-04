@@ -48,13 +48,12 @@ public class NSOFNil extends NSOFImmediate {
 	 * Constructs a new Nil.
 	 */
 	public NSOFNil() {
-		super();
+		super(0, IMMEDIATE_NIL);
 		setObjectClass(CLASS_NIL);
-		setType(IMMEDIATE_NIL);
 	}
 
 	@Override
-	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
+	public void flatten(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(NSOF_NIL);
 	}
 

@@ -56,7 +56,7 @@ public class DSetStoreName extends DockCommandToNewton {
 	protected void writeCommandData(OutputStream data) throws IOException {
 		NSOFString name = new NSOFString(getName());
 		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.encode(name, data);
+		encoder.flatten(name, data);
 	}
 
 	/**

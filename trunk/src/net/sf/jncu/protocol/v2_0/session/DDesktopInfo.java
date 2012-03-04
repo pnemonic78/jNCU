@@ -146,7 +146,7 @@ public class DDesktopInfo extends DockCommandToNewton {
 		htonl(getSessionType(), data);
 		htonl(isSelectiveSync() ? TRUE : FALSE, data);
 		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.encode(getDesktopApps(), data);
+		encoder.flatten(getDesktopApps(), data);
 	}
 
 	/**

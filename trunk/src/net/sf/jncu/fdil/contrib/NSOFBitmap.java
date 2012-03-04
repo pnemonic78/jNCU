@@ -121,7 +121,7 @@ public class NSOFBitmap extends NSOFFrame {
 	public void setValue(byte[] value, NSOFDecoder decoder) throws IOException {
 		// Decode the frame.
 		InputStream in = new ByteArrayInputStream(value);
-		NSOFBitmap bmp = (NSOFBitmap) decoder.decode(in);
+		NSOFBitmap bmp = (NSOFBitmap) decoder.inflate(in);
 		setBits(bmp.getBits());
 		setBounds(bmp.getBounds());
 		setMask(bmp.getMask());

@@ -74,7 +74,7 @@ public class DRequestToBrowse extends DockCommandFromNewton {
 		NSOFObject next;
 		while (length > 0) {
 			start = data.available();
-			next = decoder.decode(data);
+			next = decoder.inflate(data);
 			end = data.available();
 			length -= (start - end);
 

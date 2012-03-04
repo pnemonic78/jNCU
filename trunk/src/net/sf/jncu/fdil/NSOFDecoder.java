@@ -64,19 +64,23 @@ public class NSOFDecoder {
 	}
 
 	/**
-	 * Decode the NewtonScript object, recursively.
+	 * Decode the NewtonScript object, recursively.<br>
+	 * Converts a flat stream of bytes in Newton Stream Object Format (NSOF)
+	 * into an FDIL object.
 	 * 
 	 * @param in
 	 *            the input.
 	 * @return the decoded object.
 	 * @throws IOException
 	 *             if a decoding error occurs.
+	 * @throws UnknownStreamVersionException
+	 *             if the stream version is unknown.
 	 */
-	public NSOFObject decode(InputStream in) throws IOException {
+	public NSOFObject inflate(InputStream in) throws IOException, UnknownStreamVersionException {
 		if (!versioned) {
 			int version = in.read();
 			if (version != NewtonStreamedObjectFormat.VERSION) {
-				throw new IllegalArgumentException("unknown protocol version: " + version);
+				throw new UnknownStreamVersionException("unknown protocol version: " + version);
 			}
 			versioned = true;
 		}
@@ -99,7 +103,7 @@ public class NSOFDecoder {
 			object = new NSOFFrame();
 			break;
 		case NewtonStreamedObjectFormat.NSOF_IMMEDIATE:
-			object = decodeImmediate(in);
+			object = inflateImmediate(in);
 			break;
 		case NewtonStreamedObjectFormat.NSOF_LARGE_BINARY:
 			object = new NSOFLargeBinary();
@@ -135,8 +139,8 @@ public class NSOFDecoder {
 			precedents.put(id, p);
 			this.idMax++;
 		}
-		object.decode(in, this);
-		object = postDecode(object, dataType);
+		object.inflate(in, this);
+		object = postInflate(object, dataType);
 
 		return object;
 	}
@@ -152,7 +156,7 @@ public class NSOFDecoder {
 	 * @throws IOException
 	 *             if a decoding error occurs.
 	 */
-	protected NSOFObject postDecode(NSOFObject object, int dataType) throws IOException {
+	protected NSOFObject postInflate(NSOFObject object, int dataType) throws IOException {
 		NSOFSymbol nsClass;
 
 		switch (dataType) {
@@ -206,32 +210,29 @@ public class NSOFDecoder {
 	 * @throws IOException
 	 *             if a decoding error occurs.
 	 */
-	public NSOFImmediate decodeImmediate(InputStream in) throws IOException {
+	public NSOFImmediate inflateImmediate(InputStream in) throws IOException {
 		// Immediate Ref (xlong)
 		int ref = XLong.decodeValue(in);
 		int val = ref;
 
 		NSOFImmediate imm = null;
 		if (NSOFImmediate.isRefCharacter(ref)) {
-			imm = new NSOFCharacter();
 			val = (ref >> 4) & 0xFFFF;
+			imm = new NSOFCharacter((char) val);
 		} else if (NSOFImmediate.isRefInteger(ref)) {
-			imm = new NSOFInteger();
 			val = ref >> 2;
+			imm = new NSOFInteger(val);
 		} else if (NSOFImmediate.isRefMagicPointer(ref)) {
-			imm = new NSOFMagicPointer();
 			val = ref >> 2;
+			imm = new NSOFMagicPointer(val);
 		} else if (NSOFImmediate.isRefNil(ref)) {
 			imm = new NSOFNil();
-			val = 0;
 		} else if (NSOFImmediate.isRefTrue(ref)) {
 			imm = new NSOFTrue();
-			val = 1;
 		} else {
-			imm = new NSOFImmediate();
 			val = ref >> 2;
+			imm = new NSOFImmediate(val, NSOFImmediate.IMMEDIATE_INTEGER);
 		}
-		imm.setValue(val);
 
 		return imm;
 	}

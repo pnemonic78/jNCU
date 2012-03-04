@@ -53,15 +53,8 @@ public class NSOFBoolean extends NSOFImmediate {
 	 *            the value.
 	 */
 	protected NSOFBoolean(boolean value) {
-		super();
+		super(value ? 0x1A : 0, value ? IMMEDIATE_TRUE : IMMEDIATE_NIL);
 		setObjectClass(CLASS_BOOLEAN);
-		setValue(value ? 0x1A : 0);
-	}
-
-	@Override
-	protected void setValue(int value) {
-		super.setValue(value);
-		setType((value == 0) ? IMMEDIATE_NIL : IMMEDIATE_TRUE);
 	}
 
 	@Override

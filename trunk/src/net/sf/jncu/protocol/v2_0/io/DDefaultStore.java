@@ -58,7 +58,7 @@ public class DDefaultStore extends DockCommandFromNewton {
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
 		NSOFDecoder decoder = new NSOFDecoder();
-		NSOFFrame frame = (NSOFFrame) decoder.decode(data);
+		NSOFFrame frame = (NSOFFrame) decoder.inflate(data);
 		setStore(frame);
 	}
 

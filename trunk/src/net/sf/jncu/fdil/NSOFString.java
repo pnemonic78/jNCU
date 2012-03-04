@@ -41,10 +41,28 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 	 */
 	public static final NSOFSymbol CLASS_STRING = new NSOFSymbol("string");
 
+	public static final NSOFSymbol CLASS_ADDRESS = new NSOFSymbol("address");
+	public static final NSOFSymbol CLASS_COMPANY = new NSOFSymbol("company");
+	public static final NSOFSymbol CLASS_NAME = new NSOFSymbol("name");
+	public static final NSOFSymbol CLASS_TITLE = new NSOFSymbol("title");
+	public static final NSOFSymbol CLASS_PHONE = new NSOFSymbol("phone");
+	public static final NSOFSymbol CLASS_PHONE_HOME = new NSOFSymbol("homePhone");
+	public static final NSOFSymbol CLASS_PHONE_WORK = new NSOFSymbol("workPhone");
+	public static final NSOFSymbol CLASS_PHONE_FAX = new NSOFSymbol("faxPhone");
+	public static final NSOFSymbol CLASS_PHONE_OTHER = new NSOFSymbol("otherPhone");
+	public static final NSOFSymbol CLASS_PHONE_CAR = new NSOFSymbol("carPhone");
+	public static final NSOFSymbol CLASS_PHONE_BEEPER = new NSOFSymbol("beeperPhone");
+	public static final NSOFSymbol CLASS_PHONE_MOBILE = new NSOFSymbol("mobilePhone");
+	public static final NSOFSymbol CLASS_PHONE_HOME_FAX = new NSOFSymbol("homeFaxPhone");
+
+	/** 8-bit ASCII character encoding. */
+	public static final String CHARSET_ASCII = "ASCII";
 	/** 16-bit Unicode character encoding. */
-	protected static final String CHARSET_UTF16 = "UTF-16";
+	public static final String CHARSET_UTF16 = "UTF-16";
 	/** MacRoman character encoding. */
-	protected static final String CHARSET_MAC = "MacRoman";
+	public static final String CHARSET_MAC = "MacRoman";
+	/** Windows character encoding. */
+	public static final String CHARSET_WIN = "windows-1252";
 
 	/**
 	 * Character in place of the embedded ink for 16-bit strings.<br>
@@ -60,6 +78,7 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 	protected static final char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 	private String value;
+	private boolean valueSet;
 	private String toString;
 
 	/**
@@ -82,12 +101,11 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 	}
 
 	@Override
-	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
+	public void inflate(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Number of bytes in string (xlong)
 		int numBytes = XLong.decodeValue(in);
 		// String (halfwords)
 		byte[] buf = new byte[numBytes];
-
 		readAll(in, buf);
 		// Trim?
 		while ((numBytes >= 2) && (buf[numBytes - 2] == 0) && (buf[numBytes - 1] == 0))
@@ -96,7 +114,7 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 	}
 
 	@Override
-	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
+	public void flatten(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(NSOF_STRING);
 		String s = getValue();
 		if (s == null) {
@@ -132,7 +150,10 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 	 *            the value.
 	 */
 	protected void setValue(String value) {
+		if (valueSet)
+			throw new IllegalArgumentException("value already set");
 		this.value = value;
+		this.valueSet = true;
 		this.toString = null;
 	}
 
@@ -260,7 +281,7 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 	 * @return true if rich string.
 	 */
 	public boolean isRich() {
-		return (value.indexOf(INK) >= 0);
+		return (value != null) && (value.indexOf(INK) >= 0);
 	}
 
 	@Override

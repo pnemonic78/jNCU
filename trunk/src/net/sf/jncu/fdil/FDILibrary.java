@@ -19,11 +19,18 @@
  */
 package net.sf.jncu.fdil;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidClassException;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import net.sf.jncu.dil.DILReadProc;
 import net.sf.jncu.dil.DILWriteProc;
@@ -95,9 +102,11 @@ import net.sf.jncu.dil.WritingToPipeException;
  * 
  * @author Moshe
  */
-public class FDILibrary {
+public class FDILibrary implements FDConstants {
 
-	private static Map<FDHandle, NSOFObject> handles;
+	private static FDHandles handles;
+	private static long usedMemory;
+	private static String charset;
 
 	private FDILibrary() {
 	}
@@ -115,8 +124,12 @@ public class FDILibrary {
 	 * @throws ValueOutOfRangeException
 	 */
 	public static FDHandle makeInt(int val) throws FDILNotInitializedException, ValueOutOfRangeException {
-		// TODO implement me!
-		return null;
+		checkInitialized();
+		long memBefore = Runtime.getRuntime().totalMemory();
+		NSOFInteger i = new NSOFInteger(val);
+		FDHandle obj = handles.create(i);
+		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
+		return obj;
 	}
 
 	/**
@@ -130,8 +143,8 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static boolean isInt(FDHandle obj) throws FDILNotInitializedException {
-		// TODO implement me!
-		return false;
+		checkInitialized();
+		return (obj.getReference() & FDHandle.MASK_TYPE) == FDHandle.TYPE_INTEGER;
 	}
 
 	/**
@@ -146,8 +159,10 @@ public class FDILibrary {
 	 * @throws ExpectedIntegerException
 	 */
 	public static int getInt(FDHandle obj) throws FDILNotInitializedException, ExpectedIntegerException {
-		// TODO implement me!
-		return 0;
+		if (!isInt(obj))
+			throw new ExpectedIntegerException();
+		NSOFImmediate i = (NSOFImmediate) handles.get(obj);
+		return i.getValue();
 	}
 
 	/**
@@ -177,8 +192,31 @@ public class FDILibrary {
 	 * @throws ValueOutOfRangeException
 	 */
 	public static FDHandle makeImmediate(int type, int value) throws FDILNotInitializedException, ValueOutOfRangeException {
-		// TODO implement me!
-		return null;
+		checkInitialized();
+		long memBefore = Runtime.getRuntime().totalMemory();
+		NSOFImmediate i = NSOFNil.NIL;
+		switch (type) {
+		case FD_IMMED_BOOLEAN:
+			if (value == 0)
+				i = NSOFBoolean.FALSE;
+			else
+				i = NSOFBoolean.TRUE;
+			break;
+		case FD_IMMED_CHARACTER:
+			i = new NSOFCharacter((char) value);
+			break;
+		case FD_IMMED_RESERVED:
+			i = new NSOFImmediate(value, NSOFImmediate.IMMEDIATE_INTEGER);
+			break;
+		case FD_IMMED_SPECIAL:
+			i = new NSOFMagicPointer(value);
+			break;
+		default:
+			i = new NSOFImmediate(value, NSOFImmediate.IMMEDIATE_INTEGER);
+		}
+		FDHandle obj = handles.create(i);
+		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
+		return obj;
 	}
 
 	/**
@@ -198,8 +236,8 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static boolean isImmediate(FDHandle obj) throws FDILNotInitializedException {
-		// TODO implement me!
-		return false;
+		checkInitialized();
+		return (obj.getReference() & FDHandle.MASK_TYPE) == FDHandle.TYPE_IMMEDIATE;
 	}
 
 	/**
@@ -222,8 +260,15 @@ public class FDILibrary {
 	 * @throws ExpectedImmediateException
 	 */
 	public static int getImmediate(FDHandle obj, int[] typeAndValue) throws FDILNotInitializedException, ExpectedImmediateException {
-		// TODO implement me!
-		return 0;
+		if (!isImmediate(obj))
+			throw new ExpectedImmediateException();
+		NSOFImmediate i = (NSOFImmediate) handles.get(obj);
+		int value = i.getValue();
+		if (typeAndValue != null) {
+			typeAndValue[0] = obj.getReference() & FDHandle.MASK_TYPE_IMMEDIATE;
+			typeAndValue[1] = value;
+		}
+		return value;
 	}
 
 	/**
@@ -237,8 +282,12 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static FDHandle makeChar(byte val) throws FDILNotInitializedException {
-		// TODO implement me!
-		return null;
+		checkInitialized();
+		long memBefore = Runtime.getRuntime().totalMemory();
+		NSOFCharacter c = new NSOFAsciiCharacter(val);
+		FDHandle obj = handles.create(c);
+		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
+		return obj;
 	}
 
 	/**
@@ -252,8 +301,12 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static FDHandle makeChar(char val) throws FDILNotInitializedException {
-		// TODO implement me!
-		return null;
+		checkInitialized();
+		long memBefore = Runtime.getRuntime().totalMemory();
+		NSOFCharacter c = new NSOFAsciiCharacter(val);
+		FDHandle obj = handles.create(c);
+		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
+		return obj;
 	}
 
 	/**
@@ -267,8 +320,12 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static FDHandle makeWideChar(char val) throws FDILNotInitializedException {
-		// TODO implement me!
-		return null;
+		checkInitialized();
+		long memBefore = Runtime.getRuntime().totalMemory();
+		NSOFCharacter c = new NSOFUnicodeCharacter(val);
+		FDHandle obj = handles.create(c);
+		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
+		return obj;
 	}
 
 	/**
@@ -282,8 +339,12 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static FDHandle makeWideChar(int val) throws FDILNotInitializedException {
-		// TODO implement me!
-		return null;
+		checkInitialized();
+		long memBefore = Runtime.getRuntime().totalMemory();
+		NSOFCharacter c = new NSOFUnicodeCharacter(val);
+		FDHandle obj = handles.create(c);
+		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
+		return obj;
 	}
 
 	/**
@@ -297,8 +358,8 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static boolean isChar(FDHandle obj) throws FDILNotInitializedException {
-		// TODO implement me!
-		return false;
+		checkInitialized();
+		return (obj.getReference() & FDHandle.MASK_TYPE_IMMEDIATE) == FDHandle.TYPE_IMMEDIATE_CHARACTER;
 	}
 
 	/**
@@ -313,8 +374,10 @@ public class FDILibrary {
 	 * @throws ExpectedCharException
 	 */
 	public static char getChar(FDHandle obj) throws FDILNotInitializedException, ExpectedCharException {
-		// TODO implement me!
-		return 0;
+		if (!isChar(obj))
+			throw new ExpectedCharException();
+		NSOFCharacter c = (NSOFCharacter) handles.get(obj);
+		return c.getChar();
 	}
 
 	/**
@@ -329,8 +392,10 @@ public class FDILibrary {
 	 * @throws ExpectedCharException
 	 */
 	public static char getWideChar(FDHandle obj) throws FDILNotInitializedException, ExpectedCharException {
-		// TODO implement me!
-		return 0;
+		if (!isChar(obj))
+			throw new ExpectedCharException();
+		NSOFCharacter c = (NSOFCharacter) handles.get(obj);
+		return c.getChar();
 	}
 
 	/**
@@ -359,8 +424,17 @@ public class FDILibrary {
 	 * @throws ExpectedNonNegativeValueException
 	 */
 	public static byte[] convertFromWideChar(final char[] src, int numChars) throws FDILNotInitializedException, NullPointerException, ExpectedNonNegativeValueException {
-		// TODO implement me!
-		return null;
+		checkInitialized();
+		if (numChars < 0)
+			throw new ExpectedNonNegativeValueException();
+		String s = new String(src, 0, numChars);
+		byte[] b;
+		try {
+			b = s.getBytes(charset);
+		} catch (UnsupportedEncodingException uee) {
+			throw new ExpectedNonNegativeValueException(uee.getMessage());
+		}
+		return b;
 	}
 
 	/**
@@ -386,9 +460,17 @@ public class FDILibrary {
 	 * @throws NullPointerException
 	 * @throws ExpectedNonNegativeValueException
 	 */
-	public static CharSequence convertToWideChar(final byte[] src, int numChars) throws FDILNotInitializedException, NullPointerException, ExpectedNonNegativeValueException {
-		// TODO implement me!
-		return null;
+	public static String convertToWideChar(final byte[] src, int numChars) throws FDILNotInitializedException, NullPointerException, ExpectedNonNegativeValueException {
+		checkInitialized();
+		if (numChars < 0)
+			throw new ExpectedNonNegativeValueException();
+		String s;
+		try {
+			s = new String(src, 0, numChars, charset);
+		} catch (UnsupportedEncodingException uee) {
+			throw new ExpectedNonNegativeValueException(uee.getMessage());
+		}
+		return s;
 	}
 
 	/**
@@ -413,7 +495,17 @@ public class FDILibrary {
 	 * @throws ValueOutOfRangeException
 	 */
 	public static void setWideCharEncoding(int encoding) throws FDILNotInitializedException, ValueOutOfRangeException {
-		// TODO implement me!
+		checkInitialized();
+		switch (encoding) {
+		case FD_MAC_ENCODING:
+			charset = NSOFString.CHARSET_MAC;
+			break;
+		case FD_WINDOWS_ENCODING:
+			charset = NSOFString.CHARSET_WIN;
+			break;
+		default:
+			throw new ValueOutOfRangeException();
+		}
 	}
 
 	/**
@@ -427,12 +519,12 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static boolean isBoolean(FDHandle obj) throws FDILNotInitializedException {
-		// TODO implement me!
-		return false;
+		checkInitialized();
+		return (obj.getReference() & FDHandle.MASK_TYPE_IMMEDIATE) == FDHandle.TYPE_IMMEDIATE_BOOLEAN;
 	}
 
 	/**
-	 * Determines whether or not an FDIL object is a Boolean object.<br>
+	 * Determines whether the given object is the <tt>nil</tt> object.<br>
 	 * <tt>int FD_IsNIL(FD_Handle obj)</tt>
 	 * <p>
 	 * <em>DISCUSSION</em><br>
@@ -446,8 +538,8 @@ public class FDILibrary {
 	 * @see #isNotNil(FDHandle)
 	 */
 	public static boolean isNil(FDHandle obj) throws FDILNotInitializedException {
-		// TODO implement me!
-		return false;
+		checkInitialized();
+		return (obj.getReference() & FDHandle.MASK_TYPE_IMMEDIATE) == FDHandle.TYPE_IMMEDIATE_SPECIAL;
 	}
 
 	/**
@@ -480,8 +572,8 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static boolean isPointerObject(FDHandle obj) throws FDILNotInitializedException {
-		// TODO implement me!
-		return false;
+		checkInitialized();
+		return (obj.getReference() & FDHandle.MASK_TYPE) == FDHandle.TYPE_POINTER;
 	}
 
 	/**
@@ -493,7 +585,6 @@ public class FDILibrary {
 	 * the number of elements they contain. For binary objects and large binary
 	 * objects, the length is the number of bytes in the object.
 	 * 
-	 * 
 	 * @param obj
 	 *            An FDIL pointer object.
 	 * @return The length of the object.
@@ -502,7 +593,24 @@ public class FDILibrary {
 	 * @throws ExpectedPointerObjectException
 	 */
 	public static int getLength(FDHandle obj) throws FDILNotInitializedException, ExpectedPointerObjectException {
-		// TODO implement me!
+		checkInitialized();
+		NSOFObject o = handles.get(obj);
+		if (o == null)
+			return 0;
+		if (o instanceof NSOFArray)
+			return ((NSOFArray) o).getLength();
+		if (o instanceof NSOFBinaryObject) {
+			NSOFBinaryObject b = (NSOFBinaryObject) o;
+			byte[] val = b.getValue();
+			return (val == null) ? 0 : val.length;
+		}
+		if (o instanceof NSOFFrame)
+			return ((NSOFFrame) o).size();
+		if (o instanceof NSOFString) {
+			NSOFString s = (NSOFString) o;
+			String val = s.getValue();
+			return (val == null) ? 0 : val.length() << 1;
+		}
 		return 0;
 	}
 
@@ -526,7 +634,6 @@ public class FDILibrary {
 	 * with <tt>FD_GetBinaryData</tt> are invalidated if the object’s size is
 	 * changed.
 	 * 
-	 * 
 	 * @param obj
 	 *            An FDIL pointer object.
 	 * @param newSize
@@ -538,7 +645,32 @@ public class FDILibrary {
 	 * @throws ValueOutOfRangeException
 	 */
 	public static void setLength(FDHandle obj, int newSize) throws FDILNotInitializedException, ExpectedPointerObjectException, OutOfMemoryError, ValueOutOfRangeException {
-		// TODO implement me!
+		if (!isPointerObject(obj))
+			throw new ExpectedPointerObjectException();
+		if (newSize < 0)
+			throw new ValueOutOfRangeException();
+		NSOFPointer p = (NSOFPointer) handles.get(obj);
+		if (p instanceof NSOFArray) {
+			NSOFArray a = (NSOFArray) p;
+			a.setLength(newSize);
+		} else if (p instanceof NSOFBinaryObject) {
+			NSOFBinaryObject b = (NSOFBinaryObject) p;
+			byte[] valueOld = b.getValue();
+			if (valueOld == null)
+				valueOld = new byte[0];
+			if (valueOld.length == newSize)
+				return;
+			byte[] valueNew = new byte[newSize];
+			System.arraycopy(valueOld, 0, valueNew, 0, Math.min(valueOld.length, newSize));
+			b.setValue(valueNew);
+		} else if (p instanceof NSOFString) {
+			NSOFString s = (NSOFString) p;
+			String valueOld = s.getValue();
+			if (valueOld == null)
+				valueOld = "";
+			String valueNew = valueOld.substring(0, Math.min(valueOld.length(), newSize));
+			s.setValue(valueNew);
+		}
 	}
 
 	/**
@@ -559,36 +691,25 @@ public class FDILibrary {
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
 	 * @throws ValueOutOfRangeException
-	 * @throws OutOfMemoryError
+	 * @throws InvalidClassException
 	 */
-	public static FDHandle makeBinary(int size, String cls) throws FDILNotInitializedException, ValueOutOfRangeException, OutOfMemoryError {
-		// TODO implement me!
-		return null;
-	}
-
-	/**
-	 * Creates a raw, unformatted binary object of the given size.<br>
-	 * <tt>FD_Handle FD_MakeBinary(long size, const char* cls)</tt>
-	 * <p>
-	 * The contents of the binary object can be accessed with
-	 * <tt>FD_GetBinaryData</tt>.
-	 * 
-	 * @param size
-	 *            The length to make the binary object.
-	 * @param cls
-	 *            Either {@code NULL} in which case the binary object is given a
-	 *            default class, or a string that is passed to
-	 *            <tt>FD_MakeSymbol</tt> and becomes the object’s class.
-	 * 
-	 * @return A binary FDIL object.
-	 * @throws FDILNotInitializedException
-	 *             if the library is not initialized.
-	 * @throws ValueOutOfRangeException
-	 * @throws OutOfMemoryError
-	 */
-	public static FDHandle makeBinary(int size, NSOFSymbol cls) throws FDILNotInitializedException, ValueOutOfRangeException, OutOfMemoryError {
-		// TODO implement me!
-		return null;
+	public static FDHandle makeBinary(int size, String cls) throws FDILNotInitializedException, ValueOutOfRangeException, InvalidClassException {
+		checkInitialized();
+		if (size < 0)
+			throw new ValueOutOfRangeException();
+		long memBefore = Runtime.getRuntime().totalMemory();
+		byte[] val = new byte[size];
+		NSOFBinaryObject b = new NSOFBinaryObject(val);
+		b.setObjectClass(cls);
+		FDHandle obj = handles.create(b);
+		FDHandle oClass = makeSymbol(cls);
+		try {
+			setClass(obj, oClass);
+		} catch (ExpectedPointerObjectException upe) {
+			upe.printStackTrace();
+		}
+		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
+		return obj;
 	}
 
 	/**
@@ -602,7 +723,10 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static boolean isBinary(FDHandle obj) throws FDILNotInitializedException {
-		// TODO implement me!
+		checkInitialized();
+		if ((obj.getReference() & FDHandle.MASK_TYPE) == FDHandle.TYPE_POINTER) {
+			return (obj.getFlags() & FDHandle.MASK_FLAG_TYPE) == FDHandle.FLAG_BINARY;
+		}
 		return false;
 	}
 
@@ -627,9 +751,11 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 * @throws ExpectedBinaryException
 	 */
-	public Object getBinaryData(FDHandle obj) throws FDILNotInitializedException, ExpectedBinaryException {
-		// TODO implement me!
-		return null;
+	public static Object getBinaryData(FDHandle obj) throws FDILNotInitializedException, ExpectedBinaryException {
+		if (!isBinary(obj))
+			throw new ExpectedBinaryException();
+		NSOFBinaryObject o = (NSOFBinaryObject) handles.get(obj);
+		return o.getValue();
 	}
 
 	/**
@@ -644,8 +770,7 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static FDHandle makeReal(float val) throws FDILNotInitializedException, ValueOutOfRangeException {
-		// TODO implement me!
-		return null;
+		return makeReal((double) val);
 	}
 
 	/**
@@ -660,8 +785,12 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static FDHandle makeReal(double val) throws FDILNotInitializedException, ValueOutOfRangeException {
-		// TODO implement me!
-		return null;
+		checkInitialized();
+		long memBefore = Runtime.getRuntime().totalMemory();
+		NSOFReal r = new NSOFReal(val);
+		FDHandle obj = handles.create(r);
+		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
+		return obj;
 	}
 
 	/**
@@ -675,8 +804,13 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static boolean isReal(FDHandle obj) throws FDILNotInitializedException {
-		// TODO implement me!
-		return false;
+		checkInitialized();
+		NSOFObject o = handles.get(obj);
+		if (o == null)
+			return false;
+		if (o instanceof NSOFReal)
+			return true;
+		return NSOFReal.CLASS_REAL.equals(o.getObjectClass());
 	}
 
 	/**
@@ -691,7 +825,18 @@ public class FDILibrary {
 	 * @throws ExpectedRealException
 	 */
 	public static double getReal(FDHandle obj) throws FDILNotInitializedException, ExpectedRealException {
-		// TODO implement me!
+		if (!isReal(obj))
+			throw new ExpectedRealException();
+		NSOFObject o = handles.get(obj);
+		if (o instanceof NSOFReal) {
+			NSOFReal r = (NSOFReal) o;
+			return r.getReal();
+		}
+		if (o instanceof NSOFBinaryObject) {
+			NSOFBinaryObject b = (NSOFBinaryObject) o;
+			NSOFReal r = new NSOFReal(b.getValue());
+			return r.getReal();
+		}
 		return 0;
 	}
 
@@ -704,7 +849,6 @@ public class FDILibrary {
 	 * internal table. Subsequent requests to create a new symbol from the same
 	 * text results in a reference to the previously created symbol to be
 	 * returned; where “the same text” implies a case-insensitive comparison.
-	 * 
 	 * 
 	 * @param str
 	 *            A <tt>NULL</tt>-terminated series of less than 254 ASCII
@@ -719,8 +863,25 @@ public class FDILibrary {
 	 * @throws IllegalCharInSymbolException
 	 */
 	public static FDHandle makeSymbol(final byte[] str) throws FDILNotInitializedException, NullPointerException, SymbolTooLongException, IllegalCharInSymbolException {
-		// TODO implement me!
-		return null;
+		checkInitialized();
+		long memBefore = Runtime.getRuntime().totalMemory();
+		int length = 0;
+		for (int i = 0; i < length; i++) {
+			if (str[i] == 0) {
+				length = i;
+				break;
+			}
+		}
+		String val;
+		try {
+			val = new String(str, 0, length, charset);
+		} catch (UnsupportedEncodingException uee) {
+			throw new ExpectedStringException(uee.getMessage());
+		}
+		NSOFSymbol s = new NSOFSymbol(val);
+		FDHandle obj = handles.create(s);
+		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
+		return obj;
 	}
 
 	/**
@@ -746,8 +907,13 @@ public class FDILibrary {
 	 * @throws IllegalCharInSymbolException
 	 */
 	public static FDHandle makeSymbol(final char[] str) throws FDILNotInitializedException, NullPointerException, SymbolTooLongException, IllegalCharInSymbolException {
-		// TODO implement me!
-		return null;
+		checkInitialized();
+		long memBefore = Runtime.getRuntime().totalMemory();
+		String val = new String(str);
+		NSOFSymbol s = new NSOFSymbol(val);
+		FDHandle obj = handles.create(s);
+		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
+		return obj;
 	}
 
 	/**
@@ -772,9 +938,13 @@ public class FDILibrary {
 	 * @throws SymbolTooLongException
 	 * @throws IllegalCharInSymbolException
 	 */
-	public static FDHandle makeSymbol(final CharSequence str) throws FDILNotInitializedException, NullPointerException, SymbolTooLongException, IllegalCharInSymbolException {
-		// TODO implement me!
-		return null;
+	public static FDHandle makeSymbol(final String str) throws FDILNotInitializedException, NullPointerException, SymbolTooLongException, IllegalCharInSymbolException {
+		checkInitialized();
+		long memBefore = Runtime.getRuntime().totalMemory();
+		NSOFSymbol s = new NSOFSymbol(str);
+		FDHandle obj = handles.create(s);
+		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
+		return obj;
 	}
 
 	/**
@@ -788,7 +958,14 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static boolean isSymbol(FDHandle obj) throws FDILNotInitializedException {
-		// TODO implement me!
+		checkInitialized();
+		NSOFObject o = handles.get(obj);
+		if (o == null)
+			return false;
+		if (o instanceof NSOFSymbol)
+			return true;
+		if (o instanceof NSOFBinaryObject)
+			return NSOFSymbol.CLASS_SYMBOL.equals(o.getObjectClass());
 		return false;
 	}
 
@@ -804,9 +981,11 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 * @throws ExpectedSymbolException
 	 */
-	public static CharSequence getSymbol(FDHandle obj) throws FDILNotInitializedException, ExpectedSymbolException {
-		// TODO implement me!
-		return null;
+	public static String getSymbol(FDHandle obj) throws FDILNotInitializedException, ExpectedSymbolException {
+		if (!isSymbol(obj))
+			throw new ExpectedSymbolException();
+		NSOFSymbol s = (NSOFSymbol) handles.get(obj);
+		return s.getValue();
 	}
 
 	/**
@@ -822,10 +1001,28 @@ public class FDILibrary {
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
 	 * @throws NullPointerException
+	 * @throws ExpectedStringException
 	 */
-	public static FDHandle makeString(final byte[] str) throws FDILNotInitializedException, NullPointerException {
-		// TODO implement me!
-		return null;
+	public static FDHandle makeString(final byte[] str) throws FDILNotInitializedException, NullPointerException, ExpectedStringException {
+		checkInitialized();
+		long memBefore = Runtime.getRuntime().totalMemory();
+		int length = 0;
+		for (int i = 0; i < length; i++) {
+			if (str[i] == 0) {
+				length = i;
+				break;
+			}
+		}
+		String val;
+		try {
+			val = new String(str, 0, length, charset);
+		} catch (UnsupportedEncodingException uee) {
+			throw new ExpectedStringException(uee.getMessage());
+		}
+		NSOFString s = new NSOFString(val);
+		FDHandle obj = handles.create(s);
+		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
+		return obj;
 	}
 
 	/**
@@ -843,8 +1040,7 @@ public class FDILibrary {
 	 * @throws NullPointerException
 	 */
 	public static FDHandle makeString(final char[] str) throws FDILNotInitializedException, NullPointerException {
-		// TODO implement me!
-		return null;
+		return makeWideString(str);
 	}
 
 	/**
@@ -862,8 +1058,7 @@ public class FDILibrary {
 	 * @throws NullPointerException
 	 */
 	public static FDHandle makeString(final CharSequence str) throws FDILNotInitializedException, NullPointerException {
-		// TODO implement me!
-		return null;
+		return makeWideString(str);
 	}
 
 	/**
@@ -880,8 +1075,8 @@ public class FDILibrary {
 	 * @throws NullPointerException
 	 */
 	public static FDHandle makeWideString(final char[] unicodeStr) throws FDILNotInitializedException, NullPointerException {
-		// TODO implement me!
-		return null;
+		String val = new String(unicodeStr);
+		return makeWideString(val);
 	}
 
 	/**
@@ -898,8 +1093,13 @@ public class FDILibrary {
 	 * @throws NullPointerException
 	 */
 	public static FDHandle makeWideString(final CharSequence unicodeStr) throws FDILNotInitializedException, NullPointerException {
-		// TODO implement me!
-		return null;
+		checkInitialized();
+		long memBefore = Runtime.getRuntime().totalMemory();
+		String val = (unicodeStr == null) ? null : unicodeStr.toString();
+		NSOFString s = new NSOFString(val);
+		FDHandle obj = handles.create(s);
+		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
+		return obj;
 	}
 
 	/**
@@ -917,7 +1117,14 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static boolean isString(FDHandle obj) throws FDILNotInitializedException {
-		// TODO implement me!
+		checkInitialized();
+		NSOFObject o = handles.get(obj);
+		if (o == null)
+			return false;
+		if (o instanceof NSOFString)
+			return true;
+		if (o instanceof NSOFBinaryObject)
+			return NSOFString.CLASS_STRING.equals(o.getObjectClass());
 		return false;
 	}
 
@@ -938,7 +1145,12 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static boolean isRichString(FDHandle obj) throws FDILNotInitializedException {
-		// TODO implement me!
+		checkInitialized();
+		NSOFObject o = handles.get(obj);
+		if (o == null)
+			return false;
+		if (o instanceof NSOFString)
+			return ((NSOFString) o).isRich();
 		return false;
 	}
 
@@ -956,9 +1168,8 @@ public class FDILibrary {
 	 * @throws NullPointerException
 	 * @throws ExpectedNonNegativeValueException
 	 */
-	public static CharSequence getString(FDHandle obj) throws FDILNotInitializedException, ExpectedStringException, NullPointerException, ExpectedNonNegativeValueException {
-		// TODO implement me!
-		return null;
+	public static String getString(FDHandle obj) throws FDILNotInitializedException, ExpectedStringException, NullPointerException, ExpectedNonNegativeValueException {
+		return getWideString(obj);
 	}
 
 	/**
@@ -985,7 +1196,27 @@ public class FDILibrary {
 	 */
 	public static void getString(FDHandle obj, byte[] buffer, int bufLen) throws FDILNotInitializedException, ExpectedStringException, NullPointerException,
 			ExpectedNonNegativeValueException {
-		// TODO implement me!
+		if (!isString(obj))
+			throw new ExpectedStringException();
+		if (bufLen < 0)
+			throw new ExpectedNonNegativeValueException();
+		NSOFString s = (NSOFString) handles.get(obj);
+		String val = s.getValue();
+		if (val == null) {
+			buffer[0] = '\u0000';
+			return;
+		}
+		byte[] b;
+		try {
+			b = val.getBytes(NSOFString.CHARSET_UTF16);
+		} catch (UnsupportedEncodingException uee) {
+			throw new ExpectedStringException(uee.getMessage());
+		}
+		final int length = Math.min(bufLen, b.length - 2);
+		// UTF-16 header is 0xFFEE or 0xFEFF.
+		System.arraycopy(b, 2, buffer, 0, length);
+		if (length < bufLen)
+			buffer[length] = 0;
 	}
 
 	/**
@@ -1011,7 +1242,7 @@ public class FDILibrary {
 	 */
 	public static void getString(FDHandle obj, char[] buffer, int bufLen) throws FDILNotInitializedException, ExpectedStringException, NullPointerException,
 			ExpectedNonNegativeValueException {
-		// TODO implement me!
+		getWideString(obj, buffer, bufLen);
 	}
 
 	/**
@@ -1027,9 +1258,11 @@ public class FDILibrary {
 	 * @throws NullPointerException
 	 * @throws ExpectedNonNegativeValueException
 	 */
-	public static CharSequence getWideString(FDHandle obj) throws FDILNotInitializedException, ExpectedStringException, NullPointerException, ExpectedNonNegativeValueException {
-		// TODO implement me!
-		return null;
+	public static String getWideString(FDHandle obj) throws FDILNotInitializedException, ExpectedStringException, NullPointerException, ExpectedNonNegativeValueException {
+		if (!isString(obj))
+			throw new ExpectedStringException();
+		NSOFString s = (NSOFString) handles.get(obj);
+		return s.getValue();
 	}
 
 	/**
@@ -1055,7 +1288,22 @@ public class FDILibrary {
 	 */
 	public static void getWideString(FDHandle obj, char[] buffer, int bufLen) throws FDILNotInitializedException, ExpectedStringException, NullPointerException,
 			ExpectedNonNegativeValueException {
-		// TODO implement me!
+		if (!isString(obj))
+			throw new ExpectedStringException();
+		if (bufLen < 0)
+			throw new ExpectedNonNegativeValueException();
+		NSOFString s = (NSOFString) handles.get(obj);
+		String val = s.getValue();
+		if (val == null) {
+			buffer[0] = '\u0000';
+			return;
+		}
+		final int length = Math.min(bufLen, val.length());
+		for (int i = 0; i < length; i++) {
+			buffer[i] = val.charAt(i);
+		}
+		if (length < bufLen)
+			buffer[length] = '\u0000';
 	}
 
 	/**
@@ -1071,8 +1319,23 @@ public class FDILibrary {
 	 * @throws ExpectedStringException
 	 */
 	public static FDHandle toASCIIString(FDHandle obj) throws FDILNotInitializedException, ExpectedStringException {
-		// TODO implement me!
-		return null;
+		if (!isString(obj))
+			throw new ExpectedStringException();
+		NSOFString s = (NSOFString) handles.get(obj);
+		String str = s.getValue();
+		if (str == null)
+			str = "";
+		byte[] ascii;
+		try {
+			ascii = str.getBytes(NSOFString.CHARSET_ASCII);
+		} catch (UnsupportedEncodingException uee) {
+			throw new ExpectedStringException();
+		}
+		// Append NULL-terminator
+		byte[] val = new byte[ascii.length + 1];
+		System.arraycopy(ascii, 0, val, 0, ascii.length);
+		NSOFBinaryObject b = new NSOFBinaryObject(val);
+		return handles.create(b);
 	}
 
 	/**
@@ -1099,9 +1362,23 @@ public class FDILibrary {
 	 * @throws ValueOutOfRangeException
 	 * @throws CreatingStoreException
 	 */
-	public static FDHandle makeLargeBinary(int size, CharSequence objClass, int compressed) throws FDILNotInitializedException, ValueOutOfRangeException, CreatingStoreException {
-		// TODO implement me!
-		return null;
+	public static FDHandle makeLargeBinary(int size, String objClass, int compressed) throws FDILNotInitializedException, ValueOutOfRangeException, CreatingStoreException {
+		checkInitialized();
+		long memBefore = Runtime.getRuntime().totalMemory();
+		NSOFLargeBinary b = new NSOFLargeBinary();
+		b.setObjectClass(objClass);
+		switch (compressed) {
+		case FD_NO_COMPRESSION:
+			b.setCompressed(false);
+			break;
+		case FD_LZ_COMPRESSION:
+			b.setCompressed(true);
+			b.setCompanderName(NSOFLargeBinary.COMPANDER_LZ);
+			break;
+		}
+		FDHandle obj = handles.create(b);
+		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
+		return obj;
 	}
 
 	/**
@@ -1115,7 +1392,10 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static boolean isLargeBinary(FDHandle obj) throws FDILNotInitializedException {
-		// TODO implement me!
+		checkInitialized();
+		if ((obj.getReference() & FDHandle.MASK_TYPE) == FDHandle.TYPE_POINTER) {
+			return (obj.getFlags() & FDHandle.MASK_FLAG_TYPE) == FDHandle.FLAG_BLOB;
+		}
 		return false;
 	}
 
@@ -1142,6 +1422,7 @@ public class FDILibrary {
 	 */
 	public static void readFromLargeBinary(FDHandle obj, int offset, byte[] buffer, int count) throws FDILNotInitializedException, ExpectedLargeBinaryException,
 			ExpectedNonNegativeValueException, NullPointerException, CouldNotDecompressDataException, ReadingFromStoreException {
+		checkInitialized();
 		// TODO implement me!
 	}
 
@@ -1168,6 +1449,7 @@ public class FDILibrary {
 	 */
 	public static void readFromLargeBinary(FDHandle obj, int offset, OutputStream buffer, int count) throws FDILNotInitializedException, ExpectedLargeBinaryException,
 			ExpectedNonNegativeValueException, NullPointerException, CouldNotDecompressDataException, ReadingFromStoreException {
+		checkInitialized();
 		// TODO implement me!
 	}
 
@@ -1194,6 +1476,7 @@ public class FDILibrary {
 	 */
 	public static void writeToLargeBinary(FDHandle obj, int offset, final byte[] buffer, int count) throws FDILNotInitializedException, ExpectedLargeBinaryException,
 			ExpectedNonNegativeValueException, NullPointerException, CouldNotDecompressDataException, WritingToStoreException {
+		checkInitialized();
 		// TODO implement me!
 	}
 
@@ -1220,6 +1503,7 @@ public class FDILibrary {
 	 */
 	public static void writeToLargeBinary(FDHandle obj, int offset, InputStream buffer, int count) throws FDILNotInitializedException, ExpectedLargeBinaryException,
 			ExpectedNonNegativeValueException, NullPointerException, CouldNotDecompressDataException, WritingToStoreException {
+		checkInitialized();
 		// TODO implement me!
 	}
 
@@ -1242,6 +1526,7 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static void setLargeBinaryProcs(final FDLargeBinaryProcs procsPtr) throws FDILNotInitializedException {
+		checkInitialized();
 		// TODO implement me!
 	}
 
@@ -1261,9 +1546,24 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 * @throws ValueOutOfRangeException
 	 */
-	public static FDHandle makeArray(int size, CharSequence cls) throws FDILNotInitializedException, ValueOutOfRangeException {
-		// TODO implement me!
-		return null;
+	public static FDHandle makeArray(int size, String cls) throws FDILNotInitializedException, ValueOutOfRangeException {
+		checkInitialized();
+		long memBefore = Runtime.getRuntime().totalMemory();
+		NSOFArray o = null;
+		if (cls == null)
+			o = new NSOFArray(size);
+		else {
+			NSOFSymbol oClass = new NSOFSymbol(cls);
+			if (NSOFPlainArray.CLASS_PLAIN_ARRAY.equals(oClass)) {
+				o = new NSOFPlainArray(size);
+			} else {
+				o = new NSOFArray(size);
+				o.setObjectClass(oClass);
+			}
+		}
+		FDHandle obj = handles.create(o);
+		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
+		return obj;
 	}
 
 	/**
@@ -1277,7 +1577,10 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static boolean isArray(FDHandle obj) throws FDILNotInitializedException {
-		// TODO implement me!
+		checkInitialized();
+		if ((obj.getReference() & FDHandle.MASK_TYPE) == FDHandle.TYPE_POINTER) {
+			return (obj.getFlags() & FDHandle.MASK_FLAG_TYPE) == FDHandle.FLAG_ARRAY;
+		}
 		return false;
 	}
 
@@ -1291,7 +1594,6 @@ public class FDILibrary {
 	 * {@code pos == FD_GetSize(array) -1} , is equivalent to appending an
 	 * object to the array.
 	 * 
-	 * 
 	 * @param array
 	 *            An FDIL array object.
 	 * @param pos
@@ -1304,7 +1606,11 @@ public class FDILibrary {
 	 * @throws ValueOutOfRangeException
 	 */
 	public static void insertArraySlot(FDHandle array, int pos, FDHandle item) throws FDILNotInitializedException, ExpectedArrayException, ValueOutOfRangeException {
-		// TODO implement me!
+		if (!isArray(array))
+			throw new ExpectedArrayException();
+		NSOFArray a = (NSOFArray) handles.get(array);
+		NSOFObject i = handles.get(item);
+		a.insert(pos, i);
 	}
 
 	/**
@@ -1321,7 +1627,11 @@ public class FDILibrary {
 	 * @throws ValueOutOfRangeException
 	 */
 	public static void appendArraySlot(FDHandle array, FDHandle item) throws FDILNotInitializedException, ExpectedArrayException, ValueOutOfRangeException {
-		// TODO implement me!
+		if (!isArray(array))
+			throw new ExpectedArrayException();
+		NSOFArray a = (NSOFArray) handles.get(array);
+		NSOFObject i = handles.get(item);
+		a.add(i);
 	}
 
 	/**
@@ -1338,7 +1648,10 @@ public class FDILibrary {
 	 * @throws ValueOutOfRangeException
 	 */
 	public static void removeArraySlot(FDHandle array, int pos) throws FDILNotInitializedException, ExpectedArrayException, ValueOutOfRangeException {
-		// TODO implement me!
+		if (!isArray(array))
+			throw new ExpectedArrayException();
+		NSOFArray a = (NSOFArray) handles.get(array);
+		a.remove(pos);
 	}
 
 	/**
@@ -1357,7 +1670,11 @@ public class FDILibrary {
 	 * @throws ValueOutOfRangeException
 	 */
 	public static void removeArraySlotCount(FDHandle array, int pos, int count) throws FDILNotInitializedException, ExpectedArrayException, ValueOutOfRangeException {
-		// TODO implement me!
+		if (!isArray(array))
+			throw new ExpectedArrayException();
+		NSOFArray a = (NSOFArray) handles.get(array);
+		for (int p = pos, c = 0; c < count; p++, c++)
+			a.remove(p);
 	}
 
 	/**
@@ -1377,7 +1694,11 @@ public class FDILibrary {
 	 * @throws ValueOutOfRangeException
 	 */
 	public static void setArraySlot(FDHandle array, int pos, FDHandle item) throws FDILNotInitializedException, ExpectedArrayException, ValueOutOfRangeException {
-		// TODO implement me!
+		if (!isArray(array))
+			throw new ExpectedArrayException();
+		NSOFArray a = (NSOFArray) handles.get(array);
+		NSOFObject i = handles.get(item);
+		a.set(pos, i);
 	}
 
 	/**
@@ -1395,8 +1716,12 @@ public class FDILibrary {
 	 * @throws ValueOutOfRangeException
 	 */
 	public static FDHandle getArraySlot(FDHandle array, int pos) throws FDILNotInitializedException, ExpectedArrayException, ValueOutOfRangeException {
-		// TODO implement me!
-		return null;
+		if (!isArray(array))
+			throw new ExpectedArrayException();
+		NSOFArray arr = (NSOFArray) handles.get(array);
+		if (pos > arr.getLength())
+			throw new ValueOutOfRangeException();
+		return handles.create(arr.get(pos));
 	}
 
 	/**
@@ -1408,8 +1733,12 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static FDHandle makeFrame() throws FDILNotInitializedException {
-		// TODO implement me!
-		return null;
+		checkInitialized();
+		long memBefore = Runtime.getRuntime().totalMemory();
+		NSOFFrame f = new NSOFFrame();
+		FDHandle obj = handles.create(f);
+		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
+		return obj;
 	}
 
 	/**
@@ -1423,7 +1752,10 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static boolean isFrame(FDHandle obj) throws FDILNotInitializedException {
-		// TODO implement me!
+		checkInitialized();
+		if ((obj.getReference() & FDHandle.MASK_TYPE) == FDHandle.TYPE_POINTER) {
+			return (obj.getFlags() & FDHandle.MASK_FLAG_TYPE) == FDHandle.FLAG_FRAME;
+		}
 		return false;
 	}
 
@@ -1448,9 +1780,14 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 * @throws ExpectedFrameException
 	 */
-	public static FDHandle setFrameSlot(FDHandle frame, CharSequence slotName, FDHandle item) throws FDILNotInitializedException, ExpectedFrameException {
-		// TODO implement me!
-		return null;
+	public static FDHandle setFrameSlot(FDHandle frame, String slotName, FDHandle item) throws FDILNotInitializedException, ExpectedFrameException {
+		if (!isFrame(frame))
+			throw new ExpectedFrameException();
+		NSOFFrame f = (NSOFFrame) handles.get(frame);
+		NSOFSymbol s = new NSOFSymbol(slotName);
+		NSOFObject i = handles.get(item);
+		NSOFObject p = f.put(s, i);
+		return handles.find(p);
 	}
 
 	/**
@@ -1466,9 +1803,11 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 * @throws ExpectedFrameException
 	 */
-	public static FDHandle getFrameSlot(FDHandle frame, CharSequence slotName) throws FDILNotInitializedException, ExpectedFrameException {
-		// TODO implement me!
-		return null;
+	public static FDHandle getFrameSlot(FDHandle frame, String slotName) throws FDILNotInitializedException, ExpectedFrameException {
+		if (!isFrame(frame))
+			throw new ExpectedFrameException();
+		NSOFFrame f = (NSOFFrame) handles.get(frame);
+		return handles.create(f.get(slotName));
 	}
 
 	/**
@@ -1484,9 +1823,11 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 * @throws ExpectedFrameException
 	 */
-	public static boolean frameHasSlot(FDHandle frame, CharSequence slotName) throws FDILNotInitializedException, ExpectedFrameException {
-		// TODO implement me!
-		return false;
+	public static boolean frameHasSlot(FDHandle frame, String slotName) throws FDILNotInitializedException, ExpectedFrameException {
+		if (!isFrame(frame))
+			throw new ExpectedFrameException();
+		NSOFFrame f = (NSOFFrame) handles.get(frame);
+		return f.hasSlot(slotName);
 	}
 
 	/**
@@ -1503,9 +1844,13 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 * @throws ExpectedFrameException
 	 */
-	public static FDHandle removeFrameSlot(FDHandle frame, CharSequence slotName) throws FDILNotInitializedException, ExpectedFrameException {
-		// TODO implement me!
-		return null;
+	public static FDHandle removeFrameSlot(FDHandle frame, String slotName) throws FDILNotInitializedException, ExpectedFrameException {
+		if (!isFrame(frame))
+			throw new ExpectedFrameException();
+		NSOFFrame f = (NSOFFrame) handles.get(frame);
+		NSOFSymbol s = new NSOFSymbol(slotName);
+		NSOFObject r = f.remove(s);
+		return handles.find(r);
 	}
 
 	/**
@@ -1531,8 +1876,10 @@ public class FDILibrary {
 	 * @throws ValueOutOfRangeException
 	 */
 	public static FDHandle getIndFrameSlot(FDHandle frame, int pos) throws FDILNotInitializedException, ExpectedFrameException, ValueOutOfRangeException {
-		// TODO implement me!
-		return null;
+		if (!isFrame(frame))
+			throw new ExpectedFrameException();
+		NSOFFrame f = (NSOFFrame) handles.get(frame);
+		return handles.create(f.get(pos));
 	}
 
 	/**
@@ -1559,8 +1906,11 @@ public class FDILibrary {
 	 * @throws ValueOutOfRangeException
 	 */
 	public static FDHandle getIndFrameSlotName(FDHandle frame, int pos) throws FDILNotInitializedException, ExpectedFrameException, ValueOutOfRangeException {
-		// TODO implement me!
-		return null;
+		if (!isFrame(frame))
+			throw new ExpectedFrameException();
+		NSOFFrame f = (NSOFFrame) handles.get(frame);
+		List<NSOFSymbol> names = new ArrayList<NSOFSymbol>(f.getNames());
+		return handles.create(names.get(pos));
 	}
 
 	/**
@@ -1579,8 +1929,12 @@ public class FDILibrary {
 	 * @throws ValueOutOfRangeException
 	 */
 	public static FDHandle makeMagicPointer(int val) throws FDILNotInitializedException, ValueOutOfRangeException {
-		// TODO implement me!
-		return null;
+		checkInitialized();
+		long memBefore = Runtime.getRuntime().totalMemory();
+		NSOFMagicPointer p = new NSOFMagicPointer(val);
+		FDHandle obj = handles.create(p);
+		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
+		return obj;
 	}
 
 	/**
@@ -1594,8 +1948,8 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static boolean isMagicPointer(FDHandle obj) throws FDILNotInitializedException {
-		// TODO implement me!
-		return false;
+		checkInitialized();
+		return (obj.getReference() & FDHandle.MASK_TYPE) == FDHandle.TYPE_MAGIC;
 	}
 
 	/**
@@ -1610,8 +1964,10 @@ public class FDILibrary {
 	 * @throws ExpectedMagicPointerException
 	 */
 	public static int getMagicPointer(FDHandle obj) throws FDILNotInitializedException, ExpectedMagicPointerException {
-		// TODO implement me!
-		return 0;
+		if (!isMagicPointer(obj))
+			throw new ExpectedMagicPointerException();
+		NSOFMagicPointer m = (NSOFMagicPointer) handles.get(obj);
+		return m.getValue();
 	}
 
 	/**
@@ -1626,8 +1982,9 @@ public class FDILibrary {
 	 * @see #shutdown()
 	 */
 	public static void startup() {
-		// TODO implement me!
-		handles = new HashMap<FDHandle, NSOFObject>();
+		handles = FDHandles.getInstance();
+		charset = NSOFString.CHARSET_ASCII;
+		usedMemory = 0;
 	}
 
 	/**
@@ -1642,7 +1999,7 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static void shutdown() throws FDILNotInitializedException {
-		// TODO implement me!
+		checkInitialized();
 		if (handles != null) {
 			handles.clear();
 		}
@@ -1662,8 +2019,17 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static boolean equal(FDHandle obj1, FDHandle obj2) throws FDILNotInitializedException {
-		// TODO implement me!
-		return false;
+		checkInitialized();
+		if (obj1.equals(obj2))
+			return true;
+		NSOFObject o1 = handles.get(obj1);
+		NSOFObject o2 = handles.get(obj2);
+		if (o1 == null) {
+			if (o2 == null)
+				return true;
+			return false;
+		}
+		return o1.equals(o2);
 	}
 
 	/**
@@ -1677,9 +2043,19 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 * @throws PointerObjectIsFreeException
 	 */
-	public FDHandle clone(FDHandle obj) throws FDILNotInitializedException, PointerObjectIsFreeException {
-		// TODO implement me!
-		return null;
+	public static FDHandle clone(FDHandle obj) throws FDILNotInitializedException, PointerObjectIsFreeException {
+		checkInitialized();
+		NSOFObject o = handles.get(obj);
+		if (o == null)
+			throw new PointerObjectIsFreeException();
+		NSOFObject c;
+		try {
+			c = (NSOFObject) o.clone();
+		} catch (CloneNotSupportedException cnse) {
+			cnse.printStackTrace();
+			return null;
+		}
+		return handles.create(c);
 	}
 
 	/**
@@ -1693,9 +2069,19 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 * @throws PointerObjectIsFreeException
 	 */
-	public FDHandle deepClone(FDHandle obj) throws FDILNotInitializedException, PointerObjectIsFreeException {
-		// TODO implement me!
-		return null;
+	public static FDHandle deepClone(FDHandle obj) throws FDILNotInitializedException, PointerObjectIsFreeException {
+		checkInitialized();
+		NSOFObject o = handles.get(obj);
+		if (o == null)
+			throw new PointerObjectIsFreeException();
+		NSOFObject c;
+		try {
+			c = o.deepClone();
+		} catch (CloneNotSupportedException cnse) {
+			cnse.printStackTrace();
+			return null;
+		}
+		return handles.create(c);
 	}
 
 	/**
@@ -1721,7 +2107,10 @@ public class FDILibrary {
 	 * @see #deepDispose(FDHandle)
 	 */
 	public static void dispose(FDHandle obj) throws FDILNotInitializedException, PointerObjectIsFreeException {
-		// TODO implement me!
+		if (obj == null)
+			return;// Nothing to dispose.
+		checkInitialized();
+		handles.dispose(obj);
 	}
 
 	/**
@@ -1741,9 +2130,45 @@ public class FDILibrary {
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
 	 * @throws PointerObjectIsFreeException
+	 * @throws ExpectedPointerObjectException
 	 */
 	public static void deepDispose(FDHandle obj) throws FDILNotInitializedException, PointerObjectIsFreeException {
-		// TODO implement me!
+		if (obj == null)
+			return;// Nothing to dispose.
+		if (!isPointerObject(obj)) {
+			dispose(obj);
+			return;
+		}
+		NSOFPointer p = (NSOFPointer) handles.get(obj);
+		if (p == null)
+			throw new PointerObjectIsFreeException();
+		if (p instanceof NSOFArray) {
+			NSOFArray a = (NSOFArray) p;
+			int length = a.getLength();
+			NSOFObject item;
+			for (int i = 0; i < length; i++) {
+				item = a.remove(0);
+				if (item != NSOFNil.NIL)
+					deepDispose(handles.find(item));
+			}
+		} else if (p instanceof NSOFBinaryObject) {
+			NSOFBinaryObject b = (NSOFBinaryObject) p;
+			b.setValue(null);
+			dispose(obj);
+		} else if (p instanceof NSOFFrame) {
+			NSOFFrame f = (NSOFFrame) p;
+			Set<NSOFSymbol> names = f.getNames();
+			NSOFObject item;
+			for (NSOFSymbol name : names) {
+				item = f.remove(name);
+				if (item != NSOFNil.NIL)
+					deepDispose(handles.find(item));
+			}
+		} else if (p instanceof NSOFString) {
+			NSOFString s = (NSOFString) p;
+			s.setValue((String) null);
+			dispose(obj);
+		}
 	}
 
 	/**
@@ -1757,11 +2182,11 @@ public class FDILibrary {
 	 *            As with other functions that call a <tt>DIL_WriteProc</tt>,
 	 *            this function calls your DIL_WriteProc with an <tt>amt</tt>
 	 *            parameter that is the number of bytes to be written from the
-	 *            buf parameter. This function adds a <tt>NULL</tt> byte to the
-	 *            end of buf, as a convenience, allowing you to treat buf as a C
-	 *            string. The <tt>NULL</tt> byte is added in the
-	 *            <tt>(amt+1)</tt><sup>th</sup> position of buf; that is
-	 *            <tt>buf[amt] == 0</tt>.
+	 *            {@code buf} parameter. This function adds a <tt>NULL</tt> byte
+	 *            to the end of {@code buf}, as a convenience, allowing you to
+	 *            treat {@code buf} as a C string. The <tt>NULL</tt> byte is
+	 *            added in the <tt>(amt+1)</tt><sup>th</sup> position of
+	 *            {@code buf}; that is <tt>buf[amt] == 0</tt>.
 	 * @param userData
 	 *            A pointer to data you provided to the function that calls your
 	 *            writing procedure. For instance, it can contain a
@@ -1772,8 +2197,16 @@ public class FDILibrary {
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
 	 */
-	public static void printObject(FDHandle obj, DILWriteProc writeFn, Object userData) throws FDILNotInitializedException {
-		// TODO implement me!
+	public static void printObject(FDHandle obj, DILWriteProc writeFn, Object userData) throws FDILNotInitializedException, IOException {
+		checkInitialized();
+
+		NSOFObject o = handles.get(obj);
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream prn = new PrintStream(out);
+
+		prn.print(o.toString());
+		InputStream in = new ByteArrayInputStream(out.toByteArray());
+		writeFn.write(in, in.available(), userData);
 	}
 
 	/**
@@ -1799,7 +2232,19 @@ public class FDILibrary {
 	 * @throws ReadingFromStoreException
 	 */
 	public static void flatten(FDHandle obj, DILWriteProc writeFn, Object userData) throws FDILNotInitializedException, WritingToPipeException, ReadingFromStoreException {
-		// TODO implement me!
+		checkInitialized();
+
+		NSOFObject o = handles.get(obj);
+		NSOFEncoder encoder = new NSOFEncoder();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		InputStream in;
+		try {
+			encoder.flatten(o, out);
+			in = new ByteArrayInputStream(out.toByteArray());
+			writeFn.write(in, in.available(), userData);
+		} catch (IOException ioe) {
+			throw new WritingToPipeException(ioe);
+		}
 	}
 
 	/**
@@ -1829,8 +2274,21 @@ public class FDILibrary {
 	 */
 	public static FDHandle unflatten(DILReadProc readFn, Object userData) throws FDILNotInitializedException, ReadingFromPipeException, UnknownStreamVersionException,
 			StreamCorruptedException, UnsupportedCompressionException, UnsupportedStoreVersionException, CreatingStoreException, WritingToStoreException {
-		// TODO implement me!
-		return null;
+		checkInitialized();
+
+		NSOFObject o;
+		NSOFDecoder decoder = new NSOFDecoder();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		InputStream in;
+		try {
+			readFn.read(out, Integer.MAX_VALUE, userData);
+			in = new ByteArrayInputStream(out.toByteArray());
+			o = decoder.inflate(in);
+		} catch (IOException ioe) {
+			throw new ReadingFromPipeException(ioe);
+		}
+		FDHandle obj = handles.create(o);
+		return obj;
 	}
 
 	/**
@@ -1845,8 +2303,11 @@ public class FDILibrary {
 	 * @throws PointerObjectIsFreeException
 	 */
 	public static FDHandle getClass(FDHandle obj) throws FDILNotInitializedException, PointerObjectIsFreeException {
-		// TODO implement me!
-		return null;
+		checkInitialized();
+		NSOFObject o = handles.get(obj);
+		if (o == null)
+			throw new PointerObjectIsFreeException();
+		return handles.create(o.getObjectClass());
 	}
 
 	/**
@@ -1867,7 +2328,13 @@ public class FDILibrary {
 	 * @throws InvalidClassException
 	 */
 	public static void setClass(FDHandle obj, FDHandle oClass) throws FDILNotInitializedException, ExpectedPointerObjectException, InvalidClassException {
-		// TODO implement me!
+		if (!isPointerObject(obj))
+			throw new ExpectedPointerObjectException();
+		if (!isSymbol(oClass))
+			throw new InvalidClassException("class not symbol");
+		NSOFPointer p = (NSOFPointer) handles.get(obj);
+		NSOFSymbol cls = (NSOFSymbol) handles.get(oClass);
+		p.setObjectClass(cls);
 	}
 
 	/**
@@ -1907,7 +2374,6 @@ public class FDILibrary {
 	 * </ul>
 	 * </ul>
 	 * 
-	 * 
 	 * @param obj
 	 *            The object to test.
 	 * @param cls
@@ -1917,8 +2383,73 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 * @throws PointerObjectIsFreeException
 	 */
-	public static boolean isSubClass(FDHandle obj, CharSequence cls) throws FDILNotInitializedException, PointerObjectIsFreeException {
-		// TODO implement me!
+	public static boolean isSubClass(FDHandle obj, String cls) throws FDILNotInitializedException, PointerObjectIsFreeException {
+		checkInitialized();
+		NSOFObject o = handles.get(obj);
+		if (o == null)
+			return false;
+
+		// Every class is a subclass of the empty class "".
+		if ((cls == null) || (cls.length() == 0))
+			return true;
+
+		NSOFSymbol oClass1 = new NSOFSymbol(cls);
+		NSOFSymbol oClass2 = o.getObjectClass();
+
+		// Every class is a subclass of itself.
+		if (oClass1.equals(oClass2))
+			return true;
+
+		// A class x is a subclass of y, if y is a prefix of x at a period (.)
+		// boundary.
+		int indexDot;
+		String prefix1 = oClass1.getValue().toLowerCase(Locale.ENGLISH);
+		indexDot = prefix1.indexOf('.');
+		if (indexDot >= 0)
+			prefix1 = prefix1.substring(0, indexDot);
+		String prefix2 = oClass2.getValue().toLowerCase(Locale.ENGLISH);
+		indexDot = prefix2.indexOf('.');
+		if (indexDot >= 0)
+			prefix2 = prefix2.substring(0, indexDot);
+		if (prefix1.equals(prefix2))
+			return true;
+
+		// For compatibility with the version of NewtonScript found on Newton
+		// 1.x OS devices, the following classes are considered subclasses of
+		// "string"
+		if (NSOFString.CLASS_STRING.equals(oClass2)) {
+			if (NSOFString.CLASS_ADDRESS.equals(oClass1))
+				return true;
+			if (NSOFString.CLASS_COMPANY.equals(oClass1))
+				return true;
+			if (NSOFString.CLASS_NAME.equals(oClass1))
+				return true;
+			if (NSOFString.CLASS_TITLE.equals(oClass1))
+				return true;
+			if (NSOFString.CLASS_PHONE.equals(oClass1))
+				return true;
+		}
+		// Furthermore the following classes are considered subclasses of
+		// "phone"
+		if (NSOFString.CLASS_PHONE.equals(oClass2)) {
+			if (NSOFString.CLASS_PHONE_HOME.equals(oClass1))
+				return true;
+			if (NSOFString.CLASS_PHONE_WORK.equals(oClass1))
+				return true;
+			if (NSOFString.CLASS_PHONE_FAX.equals(oClass1))
+				return true;
+			if (NSOFString.CLASS_PHONE_OTHER.equals(oClass1))
+				return true;
+			if (NSOFString.CLASS_PHONE_CAR.equals(oClass1))
+				return true;
+			if (NSOFString.CLASS_PHONE_BEEPER.equals(oClass1))
+				return true;
+			if (NSOFString.CLASS_PHONE_MOBILE.equals(oClass1))
+				return true;
+			if (NSOFString.CLASS_PHONE_HOME_FAX.equals(oClass1))
+				return true;
+		}
+
 		return false;
 	}
 
@@ -1933,8 +2464,8 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static long allocatedMemory() throws FDILNotInitializedException {
-		// TODO implement me!
-		return 0;
+		checkInitialized();
+		return usedMemory;
 	}
 
 	/**
@@ -1962,7 +2493,19 @@ public class FDILibrary {
 	 *             if the library is not initialized.
 	 */
 	public static boolean isFree(FDHandle obj) throws FDILNotInitializedException {
-		// TODO implement me!
-		return false;
+		checkInitialized();
+		return handles.get(obj) == null;
+	}
+
+	/**
+	 * Check that library has in fact been initialized by a call to
+	 * {@link #shutdown()}.
+	 * 
+	 * @throws FDILNotInitializedException
+	 *             if the library is not initialized.
+	 */
+	private static void checkInitialized() throws FDILNotInitializedException {
+		if (handles == null)
+			throw new FDILNotInitializedException();
 	}
 }

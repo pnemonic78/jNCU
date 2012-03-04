@@ -59,7 +59,7 @@ public class DGetPackageInfo extends DockCommandToNewton {
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
 		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.encode(new NSOFString(getTitle()), data);
+		encoder.flatten(new NSOFString(getTitle()), data);
 	}
 
 	/**

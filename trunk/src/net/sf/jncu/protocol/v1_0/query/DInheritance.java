@@ -56,7 +56,7 @@ public class DInheritance extends DockCommandFromNewton {
 	protected void decodeData(InputStream data) throws IOException {
 		List<NSOFObject> inheritances = new ArrayList<NSOFObject>();
 		NSOFDecoder decoder = new NSOFDecoder();
-		NSOFArray arr = (NSOFArray) decoder.decode(data);
+		NSOFArray arr = (NSOFArray) decoder.inflate(data);
 		for (NSOFObject entry : arr.getValue()) {
 			inheritances.add(entry);
 		}

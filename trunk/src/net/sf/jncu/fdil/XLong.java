@@ -52,12 +52,12 @@ public class XLong extends NewtonStreamedObjectFormat {
 	}
 
 	@Override
-	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
+	public void inflate(InputStream in, NSOFDecoder decoder) throws IOException {
 		setValue(decodeValue(in));
 	}
 
 	@Override
-	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
+	public void flatten(OutputStream out, NSOFEncoder encoder) throws IOException {
 		encode(getValue(), out);
 	}
 

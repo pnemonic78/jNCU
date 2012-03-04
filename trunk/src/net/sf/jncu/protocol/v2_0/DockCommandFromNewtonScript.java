@@ -49,7 +49,7 @@ public abstract class DockCommandFromNewtonScript<T extends NSOFObject> extends 
 	@Override
 	protected void decodeData(InputStream data) throws IOException {
 		NSOFDecoder decoder = new NSOFDecoder();
-		setResult((T) decoder.decode(data));
+		setResult((T) decoder.inflate(data));
 	}
 
 	/**

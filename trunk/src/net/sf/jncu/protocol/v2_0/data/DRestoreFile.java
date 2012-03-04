@@ -58,7 +58,7 @@ public class DRestoreFile extends DockCommandFromNewton {
 	protected void decodeData(InputStream data) throws IOException {
 		setFilename((String) null);
 		NSOFDecoder decoder = new NSOFDecoder();
-		NSOFString name = (NSOFString) decoder.decode(data);
+		NSOFString name = (NSOFString) decoder.inflate(data);
 		setFilename(name);
 	}
 

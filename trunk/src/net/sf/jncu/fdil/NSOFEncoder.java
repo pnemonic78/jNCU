@@ -60,7 +60,10 @@ public class NSOFEncoder {
 	}
 
 	/**
-	 * Encode the NewtonScript object, recursively.
+	 * Encode the NewtonScript object, recursively.<br>
+	 * Converts the given object into a flat stream of bytes in Newton Stream
+	 * Object Format (NSOF) suitable for saving to disk or for transmission to a
+	 * Newton device.
 	 * 
 	 * @param object
 	 *            the object to encode.
@@ -69,12 +72,12 @@ public class NSOFEncoder {
 	 * @throws IOException
 	 *             if an encoding error occurs.
 	 */
-	public void encode(NSOFObject object, OutputStream out) throws IOException {
+	public void flatten(NSOFObject object, OutputStream out) throws IOException {
 		if (!versioned) {
 			out.write(NewtonStreamedObjectFormat.VERSION);
 			versioned = true;
 		}
-		encodeImpl(object, out);
+		flattenImpl(object, out);
 	}
 
 	/**
@@ -89,7 +92,7 @@ public class NSOFEncoder {
 	 * @throws IOException
 	 *             if an encoding error occurs.
 	 */
-	protected void encodeImpl(NSOFObject object, OutputStream out) throws IOException {
+	protected void flattenImpl(NSOFObject object, OutputStream out) throws IOException {
 		if (object == null) {
 			NewtonStreamedObjectFormat.htonl(0, out);
 		} else {
@@ -97,19 +100,18 @@ public class NSOFEncoder {
 				Precedent p = (Precedent) object;
 				NSOFPrecedent id = precedents.get(p);
 				if (id == null) {
-					id = new NSOFPrecedent(this.idMax);
+					id = new NSOFPrecedent(this.idMax++);
 					precedents.put(p, id);
-					this.idMax++;
 				} else {
 					object = id;
 				}
 			}
-			object.encode(out, this);
+			object.flatten(out, this);
 		}
 	}
 
 	/**
-	 * Convert the Java object to Newton Streamed Object Format.
+	 * Convert the Java object to an FDIL Newton Script object.
 	 * 
 	 * @param o
 	 *            the object.
@@ -138,7 +140,7 @@ public class NSOFEncoder {
 			return new NSOFInteger((Integer) o);
 		}
 		if (o instanceof Number) {
-			return new NSOFImmediate(((Number) o).intValue());
+			return new NSOFImmediate(((Number) o).intValue(), NSOFImmediate.IMMEDIATE_INTEGER);
 		}
 		if (o instanceof Rectangle) {
 			Rectangle rect = (Rectangle) o;

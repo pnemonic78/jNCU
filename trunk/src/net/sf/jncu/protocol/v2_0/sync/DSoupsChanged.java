@@ -75,7 +75,7 @@ public class DSoupsChanged extends DockCommandToNewton {
 		}
 		NSOFArray arr = new NSOFPlainArray(items);
 		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.encode(arr, data);
+		encoder.flatten(arr, data);
 	}
 
 	/**

@@ -51,10 +51,8 @@ public class NSOFCharacter extends NSOFImmediate {
 	 *            the character.
 	 */
 	public NSOFCharacter(char value) {
-		super();
+		super(value, IMMEDIATE_CHARACTER);
 		setObjectClass(CLASS_CHARACTER);
-		setType(IMMEDIATE_CHARACTER);
-		setValue(value);
 	}
 
 	/**
@@ -64,16 +62,6 @@ public class NSOFCharacter extends NSOFImmediate {
 	 */
 	public char getChar() {
 		return (char) getValue();
-	}
-
-	/**
-	 * Set the character.
-	 * 
-	 * @param value
-	 *            the character.
-	 */
-	protected void setChar(char value) {
-		setValue(value);
 	}
 
 	@Override

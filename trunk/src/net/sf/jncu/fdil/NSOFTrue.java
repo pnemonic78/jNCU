@@ -35,7 +35,6 @@ public class NSOFTrue extends NSOFBoolean {
 	public NSOFTrue() {
 		super(true);
 		setObjectClass(CLASS_TRUE);
-		setType(IMMEDIATE_TRUE);
 	}
 
 	@Override

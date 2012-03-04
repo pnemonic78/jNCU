@@ -97,9 +97,9 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	}
 
 	@Override
-	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
+	public void inflate(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Class (object)
-		NSOFSymbol symbol = (NSOFSymbol) decoder.decode(in);
+		NSOFSymbol symbol = (NSOFSymbol) decoder.inflate(in);
 		setObjectClass(symbol);
 		// compressed? (non-zero means compressed) (byte)
 		int compressed = in.read();
@@ -150,7 +150,7 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	}
 
 	@Override
-	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
+	public void flatten(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(NSOF_LARGE_BINARY);
 		String companderName = getCompanderName();
 		byte[] companderNameBytes = (companderName == null) ? null : companderName.getBytes();
@@ -165,7 +165,7 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 			}
 		}
 		// Class (object)
-		encoder.encode(getObjectClass(), out);
+		encoder.flatten(getObjectClass(), out);
 		// compressed? (non-zero means compressed) (byte)
 		out.write(isCompressed() ? COMPRESSED : UNCOMPRESSED);
 		// Number of bytes of data (long)

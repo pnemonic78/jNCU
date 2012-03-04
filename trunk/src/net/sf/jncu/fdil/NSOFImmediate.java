@@ -55,56 +55,32 @@ public class NSOFImmediate extends NSOFObject {
 	/** Magic Pointer immediate. */
 	public static final int IMMEDIATE_MAGIC_POINTER = 0x3;
 
-	/**
-	 * A special immediate.<br>
-	 * <tt>kImmedSpecial</tt>
-	 */
-	public static final int FD_SPECIAL = 0x00;
-	/**
-	 * A character.<br>
-	 * <tt>kImmedCharacter</tt>
-	 */
-	public static final int FD_CHARACTER = 0x01;
-	/**
-	 * A Boolean.<br>
-	 * <tt>kImmedBoolean</tt>
-	 */
-	public static final int FD_BOOLEAN = 0x02;
-	/**
-	 * A reserved immediate.<br>
-	 * <tt>kImmedReserved</tt>
-	 */
-	public static final int FD_RESERVED = 0x03;
-
 	private int value;
-	private int type = IMMEDIATE_INTEGER;
-
-	/**
-	 * Constructs a new immediate.
-	 */
-	public NSOFImmediate() {
-		this(0);
-	}
+	private int type;
+	private boolean valueSet;
 
 	/**
 	 * Constructs a new immediate.
 	 * 
 	 * @param value
 	 *            the value.
+	 * @param type
+	 *            the type.
 	 */
-	public NSOFImmediate(int value) {
+	public NSOFImmediate(int value, int type) {
 		super();
 		setObjectClass(CLASS_IMMEDIATE);
 		setValue(value);
+		setType(type);
 	}
 
 	@Override
-	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
+	public void inflate(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Already decoded.
 	}
 
 	@Override
-	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
+	public void flatten(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(NSOF_IMMEDIATE);
 
 		// Immediate Ref (xlong)
@@ -146,7 +122,10 @@ public class NSOFImmediate extends NSOFObject {
 	 *            the value.
 	 */
 	protected void setValue(int value) {
+		if (valueSet)
+			throw new IllegalArgumentException("value already set");
 		this.value = value;
+		this.valueSet = true;
 	}
 
 	@Override
@@ -289,8 +268,6 @@ public class NSOFImmediate extends NSOFObject {
 
 	@Override
 	public NSOFObject deepClone() throws CloneNotSupportedException {
-		NSOFImmediate copy = new NSOFImmediate(this.getValue());
-		copy.setType(this.getType());
-		return copy;
+		return new NSOFImmediate(this.getValue(), this.getType());
 	}
 }

@@ -65,7 +65,7 @@ public class NSOFUnicodeCharacter extends NSOFCharacter {
 	}
 
 	@Override
-	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
+	public void inflate(InputStream in, NSOFDecoder decoder) throws IOException {
 		setValue('\u0000');
 		// High byte of character code (byte)
 		int hi = in.read();
@@ -79,7 +79,7 @@ public class NSOFUnicodeCharacter extends NSOFCharacter {
 	}
 
 	@Override
-	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
+	public void flatten(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(NSOF_UNICODE_CHARACTER);
 		int val = getValue() & 0xFFFF;
 		// High byte of character code (byte)

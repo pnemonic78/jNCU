@@ -110,7 +110,7 @@ public class DFilesAndFolders extends DockCommandToNewton {
 
 		NSOFArray arr = new NSOFPlainArray(paths);
 		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.encode(arr, data);
+		encoder.flatten(arr, data);
 	}
 
 	/**

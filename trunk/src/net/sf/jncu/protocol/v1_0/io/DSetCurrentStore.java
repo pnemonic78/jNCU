@@ -60,7 +60,7 @@ public class DSetCurrentStore extends DockCommandToNewton {
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
 		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.encode(getStore().toFrame(), data);
+		encoder.flatten(getStore().toFrame(), data);
 	}
 
 	/**

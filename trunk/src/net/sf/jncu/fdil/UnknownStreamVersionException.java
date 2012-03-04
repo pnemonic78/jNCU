@@ -25,7 +25,7 @@ package net.sf.jncu.fdil;
  * 
  * @author Moshe
  */
-public class UnknownStreamVersionException extends FDILException {
+public class UnknownStreamVersionException extends IllegalArgumentException {
 
 	public UnknownStreamVersionException() {
 		super();

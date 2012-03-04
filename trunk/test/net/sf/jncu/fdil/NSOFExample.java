@@ -125,7 +125,7 @@ public class NSOFExample extends SFTestCase {
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.encode(x, out);
+		encoder.flatten(x, out);
 		out.close();
 
 		byte[] buf = out.toByteArray();
@@ -142,7 +142,7 @@ public class NSOFExample extends SFTestCase {
 	public void testDecode() throws IOException {
 		InputStream in = new ByteArrayInputStream(nsof);
 		NSOFDecoder decoder = new NSOFDecoder();
-		NSOFObject o = decoder.decode(in);
+		NSOFObject o = decoder.inflate(in);
 		assertNotNull(o);
 		assertTrue(o instanceof NSOFFrame);
 		NSOFFrame x = (NSOFFrame) o;

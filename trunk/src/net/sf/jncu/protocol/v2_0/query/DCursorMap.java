@@ -57,7 +57,7 @@ public class DCursorMap extends DCursor {
 	protected void writeCommandData(OutputStream data) throws IOException {
 		super.writeCommandData(data);
 		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.encode(getFunction(), data);
+		encoder.flatten(getFunction(), data);
 	}
 
 	/**

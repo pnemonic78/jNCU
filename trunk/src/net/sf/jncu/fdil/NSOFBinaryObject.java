@@ -72,13 +72,13 @@ public class NSOFBinaryObject extends NSOFPointer {
 	}
 
 	@Override
-	public void decode(InputStream in, NSOFDecoder decoder) throws IOException {
+	public void inflate(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Number of bytes of data (xlong)
 		int numBytesData = XLong.decodeValue(in);
 		byte[] data = new byte[numBytesData];
 
 		// Class (object)
-		NSOFSymbol symbol = (NSOFSymbol) decoder.decode(in);
+		NSOFSymbol symbol = (NSOFSymbol) decoder.inflate(in);
 		setObjectClass(symbol);
 
 		// Data
@@ -87,7 +87,7 @@ public class NSOFBinaryObject extends NSOFPointer {
 	}
 
 	@Override
-	public void encode(OutputStream out, NSOFEncoder encoder) throws IOException {
+	public void flatten(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(NSOF_BINARY);
 
 		byte[] v = getValue();
@@ -97,7 +97,7 @@ public class NSOFBinaryObject extends NSOFPointer {
 			ByteArrayOutputStream bout = new ByteArrayOutputStream();
 			NSOFEncoder enc = new NSOFEncoder(false);
 			enc.setPrecedents(false);
-			enc.encode(o, bout);
+			enc.flatten(o, bout);
 			v = bout.toByteArray();
 		}
 
@@ -106,13 +106,13 @@ public class NSOFBinaryObject extends NSOFPointer {
 			XLong.encode(0, out);
 
 			// Class (object)
-			encoder.encode(getObjectClass(), out);
+			encoder.flatten(getObjectClass(), out);
 		} else {
 			// Number of bytes of data (xlong)
 			XLong.encode(v.length, out);
 
 			// Class (object)
-			encoder.encode(getObjectClass(), out);
+			encoder.flatten(getObjectClass(), out);
 
 			// Data
 			out.write(v);
@@ -134,7 +134,7 @@ public class NSOFBinaryObject extends NSOFPointer {
 	 * @param value
 	 *            the value.
 	 */
-	protected void setValue(byte[] value) {
+	public void setValue(byte[] value) {
 		this.value = value;
 		this.object = null;
 	}

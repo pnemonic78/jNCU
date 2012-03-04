@@ -85,7 +85,10 @@ public abstract class NewtonStreamedObjectFormat {
 	}
 
 	/**
-	 * Encode the object.
+	 * Encode the object.<br>
+	 * Converts this object into a flat stream of bytes in Newton Stream Object
+	 * Format (NSOF) suitable for saving to disk or for transmission to a Newton
+	 * device.
 	 * 
 	 * @param out
 	 *            the output.
@@ -94,10 +97,12 @@ public abstract class NewtonStreamedObjectFormat {
 	 * @throws IOException
 	 *             if an encoding error occurs.
 	 */
-	public abstract void encode(OutputStream out, NSOFEncoder encoder) throws IOException;
+	public abstract void flatten(OutputStream out, NSOFEncoder encoder) throws IOException;
 
 	/**
-	 * Decode the object.
+	 * Decode the object.<br>
+	 * Converts a flat stream of bytes in Newton Stream Object Format (NSOF)
+	 * into this object.
 	 * 
 	 * @param in
 	 *            the input.
@@ -106,7 +111,7 @@ public abstract class NewtonStreamedObjectFormat {
 	 * @throws IOException
 	 *             if a decoding error occurs.
 	 */
-	public abstract void decode(InputStream in, NSOFDecoder decoder) throws IOException;
+	public abstract void inflate(InputStream in, NSOFDecoder decoder) throws IOException;
 
 	/**
 	 * Network to host - long.<br>

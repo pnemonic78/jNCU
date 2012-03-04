@@ -98,7 +98,7 @@ public class DCreateSoup extends DockCommandToNewton {
 	protected void writeCommandData(OutputStream data) throws IOException {
 		NSOFSoupName.encode(getName(), data);
 		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.encode(getIndex(), data);
+		encoder.flatten(getIndex(), data);
 	}
 
 }
