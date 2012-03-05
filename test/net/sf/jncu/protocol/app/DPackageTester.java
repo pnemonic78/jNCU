@@ -31,7 +31,7 @@ public class DPackageTester extends SFTestCase {
 
 		MNPPacketFactory factory = MNPPacketFactory.getInstance();
 		assertNotNull(factory);
-		Iterable<MNPLinkTransferPacket> packets = factory.iterateTransferPackets(payload);
+		Iterable<MNPLinkTransferPacket> packets = factory.createTransferPackets(payload);
 		assertNotNull(packets);
 		Iterator<MNPLinkTransferPacket> iter = packets.iterator();
 		assertNotNull(iter);
@@ -45,7 +45,7 @@ public class DPackageTester extends SFTestCase {
 		assertEquals(length, cmd.getLength());
 		payload = cmd.getPayload();
 		assertNotNull(payload);
-		packets = factory.iterateTransferPackets(payload);
+		packets = factory.createTransferPackets(payload);
 		assertNotNull(packets);
 		iter = packets.iterator();
 		assertNotNull(iter);

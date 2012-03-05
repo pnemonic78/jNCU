@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.cdil.mnp;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -109,54 +110,6 @@ public class MNPPacketFactory {
 		}
 		packet.deserialize(payload);
 		return packet;
-	}
-
-	/**
-	 * Create MNP link transfer packets.
-	 * 
-	 * @param data
-	 *            the payload data.
-	 * @return the array of packets.
-	 */
-	public MNPLinkTransferPacket[] createTransferPackets(byte[] data) {
-		if (data == null)
-			return null;
-		return createTransferPackets(data, 0, data.length);
-	}
-
-	/**
-	 * Create MNP link transfer packets.
-	 * 
-	 * @param data
-	 *            the payload data.
-	 * @param offset
-	 *            the payload offset.
-	 * @param length
-	 *            the payload length.
-	 * @return the array of packets.
-	 */
-	public MNPLinkTransferPacket[] createTransferPackets(byte[] data, int offset, int length) {
-		if (data == null)
-			return null;
-		int numPackets = length / MAX_DATA_LENGTH;
-		if ((length % MAX_DATA_LENGTH) > 0)
-			numPackets++;
-		MNPLinkTransferPacket[] packets = new MNPLinkTransferPacket[numPackets];
-		MNPLinkTransferPacket packet = null;
-		int i = 0;
-		while (length > MAX_DATA_LENGTH) {
-			packet = createLTSend();
-			packets[i++] = packet;
-			packet.setData(data, offset, MAX_DATA_LENGTH);
-			offset += MAX_DATA_LENGTH;
-			length -= MAX_DATA_LENGTH;
-		}
-		if (length > 0) {
-			packet = createLTSend();
-			packets[i++] = packet;
-			packet.setData(data, offset, length);
-		}
-		return packets;
 	}
 
 	/**
@@ -256,7 +209,21 @@ public class MNPPacketFactory {
 	 *            the payload data.
 	 * @return the list of packets.
 	 */
-	public Iterable<MNPLinkTransferPacket> iterateTransferPackets(InputStream data) {
+	public Iterable<MNPLinkTransferPacket> createTransferPackets(byte[] data) {
+		if (data == null)
+			return null;
+		return createTransferPackets(new ByteArrayInputStream(data));
+	}
+
+	/**
+	 * Create MNP link transfer packets to be the target of the "foreach"
+	 * statement.
+	 * 
+	 * @param data
+	 *            the payload data.
+	 * @return the list of packets.
+	 */
+	public Iterable<MNPLinkTransferPacket> createTransferPackets(InputStream data) {
 		if (data == null)
 			return null;
 		return new MNPLTIterable(data);
