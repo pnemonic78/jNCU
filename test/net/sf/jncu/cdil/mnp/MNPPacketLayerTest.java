@@ -115,7 +115,8 @@ public class MNPPacketLayerTest extends SFTestCase {
 		DockCommandToNewton cmd = new DDesktopInfo();
 		assertNotNull(cmd);
 		assertEquals(DDesktopInfo.COMMAND, cmd.getCommand());
-		byte[] payload = cmd.getPayloadBytes();
+		InputStream payload = cmd.getCommandPayload();
 		assertNotNull(payload);
+		assertEquals(128, payload.available());
 	}
 }

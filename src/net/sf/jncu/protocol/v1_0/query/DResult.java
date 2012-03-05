@@ -66,7 +66,7 @@ public class DResult extends DockCommandFromNewton implements IDockCommandToNewt
 	}
 
 	@Override
-	public byte[] getPayloadBytes() throws IOException {
+	public byte[] getCommandPayloadBytes() throws IOException {
 		IDockCommandToNewton cmd = new DockCommandToNewtonLong(COMMAND) {
 
 			@Override
@@ -74,12 +74,12 @@ public class DResult extends DockCommandFromNewton implements IDockCommandToNewt
 				return getErrorCode();
 			}
 		};
-		return cmd.getPayloadBytes();
+		return cmd.getCommandPayloadBytes();
 	}
 
 	@Override
-	public InputStream getPayload() throws IOException {
-		return new ByteArrayInputStream(getPayloadBytes());
+	public InputStream getCommandPayload() throws IOException {
+		return new ByteArrayInputStream(getCommandPayloadBytes());
 	}
 
 	/**

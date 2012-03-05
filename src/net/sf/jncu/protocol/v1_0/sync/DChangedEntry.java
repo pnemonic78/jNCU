@@ -52,14 +52,14 @@ public class DChangedEntry extends DockCommandFromNewtonScript<NSOFObject> imple
 	}
 
 	@Override
-	public byte[] getPayloadBytes() throws IOException {
+	public byte[] getCommandPayloadBytes() throws IOException {
 		IDockCommandToNewton cmd = new DockCommandToNewtonScript<NSOFObject>(COMMAND) {
 		};
-		return cmd.getPayloadBytes();
+		return cmd.getCommandPayloadBytes();
 	}
 
 	@Override
-	public InputStream getPayload() throws IOException {
-		return new ByteArrayInputStream(getPayloadBytes());
+	public InputStream getCommandPayload() throws IOException {
+		return new ByteArrayInputStream(getCommandPayloadBytes());
 	}
 }
