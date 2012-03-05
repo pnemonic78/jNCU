@@ -87,7 +87,7 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 		final InputStream payload = cmd.getPayload();
 		if (payload == null)
 			return;
-		Iterable<MNPLinkTransferPacket> packets = MNPPacketFactory.getInstance().iterateTransferPackets(payload);
+		Iterable<MNPLinkTransferPacket> packets = MNPPacketFactory.getInstance().createTransferPackets(payload);
 		Byte seq;
 		for (MNPLinkTransferPacket packet : packets) {
 			seq = packet.getSequence();
