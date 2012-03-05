@@ -19,10 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonLong;
 
 /**
  * This command controls which VBOs are sent compressed to the desktop. VBO can
@@ -40,7 +37,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * @see #COMPRESSED_VBO
  * @author moshew
  */
-public class DSetVBOCompression extends DockCommandToNewton {
+public class DSetVBOCompression extends DockCommandToNewtonLong {
 
 	/** <tt>kDSetVBOCompression</tt> */
 	public static final String COMMAND = "cvbo";
@@ -61,8 +58,6 @@ public class DSetVBOCompression extends DockCommandToNewton {
 	 */
 	public static final int COMPRESSED_VBO = 2;
 
-	private int compression;
-
 	/**
 	 * Creates a new command.
 	 */
@@ -76,7 +71,7 @@ public class DSetVBOCompression extends DockCommandToNewton {
 	 * @return the compression.
 	 */
 	public int getCompression() {
-		return compression;
+		return getValue();
 	}
 
 	/**
@@ -86,12 +81,6 @@ public class DSetVBOCompression extends DockCommandToNewton {
 	 *            the compression.
 	 */
 	public void setCompression(int compression) {
-		this.compression = compression;
+		setValue(compression);
 	}
-
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		htonl(getCompression(), data);
-	}
-
 }

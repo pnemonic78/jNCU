@@ -19,6 +19,11 @@
  */
 package net.sf.jncu.cdil.mnp;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /**
  * MNP packet factory.
  * 
@@ -30,7 +35,7 @@ public class MNPPacketFactory {
 	 * Maximum data length per packet before having to split into multiple
 	 * packets.
 	 */
-	protected static final short MAX_DATA_LENGTH = 256;
+	public static final short MAX_DATA_LENGTH = 256;
 
 	/** Maximum outstanding credit. */
 	protected final byte CREDIT = 8;
@@ -155,6 +160,36 @@ public class MNPPacketFactory {
 	}
 
 	/**
+	 * Create a Link Transfer packet.
+	 * 
+	 * @param data
+	 *            the payload data.
+	 * @return the packet.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected MNPLinkTransferPacket createLT(InputStream data) throws IOException {
+		if (data == null)
+			return null;
+		MNPLinkTransferPacket packet = createLTSend();
+		int length = Math.min(data.available(), MAX_DATA_LENGTH);
+		if (length > 0) {
+			byte[] buf = new byte[length];
+			int count = 0;
+			int offset = 0;
+			while (length > 0) {
+				count = data.read(buf, offset, length);
+				if (count == -1)
+					break;
+				offset += count;
+				length -= count;
+			}
+			packet.setData(buf, 0, offset);
+		}
+		return packet;
+	}
+
+	/**
 	 * Reset the sequence.
 	 */
 	public void resetSequence() {
@@ -211,5 +246,92 @@ public class MNPPacketFactory {
 		MNPLinkTransferPacket packet = createLT();
 		packet.setSequence(++sequence);
 		return packet;
+	}
+
+	/**
+	 * Create MNP link transfer packets to be the target of the "foreach"
+	 * statement.
+	 * 
+	 * @param data
+	 *            the payload data.
+	 * @return the list of packets.
+	 */
+	public Iterable<MNPLinkTransferPacket> iterateTransferPackets(InputStream data) {
+		if (data == null)
+			return null;
+		return new MNPLTIterable(data);
+	}
+
+	/**
+	 * Iterable to create MNP LT packets to be the target of the "foreach"
+	 * statement.
+	 * 
+	 * @author moshe
+	 */
+	private class MNPLTIterable implements Iterable<MNPLinkTransferPacket> {
+
+		private final InputStream data;
+
+		/**
+		 * Create an LT iterator.
+		 * 
+		 * @param data
+		 *            the data.
+		 */
+		public MNPLTIterable(InputStream data) {
+			super();
+			this.data = data;
+		}
+
+		@Override
+		public Iterator<MNPLinkTransferPacket> iterator() {
+			return new MNPLTIterator(data);
+		}
+	}
+
+	/**
+	 * Iterator to create MNP LT packets to be the target of the "foreach"
+	 * statement.
+	 * 
+	 * @author moshe
+	 */
+	private class MNPLTIterator implements Iterator<MNPLinkTransferPacket> {
+
+		private final InputStream data;
+
+		/**
+		 * Create an LT iterator.
+		 * 
+		 * @param data
+		 *            the data.
+		 */
+		public MNPLTIterator(InputStream data) {
+			super();
+			this.data = data;
+		}
+
+		@Override
+		public boolean hasNext() {
+			try {
+				return data.available() > 0;
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+			return false;
+		}
+
+		@Override
+		public MNPLinkTransferPacket next() {
+			try {
+				return createLT(data);
+			} catch (IOException ioe) {
+				throw new NoSuchElementException();
+			}
+		}
+
+		@Override
+		public void remove() {
+			// Implementation not required.
+		}
 	}
 }

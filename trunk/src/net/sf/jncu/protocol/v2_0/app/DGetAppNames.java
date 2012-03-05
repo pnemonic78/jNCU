@@ -19,10 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.app;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonLong;
 
 /**
  * This command asks the Newton to send information about the applications
@@ -45,7 +42,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * @author Moshe
  * @see DAppNames
  */
-public class DGetAppNames extends DockCommandToNewton {
+public class DGetAppNames extends DockCommandToNewtonLong {
 
 	/** <tt>kDGetAppNames</tt> */
 	public static final String COMMAND = "gapp";
@@ -59,13 +56,12 @@ public class DGetAppNames extends DockCommandToNewton {
 	/** Return just names for current store. */
 	public static final int NAMES_CURRENT = 3;
 
-	private int what = NAMES_AND_SOUPS_ALL;
-
 	/**
 	 * Constructs a new command.
 	 */
 	public DGetAppNames() {
 		super(COMMAND);
+		setWhat(NAMES_AND_SOUPS_ALL);
 	}
 
 	/**
@@ -75,7 +71,7 @@ public class DGetAppNames extends DockCommandToNewton {
 	 *            return what?
 	 */
 	public void setWhat(int what) {
-		this.what = what;
+		setValue(what);
 	}
 
 	/**
@@ -84,11 +80,6 @@ public class DGetAppNames extends DockCommandToNewton {
 	 * @return what?
 	 */
 	public int getWhat() {
-		return what;
-	}
-
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		htonl(getWhat(), data);
+		return getValue();
 	}
 }

@@ -22,7 +22,7 @@ package net.sf.jncu.protocol.v2_0.data;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonLong;
 
 /**
  * This command is used to backup a soup. The result is a series of commands
@@ -97,12 +97,10 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DBackupSoup extends DockCommandToNewton {
+public class DBackupSoup extends DockCommandToNewtonLong {
 
 	/** <tt>kDBackupSoup</tt> */
 	public static final String COMMAND = "bksp";
-
-	private int id;
 
 	/**
 	 * Creates a new command.
@@ -117,7 +115,7 @@ public class DBackupSoup extends DockCommandToNewton {
 	 * @return the id.
 	 */
 	public int getId() {
-		return id;
+		return getValue();
 	}
 
 	/**
@@ -127,11 +125,6 @@ public class DBackupSoup extends DockCommandToNewton {
 	 *            the id.
 	 */
 	public void setId(int id) {
-		this.id = id;
-	}
-
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		htonl(getId(), data);
+		setValue(id);
 	}
 }

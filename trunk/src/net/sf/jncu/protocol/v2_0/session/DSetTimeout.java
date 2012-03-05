@@ -19,10 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonLong;
 
 /**
  * This command sets the timeout for the connection (the time the Newton will
@@ -37,18 +34,17 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DSetTimeout extends DockCommandToNewton {
+public class DSetTimeout extends DockCommandToNewtonLong {
 
 	/** <tt>kDSetTimeout</tt> */
 	public static final String COMMAND = "stim";
-
-	private int timeout = 30;
 
 	/**
 	 * Creates a new command.
 	 */
 	public DSetTimeout() {
 		super(COMMAND);
+		setTimeout(30);
 	}
 
 	/**
@@ -57,7 +53,7 @@ public class DSetTimeout extends DockCommandToNewton {
 	 * @return the timeout in seconds.
 	 */
 	public int getTimeout() {
-		return timeout;
+		return getValue();
 	}
 
 	/**
@@ -67,12 +63,6 @@ public class DSetTimeout extends DockCommandToNewton {
 	 *            the timeout in seconds.
 	 */
 	public void setTimeout(int timeout) {
-		this.timeout = timeout;
+		setValue(timeout);
 	}
-
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		htonl(getTimeout(), data);
-	}
-
 }

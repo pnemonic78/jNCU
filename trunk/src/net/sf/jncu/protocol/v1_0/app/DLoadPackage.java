@@ -60,14 +60,13 @@ public class DLoadPackage extends DockCommandToNewton {
 			return;
 
 		int size = (int) file.length();
-		if (size < 7)
+		if (size < 8)
 			throw new PackageException("package size too small");
 		FileInputStream in = null;
 		byte[] buf = new byte[Math.min(size, 1024)];
 		int count;
 
 		try {
-			// Load the whole file into memory.
 			in = new FileInputStream(file);
 			count = in.read(buf);
 
@@ -108,6 +107,10 @@ public class DLoadPackage extends DockCommandToNewton {
 	 */
 	public void setFile(File file) {
 		this.file = file;
+		if (file == null)
+			setLength(0);
+		else
+			setLength((int) file.length());
 	}
 
 }

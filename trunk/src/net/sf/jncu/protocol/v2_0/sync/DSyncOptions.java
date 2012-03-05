@@ -90,8 +90,8 @@ public class DSyncOptions extends DockCommandFromNewtonScript<NSOFFrame> {
 	}
 
 	@Override
-	protected void decodeData(InputStream data) throws IOException {
-		super.decodeData(data);
+	protected void decodeCommandData(InputStream data) throws IOException {
+		super.decodeCommandData(data);
 		NSOFFrame frame = getResult();
 		SyncInfo info = new SyncInfo();
 		info.decode(frame);

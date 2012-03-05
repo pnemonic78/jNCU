@@ -19,10 +19,7 @@
  */
 package net.sf.jncu.protocol.v1_0.session;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonLong;
 
 /**
  * This command is sent to the newt in response to a <tt>kDRequestToDock</tt>
@@ -35,7 +32,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * session type
  * </pre>
  */
-public class DInitiateDocking extends DockCommandToNewton {
+public class DInitiateDocking extends DockCommandToNewtonLong {
 
 	/** <tt>kDInitiateDocking</tt> */
 	public static final String COMMAND = "dock";
@@ -49,13 +46,12 @@ public class DInitiateDocking extends DockCommandToNewton {
 	public static final int SESSION_LOAD_PATCH = 6;
 	public static final int SESSION_UPDATING_STORES = 7;
 
-	private int session = SESSION_NONE;
-
 	/**
 	 * Creates a new command.
 	 */
 	public DInitiateDocking() {
 		super(COMMAND);
+		setSession(SESSION_NONE);
 	}
 
 	/**
@@ -64,7 +60,7 @@ public class DInitiateDocking extends DockCommandToNewton {
 	 * @return the session.
 	 */
 	public int getSession() {
-		return session;
+		return getValue();
 	}
 
 	/**
@@ -74,11 +70,6 @@ public class DInitiateDocking extends DockCommandToNewton {
 	 *            the session.
 	 */
 	public void setSession(int session) {
-		this.session = session;
-	}
-
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		htonl(session, data);
+		setValue(session);
 	}
 }

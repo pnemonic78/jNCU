@@ -68,7 +68,7 @@ public class DStoreNames extends DockCommandFromNewton {
 	}
 
 	@Override
-	protected void decodeData(InputStream data) throws IOException {
+	protected void decodeCommandData(InputStream data) throws IOException {
 		NSOFDecoder decoder = new NSOFDecoder();
 		NSOFArray arr = (NSOFArray) decoder.inflate(data);
 		List<Store> stores = new ArrayList<Store>();

@@ -55,7 +55,7 @@ public class DRequestToDock extends net.sf.jncu.protocol.v1_0.session.DRequestTo
 	}
 
 	@Override
-	protected void decodeData(InputStream data) throws IOException {
+	protected void decodeCommandData(InputStream data) throws IOException {
 		int protocol = ntohl(data);
 		setProtocol(protocol);
 		if (protocol != PROTOCOL_VERSION) {

@@ -19,10 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonLong;
 
 /**
  * This commands sets the signature of the current store to the specified value.
@@ -37,12 +34,10 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DSetStoreSignature extends DockCommandToNewton {
+public class DSetStoreSignature extends DockCommandToNewtonLong {
 
 	/** <tt>kDSetStoreSignature</tt> */
 	public static final String COMMAND = "ssig";
-
-	private int signature;
 
 	/**
 	 * Creates a new command.
@@ -57,7 +52,7 @@ public class DSetStoreSignature extends DockCommandToNewton {
 	 * @return the signature.
 	 */
 	public int getSignature() {
-		return signature;
+		return getValue();
 	}
 
 	/**
@@ -67,12 +62,6 @@ public class DSetStoreSignature extends DockCommandToNewton {
 	 *            the signature.
 	 */
 	public void setSignature(int signature) {
-		this.signature = signature;
+		setValue(signature);
 	}
-
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		htonl(getSignature(), data);
-	}
-
 }

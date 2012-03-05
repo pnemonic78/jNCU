@@ -99,7 +99,7 @@ public class DUnknownCommand extends DockCommandToNewton implements IDockCommand
 		IDockCommandFromNewton cmd = new DockCommandFromNewton(COMMAND) {
 
 			@Override
-			protected void decodeData(InputStream data) throws IOException {
+			protected void decodeCommandData(InputStream data) throws IOException {
 				char[] cmdName = new char[getLength()];
 				cmdName[0] = (char) (data.read() & 0xFF);
 				cmdName[1] = (char) (data.read() & 0xFF);

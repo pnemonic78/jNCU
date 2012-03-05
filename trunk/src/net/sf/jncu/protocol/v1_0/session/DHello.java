@@ -19,7 +19,9 @@
  */
 package net.sf.jncu.protocol.v1_0.session;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
@@ -47,10 +49,14 @@ public class DHello extends DockCommandFromNewtonBlank implements IDockCommandTo
 	}
 
 	@Override
-	public byte[] getPayload() throws IOException {
+	public byte[] getPayloadBytes() throws IOException {
 		IDockCommandToNewton cmd = new DockCommandToNewtonBlank(COMMAND) {
 		};
-		return cmd.getPayload();
+		return cmd.getPayloadBytes();
 	}
 
+	@Override
+	public InputStream getPayload() throws IOException {
+		return new ByteArrayInputStream(getPayloadBytes());
+	}
 }

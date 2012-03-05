@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -62,7 +63,7 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 		int length = ntohl(data);
 		setLength(length);
 		if (length > 0) {
-			decodeData(data);
+			decodeCommandData(data);
 			// Commands are 4-byte aligned.
 			switch (length & 3) {
 			case 1:
@@ -84,7 +85,7 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	 * @throws IOException
 	 *             if read past data buffer.
 	 */
-	protected abstract void decodeData(InputStream data) throws IOException;
+	protected abstract void decodeCommandData(InputStream data) throws IOException;
 
 	/**
 	 * Network-to-host long.<br>
@@ -157,7 +158,14 @@ public abstract class DockCommandFromNewton extends DockCommand implements IDock
 	 */
 	protected void readAll(InputStream in, byte[] b) throws IOException {
 		int count = 0;
-		while (count < b.length)
-			count += in.read(b, count, b.length - count);
+		int offset = 0;
+		int length = b.length;
+		while (length > 0) {
+			count = in.read(b, offset, length);
+			if (count == -1)
+				throw new EOFException();
+			offset += count;
+			length -= count;
+		}
 	}
 }

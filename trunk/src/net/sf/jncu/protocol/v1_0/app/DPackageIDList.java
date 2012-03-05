@@ -67,7 +67,7 @@ public class DPackageIDList extends DockCommandFromNewton {
 	}
 
 	@Override
-	protected void decodeData(InputStream data) throws IOException {
+	protected void decodeCommandData(InputStream data) throws IOException {
 		packages.clear();
 		int count = ntohl(data);
 		PackageInfo pkg;

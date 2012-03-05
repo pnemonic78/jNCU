@@ -84,10 +84,10 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 
 	@Override
 	public void write(IDockCommandToNewton cmd) throws IOException, TimeoutException {
-		final byte[] payload = cmd.getPayload();
+		final InputStream payload = cmd.getPayload();
 		if (payload == null)
 			return;
-		MNPLinkTransferPacket[] packets = MNPPacketFactory.getInstance().createTransferPackets(payload);
+		Iterable<MNPLinkTransferPacket> packets = MNPPacketFactory.getInstance().iterateTransferPackets(payload);
 		Byte seq;
 		for (MNPLinkTransferPacket packet : packets) {
 			seq = packet.getSequence();

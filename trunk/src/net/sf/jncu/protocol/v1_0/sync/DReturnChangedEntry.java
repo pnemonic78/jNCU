@@ -19,10 +19,7 @@
  */
 package net.sf.jncu.protocol.v1_0.sync;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonLong;
 
 /**
  * This command is sent when the desktop wants to retrieve a changed entry from
@@ -36,12 +33,10 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DReturnChangedEntry extends DockCommandToNewton {
+public class DReturnChangedEntry extends DockCommandToNewtonLong {
 
 	/** <tt>kDReturnChangedEntry</tt> */
 	public static final String COMMAND = "rcen";
-
-	private int id;
 
 	/**
 	 * Creates a new command.
@@ -50,18 +45,13 @@ public class DReturnChangedEntry extends DockCommandToNewton {
 		super(COMMAND);
 	}
 
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		htonl(getId(), data);
-	}
-
 	/**
 	 * Get the entry id.
 	 * 
 	 * @return the id.
 	 */
 	public int getId() {
-		return id;
+		return getValue();
 	}
 
 	/**
@@ -71,6 +61,6 @@ public class DReturnChangedEntry extends DockCommandToNewton {
 	 *            the id.
 	 */
 	public void setId(int id) {
-		this.id = id;
+		setValue(id);
 	}
 }

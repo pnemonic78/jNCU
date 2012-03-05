@@ -64,7 +64,7 @@ public class DBackupIDs extends DockCommandFromNewton {
 	}
 
 	@Override
-	protected void decodeData(InputStream data) throws IOException {
+	protected void decodeCommandData(InputStream data) throws IOException {
 		Set<Short> ids = new TreeSet<Short>();
 		short id = ntohs(data);
 		short idPrev = -1;

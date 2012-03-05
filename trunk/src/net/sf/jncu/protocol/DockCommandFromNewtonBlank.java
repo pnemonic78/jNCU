@@ -40,7 +40,7 @@ public abstract class DockCommandFromNewtonBlank extends DockCommandFromNewton {
 	}
 
 	@Override
-	protected final void decodeData(InputStream data) throws IOException {
+	protected final void decodeCommandData(InputStream data) throws IOException {
 	}
 
 }

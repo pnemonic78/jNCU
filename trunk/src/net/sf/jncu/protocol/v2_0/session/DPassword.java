@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -59,7 +60,7 @@ public class DPassword extends DockCommandFromNewton implements IDockCommandToNe
 	}
 
 	@Override
-	protected void decodeData(InputStream data) throws IOException {
+	protected void decodeCommandData(InputStream data) throws IOException {
 		long keyHi = ntohl(data) & 0xFFFFFFFFL;
 		long keyLo = ntohl(data) & 0xFFFFFFFFL;
 		setEncryptedKey((keyHi << 32) | keyLo);
@@ -85,7 +86,7 @@ public class DPassword extends DockCommandFromNewton implements IDockCommandToNe
 	}
 
 	@Override
-	public byte[] getPayload() throws IOException {
+	public byte[] getPayloadBytes() throws IOException {
 		IDockCommandToNewton cmd = new DockCommandToNewton(COMMAND) {
 
 			@Override
@@ -93,6 +94,11 @@ public class DPassword extends DockCommandFromNewton implements IDockCommandToNe
 				htonl(getEncryptedKey(), data);
 			}
 		};
-		return cmd.getPayload();
+		return cmd.getPayloadBytes();
+	}
+
+	@Override
+	public InputStream getPayload() throws IOException {
+		return new ByteArrayInputStream(getPayloadBytes());
 	}
 }

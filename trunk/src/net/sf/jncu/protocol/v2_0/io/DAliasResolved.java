@@ -19,10 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonLong;
 
 /**
  * This command is sent by the desktop in response to the
@@ -38,12 +35,10 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DAliasResolved extends DockCommandToNewton {
+public class DAliasResolved extends DockCommandToNewtonLong {
 
 	/** <tt>kDAliasResolved</tt> */
 	public static final String COMMAND = "alir";
-
-	private boolean resolved;
 
 	/**
 	 * Creates a new command.
@@ -52,18 +47,13 @@ public class DAliasResolved extends DockCommandToNewton {
 		super(COMMAND);
 	}
 
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		htonl(isResolved() ? 1 : 0, data);
-	}
-
 	/**
 	 * Is alias resolved?
 	 * 
 	 * @return true if resolved?
 	 */
 	public boolean isResolved() {
-		return resolved;
+		return getValue() == 1;
 	}
 
 	/**
@@ -73,7 +63,6 @@ public class DAliasResolved extends DockCommandToNewton {
 	 *            resolved?
 	 */
 	public void setResolved(boolean resolved) {
-		this.resolved = resolved;
+		setValue(resolved ? 1 : 0);
 	}
-
 }
