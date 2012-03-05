@@ -19,9 +19,12 @@
  */
 package net.sf.jncu.protocol;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
+import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.io.RewriteByteArrayOutputStream;
 
 /**
@@ -30,8 +33,6 @@ import net.sf.jncu.io.RewriteByteArrayOutputStream;
  * @author moshew
  */
 public abstract class DockCommandToNewton extends DockCommand implements IDockCommandToNewton {
-
-	private static final String CHARSET = "UTF-16";
 
 	/**
 	 * Creates a new docking command from Newton.
@@ -54,41 +55,48 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 	}
 
 	@Override
-	public byte[] getPayload() throws IOException {
-		RewriteByteArrayOutputStream payload = new RewriteByteArrayOutputStream();
-		int length = 0;
+	public byte[] getPayloadBytes() throws IOException {
+		RewriteByteArrayOutputStream data = new RewriteByteArrayOutputStream();
+		int length = getLength();
 		int indexLength, indexData;
 
 		try {
-			payload.write(COMMAND_PREFIX_BYTES);
-			payload.write(commandBytes);
-			indexLength = payload.size();
-			htonl(length, payload);
-			indexData = payload.size();
-			writeCommandData(payload);
-			length = payload.size() - indexData;
-			setLength(length);
-			payload.seek(indexLength);
-			htonl(length, payload);
-			payload.seekToEnd();
+			data.write(COMMAND_PREFIX_BYTES);
+			data.write(commandBytes);
+			indexLength = data.size();
+			htonl(length, data);
+			indexData = data.size();
+			writeCommandData(data);
+			if (length == 0) {
+				length = data.size() - indexData;
+				setLength(length);
+				data.seek(indexLength);
+				htonl(length, data);
+				data.seekToEnd();
+			}
 			// 4-byte align
-			switch (payload.size() & 3) {
+			switch (data.size() & 3) {
 			case 1:
-				payload.write(0);
+				data.write(0);
 			case 2:
-				payload.write(0);
+				data.write(0);
 			case 3:
-				payload.write(0);
+				data.write(0);
 				break;
 			}
 		} finally {
 			try {
-				payload.close();
+				data.close();
 			} catch (Exception e) {
 				// ignore
 			}
 		}
-		return payload.toByteArray();
+		return data.toByteArray();
+	}
+
+	@Override
+	public InputStream getPayload() throws IOException {
+		return new ByteArrayInputStream(getPayloadBytes());
 	}
 
 	/**
@@ -147,7 +155,7 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 	 */
 	public static void writeString(String s, OutputStream out) throws IOException {
 		if ((s != null) && (s.length() > 0)) {
-			byte[] utf16 = s.getBytes(CHARSET);
+			byte[] utf16 = s.getBytes(NSOFString.CHARSET_UTF16);
 			// The 1st and 2nd bytes are UTF-16 header 0xFE and 0xFF.
 			out.write(utf16, 2, utf16.length - 2);
 		}

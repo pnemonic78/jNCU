@@ -19,13 +19,13 @@
  */
 package net.sf.jncu.protocol.v1_0.query;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import net.sf.jncu.newton.NewtonError;
 import net.sf.jncu.protocol.DockCommandFromNewton;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonLong;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 
 /**
@@ -61,19 +61,25 @@ public class DResult extends DockCommandFromNewton implements IDockCommandToNewt
 	}
 
 	@Override
-	protected void decodeData(InputStream data) throws IOException {
+	protected void decodeCommandData(InputStream data) throws IOException {
 		setErrorCode(ntohl(data));
 	}
 
 	@Override
-	public byte[] getPayload() throws IOException {
-		IDockCommandToNewton cmd = new DockCommandToNewton(COMMAND) {
+	public byte[] getPayloadBytes() throws IOException {
+		IDockCommandToNewton cmd = new DockCommandToNewtonLong(COMMAND) {
+
 			@Override
-			protected void writeCommandData(OutputStream data) throws IOException {
-				htonl(getErrorCode(), data);
+			protected int getValue() {
+				return getErrorCode();
 			}
 		};
-		return cmd.getPayload();
+		return cmd.getPayloadBytes();
+	}
+
+	@Override
+	public InputStream getPayload() throws IOException {
+		return new ByteArrayInputStream(getPayloadBytes());
 	}
 
 	/**

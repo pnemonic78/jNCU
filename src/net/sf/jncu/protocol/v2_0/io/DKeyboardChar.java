@@ -86,6 +86,7 @@ public class DKeyboardChar extends DockCommandToNewton {
 	 */
 	public DKeyboardChar() {
 		super(COMMAND);
+		setLength(4);
 	}
 
 	@Override

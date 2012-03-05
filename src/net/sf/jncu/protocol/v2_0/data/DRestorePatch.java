@@ -19,10 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonLong;
 
 /**
  * This command is used to restore the patch backed up with
@@ -38,12 +35,10 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DRestorePatch extends DockCommandToNewton {
+public class DRestorePatch extends DockCommandToNewtonLong {
 
 	/** <tt>kDRestorePatch</tt> */
 	public static final String COMMAND = "rpat";
-
-	private int patch;
 
 	/**
 	 * Creates a new command.
@@ -58,7 +53,7 @@ public class DRestorePatch extends DockCommandToNewton {
 	 * @return the patch.
 	 */
 	public int getPatch() {
-		return patch;
+		return getValue();
 	}
 
 	/**
@@ -68,12 +63,6 @@ public class DRestorePatch extends DockCommandToNewton {
 	 *            the patch.
 	 */
 	public void setPatch(int patch) {
-		this.patch = patch;
+		setValue(patch);
 	}
-
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		htonl(getPatch(), data);
-	}
-
 }

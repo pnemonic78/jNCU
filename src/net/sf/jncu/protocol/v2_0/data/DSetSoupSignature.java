@@ -19,10 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonLong;
 
 /**
  * This commands sets the signature of the current soup to the specified value.
@@ -37,12 +34,10 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DSetSoupSignature extends DockCommandToNewton {
+public class DSetSoupSignature extends DockCommandToNewtonLong {
 
 	/** <tt>kDSetSoupSignature</tt> */
 	public static final String COMMAND = "ssos";
-
-	private int signature;
 
 	/**
 	 * Creates a new command.
@@ -57,7 +52,7 @@ public class DSetSoupSignature extends DockCommandToNewton {
 	 * @return the signature.
 	 */
 	public int getSignature() {
-		return signature;
+		return getValue();
 	}
 
 	/**
@@ -67,11 +62,6 @@ public class DSetSoupSignature extends DockCommandToNewton {
 	 *            the signature.
 	 */
 	public void setSignature(int signature) {
-		this.signature = signature;
-	}
-
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		htonl(getSignature(), data);
+		setValue(signature);
 	}
 }

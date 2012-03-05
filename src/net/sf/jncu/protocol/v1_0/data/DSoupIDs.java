@@ -52,7 +52,7 @@ public class DSoupIDs extends DockCommandFromNewton {
 	}
 
 	@Override
-	protected void decodeData(InputStream data) throws IOException {
+	protected void decodeCommandData(InputStream data) throws IOException {
 		ids.clear();
 		int count = ntohl(data);
 		for (int i = 0; i < count; i++) {

@@ -1213,7 +1213,7 @@ public class FDILibrary implements FDConstants {
 			throw new ExpectedStringException(uee.getMessage());
 		}
 		final int length = Math.min(bufLen, b.length - 2);
-		// UTF-16 header is 0xFFEE or 0xFEFF.
+		// The 1st and 2nd bytes are UTF-16 header 0xFE and 0xFF.
 		System.arraycopy(b, 2, buffer, 0, length);
 		if (length < bufLen)
 			buffer[length] = 0;

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
+import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.NewtonInfo;
 
@@ -58,7 +59,7 @@ public class DNewtonName extends DockCommandFromNewton {
 	}
 
 	@Override
-	protected void decodeData(InputStream data) throws IOException {
+	protected void decodeCommandData(InputStream data) throws IOException {
 		setInformation(null);
 		setName(null);
 		versionInfoLength = ntohl(data);
@@ -118,7 +119,7 @@ public class DNewtonName extends DockCommandFromNewton {
 		data.read(nameBytes);
 		try {
 			// remove 2 bytes for null-terminated string.
-			return new String(nameBytes, 0, nameLength - 2, "UTF-16");
+			return new String(nameBytes, 0, nameLength - 2, NSOFString.CHARSET_UTF16);
 		} catch (UnsupportedEncodingException uee) {
 			uee.printStackTrace();
 		}

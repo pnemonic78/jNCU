@@ -52,7 +52,7 @@ public class DSetDrive extends DockCommandFromNewton {
 	}
 
 	@Override
-	protected void decodeData(InputStream data) throws IOException {
+	protected void decodeCommandData(InputStream data) throws IOException {
 		setDrive((String) null);
 		NSOFDecoder decoder = new NSOFDecoder();
 		NSOFString drive = (NSOFString) decoder.inflate(data);

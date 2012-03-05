@@ -61,7 +61,7 @@ public class DRawCommand extends DockCommandFromNewton {
 	}
 
 	@Override
-	protected void decodeData(InputStream data) throws IOException {
+	protected void decodeCommandData(InputStream data) throws IOException {
 		final int length = getLength();
 		byte[] raw = new byte[length];
 		readAll(data, raw);

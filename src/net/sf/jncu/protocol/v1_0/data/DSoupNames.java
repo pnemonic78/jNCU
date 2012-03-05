@@ -58,7 +58,7 @@ public class DSoupNames extends DockCommandFromNewton {
 	}
 
 	@Override
-	protected void decodeData(InputStream data) throws IOException {
+	protected void decodeCommandData(InputStream data) throws IOException {
 		setNames(null);
 		setSignatures(null);
 

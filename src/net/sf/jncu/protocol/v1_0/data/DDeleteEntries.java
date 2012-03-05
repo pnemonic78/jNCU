@@ -77,7 +77,9 @@ public class DDeleteEntries extends DockCommandToNewton {
 	 */
 	protected void setIDs(Set<Integer> ids) {
 		this.ids.clear();
-		this.ids.addAll(ids);
+		if (ids != null)
+			this.ids.addAll(ids);
+		setLength(4 + (this.ids.size() * 4));
 	}
 
 	/**
@@ -88,5 +90,6 @@ public class DDeleteEntries extends DockCommandToNewton {
 	 */
 	protected void addID(Integer id) {
 		this.ids.add(id);
+		setLength(4 + (this.ids.size() * 4));
 	}
 }

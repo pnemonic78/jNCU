@@ -19,10 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonLong;
 
 /**
  * This command is used to customise the set of icons shown on the Newton. The
@@ -47,12 +44,10 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DWhichIcons extends DockCommandToNewton {
+public class DWhichIcons extends DockCommandToNewtonLong {
 
 	/** <tt>kDWhichIcons</tt> */
 	public static final String COMMAND = "wicn";
-
-	private int icons;
 
 	/**
 	 * "Backup" icon.<br>
@@ -96,18 +91,13 @@ public class DWhichIcons extends DockCommandToNewton {
 		super(COMMAND);
 	}
 
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		htonl(getIcons(), data);
-	}
-
 	/**
 	 * Get the icons.
 	 * 
 	 * @return the icons.
 	 */
 	public int getIcons() {
-		return icons;
+		return getValue();
 	}
 
 	/**
@@ -117,7 +107,7 @@ public class DWhichIcons extends DockCommandToNewton {
 	 *            the icons.
 	 */
 	public void setIcons(int icons) {
-		this.icons = icons;
+		setValue(icons);
 	}
 
 	/**
@@ -134,7 +124,7 @@ public class DWhichIcons extends DockCommandToNewton {
 		case IMPORT:
 		case SYNC:
 		case KEYBOARD:
-			icons |= icon;
+			setIcons(getIcons() | icon);
 			break;
 		default:
 			throw new IllegalArgumentException("unknown icon");

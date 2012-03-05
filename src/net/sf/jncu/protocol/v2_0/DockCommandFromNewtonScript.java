@@ -47,7 +47,7 @@ public abstract class DockCommandFromNewtonScript<T extends NSOFObject> extends 
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected void decodeData(InputStream data) throws IOException {
+	protected void decodeCommandData(InputStream data) throws IOException {
 		NSOFDecoder decoder = new NSOFDecoder();
 		setResult((T) decoder.inflate(data));
 	}

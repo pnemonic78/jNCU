@@ -56,17 +56,29 @@ public class DSourceVersion extends DockCommandToNewton {
 	/** <tt>kDSourceVersion</tt> */
 	public static final String COMMAND = "sver";
 
-	/** Source versions. */
-	public static enum eSourceVersion {
-		/** Unknown version. */
-		eNone,
-		/** <tt>1.x</tt> data file. */
-		eOnePointXData,
-		/** <tt>2.x</tt> data file. */
-		eTwoPointXData
+	/**
+	 * Source versions.<br>
+	 * <tt>eSourceVersion</tt>
+	 */
+	public static enum SourceVersion {
+		/**
+		 * Unknown version.<br>
+		 * <tt>eNone</tt>
+		 */
+		NONE,
+		/**
+		 * <tt>1.x</tt> data file.<br>
+		 * <tt>eOnePointXData</tt>
+		 */
+		ONE_POINT_X_DATA,
+		/**
+		 * <tt>2.x</tt> data file.<br>
+		 * <tt>eTwoPointXData</tt>
+		 */
+		TWO_POINT_X_DATA
 	}
 
-	private eSourceVersion version;
+	private SourceVersion version;
 	private int manufacturerId;
 	private int machineType;
 
@@ -75,6 +87,7 @@ public class DSourceVersion extends DockCommandToNewton {
 	 */
 	public DSourceVersion() {
 		super(COMMAND);
+		setLength(12);
 	}
 
 	/**
@@ -82,7 +95,7 @@ public class DSourceVersion extends DockCommandToNewton {
 	 * 
 	 * @return the version.
 	 */
-	public eSourceVersion getVersion() {
+	public SourceVersion getVersion() {
 		return version;
 	}
 
@@ -92,7 +105,7 @@ public class DSourceVersion extends DockCommandToNewton {
 	 * @param version
 	 *            the version.
 	 */
-	public void setVersion(eSourceVersion version) {
+	public void setVersion(SourceVersion version) {
 		this.version = version;
 	}
 

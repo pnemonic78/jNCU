@@ -53,7 +53,7 @@ public class DSetBaseID extends DockCommandFromNewton {
 	}
 
 	@Override
-	protected void decodeData(InputStream data) throws IOException {
+	protected void decodeCommandData(InputStream data) throws IOException {
 		setId(ntohl(data));
 	}
 

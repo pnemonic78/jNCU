@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.fdil;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -227,7 +228,14 @@ public abstract class NewtonStreamedObjectFormat {
 	 */
 	protected void readAll(InputStream in, byte[] b) throws IOException {
 		int count = 0;
-		while (count < b.length)
-			count += in.read(b, count, b.length - count);
+		int offset = 0;
+		int length = b.length;
+		while (length > 0) {
+			count = in.read(b, offset, length);
+			if (count == -1)
+				throw new EOFException();
+			offset += count;
+			length -= count;
+		}
 	}
 }
