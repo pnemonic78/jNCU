@@ -49,14 +49,14 @@ public class DHello extends DockCommandFromNewtonBlank implements IDockCommandTo
 	}
 
 	@Override
-	public byte[] getPayloadBytes() throws IOException {
+	public byte[] getCommandPayloadBytes() throws IOException {
 		IDockCommandToNewton cmd = new DockCommandToNewtonBlank(COMMAND) {
 		};
-		return cmd.getPayloadBytes();
+		return cmd.getCommandPayloadBytes();
 	}
 
 	@Override
-	public InputStream getPayload() throws IOException {
-		return new ByteArrayInputStream(getPayloadBytes());
+	public InputStream getCommandPayload() throws IOException {
+		return new ByteArrayInputStream(getCommandPayloadBytes());
 	}
 }

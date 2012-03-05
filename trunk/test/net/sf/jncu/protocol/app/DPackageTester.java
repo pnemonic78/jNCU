@@ -26,7 +26,7 @@ public class DPackageTester extends SFTestCase {
 
 		cmd.setFile(null);
 		assertEquals(0, cmd.getLength());
-		InputStream payload = cmd.getPayload();
+		InputStream payload = cmd.getCommandPayload();
 		assertNotNull(payload);
 
 		MNPPacketFactory factory = MNPPacketFactory.getInstance();
@@ -43,7 +43,7 @@ public class DPackageTester extends SFTestCase {
 		int length = (int) f.length();
 		assertFalse(0 == length);
 		assertEquals(length, cmd.getLength());
-		payload = cmd.getPayload();
+		payload = cmd.getCommandPayload();
 		assertNotNull(payload);
 		packets = factory.createTransferPackets(payload);
 		assertNotNull(packets);

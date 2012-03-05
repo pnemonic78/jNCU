@@ -32,17 +32,17 @@ import net.sf.jncu.protocol.v1_0.app.DLoadPackage;
 public interface IDockCommandToNewton extends IDockCommand {
 
 	/**
-	 * Get the payload to send.
+	 * Get the command payload to send.
 	 * 
 	 * @return the payload.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
 	@Deprecated
-	public byte[] getPayloadBytes() throws IOException;
+	public byte[] getCommandPayloadBytes() throws IOException;
 
 	/**
-	 * Get the payload to send.
+	 * Get the command payload to send.
 	 * <p>
 	 * Used for extra-long commands like {@link DLoadPackage} where we write
 	 * files.
@@ -51,5 +51,5 @@ public interface IDockCommandToNewton extends IDockCommand {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public InputStream getPayload() throws IOException;
+	public InputStream getCommandPayload() throws IOException;
 }

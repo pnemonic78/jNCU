@@ -55,7 +55,7 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 	}
 
 	@Override
-	public byte[] getPayloadBytes() throws IOException {
+	public byte[] getCommandPayloadBytes() throws IOException {
 		RewriteByteArrayOutputStream data = new RewriteByteArrayOutputStream();
 		int length = getLength();
 		int indexLength, indexData;
@@ -95,8 +95,8 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 	}
 
 	@Override
-	public InputStream getPayload() throws IOException {
-		return new ByteArrayInputStream(getPayloadBytes());
+	public InputStream getCommandPayload() throws IOException {
+		return new ByteArrayInputStream(getCommandPayloadBytes());
 	}
 
 	/**

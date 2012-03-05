@@ -86,7 +86,7 @@ public class DPassword extends DockCommandFromNewton implements IDockCommandToNe
 	}
 
 	@Override
-	public byte[] getPayloadBytes() throws IOException {
+	public byte[] getCommandPayloadBytes() throws IOException {
 		IDockCommandToNewton cmd = new DockCommandToNewton(COMMAND) {
 
 			@Override
@@ -94,11 +94,11 @@ public class DPassword extends DockCommandFromNewton implements IDockCommandToNe
 				htonl(getEncryptedKey(), data);
 			}
 		};
-		return cmd.getPayloadBytes();
+		return cmd.getCommandPayloadBytes();
 	}
 
 	@Override
-	public InputStream getPayload() throws IOException {
-		return new ByteArrayInputStream(getPayloadBytes());
+	public InputStream getCommandPayload() throws IOException {
+		return new ByteArrayInputStream(getCommandPayloadBytes());
 	}
 }
