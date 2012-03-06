@@ -22,6 +22,7 @@ package net.sf.jncu.protocol.v1_0.app;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import net.sf.jncu.protocol.DockCommandToNewton;
@@ -55,25 +56,17 @@ public class DLoadPackage extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		File file = getFile();
-		if (file == null)
+		InputStream in = getCommandData();
+		if (in == null)
 			return;
 
+		File file = getFile();
 		int size = (int) file.length();
-		if (size < 8)
-			throw new PackageException("package size too small");
-		FileInputStream in = null;
 		byte[] buf = new byte[Math.min(size, 1024)];
 		int count;
 
 		try {
-			in = new FileInputStream(file);
 			count = in.read(buf);
-
-			// Check that the file header starts with "package"
-			if ((buf[0] != 'p') || (buf[1] != 'a') || (buf[2] != 'c') || (buf[3] != 'k') || (buf[4] != 'a') || (buf[5] != 'g') || (buf[6] != 'e'))
-				throw new PackageException("package header must start with 'package'");
-
 			while ((count != -1) && (size > 0)) {
 				data.write(buf, 0, count);
 				size -= count;
@@ -88,6 +81,34 @@ public class DLoadPackage extends DockCommandToNewton {
 				}
 			}
 		}
+	}
+
+	@Override
+	protected InputStream getCommandData() throws IOException {
+		File file = getFile();
+		if (file == null)
+			return null;
+
+		if (file.length() < 8L)
+			throw new PackageException("package size too small");
+		InputStream in = new FileInputStream(file);
+
+		// Check that the file header starts with "package"
+		byte[] buf = new byte[7];
+		try {
+			in.read(buf);
+			if ((buf[0] != 'p') || (buf[1] != 'a') || (buf[2] != 'c') || (buf[3] != 'k') || (buf[4] != 'a') || (buf[5] != 'g') || (buf[6] != 'e'))
+				throw new PackageException("package header must start with 'package'");
+		} finally {
+			try {
+				in.close();
+			} catch (Exception e) {
+				// ignore
+			}
+		}
+		in = new FileInputStream(file);
+
+		return in;
 	}
 
 	/**

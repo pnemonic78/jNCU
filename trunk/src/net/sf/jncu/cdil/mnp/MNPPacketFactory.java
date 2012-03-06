@@ -121,22 +121,38 @@ public class MNPPacketFactory {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
+	@Deprecated
 	protected MNPLinkTransferPacket createLT(InputStream data) throws IOException {
+		return createLT(data, data.available());
+	}
+
+	/**
+	 * Create a Link Transfer packet.
+	 * 
+	 * @param data
+	 *            the payload data.
+	 * @param length
+	 *            the data length.
+	 * @return the packet.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected MNPLinkTransferPacket createLT(InputStream data, int length) throws IOException {
 		if (data == null)
 			return null;
 		MNPLinkTransferPacket packet = createLTSend();
-		int length = Math.min(data.available(), MAX_DATA_LENGTH);
+		length = Math.min(length, MAX_DATA_LENGTH);
 		if (length > 0) {
 			byte[] buf = new byte[length];
 			int count = 0;
 			int offset = 0;
-			while (length > 0) {
+			do {
 				count = data.read(buf, offset, length);
 				if (count == -1)
 					break;
 				offset += count;
 				length -= count;
-			}
+			} while (length > 0);
 			packet.setData(buf, 0, offset);
 		}
 		return packet;
@@ -208,8 +224,10 @@ public class MNPPacketFactory {
 	 * @param data
 	 *            the payload data.
 	 * @return the list of packets.
+	 * @throws IOException
+	 *             if an I/O error occurs.
 	 */
-	public Iterable<MNPLinkTransferPacket> createTransferPackets(byte[] data) {
+	public Iterable<MNPLinkTransferPacket> createTransferPackets(byte[] data) throws IOException {
 		if (data == null)
 			return null;
 		return createTransferPackets(new ByteArrayInputStream(data));
@@ -222,11 +240,30 @@ public class MNPPacketFactory {
 	 * @param data
 	 *            the payload data.
 	 * @return the list of packets.
+	 * @throws IOException
+	 *             if an I/O error occurs.
 	 */
-	public Iterable<MNPLinkTransferPacket> createTransferPackets(InputStream data) {
+	@Deprecated
+	public Iterable<MNPLinkTransferPacket> createTransferPackets(InputStream data) throws IOException {
 		if (data == null)
 			return null;
-		return new MNPLTIterable(data);
+		return createTransferPackets(data, data.available());
+	}
+
+	/**
+	 * Create MNP link transfer packets to be the target of the "foreach"
+	 * statement.
+	 * 
+	 * @param data
+	 *            the payload data.
+	 * @param length
+	 *            the payload length.
+	 * @return the list of packets.
+	 */
+	public Iterable<MNPLinkTransferPacket> createTransferPackets(InputStream data, int length) {
+		if (data == null)
+			return null;
+		return new MNPLTIterable(data, length);
 	}
 
 	/**
@@ -238,21 +275,25 @@ public class MNPPacketFactory {
 	private class MNPLTIterable implements Iterable<MNPLinkTransferPacket> {
 
 		private final InputStream data;
+		private final int length;
 
 		/**
 		 * Create an LT iterator.
 		 * 
 		 * @param data
 		 *            the data.
+		 * @param length
+		 *            the data length.
 		 */
-		public MNPLTIterable(InputStream data) {
+		public MNPLTIterable(InputStream data, int length) {
 			super();
 			this.data = data;
+			this.length = length;
 		}
 
 		@Override
 		public Iterator<MNPLinkTransferPacket> iterator() {
-			return new MNPLTIterator(data);
+			return new MNPLTIterator(data, length);
 		}
 	}
 
@@ -265,35 +306,38 @@ public class MNPPacketFactory {
 	private class MNPLTIterator implements Iterator<MNPLinkTransferPacket> {
 
 		private final InputStream data;
+		private int length;
 
 		/**
 		 * Create an LT iterator.
 		 * 
 		 * @param data
 		 *            the data.
+		 * @param length
+		 *            the data length.
 		 */
-		public MNPLTIterator(InputStream data) {
+		public MNPLTIterator(InputStream data, int length) {
 			super();
 			this.data = data;
+			this.length = length;
 		}
 
 		@Override
 		public boolean hasNext() {
-			try {
-				return data.available() > 0;
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			}
-			return false;
+			return length > 0;
 		}
 
 		@Override
 		public MNPLinkTransferPacket next() {
+			MNPLinkTransferPacket packet = null;
 			try {
-				return createLT(data);
+				packet = createLT(data, length);
+				byte[] b = packet.getData();
+				length -= b.length;
 			} catch (IOException ioe) {
 				throw new NoSuchElementException();
 			}
+			return packet;
 		}
 
 		@Override

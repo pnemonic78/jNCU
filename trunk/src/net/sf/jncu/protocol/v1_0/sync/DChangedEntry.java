@@ -19,7 +19,6 @@
  */
 package net.sf.jncu.protocol.v1_0.sync;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -52,14 +51,14 @@ public class DChangedEntry extends DockCommandFromNewtonScript<NSOFObject> imple
 	}
 
 	@Override
-	public byte[] getCommandPayloadBytes() throws IOException {
+	public InputStream getCommandPayload() throws IOException {
 		IDockCommandToNewton cmd = new DockCommandToNewtonScript<NSOFObject>(COMMAND) {
 		};
-		return cmd.getCommandPayloadBytes();
+		return cmd.getCommandPayload();
 	}
 
 	@Override
-	public InputStream getCommandPayload() throws IOException {
-		return new ByteArrayInputStream(getCommandPayloadBytes());
+	public int getCommandPayloadLength() throws IOException {
+		return LENGTH_HEADER + getLength();
 	}
 }
