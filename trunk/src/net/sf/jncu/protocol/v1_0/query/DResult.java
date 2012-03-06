@@ -50,6 +50,7 @@ public class DResult extends DockCommandFromNewton implements IDockCommandToNewt
 	public static final int OK = 0;
 
 	private NewtonError error;
+	private IDockCommandToNewton to;
 
 	/**
 	 * Creates a new command.
@@ -66,19 +67,21 @@ public class DResult extends DockCommandFromNewton implements IDockCommandToNewt
 
 	@Override
 	public InputStream getCommandPayload() throws IOException {
-		IDockCommandToNewton cmd = new DockCommandToNewtonLong(COMMAND) {
+		if (to == null) {
+			to = new DockCommandToNewtonLong(COMMAND) {
 
-			@Override
-			protected int getValue() {
-				return getErrorCode();
-			}
-		};
-		return cmd.getCommandPayload();
+				@Override
+				protected int getValue() {
+					return getErrorCode();
+				}
+			};
+		}
+		return to.getCommandPayload();
 	}
 
 	@Override
 	public int getCommandPayloadLength() throws IOException {
-		return LENGTH_HEADER + getLength();
+		return to.getCommandPayloadLength();
 	}
 
 	/**

@@ -42,7 +42,7 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 		setName("IconModule-" + getId());
 		this.title = title;
 		if (pipe == null)
-			throw new IllegalArgumentException("pipe required");
+			throw new NullPointerException("pipe required");
 		this.pipe = pipe;
 		pipe.addCommandListener(this);
 	}

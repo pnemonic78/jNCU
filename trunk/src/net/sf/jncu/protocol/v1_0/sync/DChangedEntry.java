@@ -43,6 +43,8 @@ public class DChangedEntry extends DockCommandFromNewtonScript<NSOFObject> imple
 	/** <tt>kDChangedEntry</tt> */
 	public static final String COMMAND = "cent";
 
+	private IDockCommandToNewton to;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -52,13 +54,15 @@ public class DChangedEntry extends DockCommandFromNewtonScript<NSOFObject> imple
 
 	@Override
 	public InputStream getCommandPayload() throws IOException {
-		IDockCommandToNewton cmd = new DockCommandToNewtonScript<NSOFObject>(COMMAND) {
-		};
-		return cmd.getCommandPayload();
+		if (to == null) {
+			to = new DockCommandToNewtonScript<NSOFObject>(COMMAND) {
+			};
+		}
+		return to.getCommandPayload();
 	}
 
 	@Override
 	public int getCommandPayloadLength() throws IOException {
-		return LENGTH_HEADER + getLength();
+		return to.getCommandPayloadLength();
 	}
 }

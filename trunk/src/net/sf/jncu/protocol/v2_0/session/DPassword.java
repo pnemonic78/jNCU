@@ -50,6 +50,7 @@ public class DPassword extends DockCommandFromNewton implements IDockCommandToNe
 	public static final int ERROR_RETRY_PASSWORD = -28023;
 
 	private long encryptedKey;
+	private IDockCommandToNewton to;
 
 	/**
 	 * Creates a new command.
@@ -86,23 +87,25 @@ public class DPassword extends DockCommandFromNewton implements IDockCommandToNe
 
 	@Override
 	public InputStream getCommandPayload() throws IOException {
-		IDockCommandToNewton cmd = new DockCommandToNewton(COMMAND) {
+		if (to == null) {
+			to = new DockCommandToNewton(COMMAND) {
 
-			@Override
-			public int getLength() {
-				return 8;
-			}
+				@Override
+				public int getLength() {
+					return 8;
+				}
 
-			@Override
-			protected void writeCommandData(OutputStream data) throws IOException {
-				htonl(getEncryptedKey(), data);
-			}
-		};
-		return cmd.getCommandPayload();
+				@Override
+				protected void writeCommandData(OutputStream data) throws IOException {
+					htonl(getEncryptedKey(), data);
+				}
+			};
+		}
+		return to.getCommandPayload();
 	}
 
 	@Override
 	public int getCommandPayloadLength() throws IOException {
-		return LENGTH_HEADER + getLength();
+		return to.getCommandPayloadLength();
 	}
 }

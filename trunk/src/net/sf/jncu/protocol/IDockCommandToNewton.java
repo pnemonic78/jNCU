@@ -34,8 +34,8 @@ public interface IDockCommandToNewton extends IDockCommand {
 	/**
 	 * Get the command payload to send.
 	 * <p>
-	 * Used for extra-long commands like {@link DLoadPackage} where we write
-	 * files.
+	 * Useful primarily for extra-long commands, for example
+	 * {@link DLoadPackage}, where we write much data.
 	 * 
 	 * @return the payload.
 	 * @throws IOException
@@ -44,21 +44,11 @@ public interface IDockCommandToNewton extends IDockCommand {
 	public InputStream getCommandPayload() throws IOException;
 
 	/**
-	 * Get the payload length.
+	 * Get the command payload length.
 	 * 
 	 * @return the payload length.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
 	public int getCommandPayloadLength() throws IOException;
-
-	/**
-	 * Length of a docking command header.<br>
-	 * <ol>
-	 * <li>'newtdock' = 8
-	 * <li>command name = 4
-	 * <li>data length = 4
-	 * </ol>
-	 */
-	public static final int LENGTH_HEADER = 8 + 4 + 4;
 }

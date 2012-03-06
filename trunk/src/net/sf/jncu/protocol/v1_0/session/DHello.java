@@ -40,6 +40,8 @@ public class DHello extends DockCommandFromNewtonBlank implements IDockCommandTo
 	/** <tt>kDHello</tt> */
 	public static final String COMMAND = "helo";
 
+	private IDockCommandToNewton to;
+
 	/**
 	 * Creates a new command.
 	 */
@@ -49,13 +51,14 @@ public class DHello extends DockCommandFromNewtonBlank implements IDockCommandTo
 
 	@Override
 	public InputStream getCommandPayload() throws IOException {
-		IDockCommandToNewton cmd = new DockCommandToNewtonBlank(COMMAND) {
-		};
-		return cmd.getCommandPayload();
+		if (to == null) {
+			to = new DockCommandToNewtonBlank(COMMAND);
+		}
+		return to.getCommandPayload();
 	}
 
 	@Override
 	public int getCommandPayloadLength() throws IOException {
-		return LENGTH_HEADER + getLength();
+		return to.getCommandPayloadLength();
 	}
 }
