@@ -117,20 +117,6 @@ public class MNPPacketFactory {
 	 * 
 	 * @param data
 	 *            the payload data.
-	 * @return the packet.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
-	@Deprecated
-	protected MNPLinkTransferPacket createLT(InputStream data) throws IOException {
-		return createLT(data, data.available());
-	}
-
-	/**
-	 * Create a Link Transfer packet.
-	 * 
-	 * @param data
-	 *            the payload data.
 	 * @param length
 	 *            the data length.
 	 * @return the packet.
@@ -230,7 +216,7 @@ public class MNPPacketFactory {
 	public Iterable<MNPLinkTransferPacket> createTransferPackets(byte[] data) throws IOException {
 		if (data == null)
 			return null;
-		return createTransferPackets(new ByteArrayInputStream(data));
+		return createTransferPackets(new ByteArrayInputStream(data), data.length);
 	}
 
 	/**
@@ -238,12 +224,13 @@ public class MNPPacketFactory {
 	 * statement.
 	 * 
 	 * @param data
-	 *            the payload data.
+	 *            the payload data. The stream must return the correct number of
+	 *            bytes available.
 	 * @return the list of packets.
 	 * @throws IOException
 	 *             if an I/O error occurs.
+	 * @see #createTransferPackets(InputStream, int)
 	 */
-	@Deprecated
 	public Iterable<MNPLinkTransferPacket> createTransferPackets(InputStream data) throws IOException {
 		if (data == null)
 			return null;
@@ -267,7 +254,7 @@ public class MNPPacketFactory {
 	}
 
 	/**
-	 * Iterable to create MNP LT packets to be the target of the "foreach"
+	 * Iterable for creating MNP LT packets to be the target of the "foreach"
 	 * statement.
 	 * 
 	 * @author moshe
@@ -298,7 +285,7 @@ public class MNPPacketFactory {
 	}
 
 	/**
-	 * Iterator to create MNP LT packets to be the target of the "foreach"
+	 * Iterator for creating MNP LT packets to be the target of the "foreach"
 	 * statement.
 	 * 
 	 * @author moshe
