@@ -73,7 +73,7 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 
 	@Override
 	public int getCommandPayloadLength() throws IOException {
-		return LENGTH_HEADER + getLength() + getCommandPayloadFooter().available();
+		return COMMAND_HEADER_LENGTH + getLength() + getCommandPayloadFooter().available();
 	}
 
 	/**
@@ -84,7 +84,8 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected abstract void writeCommandData(OutputStream data) throws IOException;
+	protected void writeCommandData(OutputStream data) throws IOException {
+	}
 
 	/**
 	 * Get the command data to write.<br>
@@ -168,11 +169,13 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 	 */
 	private ByteArrayInputStream getCommandPayloadHeader() throws IOException {
 		if (commandPayloadHeader == null) {
-			ByteArrayOutputStream buf = new ByteArrayOutputStream(LENGTH_HEADER);
+			ByteArrayOutputStream buf = new ByteArrayOutputStream(COMMAND_HEADER_LENGTH);
 			buf.write(COMMAND_PREFIX_BYTES);
 			buf.write(commandBytes);
 			htonl(getLength(), buf);
 			commandPayloadHeader = new ByteArrayInputStream(buf.toByteArray());
+		} else {
+			commandPayloadHeader.reset();
 		}
 		return commandPayloadHeader;
 	}
@@ -199,6 +202,8 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 				break;
 			}
 			commandPayloadFooter = new ByteArrayInputStream(footer.toByteArray());
+		} else {
+			commandPayloadFooter.reset();
 		}
 		return commandPayloadFooter;
 	}

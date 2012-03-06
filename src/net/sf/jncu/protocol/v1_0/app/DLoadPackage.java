@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import net.sf.jncu.protocol.DockCommandToNewton;
 
@@ -52,35 +51,6 @@ public class DLoadPackage extends DockCommandToNewton {
 	 */
 	public DLoadPackage() {
 		super(COMMAND);
-	}
-
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		InputStream in = getCommandData();
-		if (in == null)
-			return;
-
-		File file = getFile();
-		int size = (int) file.length();
-		byte[] buf = new byte[Math.min(size, 1024)];
-		int count;
-
-		try {
-			count = in.read(buf);
-			while ((count != -1) && (size > 0)) {
-				data.write(buf, 0, count);
-				size -= count;
-				count = in.read(buf);
-			}
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (Exception e) {
-					// ignore
-				}
-			}
-		}
 	}
 
 	@Override

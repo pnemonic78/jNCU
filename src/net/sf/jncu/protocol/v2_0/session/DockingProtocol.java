@@ -81,7 +81,7 @@ public class DockingProtocol<P extends CDPacket> implements DockCommandListener 
 	public DockingProtocol(CDPipe<P> pipe) {
 		super();
 		if (pipe == null)
-			throw new IllegalArgumentException("pipe required");
+			throw new NullPointerException("pipe required");
 		this.pipe = pipe;
 		pipe.addCommandListener(this);
 		this.crypto = new DESNewton();

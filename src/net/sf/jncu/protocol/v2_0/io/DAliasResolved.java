@@ -53,7 +53,7 @@ public class DAliasResolved extends DockCommandToNewtonLong {
 	 * @return true if resolved?
 	 */
 	public boolean isResolved() {
-		return getValue() == 1;
+		return getValue() != FALSE;
 	}
 
 	/**
@@ -63,6 +63,6 @@ public class DAliasResolved extends DockCommandToNewtonLong {
 	 *            resolved?
 	 */
 	public void setResolved(boolean resolved) {
-		setValue(resolved ? 1 : 0);
+		setValue(resolved ? TRUE : FALSE);
 	}
 }

@@ -409,7 +409,7 @@ public class CDLayer {
 	 */
 	public void setState(CDPipe<? extends CDPacket> pipe, CDState state) {
 		if (pipe == null)
-			throw new IllegalArgumentException("pipe required");
+			throw new NullPointerException("pipe required");
 		setState(state);
 	}
 }

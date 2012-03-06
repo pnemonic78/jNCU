@@ -30,27 +30,7 @@ import java.io.InputStream;
  */
 public abstract class DockCommand implements IDockCommand {
 
-	/** Number of bytes for a word. */
-	public static final int LENGTH_WORD = 4;
-
-	/** False. */
-	public static final int FALSE = 0;
-	/** True. */
-	public static final int TRUE = 1;
-
-	/**
-	 * <tt>kDNewtonDock</tt><br>
-	 * Command prefix.
-	 */
-	public static final String COMMAND_PREFIX = "newtdock";
 	protected static final byte[] COMMAND_PREFIX_BYTES = COMMAND_PREFIX.getBytes();
-	/**
-	 * <tt>kDNewtonDockLength</tt><br>
-	 * Command prefix length.
-	 */
-	public static final int COMMAND_PREFIX_LENGTH = COMMAND_PREFIX_BYTES.length;
-	/** Number of characters for command name. */
-	public static final int COMMAND_NAME_LENGTH = LENGTH_WORD;
 
 	protected final String command;
 	protected final byte[] commandBytes;
