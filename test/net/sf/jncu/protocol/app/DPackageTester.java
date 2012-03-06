@@ -31,7 +31,11 @@ public class DPackageTester extends SFTestCase {
 
 		MNPPacketFactory factory = MNPPacketFactory.getInstance();
 		assertNotNull(factory);
-		Iterable<MNPLinkTransferPacket> packets = factory.createTransferPackets(payload);
+		int dataLength = cmd.getLength();
+		assertEquals(0, dataLength);
+		int length = cmd.getCommandPayloadLength();
+		assertEquals(8 + 4 + 4, length);
+		Iterable<MNPLinkTransferPacket> packets = factory.createTransferPackets(payload, length);
 		assertNotNull(packets);
 		Iterator<MNPLinkTransferPacket> iter = packets.iterator();
 		assertNotNull(iter);
@@ -39,13 +43,15 @@ public class DPackageTester extends SFTestCase {
 		File f = new File("./_stuff/unixnpi-1.1.4/template/StatusMonitor.pkg");
 		assertNotNull(f);
 		assertTrue(f.exists());
+		int fileLength = (int) f.length();
 		cmd.setFile(f);
-		int length = (int) f.length();
-		assertFalse(0 == length);
-		assertEquals(length, cmd.getLength());
+		dataLength = cmd.getLength();
+		assertEquals(fileLength, dataLength);
 		payload = cmd.getCommandPayload();
 		assertNotNull(payload);
-		packets = factory.createTransferPackets(payload);
+		length = cmd.getCommandPayloadLength();
+		assertFalse(0 == length);
+		packets = factory.createTransferPackets(payload, length);
 		assertNotNull(packets);
 		iter = packets.iterator();
 		assertNotNull(iter);
@@ -63,5 +69,6 @@ public class DPackageTester extends SFTestCase {
 			count++;
 		}
 		assertEquals(numPackets, count);
+		payload.close();
 	}
 }

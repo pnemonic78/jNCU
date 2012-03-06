@@ -19,7 +19,6 @@
  */
 package net.sf.jncu.protocol.v1_0.query;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -66,7 +65,7 @@ public class DResult extends DockCommandFromNewton implements IDockCommandToNewt
 	}
 
 	@Override
-	public byte[] getCommandPayloadBytes() throws IOException {
+	public InputStream getCommandPayload() throws IOException {
 		IDockCommandToNewton cmd = new DockCommandToNewtonLong(COMMAND) {
 
 			@Override
@@ -74,12 +73,12 @@ public class DResult extends DockCommandFromNewton implements IDockCommandToNewt
 				return getErrorCode();
 			}
 		};
-		return cmd.getCommandPayloadBytes();
+		return cmd.getCommandPayload();
 	}
 
 	@Override
-	public InputStream getCommandPayload() throws IOException {
-		return new ByteArrayInputStream(getCommandPayloadBytes());
+	public int getCommandPayloadLength() throws IOException {
+		return LENGTH_HEADER + getLength();
 	}
 
 	/**

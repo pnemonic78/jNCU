@@ -87,12 +87,19 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 		final InputStream payload = cmd.getCommandPayload();
 		if (payload == null)
 			return;
-		Iterable<MNPLinkTransferPacket> packets = MNPPacketFactory.getInstance().createTransferPackets(payload);
-		Byte seq;
-		for (MNPLinkTransferPacket packet : packets) {
-			seq = packet.getSequence();
-			queueOut.put(seq, cmd);
-			((MNPPacketLayer) packetLayer).sendQueued(packet);
+		int length = cmd.getCommandPayloadLength();
+		try {
+			Iterable<MNPLinkTransferPacket> packets = MNPPacketFactory.getInstance().createTransferPackets(payload, length);
+			for (MNPLinkTransferPacket packet : packets) {
+				queueOut.put(packet.getSequence(), cmd);
+				((MNPPacketLayer) packetLayer).sendQueued(packet);
+			}
+		} finally {
+			try {
+				payload.close();
+			} catch (Exception e) {
+				// ignore
+			}
 		}
 	}
 

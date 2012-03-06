@@ -117,6 +117,13 @@ public class MNPPacketLayerTest extends SFTestCase {
 		assertEquals(DDesktopInfo.COMMAND, cmd.getCommand());
 		InputStream payload = cmd.getCommandPayload();
 		assertNotNull(payload);
-		assertEquals(128, payload.available());
+		int count = 0;
+		int i = payload.read();
+		while (i != -1) {
+			count++;
+			i = payload.read();
+		}
+		assertEquals(128, count);
+		payload.close();
 	}
 }

@@ -20,12 +20,14 @@
 package net.sf.jncu.protocol;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.SequenceInputStream;
+import java.util.Vector;
 
 import net.sf.jncu.fdil.NSOFString;
-import net.sf.jncu.io.RewriteByteArrayOutputStream;
 
 /**
  * Docking command from desktop to Newton.
@@ -33,6 +35,9 @@ import net.sf.jncu.io.RewriteByteArrayOutputStream;
  * @author moshew
  */
 public abstract class DockCommandToNewton extends DockCommand implements IDockCommandToNewton {
+
+	private ByteArrayInputStream commandPayloadHeader;
+	private ByteArrayInputStream commandPayloadFooter;
 
 	/**
 	 * Creates a new docking command from Newton.
@@ -55,59 +60,49 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 	}
 
 	@Override
-	public byte[] getCommandPayloadBytes() throws IOException {
-		RewriteByteArrayOutputStream data = new RewriteByteArrayOutputStream();
-		int length = getLength();
-		int indexLength, indexData;
+	public InputStream getCommandPayload() throws IOException {
+		// Get this first so that we can calculate our data length.
+		InputStream data = getCommandData();
 
-		try {
-			data.write(COMMAND_PREFIX_BYTES);
-			data.write(commandBytes);
-			indexLength = data.size();
-			htonl(length, data);
-			indexData = data.size();
-			writeCommandData(data);
-			if (length == 0) {
-				length = data.size() - indexData;
-				setLength(length);
-				data.seek(indexLength);
-				htonl(length, data);
-				data.seekToEnd();
-			}
-			// 4-byte align
-			switch (data.size() & 3) {
-			case 1:
-				data.write(0);
-			case 2:
-				data.write(0);
-			case 3:
-				data.write(0);
-				break;
-			}
-		} finally {
-			try {
-				data.close();
-			} catch (Exception e) {
-				// ignore
-			}
-		}
-		return data.toByteArray();
+		Vector<InputStream> v = new Vector<InputStream>();
+		v.add(getCommandPayloadHeader());
+		v.add(data);
+		v.add(getCommandPayloadFooter());
+		return new SequenceInputStream(v.elements());
 	}
 
 	@Override
-	public InputStream getCommandPayload() throws IOException {
-		return new ByteArrayInputStream(getCommandPayloadBytes());
+	public int getCommandPayloadLength() throws IOException {
+		return LENGTH_HEADER + getLength() + getCommandPayloadFooter().available();
 	}
 
 	/**
-	 * Encode the data to write.
+	 * Encode the command data to write.
 	 * 
 	 * @param data
-	 *            the data output stream.
+	 *            the data output.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
 	protected abstract void writeCommandData(OutputStream data) throws IOException;
+
+	/**
+	 * Get the command data to write.<br>
+	 * <em>The stream should be non-blocking.</em>
+	 * 
+	 * @return the command data.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected InputStream getCommandData() throws IOException {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		writeCommandData(out);
+		out.flush();
+		out.close();
+		if (getLength() == 0)
+			setLength(out.size());
+		return new ByteArrayInputStream(out.toByteArray());
+	}
 
 	/**
 	 * Host-to-network long.<br>
@@ -129,7 +124,7 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 
 	/**
 	 * Host-to-network long.<br>
-	 * Write 4 bytes as an unsigned integer in network byte order (Big Endian).
+	 * Write 8 bytes as an unsigned integer in network byte order (Big Endian).
 	 * 
 	 * @param out
 	 *            the output.
@@ -162,5 +157,49 @@ public abstract class DockCommandToNewton extends DockCommand implements IDockCo
 		// Null-terminator.
 		out.write(0);
 		out.write(0);
+	}
+
+	/**
+	 * Get the command payload header.
+	 * 
+	 * @return the command payload prefix.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	private ByteArrayInputStream getCommandPayloadHeader() throws IOException {
+		if (commandPayloadHeader == null) {
+			ByteArrayOutputStream buf = new ByteArrayOutputStream(LENGTH_HEADER);
+			buf.write(COMMAND_PREFIX_BYTES);
+			buf.write(commandBytes);
+			htonl(getLength(), buf);
+			commandPayloadHeader = new ByteArrayInputStream(buf.toByteArray());
+		}
+		return commandPayloadHeader;
+	}
+
+	/**
+	 * Get the command payload footer.
+	 * 
+	 * @return the command payload footer.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	private ByteArrayInputStream getCommandPayloadFooter() throws IOException {
+		if (commandPayloadFooter == null) {
+			int length = getLength();
+			ByteArrayOutputStream footer = new ByteArrayOutputStream(3);
+			// 4-byte align
+			switch (length & 3) {
+			case 1:
+				footer.write(0);
+			case 2:
+				footer.write(0);
+			case 3:
+				footer.write(0);
+				break;
+			}
+			commandPayloadFooter = new ByteArrayInputStream(footer.toByteArray());
+		}
+		return commandPayloadFooter;
 	}
 }
