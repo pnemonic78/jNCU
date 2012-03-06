@@ -30,7 +30,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import net.sf.jncu.dil.DILReadProc;
 import net.sf.jncu.dil.DILWriteProc;
@@ -107,6 +109,7 @@ public class FDILibrary implements FDConstants {
 	private static FDHandles handles;
 	private static long usedMemory;
 	private static String charset;
+	private static Map<NSOFSymbol, FDHandle> symbols;
 
 	private FDILibrary() {
 	}
@@ -879,7 +882,11 @@ public class FDILibrary implements FDConstants {
 			throw new ExpectedStringException(uee.getMessage());
 		}
 		NSOFSymbol s = new NSOFSymbol(val);
-		FDHandle obj = handles.create(s);
+		FDHandle obj = symbols.get(s);
+		if (obj == null) {
+			obj = handles.create(s);
+			symbols.put(s, obj);
+		}
 		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
 		return obj;
 	}
@@ -911,7 +918,11 @@ public class FDILibrary implements FDConstants {
 		long memBefore = Runtime.getRuntime().totalMemory();
 		String val = new String(str);
 		NSOFSymbol s = new NSOFSymbol(val);
-		FDHandle obj = handles.create(s);
+		FDHandle obj = symbols.get(s);
+		if (obj == null) {
+			obj = handles.create(s);
+			symbols.put(s, obj);
+		}
 		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
 		return obj;
 	}
@@ -942,7 +953,11 @@ public class FDILibrary implements FDConstants {
 		checkInitialized();
 		long memBefore = Runtime.getRuntime().totalMemory();
 		NSOFSymbol s = new NSOFSymbol(str);
-		FDHandle obj = handles.create(s);
+		FDHandle obj = symbols.get(s);
+		if (obj == null) {
+			obj = handles.create(s);
+			symbols.put(s, obj);
+		}
 		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
 		return obj;
 	}
@@ -2051,6 +2066,7 @@ public class FDILibrary implements FDConstants {
 		handles = FDHandles.getInstance();
 		charset = NSOFString.CHARSET_ASCII;
 		usedMemory = 0;
+		symbols = new TreeMap<NSOFSymbol, FDHandle>();
 	}
 
 	/**
@@ -2176,7 +2192,11 @@ public class FDILibrary implements FDConstants {
 		if (obj == null)
 			return;// Nothing to dispose.
 		checkInitialized();
+		long memBefore = Runtime.getRuntime().totalMemory();
 		handles.dispose(obj);
+		// Theoretically we are using less memory after disposal.
+		long memDisposed = Math.min(0, Runtime.getRuntime().totalMemory() - memBefore);
+		usedMemory = Math.max(0, usedMemory + memDisposed);
 	}
 
 	/**
