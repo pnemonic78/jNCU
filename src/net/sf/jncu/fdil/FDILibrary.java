@@ -110,6 +110,7 @@ public class FDILibrary implements FDConstants {
 	private static long usedMemory;
 	private static String charset;
 	private static Map<NSOFSymbol, FDHandle> symbols;
+	private static FDLargeBinaryProcs blobProcs;
 
 	private FDILibrary() {
 	}
@@ -1391,6 +1392,8 @@ public class FDILibrary implements FDConstants {
 			b.setCompanderName(NSOFLargeBinary.COMPANDER_LZ);
 			break;
 		}
+		if (blobProcs != null)
+			blobProcs.create(b);
 		FDHandle obj = handles.create(b);
 		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
 		return obj;
@@ -1608,7 +1611,7 @@ public class FDILibrary implements FDConstants {
 	 */
 	public static void setLargeBinaryProcs(final FDLargeBinaryProcs procsPtr) throws FDILNotInitializedException {
 		checkInitialized();
-		// TODO implement me!
+		blobProcs = procsPtr;
 	}
 
 	/**
@@ -2065,7 +2068,6 @@ public class FDILibrary implements FDConstants {
 	public static void startup() {
 		handles = FDHandles.getInstance();
 		charset = NSOFString.CHARSET_ASCII;
-		usedMemory = 0;
 		symbols = new TreeMap<NSOFSymbol, FDHandle>();
 	}
 
@@ -2082,10 +2084,14 @@ public class FDILibrary implements FDConstants {
 	 */
 	public static void shutdown() throws FDILNotInitializedException {
 		checkInitialized();
-		if (handles != null) {
+		if (handles != null)
 			handles.clear();
-		}
 		handles = null;
+		if (symbols != null)
+			symbols.clear();
+		symbols = null;
+		blobProcs = null;
+		usedMemory = 0;
 	}
 
 	/**
@@ -2193,6 +2199,11 @@ public class FDILibrary implements FDConstants {
 			return;// Nothing to dispose.
 		checkInitialized();
 		long memBefore = Runtime.getRuntime().totalMemory();
+		if (isLargeBinary(obj)) {
+			NSOFLargeBinary l = (NSOFLargeBinary) handles.get(obj);
+			if (blobProcs != null)
+				blobProcs.destroy(l);
+		}
 		handles.dispose(obj);
 		// Theoretically we are using less memory after disposal.
 		long memDisposed = Math.min(0, Runtime.getRuntime().totalMemory() - memBefore);
