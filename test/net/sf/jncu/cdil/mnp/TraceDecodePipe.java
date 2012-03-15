@@ -22,7 +22,7 @@ public class TraceDecodePipe extends MNPPipe {
 	private final InputStream sentToNewton;
 
 	public TraceDecodePipe(CDLayer layer, InputStream receivedFromNewton, InputStream sentToNewton) throws PlatformException, ServiceNotSupportedException {
-		super(layer, null, 0);
+		super(layer, (String) null, 0);
 		setName("TraceDecodePipe-" + getId());
 		this.receivedFromNewton = receivedFromNewton;
 		this.sentToNewton = sentToNewton;

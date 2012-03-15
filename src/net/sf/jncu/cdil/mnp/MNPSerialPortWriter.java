@@ -19,11 +19,12 @@
  */
 package net.sf.jncu.cdil.mnp;
 
-import gnu.io.SerialPort;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import jssc.SerialPort;
+import jssc.SerialPortException;
 
 /**
  * MNP serial port writer.
@@ -33,6 +34,7 @@ import java.io.OutputStream;
 public class MNPSerialPortWriter extends Thread implements Closeable {
 
 	protected final SerialPort port;
+	private OutputStream out;
 
 	/**
 	 * Creates a new serial port writer.
@@ -99,6 +101,40 @@ public class MNPSerialPortWriter extends Thread implements Closeable {
 	 *             if an I/O error occurs.
 	 */
 	public OutputStream getOutputStream() throws IOException {
-		return port.getOutputStream();
+		if (out == null)
+			out = new SerialPortOutputStream(port);
+		return out;
+	}
+
+	/**
+	 * Output stream wrapper for writing to the port.
+	 * 
+	 * @author moshe
+	 */
+	protected static class SerialPortOutputStream extends OutputStream {
+
+		private final SerialPort port;
+
+		public SerialPortOutputStream(SerialPort port) {
+			this.port = port;
+		}
+
+		@Override
+		public void write(int b) throws IOException {
+			try {
+				port.writeByte((byte) b);
+			} catch (SerialPortException se) {
+				throw new IOException(se.getCause());
+			}
+		}
+
+		@Override
+		public void write(byte[] b) throws IOException {
+			try {
+				port.writeBytes(b);
+			} catch (SerialPortException se) {
+				throw new IOException(se.getCause());
+			}
+		}
 	}
 }

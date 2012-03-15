@@ -19,9 +19,6 @@
  */
 package net.sf.jncu;
 
-import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,8 +33,8 @@ import net.sf.jncu.cdil.mnp.MNPSerialPort;
  */
 public class Settings {
 
-	private final Collection<CommPortIdentifier> portIds = new ArrayList<CommPortIdentifier>();
-	private CommPortIdentifier portId;
+	private final Collection<String> portIds = new ArrayList<String>();
+	private String portId;
 	private int baud = MNPSerialPort.BAUD_38400;
 	private boolean listen = true;
 	private File backupFolder = new File(".");
@@ -50,7 +47,7 @@ public class Settings {
 		rescanPorts();
 	}
 
-	public Collection<CommPortIdentifier> getPorts() {
+	public Collection<String> getPorts() {
 		return portIds;
 	}
 
@@ -58,26 +55,14 @@ public class Settings {
 		portIds.clear();
 
 		CommPorts discoverer = new CommPorts();
-		try {
-			portIds.addAll(discoverer.getPortIdentifiers(CommPortIdentifier.PORT_SERIAL));
-		} catch (NoSuchPortException nspe) {
-			nspe.printStackTrace();
-		}
+		portIds.addAll(discoverer.getPortNames());
 	}
 
 	/**
 	 * @return the portSelected
 	 */
-	public CommPortIdentifier getPortIdentifier() {
+	public String getPortIdentifier() {
 		return portId;
-	}
-
-	/**
-	 * @param portId
-	 *            the portSelected to set
-	 */
-	public void setPortIdentifier(CommPortIdentifier portId) {
-		this.portId = portId;
 	}
 
 	/**
@@ -86,8 +71,8 @@ public class Settings {
 	 */
 	public void setPortIdentifier(String portName) {
 		this.portId = null;
-		for (CommPortIdentifier portId : portIds) {
-			if (portId.getName().equals(portName)) {
+		for (String portId : portIds) {
+			if (portId.equals(portName)) {
 				this.portId = portId;
 				break;
 			}

@@ -19,12 +19,11 @@
  */
 package net.sf.jncu.cdil.mnp;
 
-import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
-
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
+
+import jssc.SerialPort;
+import jssc.SerialPortList;
 
 /**
  * NCU communication ports.
@@ -47,34 +46,42 @@ public class CommPorts {
 	 * @param portType
 	 *            the port type.
 	 * @return the list of ports.
-	 * @throws NoSuchPortException
-	 *             if no ports are found.
 	 */
-	public List<CommPortIdentifier> getPortIdentifiers(int portType)
-			throws NoSuchPortException {
-		List<CommPortIdentifier> portIdentifiers = new ArrayList<CommPortIdentifier>();
+	public List<String> getPortNames() {
+		List<String> portIdentifiers = new ArrayList<String>();
 
-		Enumeration<?> portEnum = CommPortIdentifier.getPortIdentifiers();
-		while (portEnum.hasMoreElements()) {
-			CommPortIdentifier portIdentifier = (CommPortIdentifier) portEnum
-					.nextElement();
-			if (portIdentifier.getPortType() == portType) {
-				portIdentifiers.add(portIdentifier);
-			}
-		}
-		if (portIdentifiers.size() == 0) {
-			throw new NoSuchPortException();
-		}
+		String[] names = SerialPortList.getPortNames();
+		for (String name : names)
+			portIdentifiers.add(name);
 
 		return portIdentifiers;
+	}
+
+	/**
+	 * Get the list of communication ports.
+	 * 
+	 * @param portType
+	 *            the port type.
+	 * @return the list of ports.
+	 */
+	public List<SerialPort> getPorts() {
+		List<SerialPort> ports = new ArrayList<SerialPort>();
+
+		String[] names = SerialPortList.getPortNames();
+		SerialPort port;
+		for (String name : names) {
+			port = new SerialPort(name);
+			ports.add(port);
+		}
+
+		return ports;
 	}
 
 	public static void main(String[] args) {
 		CommPorts ports = new CommPorts();
 		try {
-			for (CommPortIdentifier id : ports
-					.getPortIdentifiers(CommPortIdentifier.PORT_SERIAL)) {
-				System.out.println(id.getName());
+			for (String name : ports.getPortNames()) {
+				System.out.println(name);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

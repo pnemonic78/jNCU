@@ -19,10 +19,6 @@
  */
 package net.sf.jncu.cdil.mnp;
 
-import gnu.io.CommPortIdentifier;
-import gnu.io.PortInUseException;
-import gnu.io.UnsupportedCommOperationException;
-
 import java.io.IOException;
 import java.util.TooManyListenersException;
 import java.util.concurrent.TimeoutException;
@@ -37,6 +33,8 @@ import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
+import net.sf.jncu.io.NoSuchPortException;
+import net.sf.jncu.io.PortInUseException;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v2_0.session.DockingState;
@@ -82,10 +80,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 		MNP_DISCONNECTED
 	}
 
-	/** Port can timeout after 1 minute. */
-	private static final int PORT_TIMEOUT = 60;
-
-	protected final CommPortIdentifier portId;
+	protected final String portName;
 	protected final int baud;
 	protected final MNPSerialPort port;
 	/** MNP handshaking state. */
@@ -96,26 +91,28 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	 * 
 	 * @param layer
 	 *            the owner layer.
-	 * @param portId
-	 *            the port identifier.
+	 * @param portName
+	 *            the port name.
 	 * @param baud
 	 *            the baud rate to communicate at in bytes per second.
+	 * @throws PlatformException
+	 *             if a platform error occurs,
 	 * @throws ServiceNotSupportedException
 	 *             if the service is not supported.
 	 */
-	public MNPPipe(CDLayer layer, CommPortIdentifier portId, int baud) throws PlatformException, ServiceNotSupportedException {
+	public MNPPipe(CDLayer layer, String portName, int baud) throws PlatformException, ServiceNotSupportedException {
 		super(layer);
 		setName("MNPPipe-" + getId());
-		this.portId = portId;
+		this.portName = portName;
 		this.baud = baud;
 		try {
-			this.port = (portId == null) ? null : new MNPSerialPort(portId, baud, PORT_TIMEOUT);
+			this.port = (portName == null) ? null : new MNPSerialPort(portName, baud);
+		} catch (NoSuchPortException nspe) {
+			throw new PlatformException(nspe);
 		} catch (PortInUseException piue) {
 			throw new PlatformException(piue);
 		} catch (TooManyListenersException tmle) {
 			throw new PlatformException(tmle);
-		} catch (UnsupportedCommOperationException ucoe) {
-			throw new ServiceNotSupportedException(ucoe);
 		} catch (IOException ioe) {
 			throw new ServiceNotSupportedException(ioe);
 		}
@@ -137,7 +134,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 
 	@Override
 	public void setTimeout(int timeoutInSecs) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
-		if (portId != null) {
+		if (portName != null) {
 			throw new BadPipeStateException("Only able set the port timeout at port creation.");
 		}
 		super.setTimeout(timeoutInSecs);
