@@ -19,9 +19,6 @@
  */
 package net.sf.jncu.cdil;
 
-import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +36,7 @@ import net.sf.jncu.cdil.tcp.TCPPipe;
 public class CDLayer {
 
 	private static CDLayer instance;
-	private final List<CommPortIdentifier> serialPorts = new ArrayList<CommPortIdentifier>();
+	private final List<String> serialPorts = new ArrayList<String>();
 	private CDState state = CDState.UNINITIALIZED;
 
 	/**
@@ -191,7 +188,7 @@ public class CDLayer {
 	 * @return the port name.
 	 */
 	public String getSerialPortName(int index) {
-		return serialPorts.get(index).getName();
+		return serialPorts.get(index);
 	}
 
 	/**
@@ -241,8 +238,30 @@ public class CDLayer {
 	 *             if a platform error occurs.
 	 */
 	public MNPPipe createMNPSerial(int port, int baud) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
+		return createMNPSerial(serialPorts.get(port), baud);
+	}
+
+	/**
+	 * These functions create a connection with the Newton device using the MNP
+	 * Serial communication service.<br>
+	 * <tt>DIL_Error CD_CreateMNPSerial(CD_Handle* pipe, long port, long baud)</tt>
+	 * <p>
+	 * MNP is a packet-based protocol that ensures delivery of your data using
+	 * compression and error correction.
+	 * 
+	 * @param portName
+	 *            the serial port to use.
+	 * @param baud
+	 *            the baud rate to communicate at in bytes per second.
+	 * @return the connection.
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
+	 */
+	public MNPPipe createMNPSerial(String portName, int baud) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		checkInitialized();
-		return new MNPPipe(this, serialPorts.get(port), baud);
+		return new MNPPipe(this, portName, baud);
 	}
 
 	/**
@@ -304,13 +323,9 @@ public class CDLayer {
 	 * Initialise MNP.
 	 */
 	protected void initMNP() throws PlatformException {
-		serialPorts.clear();
 		CommPorts commPorts = new CommPorts();
-		try {
-			serialPorts.addAll(commPorts.getPortIdentifiers(CommPortIdentifier.PORT_SERIAL));
-		} catch (NoSuchPortException nspe) {
-			throw new PlatformException(nspe);
-		}
+		serialPorts.clear();
+		serialPorts.addAll(commPorts.getPortNames());
 	}
 
 	/**

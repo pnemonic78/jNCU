@@ -19,8 +19,6 @@
  */
 package net.sf.jncu.cdil.mnp;
 
-import gnu.io.SerialPort;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +26,9 @@ import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.TooManyListenersException;
+
+import jssc.SerialPort;
+import jssc.SerialPortException;
 
 /**
  * MNP serial port reader.
@@ -59,8 +60,11 @@ public class MNPSerialPortReader extends Thread implements Closeable {
 		this.port = port;
 		this.in = new PipedInputStream(data);
 		this.listener = createPortListener(port, data);
-		port.notifyOnDataAvailable(true);
-		port.addEventListener(listener);
+		try {
+			port.addEventListener(listener);
+		} catch (SerialPortException se) {
+			throw new TooManyListenersException(se.getMessage());
+		}
 	}
 
 	@Override
@@ -70,7 +74,7 @@ public class MNPSerialPortReader extends Thread implements Closeable {
 			listener = null;
 			try {
 				port.removeEventListener();
-			} catch (NullPointerException npe) {
+			} catch (SerialPortException se) {
 				// consume
 			}
 		}

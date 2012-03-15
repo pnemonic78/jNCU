@@ -19,15 +19,15 @@
  */
 package net.sf.jncu.cdil.mnp;
 
-import gnu.io.CommPortIdentifier;
-import gnu.io.PortInUseException;
-import gnu.io.SerialPort;
-import gnu.io.UnsupportedCommOperationException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.TooManyListenersException;
+
+import jssc.SerialPort;
+import jssc.SerialPortException;
+import net.sf.jncu.io.NoSuchPortException;
+import net.sf.jncu.io.PortInUseException;
 
 /**
  * Wraps a serial port.
@@ -36,40 +36,20 @@ import java.util.TooManyListenersException;
  */
 public class MNPSerialPort {
 
-	public static final int BAUD_2400 = 2400;
-	public static final int BAUD_4800 = BAUD_2400 << 1;
-	public static final int BAUD_9600 = BAUD_4800 << 1;
-	public static final int BAUD_19200 = BAUD_9600 << 1;
-	public static final int BAUD_38400 = BAUD_19200 << 1;
-	public static final int BAUD_57600 = BAUD_19200 * 3;
-	public static final int BAUD_115200 = BAUD_57600 << 1;
+	public static final int BAUD_2400 = SerialPort.BAUDRATE_4800 >> 1;
+	public static final int BAUD_4800 = SerialPort.BAUDRATE_4800;
+	public static final int BAUD_9600 = SerialPort.BAUDRATE_9600;
+	public static final int BAUD_19200 = SerialPort.BAUDRATE_19200;
+	public static final int BAUD_38400 = SerialPort.BAUDRATE_38400;
+	public static final int BAUD_57600 = SerialPort.BAUDRATE_57600;
+	public static final int BAUD_115200 = SerialPort.BAUDRATE_115200;
+
+	/** Port can timeout after 1 minute. */
+	public static final int PORT_TIMEOUT = 60;
 
 	private final SerialPort serialPort;
 	private MNPSerialPortReader reader;
 	private MNPSerialPortWriter writer;
-
-	/**
-	 * Creates a new port.
-	 * 
-	 * @param portId
-	 *            the serial port identifier.
-	 * @param baud
-	 *            the baud rate.
-	 * @param timeout
-	 *            the timeout period.
-	 * @throws TooManyListenersException
-	 *             if too many listeners.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 * @throws PortInUseException
-	 *             if port is not found.
-	 * @throws UnsupportedCommOperationException
-	 *             if operation unsupported.
-	 */
-	public MNPSerialPort(CommPortIdentifier portId, int baud, int timeout) throws TooManyListenersException, IOException, PortInUseException,
-			UnsupportedCommOperationException {
-		this((SerialPort) portId.open(portId.getName(), timeout));
-	}
 
 	/**
 	 * Creates a new port.
@@ -82,12 +62,23 @@ public class MNPSerialPort {
 	 *             if too many listeners.
 	 * @throws IOException
 	 *             if an I/O error occurs.
-	 * @throws UnsupportedCommOperationException
-	 *             if operation unsupported.
+	 * @throws PortInUseException
+	 *             if port is busy.
+	 * @throws NoSuchPortException
+	 *             if port is not found.
 	 */
-	public MNPSerialPort(SerialPort port, int baud) throws TooManyListenersException, IOException, UnsupportedCommOperationException {
+	public MNPSerialPort(SerialPort port, int baud) throws TooManyListenersException, IOException, PortInUseException, NoSuchPortException {
 		super();
-		port.setSerialPortParams(baud, port.getDataBits(), port.getStopBits(), port.getParity());
+		try {
+			port.openPort();
+			port.setParams(baud, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+		} catch (SerialPortException se) {
+			if (SerialPortException.TYPE_PORT_BUSY.equals(se.getExceptionType()))
+				throw new PortInUseException(port.getPortName());
+			if (SerialPortException.TYPE_PORT_NOT_FOUND.equals(se.getExceptionType()))
+				throw new NoSuchPortException(port.getPortName());
+			throw new IOException(se);
+		}
 		this.serialPort = port;
 		this.reader = createReader(port);
 		this.writer = createWriter(port);
@@ -104,11 +95,74 @@ public class MNPSerialPort {
 	 *             if too many listeners.
 	 * @throws IOException
 	 *             if an I/O error occurs.
-	 * @throws UnsupportedCommOperationException
-	 *             if operation unsupported.
+	 * @throws PortInUseException
+	 *             if port is busy.
+	 * @throws NoSuchPortException
+	 *             if port is not found.
 	 */
-	public MNPSerialPort(SerialPort port) throws TooManyListenersException, IOException, UnsupportedCommOperationException {
+	public MNPSerialPort(SerialPort port) throws TooManyListenersException, IOException, PortInUseException, NoSuchPortException {
 		this(port, BAUD_38400);
+	}
+
+	/**
+	 * Creates a new port.
+	 * 
+	 * @param portName
+	 *            the serial port name.
+	 * @param baud
+	 *            the baud rate.
+	 * @param timeout
+	 *            the timeout period.
+	 * @throws TooManyListenersException
+	 *             if too many listeners.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 * @throws PortInUseException
+	 *             if port is busy.
+	 * @throws NoSuchPortException
+	 *             if port is not found.
+	 */
+	@Deprecated
+	public MNPSerialPort(String portName, int baud, int timeout) throws TooManyListenersException, IOException, PortInUseException, NoSuchPortException {
+		this(new SerialPort(portName), baud);
+	}
+
+	/**
+	 * Creates a new port.
+	 * 
+	 * @param portName
+	 *            the serial port name.
+	 * @param baud
+	 *            the baud rate.
+	 * @throws TooManyListenersException
+	 *             if too many listeners.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 * @throws PortInUseException
+	 *             if port is busy.
+	 * @throws NoSuchPortException
+	 *             if port is not found.
+	 */
+	public MNPSerialPort(String portName, int baud) throws TooManyListenersException, IOException, PortInUseException, NoSuchPortException {
+		this(portName, baud, PORT_TIMEOUT);
+	}
+
+	/**
+	 * Creates a new port.
+	 * 
+	 * @param portName
+	 *            the serial port name.
+	 * @throws TooManyListenersException
+	 *             if too many listeners.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 * @throws PortInUseException
+	 *             if port is busy.
+	 * @throws NoSuchPortException
+	 *             if port is not found.
+	 */
+	public MNPSerialPort(String portName) throws TooManyListenersException, IOException, PortInUseException, NoSuchPortException {
+		this(portName, BAUD_38400);
 	}
 
 	/**
@@ -125,7 +179,11 @@ public class MNPSerialPort {
 		} catch (IOException ioe) {
 			// ignore
 		}
-		serialPort.close();
+		try {
+			serialPort.closePort();
+		} catch (SerialPortException se) {
+			// ignore
+		}
 	}
 
 	/**

@@ -93,7 +93,7 @@ public class DockCommandFactory {
 	 * Minimum length for command header.<br>
 	 * <tt>minimum length := length(prefix) + length(command name) + length(command data)</tt>
 	 */
-	public static final int MIN_COMMAND_HEADER_LENGTH = DockCommand.COMMAND_PREFIX_LENGTH + DockCommand.COMMAND_NAME_LENGTH + DockCommand.LENGTH_WORD;
+	public static final int MIN_COMMAND_HEADER_LENGTH = IDockCommand.COMMAND_PREFIX_LENGTH + IDockCommand.COMMAND_NAME_LENGTH + IDockCommand.LENGTH_WORD;
 
 	/**
 	 * Creates a new command factory.
@@ -229,7 +229,7 @@ public class DockCommandFactory {
 	 * @return the command - {@link DRawCommand} otherwise.
 	 */
 	public IDockCommand create(byte[] cmdName, int offset) {
-		return create(new String(cmdName, offset, DockCommand.COMMAND_NAME_LENGTH));
+		return create(new String(cmdName, offset, IDockCommand.COMMAND_NAME_LENGTH));
 	}
 
 	/**
@@ -269,9 +269,9 @@ public class DockCommandFactory {
 	 *             if an I/O error occurs.
 	 */
 	public IDockCommand create(InputStream in) throws IOException {
-		byte[] cmdName = new byte[DockCommand.COMMAND_NAME_LENGTH];
+		byte[] cmdName = new byte[IDockCommand.COMMAND_NAME_LENGTH];
 		int count = in.read(cmdName);
-		if (count < DockCommand.COMMAND_NAME_LENGTH)
+		if (count < IDockCommand.COMMAND_NAME_LENGTH)
 			throw new EOFException();
 		return create(cmdName);
 	}

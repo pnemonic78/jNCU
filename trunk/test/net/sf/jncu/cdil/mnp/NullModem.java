@@ -3,17 +3,13 @@
  */
 package net.sf.jncu.cdil.mnp;
 
-import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
-
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.Iterator;
 
-import net.sf.jncu.cdil.mnp.CommPorts;
-import net.sf.jncu.cdil.mnp.MNPSerialPort;
+import jssc.SerialPort;
+import net.sf.jncu.io.NoSuchPortException;
 import net.sf.junit.SFTestCase;
 
 /**
@@ -26,22 +22,22 @@ public class NullModem extends SFTestCase {
 
 	public void testNModem() throws Exception {
 		CommPorts commPorts = new CommPorts();
-		Collection<CommPortIdentifier> ports = commPorts.getPortIdentifiers(CommPortIdentifier.PORT_SERIAL);
+		Collection<SerialPort> ports = commPorts.getPorts();
 		if (ports.size() == 0) {
-			throw new NoSuchPortException();
+			throw new NoSuchPortException(null);
 		}
-		CommPortIdentifier portId = null;
-		for (Iterator<CommPortIdentifier> iter = ports.iterator(); iter.hasNext();) {
-			CommPortIdentifier cpi = iter.next();
-			if ("COM1".equals(cpi.getName())) {
-				portId = cpi;
+		SerialPort sport = null;
+		for (SerialPort p : ports) {
+			String name = p.getPortName();
+			if ("COM1".equals(name) || "/dev/ttyUSB0".equals(name)) {
+				sport = p;
 				break;
 			}
 		}
-		if (portId == null) {
-			throw new NoSuchPortException();
+		if (sport == null) {
+			throw new NoSuchPortException("COM1");
 		}
-		MNPSerialPort port = new MNPSerialPort(portId, MNPSerialPort.BAUD_38400, 30000);
+		MNPSerialPort port = new MNPSerialPort(sport, MNPSerialPort.BAUD_38400);
 		Reader reader = new Reader(port);
 		reader.start();
 

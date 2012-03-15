@@ -19,8 +19,6 @@
  */
 package net.sf.jncu.ui;
 
-import gnu.io.CommPortIdentifier;
-
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -193,8 +191,8 @@ public class NCUSettings extends JDialog {
 
 		JComboBox ports = getListPort();
 		ports.removeAllItems();
-		for (CommPortIdentifier port : settings.getPorts()) {
-			ports.addItem(port.getName());
+		for (String port : settings.getPorts()) {
+			ports.addItem(port);
 		}
 		JComboBox speed = getListSpeed();
 		speed.setSelectedItem(settings.getPortSpeed());

@@ -3,11 +3,7 @@
 	<classpathentry excluding="**/.svn/" kind="src" path="src"/>
 	<classpathentry excluding="**/.svn/" kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/RXTXcomm.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="jNCU/lib"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="lib/jssc.jar" sourcepath="/home/moshe/workspace/jNCU/_stuff/jSSC-0.9.0-Release/src/jssc-0.9-source.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

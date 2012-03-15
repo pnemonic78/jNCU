@@ -19,14 +19,14 @@
  */
 package net.sf.jncu.cdil.mnp;
 
-import gnu.io.SerialPort;
-import gnu.io.SerialPortEvent;
-import gnu.io.SerialPortEventListener;
-
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.BlockingQueue;
+
+import jssc.SerialPort;
+import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
+import jssc.SerialPortException;
 
 /**
  * Listener to handle all serial port events.
@@ -72,34 +72,25 @@ public class MNPSerialPortEventListener implements SerialPortEventListener {
 	@Override
 	public void serialEvent(SerialPortEvent event) {
 		switch (event.getEventType()) {
-		case SerialPortEvent.BI:
+		case SerialPortEvent.BREAK:
 			breakInterrupt(event);
-			break;
-		case SerialPortEvent.CD:
-			carrierDetect(event);
 			break;
 		case SerialPortEvent.CTS:
 			clearToSend(event);
 			break;
-		case SerialPortEvent.DATA_AVAILABLE:
+		case SerialPortEvent.RXCHAR:
 			dataAvailable(event);
 			break;
 		case SerialPortEvent.DSR:
 			dataSetReady(event);
 			break;
-		case SerialPortEvent.FE:
-			framingError(event);
+		case SerialPortEvent.ERR:
+			error(event);
 			break;
-		case SerialPortEvent.OE:
-			overrunError(event);
-			break;
-		case SerialPortEvent.OUTPUT_BUFFER_EMPTY:
+		case SerialPortEvent.TXEMPTY:
 			outputBufferEmpty(event);
 			break;
-		case SerialPortEvent.PE:
-			parityError(event);
-			break;
-		case SerialPortEvent.RI:
+		case SerialPortEvent.RING:
 			ringIndicator(event);
 			break;
 		}
@@ -115,15 +106,6 @@ public class MNPSerialPortEventListener implements SerialPortEventListener {
 	}
 
 	/**
-	 * Handle parity error events.
-	 * 
-	 * @param event
-	 *            the event.
-	 */
-	protected void parityError(SerialPortEvent event) {
-	}
-
-	/**
 	 * Handle output buffer empty events.
 	 * 
 	 * @param event
@@ -133,21 +115,12 @@ public class MNPSerialPortEventListener implements SerialPortEventListener {
 	}
 
 	/**
-	 * Handle overrun rrror events.
+	 * Handle error events.
 	 * 
 	 * @param event
 	 *            the event.
 	 */
-	protected void overrunError(SerialPortEvent event) {
-	}
-
-	/**
-	 * Handle framing error events.
-	 * 
-	 * @param event
-	 *            the event.
-	 */
-	protected void framingError(SerialPortEvent event) {
+	protected void error(SerialPortEvent event) {
 	}
 
 	/**
@@ -160,30 +133,36 @@ public class MNPSerialPortEventListener implements SerialPortEventListener {
 	}
 
 	/**
-	 * Handle data available events.
+	 * Handle data available events.<br>
+	 * This method is <tt>synchronized</tt> to try and keep the input sequential
+	 * and correctly ordered.
 	 * 
 	 * @param event
 	 *            the event.
 	 */
-	protected void dataAvailable(SerialPortEvent event) {
-		SerialPort port = (SerialPort) event.getSource();
-		InputStream in;
-		int b;
+	protected synchronized void dataAvailable(SerialPortEvent event) {
+		String portName = event.getPortName();
+		if (!portName.equals(port.getPortName()))
+			return;
+		int count = event.getEventValue();
+		if (count == 0)
+			return;
+		byte[] buf;
+
 		try {
-			in = port.getInputStream();
-			b = in.read();
-			while (b != -1) {
-				if (q != null) {
-					q.put((byte) b);
-				} else {
-					out.write(b);
-				}
-				b = in.read();
+			buf = port.readBytes(count);
+			if (q != null) {
+				for (byte b : buf)
+					q.put(b);
+			} else {
+				out.write(buf);
 			}
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		} catch (InterruptedException ie) {
 			ie.printStackTrace();
+		} catch (SerialPortException se) {
+			se.printStackTrace();
 		}
 	}
 
@@ -194,15 +173,6 @@ public class MNPSerialPortEventListener implements SerialPortEventListener {
 	 *            the event.
 	 */
 	protected void clearToSend(SerialPortEvent event) {
-	}
-
-	/**
-	 * Handle carrier detect events.
-	 * 
-	 * @param event
-	 *            the event.
-	 */
-	protected void carrierDetect(SerialPortEvent event) {
 	}
 
 	/**

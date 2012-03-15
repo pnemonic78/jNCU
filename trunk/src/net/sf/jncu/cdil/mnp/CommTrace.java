@@ -19,22 +19,18 @@
  */
 package net.sf.jncu.cdil.mnp;
 
-import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
-import gnu.io.PortInUseException;
-import gnu.io.SerialPort;
-import gnu.io.SerialPortEvent;
-import gnu.io.SerialPortEventListener;
-import gnu.io.UnsupportedCommOperationException;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.TooManyListenersException;
+
+import jssc.SerialPort;
+import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
+import jssc.SerialPortException;
+import net.sf.jncu.io.NoSuchPortException;
+import net.sf.jncu.io.PortInUseException;
 
 /**
  * Trace serial port traffic.
@@ -45,30 +41,7 @@ import java.util.TooManyListenersException;
  * <tt>COM2-COM3</tt> <-> <tt>application</tt><br>
  * or<br>
  * <tt>device</tt> <-> <tt>COM2-COM3</tt> <-> <tt>CommTrace</tt> <->
- * <tt>COM4-COM5</tt> <-> <tt>application</tt><br>
- * <p>
- * Must specify VM arguments for the Java library path variable
- * <tt>java.library.path</tt> at start-up:
- * <ul>
- * <li>for Linux i686:
- * <code>-Djava.library.path=<em>${user.dir}</em>/lib:<em>${user.dir}</em>/lib/Linux/i686</code>
- * <li>for Linux ia64:
- * <code>-Djava.library.path=<em>${user.dir}</em>/lib:<em>${user.dir}</em>/lib/Linux/ia64</code>
- * <li>for Linux x86_64 (x64):
- * <code>-Djava.library.path=<em>${user.dir}</em>/lib:<em>${user.dir}</em>/lib/Linux/x86_64</code>
- * <li>for Mac OS X:
- * <code>-Djava.library.path=<em>${user.dir}</em>/lib:<em>${user.dir}</em>/lib/Mac_OS_X</code>
- * <li>for Solaris SPARC 32:
- * <code>-Djava.library.path=<em>${user.dir}</em>/lib:<em>${user.dir}</em>/lib/Solaris/sparc32</code>
- * <li>for Solaris SPARC 64:
- * <code>-Djava.library.path=<em>${user.dir}</em>/lib:<em>${user.dir}</em>/lib/Solaris/sparc64</code>
- * <li>for Windows x86:
- * <code>-Djava.library.path="<em>${user.dir}</em>\lib";"<em>${user.dir}</em>\lib\Windows\x86"</code>
- * <li>for Windows ia64:
- * <code>-Djava.library.path="<em>${user.dir}</em>\lib";"<em>${user.dir}</em>\lib\Windows\ia64"</code>
- * <li>for Windows x86_64:
- * <code>-Djava.library.path="<em>${user.dir}</em>\lib";"<em>${user.dir}</em>\lib\Windows\x86_64"</code>
- * </ul>
+ * <tt>COM4-COM5</tt> <-> <tt>application</tt>
  * 
  * @author moshew
  */
@@ -121,63 +94,60 @@ public class CommTrace implements SerialPortEventListener {
 		}
 	}
 
-	public void trace(String portName1, String portName2) throws NoSuchPortException, PortInUseException, UnsupportedCommOperationException {
-		CommPortIdentifier portId1 = CommPortIdentifier.getPortIdentifier(portName1);
-		CommPortIdentifier portId2 = CommPortIdentifier.getPortIdentifier(portName2);
-		trace(portId1, portId2);
+	public void trace(String portName1, String portName2) throws NoSuchPortException, PortInUseException, SerialPortException {
+		SerialPort port1 = new SerialPort(portName1);
+		SerialPort port2 = new SerialPort(portName2);
+		try {
+			port1.openPort();
+			port2.openPort();
+			trace(port1, port2);
+		} catch (SerialPortException se) {
+			if (SerialPortException.TYPE_PORT_BUSY == se.getExceptionType())
+				throw new PortInUseException(portName1);
+			if (SerialPortException.TYPE_PORT_NOT_FOUND == se.getExceptionType())
+				throw new NoSuchPortException(portName1);
+			throw se;
+		}
 	}
 
-	public void trace(CommPortIdentifier portId1, CommPortIdentifier portId2) throws NoSuchPortException, PortInUseException, UnsupportedCommOperationException {
-		if (portId1.getPortType() != CommPortIdentifier.PORT_SERIAL) {
-			throw new NoSuchPortException();
-		}
-		if (portId2.getPortType() != CommPortIdentifier.PORT_SERIAL) {
-			throw new NoSuchPortException();
-		}
-		String owner = this.getClass().getName();
-		SerialPort port1 = (SerialPort) portId1.open(owner, 30000);
-		SerialPort port2 = (SerialPort) portId2.open(owner, 30000);
-		trace(port1, port2);
-	}
-
-	public void trace(SerialPort port1, SerialPort port2) throws PortInUseException, UnsupportedCommOperationException {
+	public void trace(SerialPort port1, SerialPort port2) throws SerialPortException {
 		this.port1 = port1;
 		this.port2 = port2;
 
-		port1.setSerialPortParams(baud, port1.getDataBits(), port1.getStopBits(), port1.getParity());
-		port2.setSerialPortParams(baud, port2.getDataBits(), port2.getStopBits(), port2.getParity());
-		port1.notifyOnDataAvailable(true);
-		port2.notifyOnDataAvailable(true);
-
-		try {
-			port1.addEventListener(this);
-			port2.addEventListener(this);
-		} catch (TooManyListenersException tmle) {
-			throw new PortInUseException();
-		}
+		port1.setParams(baud, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+		port2.setParams(baud, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+		port1.setEventsMask(SerialPort.MASK_RXCHAR);
+		port2.setEventsMask(SerialPort.MASK_RXCHAR);
+		port1.addEventListener(this);
+		port2.addEventListener(this);
 	}
 
 	@Override
 	public void serialEvent(SerialPortEvent e) {
-		SerialPort port = (SerialPort) e.getSource();
-		if (e.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
+		String portName = e.getPortName();
+		if (e.isRXCHAR()) {
+			int count = e.getEventValue();
+			if (count == 0)
+				return;
 			char direction;
+			SerialPort in;
+			SerialPort out;
+			byte[] buf;
 
 			try {
-				InputStream in = port.getInputStream();
-				OutputStream out = null;
-
-				if (port == port1) {
+				if (portName.equals(port1.getPortName())) {
 					direction = CHAR_DIRECTION_1TO2;
-					out = port2.getOutputStream();
+					in = port1;
+					out = port2;
 				} else {
 					direction = CHAR_DIRECTION_2TO1;
-					out = port1.getOutputStream();
+					in = port2;
+					out = port1;
 				}
 
-				int b = in.read();
-				do {
-					synchronized (logOut) {
+				synchronized (in) {
+					buf = in.readBytes(count);
+					for (byte b : buf) {
 						logOut.print(direction);
 						logOut.print(HEX[(b >> 4) & 0x0F]);
 						logOut.print(HEX[b & 0x0F]);
@@ -187,12 +157,13 @@ public class CommTrace implements SerialPortEventListener {
 							logWidth = 0;
 						}
 					}
-					out.write(b);
-					b = in.read();
-				} while (b != -1);
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
+					out.writeBytes(buf);
+				}
+			} catch (SerialPortException se) {
+				se.printStackTrace();
 			}
+		} else if (e.isERR()) {
+			cancel();
 		}
 	}
 
@@ -232,9 +203,35 @@ public class CommTrace implements SerialPortEventListener {
 	 * Set the baud rate.
 	 * 
 	 * @param baud
-	 *            the baude rate.
+	 *            the baud rate.
 	 */
 	public void setBaud(int baud) {
 		this.baud = baud;
+	}
+
+	/**
+	 * Cancel tracing.
+	 */
+	public void cancel() {
+		try {
+			finalize();
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		try {
+			port1.closePort();
+		} catch (SerialPortException se) {
+			// ignore
+		}
+		try {
+			port2.closePort();
+		} catch (SerialPortException se) {
+			// ignore
+		}
+		super.finalize();
 	}
 }
