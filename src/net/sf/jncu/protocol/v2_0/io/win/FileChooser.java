@@ -66,21 +66,26 @@ public class FileChooser extends IconModule {
 	/**
 	 * File chooser event.
 	 */
-	public static interface FileChooserListener {
+	public static interface FileChooserListener extends IconModuleListener {
 		/**
 		 * The file was selected after the user clicked an approval button.
 		 * 
+		 * @param chooser
+		 *            the file chooser.
 		 * @param file
 		 *            the selected file.
 		 * @param command
 		 *            the command from the Newton.
 		 */
-		public void approveSelection(File file, IDockCommandFromNewton command);
+		public void approveSelection(FileChooser chooser, File file, IDockCommandFromNewton command);
 
 		/**
-		 * The browsing was cancelled.
+		 * The file browsing was cancelled.
+		 * 
+		 * @param chooser
+		 *            the file chooser.
 		 */
-		public void cancelSelection();
+		public void cancelSelection(FileChooser chooser);
 	}
 
 	public static final NSOFSymbol IMPORT = DRequestToBrowse.IMPORT;
@@ -355,6 +360,7 @@ public class FileChooser extends IconModule {
 	 *            the listener to add.
 	 */
 	public void addListener(FileChooserListener listener) {
+		super.addListener(listener);
 		if (!listeners.contains(listener)) {
 			listeners.add(listener);
 		}
@@ -367,6 +373,7 @@ public class FileChooser extends IconModule {
 	 *            the listener to remove.
 	 */
 	public void removeListener(FileChooserListener listener) {
+		super.removeListener(listener);
 		listeners.remove(listener);
 	}
 
@@ -382,7 +389,7 @@ public class FileChooser extends IconModule {
 		// Make copy of listeners to avoid ConcurrentModificationException.
 		Collection<FileChooserListener> listenersCopy = new ArrayList<FileChooserListener>(listeners);
 		for (FileChooserListener listener : listenersCopy) {
-			listener.approveSelection(file, command);
+			listener.approveSelection(this, file, command);
 		}
 	}
 
@@ -393,7 +400,7 @@ public class FileChooser extends IconModule {
 		// Make copy of listeners to avoid ConcurrentModificationException.
 		Collection<FileChooserListener> listenersCopy = new ArrayList<FileChooserListener>(listeners);
 		for (FileChooserListener listener : listenersCopy) {
-			listener.cancelSelection();
+			listener.cancelSelection(this);
 		}
 	}
 
