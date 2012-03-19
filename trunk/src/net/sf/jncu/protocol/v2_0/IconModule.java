@@ -3,6 +3,10 @@
  */
 package net.sf.jncu.protocol.v2_0;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import javax.swing.JOptionPane;
 
 import net.sf.jncu.cdil.CDPacket;
@@ -26,8 +30,30 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 		SwingUtils.init();
 	}
 
+	/**
+	 * Icon module event.
+	 */
+	public static interface IconModuleListener {
+		/**
+		 * The operation completed successfully.
+		 * 
+		 * @param module
+		 *            the module.
+		 */
+		public void successModule(IconModule module);
+
+		/**
+		 * The operation was cancelled.
+		 * 
+		 * @param module
+		 *            the module.
+		 */
+		public void cancelModule(IconModule module);
+	}
+
 	private final String title;
 	protected final CDPipe<? extends CDPacket> pipe;
+	private final List<IconModuleListener> listeners = new ArrayList<IconModuleListener>();
 
 	/**
 	 * Constructs a new module.
@@ -123,11 +149,58 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 		String cmd = command.getCommand();
 
 		if (DOperationDone.COMMAND.equals(cmd)) {
+			fireDone();
 			done();
 		} else if (DOperationCanceled.COMMAND.equals(cmd)) {
+			fireCancelled();
 			done();
 		} else if (DOperationCanceledAck.COMMAND.equals(cmd)) {
+			fireCancelled();
 			done();
+		}
+	}
+
+	/**
+	 * Add a module listener.
+	 * 
+	 * @param listener
+	 *            the listener to add.
+	 */
+	public void addListener(IconModuleListener listener) {
+		if (!listeners.contains(listener)) {
+			listeners.add(listener);
+		}
+	}
+
+	/**
+	 * Remove a module listener.
+	 * 
+	 * @param listener
+	 *            the listener to remove.
+	 */
+	public void removeListener(IconModuleListener listener) {
+		listeners.remove(listener);
+	}
+
+	/**
+	 * Notify all the listeners that the operation finished.
+	 */
+	protected void fireDone() {
+		// Make copy of listeners to avoid ConcurrentModificationException.
+		Collection<IconModuleListener> listenersCopy = new ArrayList<IconModuleListener>(listeners);
+		for (IconModuleListener listener : listenersCopy) {
+			listener.successModule(this);
+		}
+	}
+
+	/**
+	 * Notify all the listeners that the operation was cancelled.
+	 */
+	protected void fireCancelled() {
+		// Make copy of listeners to avoid ConcurrentModificationException.
+		Collection<IconModuleListener> listenersCopy = new ArrayList<IconModuleListener>(listeners);
+		for (IconModuleListener listener : listenersCopy) {
+			listener.cancelModule(this);
 		}
 	}
 }
