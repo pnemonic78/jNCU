@@ -9,6 +9,10 @@ import net.sf.jncu.cdil.mnp.MNPPacketListener;
 import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
 import net.sf.jncu.cdil.mnp.PacketLogger;
+import net.sf.jncu.protocol.DockCommandListener;
+import net.sf.jncu.protocol.IDockCommandFromNewton;
+import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.IconModule.IconModuleListener;
 import net.sf.jncu.protocol.v2_0.app.LoadPackage;
@@ -18,7 +22,7 @@ import net.sf.jncu.protocol.v2_0.app.LoadPackage;
  * 
  * @author moshew
  */
-public class LoadPackageTester implements IconModuleListener, MNPPacketListener {
+public class LoadPackageTester implements IconModuleListener, MNPPacketListener, DockCommandListener {
 
 	private String portName;
 	private String pkgPath;
@@ -77,6 +81,7 @@ public class LoadPackageTester implements IconModuleListener, MNPPacketListener 
 		pipe.setTimeout(Integer.MAX_VALUE);
 		pipe.startListening();
 		pipe.addPacketListener(this);
+		pipe.addCommandListener(this);
 		// Wait for a connect request
 		while (layer.getState() == CDState.LISTENING) {
 			Thread.yield();
@@ -84,7 +89,6 @@ public class LoadPackageTester implements IconModuleListener, MNPPacketListener 
 	}
 
 	public void run() throws Exception {
-		// if (layer.getState() == CDState.CONNECT_PENDING) {
 		pipe.accept();
 
 		File file = new File(pkgPath);
@@ -94,7 +98,6 @@ public class LoadPackageTester implements IconModuleListener, MNPPacketListener 
 		pkg.loadPackage(file);
 		while (loading)
 			Thread.yield();
-		// }
 	}
 
 	private void done() throws Exception {
@@ -137,6 +140,23 @@ public class LoadPackageTester implements IconModuleListener, MNPPacketListener 
 	@Override
 	public void packetSent(MNPPacket packet) {
 		logger.log("s", packet, pipe.getDockingState());
+	}
+
+	@Override
+	public void commandReceived(IDockCommandFromNewton command) {
+		final String cmd = command.getCommand();
+
+		if (DDisconnect.COMMAND.equals(cmd)) {
+			loading = false;
+		}
+	}
+
+	@Override
+	public void commandSent(IDockCommandToNewton command) {
+	}
+
+	@Override
+	public void commandEOF() {
 	}
 
 }
