@@ -294,4 +294,15 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 			}
 		}.start();
 	}
+
+	/**
+	 * Notify this layer that a timeout error occurred.
+	 * 
+	 * @param te
+	 *            the timeout error.
+	 */
+	public void notifyTimeout(TimeoutException te) {
+		firePacketEOF();
+		close();
+	}
 }

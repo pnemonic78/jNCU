@@ -364,9 +364,6 @@ public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 
 	@Override
 	public void run() {
-		if (pipe == null)
-			throw new NullPointerException("pipe required");
-
 		running = true;
 		do {
 			try {
@@ -388,6 +385,8 @@ public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 	 * @return {@code true} if connecting or connected.
 	 */
 	protected boolean isConnected() {
+		if (pipe == null)
+			return true;
 		return pipe.isConnected();
 	}
 }

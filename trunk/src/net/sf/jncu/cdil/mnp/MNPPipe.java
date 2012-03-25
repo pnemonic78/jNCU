@@ -134,7 +134,7 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 
 	@Override
 	public void setTimeout(int timeoutInSecs) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
-		if (portName != null) {
+		if (getMNPState() != MNPState.MNP_HANDSHAKE_LR_LISTEN) {
 			throw new BadPipeStateException("Only able set the port timeout at port creation.");
 		}
 		super.setTimeout(timeoutInSecs);
@@ -210,12 +210,12 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 	public void packetAcknowledged(MNPPacket packet) {
 		super.packetAcknowledged(packet);
 
-		byte packetType = packet.getType();
-		MNPState state = getMNPState();
+		final byte packetType = packet.getType();
+		final MNPState state = getMNPState();
 
 		try {
 			switch (state) {
-			case MNP_HANDSHAKE_LR_SENDING:
+			case MNP_HANDSHAKE_LR_SENT:
 				if (packetType == MNPPacket.LR) {
 					docking.setState(DockingState.HANDSHAKE_RTDK);
 					setState(MNPState.MNP_HANDSHAKE_DOCK);
@@ -308,6 +308,9 @@ public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
 		// Only move the previous state to the next state, or to its own state.
 		if (oldState == MNPState.MNP_DISCONNECTED) {
 			throw new PipeDisconnectedException();
+		}
+		if (newState == MNPState.MNP_HANDSHAKE_LR_RECEIVED) {
+			return;
 		}
 		int compare = newState.compareTo(oldState);
 		if ((compare != 0) && (compare != 1) && (newState != MNPState.MNP_DISCONNECTING)) {
