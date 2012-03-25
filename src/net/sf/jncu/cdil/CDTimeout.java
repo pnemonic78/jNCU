@@ -20,6 +20,7 @@
 package net.sf.jncu.cdil;
 
 import java.util.TimerTask;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Timeout when listening to Newton.
@@ -45,7 +46,7 @@ public class CDTimeout extends TimerTask {
 
 	@Override
 	public void run() {
-		pipe.disconnectQuiet();
+		pipe.notifyTimeout(new TimeoutException());
 	}
 
 }

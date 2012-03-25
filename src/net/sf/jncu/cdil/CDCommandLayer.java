@@ -201,6 +201,7 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 				yield();
 			} while (running && (cmd != null));
 		} catch (EOFException eofe) {
+			eofe.printStackTrace();
 			fireCommandEOF();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();

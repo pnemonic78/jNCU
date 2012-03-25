@@ -215,7 +215,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	public void accept() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		layer.checkInitialized();
 		if (getCDState() != CDState.CONNECT_PENDING) {
-			throw new BadPipeStateException("state " + getCDState().toString());
+			throw new BadPipeStateException("state " + getCDState());
 		}
 		acceptImpl();
 	}
@@ -711,5 +711,15 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 			return true;
 		final DockingState dockingState = getDockingState();
 		return (dockingState != DockingState.DISCONNECTING) && (dockingState != DockingState.DISCONNECTED);
+	}
+
+	/**
+	 * Notify this pipe that a timeout error occurred.
+	 * 
+	 * @param te
+	 *            the timeout error.
+	 */
+	public void notifyTimeout(TimeoutException te) {
+		disconnectQuiet();
 	}
 }

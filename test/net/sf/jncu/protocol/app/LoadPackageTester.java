@@ -3,9 +3,12 @@ package net.sf.jncu.protocol.app;
 import java.io.File;
 
 import net.sf.jncu.cdil.CDLayer;
-import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.CDState;
+import net.sf.jncu.cdil.mnp.MNPPacket;
+import net.sf.jncu.cdil.mnp.MNPPacketListener;
+import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
+import net.sf.jncu.cdil.mnp.PacketLogger;
 import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.IconModule.IconModuleListener;
 import net.sf.jncu.protocol.v2_0.app.LoadPackage;
@@ -15,12 +18,15 @@ import net.sf.jncu.protocol.v2_0.app.LoadPackage;
  * 
  * @author moshew
  */
-public class LoadPackageTester implements IconModuleListener {
+public class LoadPackageTester implements IconModuleListener, MNPPacketListener {
 
 	private String portName;
 	private String pkgPath;
 	private LoadPackage pkg;
 	private boolean loading = false;
+	private CDLayer layer;
+	private MNPPipe pipe;
+	private PacketLogger logger;
 
 	public LoadPackageTester() {
 		super();
@@ -42,7 +48,12 @@ public class LoadPackageTester implements IconModuleListener {
 		tester.setPortName(args[0]);
 		tester.setPath(args[1]);
 		try {
-			tester.run();
+			try {
+				tester.init();
+				tester.run();
+			} finally {
+				tester.done();
+			}
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
@@ -56,39 +67,43 @@ public class LoadPackageTester implements IconModuleListener {
 		this.pkgPath = path;
 	}
 
+	public void init() throws Exception {
+		logger = new PacketLogger('P');
+		layer = CDLayer.getInstance();
+		// Initialize the library
+		layer.startUp();
+		// Create a connection object
+		pipe = layer.createMNPSerial(portName, MNPSerialPort.BAUD_38400);
+		pipe.setTimeout(Integer.MAX_VALUE);
+		pipe.startListening();
+		pipe.addPacketListener(this);
+		// Wait for a connect request
+		while (layer.getState() == CDState.LISTENING) {
+			Thread.yield();
+		}
+	}
+
 	public void run() throws Exception {
-		CDLayer layer = null;
-		CDPipe<?> pipe = null;
-		try {
-			layer = CDLayer.getInstance();
-			// Initialize the library
-			layer.startUp();
-			// Create a connection object
-			pipe = layer.createMNPSerial(portName, MNPSerialPort.BAUD_38400);
-			pipe.startListening();
-			// Wait for a connect request
-			while (layer.getState() == CDState.LISTENING) {
-				Thread.yield();
-			}
-			if (layer.getState() == CDState.CONNECT_PENDING) {
-				pipe.accept(); // Accept the connect request
+		// if (layer.getState() == CDState.CONNECT_PENDING) {
+		pipe.accept();
 
-				File file = new File(pkgPath);
+		File file = new File(pkgPath);
 
-				loading = true;
-				pkg = new LoadPackage(pipe, false);
-				pkg.loadPackage(file);
-				while (loading)
-					Thread.yield();
-			}
-		} finally {
-			if (pipe != null) {
-				pipe.disconnect(); // Break the connection.
-				pipe.dispose(); // Delete the pipe object
-			}
-			if (layer != null) {
-				layer.shutDown(); // Close the library
-			}
+		loading = true;
+		pkg = new LoadPackage(pipe, false);
+		pkg.loadPackage(file);
+		while (loading)
+			Thread.yield();
+		// }
+	}
+
+	private void done() throws Exception {
+		if (pipe != null) {
+			pipe.disconnect(); // Break the connection.
+			pipe.dispose(); // Delete the pipe object
+		}
+		if (layer != null) {
+			layer.shutDown(); // Close the library
 		}
 	}
 
@@ -102,6 +117,26 @@ public class LoadPackageTester implements IconModuleListener {
 	public void cancelModule(IconModule module) {
 		System.out.println("cancelModule");
 		loading = false;
+	}
+
+	@Override
+	public void packetAcknowledged(MNPPacket packet) {
+		logger.log("a", packet, pipe.getDockingState());
+	}
+
+	@Override
+	public void packetEOF() {
+		logger.log("e", null, pipe.getDockingState());
+	}
+
+	@Override
+	public void packetReceived(MNPPacket packet) {
+		logger.log("r", packet, pipe.getDockingState());
+	}
+
+	@Override
+	public void packetSent(MNPPacket packet) {
+		logger.log("s", packet, pipe.getDockingState());
 	}
 
 }

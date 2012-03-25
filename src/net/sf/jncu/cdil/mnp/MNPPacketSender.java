@@ -86,6 +86,7 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 		long timeout; // Enough time to wait for acknowledgement.
 		long now;
 		int retry;
+		boolean allowSend;
 		boolean resend = true;
 		int sequenceToAcknowledge;
 
@@ -118,7 +119,8 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 				packet = next;
 
 				do {
-					if (pipe.allowSend()) {
+					allowSend = (pipe == null) || pipe.allowSend();
+					if (allowSend) {
 						try {
 							timeout = System.currentTimeMillis() + 5000L;
 							packetLayer.send(packet);
@@ -138,9 +140,10 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 							ioe.printStackTrace();
 						}
 					}
+					allowSend = (pipe == null) || pipe.allowSend();
 
 					resend &= running;
-					resend &= pipe.allowSend();
+					resend &= allowSend;
 					if (resend) {
 						retry--;
 						if (retry < 0) {
@@ -154,11 +157,17 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 
 	@Override
 	public void packetReceived(MNPPacket packet) {
-		byte packetType = packet.getType();
+		final byte packetType = packet.getType();
 
 		if (packetType == MNPPacket.LA) {
 			MNPLinkAcknowledgementPacket ack = (MNPLinkAcknowledgementPacket) packet;
 			sequenceAcknowledged = Math.max(sequenceAcknowledged, ack.getSequence());
+			if (packetAcknowledge != null) {
+				packetLayer.runAcknowledged(packetAcknowledge);
+				packetAcknowledge = null;
+			}
+		} else if (packetType == MNPPacket.LR) {
+			sequenceAcknowledged = Math.max(sequenceAcknowledged, 0);
 			if (packetAcknowledge != null) {
 				packetLayer.runAcknowledged(packetAcknowledge);
 				packetAcknowledge = null;
@@ -199,8 +208,8 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 			runSend();
 		} catch (TimeoutException te) {
 			te.printStackTrace();
-			// Notify the pipe that error occurred.
-			packetEOF();
+			// Notify the owner that error occurred.
+			packetLayer.notifyTimeout(te);
 		}
 		running = false;
 	}

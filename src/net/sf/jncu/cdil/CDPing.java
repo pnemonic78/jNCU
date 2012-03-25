@@ -30,7 +30,7 @@ import net.sf.jncu.protocol.v1_0.session.DHello;
  */
 public class CDPing extends TimerTask {
 
-	private final CDPipe<? extends CDPacket> pipe;
+	private final CDCommandLayer<? extends CDPacket> commandLayer;
 
 	/**
 	 * Creates a new ping.
@@ -39,17 +39,27 @@ public class CDPing extends TimerTask {
 	 *            the pipe.
 	 */
 	public CDPing(CDPipe<? extends CDPacket> pipe) {
+		this(pipe.getCommandLayer());
+	}
+
+	/**
+	 * Creates a new ping.
+	 * 
+	 * @param commandLayer
+	 *            the command layer.
+	 */
+	public CDPing(CDCommandLayer<? extends CDPacket> commandLayer) {
 		super();
-		if (pipe == null)
-			throw new NullPointerException("pipe required");
-		this.pipe = pipe;
+		if (commandLayer == null)
+			throw new NullPointerException("command layer required");
+		this.commandLayer = commandLayer;
 	}
 
 	@Override
 	public void run() {
 		DHello hello = new DHello();
 		try {
-			pipe.write(hello);
+			commandLayer.write(hello);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
