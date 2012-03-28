@@ -1,5 +1,6 @@
 package net.sf.jncu.cdil.mnp;
 
+import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.util.Timer;
@@ -12,10 +13,17 @@ import jssc.SerialPortException;
 import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDPing;
 import net.sf.jncu.crypto.DESNewton;
+import net.sf.jncu.fdil.NSOFEncoder;
+import net.sf.jncu.fdil.NSOFInteger;
+import net.sf.jncu.fdil.NSOFPlainArray;
+import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.IDockCommand;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
+import net.sf.jncu.protocol.v2_0.app.DRequestToInstall;
+import net.sf.jncu.protocol.v2_0.query.DRefResult;
 import net.sf.jncu.protocol.v2_0.session.DDesktopInfo;
 import net.sf.jncu.protocol.v2_0.session.DInitiateDocking;
 import net.sf.jncu.protocol.v2_0.session.DPassword;
@@ -39,6 +47,7 @@ public class NewtonDriver implements MNPPacketListener {
 	private static final byte SEQUENCE_NINF = 3;
 	private static final byte SEQUENCE_DRES = 4;
 	private static final byte SEQUENCE_PASS = 5;
+	private static final byte SEQUENCE_CMD = 6;
 
 	private static final byte[] COMMAND_RTDK = { 'n', 'e', 'w', 't', 'd', 'o', 'c', 'k', 'r', 't', 'd', 'k', 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x09 };
 	private static final byte[] COMMAND_NAME = { 'n', 'e', 'w', 't', 'd', 'o', 'c', 'k', 'n', 'a', 'm', 'e', 0x00, 0x00, 0x00, 'h', 0x00, 0x00, 0x00, '8', 0x11, 'g', (byte) 0xfd,
@@ -66,6 +75,7 @@ public class NewtonDriver implements MNPPacketListener {
 	private transient long challengeDesktopCiphered;
 	/** The Newton DES cryptography. */
 	private DESNewton crypto;
+	private int userCommand = 0;
 
 	/**
 	 * Main method.
@@ -191,7 +201,21 @@ public class NewtonDriver implements MNPPacketListener {
 			readPasswordReply();
 			break;
 		case HANDSHAKE_DONE:
-			handshakeDone();
+			logger.log("next", null, "userCommand=" + userCommand);
+			switch (userCommand) {
+			case 0:
+				handshakeDone();
+				break;
+			case 1:
+				// Received "rins"
+				break;
+			case 2:
+				sendResult();
+				break;
+			case 3:
+				sendBig();
+				break;
+			}
 			break;
 		default:
 			throw new EOFException();
@@ -272,8 +296,11 @@ public class NewtonDriver implements MNPPacketListener {
 	}
 
 	private void handshakeDone() throws IOException, TimeoutException {
+		logger.log("handshakeDone", null, "userCommand=" + userCommand);
+		userCommand++;
 		state = DockingState.HANDSHAKE_DONE;
-		sendHello();
+		if (ping == null)
+			sendHello();
 	}
 
 	private void sendHello() throws IOException, TimeoutException {
@@ -281,6 +308,16 @@ public class NewtonDriver implements MNPPacketListener {
 			ping.cancel();
 		ping = new CDPing(commandLayer);
 		timer.schedule(ping, PING_TIME, PING_TIME);
+	}
+
+	private void sendResult() throws IOException, TimeoutException {
+		logger.log("sendResult", null, "userCommand=" + userCommand);
+		userCommand++;
+		validateCommand(COMMAND_DRES);
+		MNPLinkTransferPacket packet = (MNPLinkTransferPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LT);
+		packet.setData(COMMAND_DRES);
+		packet.setSequence(SEQUENCE_CMD);
+		send(packet);
 	}
 
 	@Override
@@ -351,8 +388,12 @@ public class NewtonDriver implements MNPPacketListener {
 			MNPLinkTransferPacket lt = (MNPLinkTransferPacket) packet;
 			sendLA(lt.getSequence());
 			DockCommandFactory factory = DockCommandFactory.getInstance();
-			IDockCommandToNewton cmd = (IDockCommandToNewton) factory.deserializeCommand(lt.getData());
-			String name = cmd.getCommand();
+			IDockCommandToNewton cmd = null;
+			String name = null;
+			if (userCommand <= 1) {
+				cmd = (IDockCommandToNewton) factory.deserializeCommand(lt.getData());
+				name = cmd.getCommand();
+			}
 
 			switch (state) {
 			case HANDSHAKE_DOCK:
@@ -390,10 +431,16 @@ public class NewtonDriver implements MNPPacketListener {
 					break;
 				}
 				if (DResult.COMMAND.equals(name)) {
-					throw new BadPipeStateException(cmd.toString());
+					throw new BadPipeStateException((cmd == null) ? null : cmd.toString());
 				}
 				throw new BadPipeStateException();
 			case HANDSHAKE_DONE:
+				logger.log("r", packet, "userCommand=" + userCommand);
+				if (userCommand == 1) {
+					if (DRequestToInstall.COMMAND.equals(name)) {
+						userCommand++;
+					}
+				}
 				break;
 			default:
 				throw new BadPipeStateException();
@@ -432,5 +479,37 @@ public class NewtonDriver implements MNPPacketListener {
 		IDockCommandFromNewton cmd = (IDockCommandFromNewton) DockCommandFactory.getInstance().deserializeCommand(b);
 		if (cmd == null)
 			throw new NullPointerException();
+	}
+
+	private void sendBig() throws IOException, TimeoutException {
+		logger.log("sendBig", null, "userCommand=" + userCommand);
+		userCommand++;
+		final int len = 500;
+		NSOFPlainArray res = new NSOFPlainArray(len);
+		for (int i = 0; i < len; i++)
+			res.set(i, new NSOFInteger(i));
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		out.write(IDockCommand.COMMAND_PREFIX.getBytes());
+		out.write(DRefResult.COMMAND.getBytes());
+		ByteArrayOutputStream outRes = new ByteArrayOutputStream();
+		NSOFEncoder encoder = new NSOFEncoder();
+		encoder.flatten(res, outRes);
+		DockCommandToNewton.htonl(outRes.size(), out);
+		outRes.writeTo(out);
+		switch (out.size() & 3) {
+		case 1:
+			out.write(0);
+		case 2:
+			out.write(0);
+		case 3:
+			out.write(0);
+			break;
+		}
+
+		Iterable<MNPLinkTransferPacket> packets = MNPPacketFactory.getInstance().createTransferPackets(out.toByteArray());
+		for (MNPLinkTransferPacket packet : packets) {
+			send(packet);
+		}
 	}
 }

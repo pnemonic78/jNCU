@@ -19,14 +19,19 @@
  */
 package net.sf.jncu.cdil;
 
+import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.SequenceInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 
+import net.sf.jncu.protocol.DockCommand;
+import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommand;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
@@ -112,6 +117,48 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 	}
 
 	/**
+	 * Notify all the listeners that a command is being received.
+	 * 
+	 * @param command
+	 *            the receiving command.
+	 * @param progress
+	 *            the number of bytes received.
+	 * @param total
+	 *            the total number of bytes to receive.
+	 */
+	protected void fireCommandReceiving(IDockCommandFromNewton command, int progress, int total) {
+		// Avoid "divide by 0" error.
+		if (total == 0)
+			return;
+		// Make copy of listeners to avoid ConcurrentModificationException.
+		Collection<DockCommandListener> listenersCopy = new ArrayList<DockCommandListener>(listeners);
+		for (DockCommandListener listener : listenersCopy) {
+			listener.commandReceiving(command, progress, total);
+		}
+	}
+
+	/**
+	 * Notify all the listeners that a command is being sent.
+	 * 
+	 * @param command
+	 *            the sending command.
+	 * @param progress
+	 *            the number of bytes sent.
+	 * @param total
+	 *            the total number of bytes to send.
+	 */
+	protected void fireCommandSending(IDockCommandToNewton command, int progress, int total) {
+		// Avoid "divide by 0" error.
+		if (total == 0)
+			return;
+		// Make copy of listeners to avoid ConcurrentModificationException.
+		Collection<DockCommandListener> listenersCopy = new ArrayList<DockCommandListener>(listeners);
+		for (DockCommandListener listener : listenersCopy) {
+			listener.commandSending(command, progress, total);
+		}
+	}
+
+	/**
 	 * Notify all the listeners that no more commands will be available.
 	 */
 	protected void fireCommandEOF() {
@@ -173,10 +220,19 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 		running = true;
 
 		InputStream in;
-		IDockCommand cmd;
+		IDockCommand cmd = null;
+		boolean hasCommand;
+		int length = 0;
+		byte[] data = null;
+		int offset = 0;
+		int available;
+		int count;
+		Vector<InputStream> v = new Vector<InputStream>();
 
 		try {
 			do {
+				hasCommand = false;
+
 				in = getInput();
 				while (running && (in.available() == 0)) {
 					synchronized (in) {
@@ -187,19 +243,88 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 						}
 					}
 				}
-				cmd = null;
+
 				if (running) {
-					cmd = DockCommandFactory.getInstance().deserializeCommand(in);
+					if (cmd == null) {
+						if (DockCommand.isCommand(in)) {
+							cmd = DockCommandFactory.getInstance().create(in);
+							length = DockCommandFromNewton.ntohl(in);
+							// Need to put the length back into the command
+							// stream for decoding.
+							byte[] lengthData = new byte[IDockCommand.LENGTH_WORD];
+							lengthData[0] = (byte) ((length >> 24) & 0xFF);
+							lengthData[1] = (byte) ((length >> 16) & 0xFF);
+							lengthData[2] = (byte) ((length >> 8) & 0xFF);
+							lengthData[3] = (byte) ((length >> 0) & 0xFF);
+							v.clear();
+							v.add(new ByteArrayInputStream(lengthData));
+						}
+					}
+					available = in.available();
 					if (cmd != null) {
+						hasCommand = true;
+
 						if (cmd instanceof IDockCommandFromNewton) {
-							fireCommandReceived((IDockCommandFromNewton) cmd);
+							IDockCommandFromNewton cmdFromNewton = (IDockCommandFromNewton) cmd;
+							if ((length <= available) || (offset == length)) {
+								if (data != null)
+									v.add(new ByteArrayInputStream(data));
+								v.add(in);
+								in = new SequenceInputStream(v.elements());
+								cmdFromNewton.decode(in);
+
+								fireCommandReceiving(cmdFromNewton, length, length);
+								fireCommandReceived(cmdFromNewton);
+								cmd = null;
+								length = 0;
+								data = null;
+								offset = 0;
+								v.clear();
+							} else {
+								if (data == null) {
+									data = new byte[length];
+									offset = 0;
+								}
+								count = in.read(data, offset, Math.min(available, length - offset));
+								if (count >= 0) {
+									offset += count;
+									fireCommandReceiving(cmdFromNewton, offset, length);
+								}
+							}
 						} else if (cmd instanceof IDockCommandToNewton) {
-							fireCommandSent((IDockCommandToNewton) cmd);
+							IDockCommandToNewton cmdToNewton = (IDockCommandToNewton) cmd;
+							if ((length <= available) || (offset == length)) {
+								// Commands are word-aligned.
+								switch (length & 3) {
+								case 1:
+									length++;
+								case 2:
+									length++;
+								case 3:
+									length++;
+									break;
+								}
+								in.skip(length);
+
+								fireCommandSending(cmdToNewton, length, length);
+								fireCommandSent(cmdToNewton);
+								cmd = null;
+								length = 0;
+								data = null;
+								offset = 0;
+								v.clear();
+							} else {
+								count = (int) in.skip(Math.min(available, length - offset));
+								if (count >= 0) {
+									offset += count;
+									fireCommandSending(cmdToNewton, offset, length);
+								}
+							}
 						}
 					}
 				}
 				yield();
-			} while (running && (cmd != null));
+			} while (running && hasCommand);
 		} catch (EOFException eofe) {
 			eofe.printStackTrace();
 			fireCommandEOF();

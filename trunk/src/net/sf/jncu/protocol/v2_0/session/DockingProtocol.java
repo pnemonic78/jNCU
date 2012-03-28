@@ -141,6 +141,11 @@ public class DockingProtocol<P extends CDPacket> implements DockCommandListener 
 	}
 
 	@Override
+	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+		// Ignore - commands too small for progress.
+	}
+
+	@Override
 	public void commandReceived(IDockCommandFromNewton command) {
 		String cmd = command.getCommand();
 
@@ -256,6 +261,11 @@ public class DockingProtocol<P extends CDPacket> implements DockCommandListener 
 		} catch (TimeoutException te) {
 			te.printStackTrace();
 		}
+	}
+
+	@Override
+	public void commandSending(IDockCommandToNewton command, int progress, int total) {
+		// Ignore - commands too small for progress.
 	}
 
 	@Override

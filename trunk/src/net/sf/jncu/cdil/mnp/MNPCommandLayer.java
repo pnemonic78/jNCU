@@ -41,9 +41,31 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 	/** Stream for packets to populate commands. */
 	private final PipedOutputStream commandPackets = new PipedOutputStream();
 	/** Stream of commands that have been populated from packets. */
-	private InputStream in;
+	private PipedInputStream in;
 	/** Queue of outgoing commands. */
-	protected final Map<Byte, IDockCommandToNewton> queueOut = new TreeMap<Byte, IDockCommandToNewton>();
+	protected final Map<Byte, CommandPiece> queueOut = new TreeMap<Byte, CommandPiece>();
+
+	/**
+	 * Command chunk that is sent in a LT packet.
+	 * 
+	 * @author moshe
+	 */
+	private static class CommandPiece {
+
+		public final IDockCommandToNewton command;
+		@SuppressWarnings("unused")
+		public final MNPLinkTransferPacket packet;
+		public int length;
+		public int progress;
+
+		public CommandPiece(IDockCommandToNewton command, MNPLinkTransferPacket packet) throws IOException {
+			this.command = command;
+			this.packet = packet;
+			this.length = command.getCommandPayloadLength();
+			this.progress = packet.getData().length;
+		}
+
+	}
 
 	/**
 	 * Creates a new command layer.
@@ -88,10 +110,17 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 		if (payload == null)
 			return;
 		int length = cmd.getCommandPayloadLength();
+		int progress = 0;
+		Byte seq;
+		CommandPiece piece;
 		try {
 			Iterable<MNPLinkTransferPacket> packets = MNPPacketFactory.getInstance().createTransferPackets(payload, length);
 			for (MNPLinkTransferPacket packet : packets) {
-				queueOut.put(packet.getSequence(), cmd);
+				seq = packet.getSequence();
+				progress += packet.getData().length;
+				piece = new CommandPiece(cmd, packet);
+				piece.progress = progress;
+				queueOut.put(seq, piece);
 				((MNPPacketLayer) packetLayer).sendQueued(packet);
 			}
 		} finally {
@@ -131,10 +160,20 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 	 */
 	protected void packetReceivedLA(MNPLinkAcknowledgementPacket packet) {
 		Byte seq = packet.getSequence();
-		IDockCommandToNewton cmd = queueOut.get(seq);
-		if (cmd != null) {
-			queueOut.remove(seq);
-			fireCommandSent(cmd);
+		// Do not use queueOut.remove(seq) because we want to catch ignore
+		// packets.
+		CommandPiece piece = queueOut.get(seq);
+		if (piece != null) {
+			queueOut.put(seq, null);
+			final IDockCommandToNewton cmd = piece.command;
+			final int progress = piece.progress;
+			final int total = piece.length;
+			if (progress < total)
+				fireCommandSending(cmd, progress, total);
+			else {
+				fireCommandSending(cmd, total, total);
+				fireCommandSent(cmd);
+			}
 		}
 	}
 

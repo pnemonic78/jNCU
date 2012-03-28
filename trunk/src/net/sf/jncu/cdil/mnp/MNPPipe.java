@@ -56,7 +56,7 @@ import net.sf.jncu.protocol.v2_0.session.DockingState;
  * 
  * @author moshew
  */
-public class MNPPipe extends CDPipe<MNPPacket> implements MNPPacketListener {
+public class MNPPipe extends CDPipe<MNPPacket> {
 
 	/** State for MNP pipe. */
 	protected enum MNPState {

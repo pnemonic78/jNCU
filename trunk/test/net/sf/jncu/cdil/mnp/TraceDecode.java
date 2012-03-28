@@ -9,6 +9,8 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.Reader;
 
+import javax.swing.ProgressMonitor;
+
 import net.sf.jncu.cdil.CDCommandLayer;
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDState;
@@ -139,6 +141,7 @@ public class TraceDecode {
 		private MNPPipe pipe;
 		private final TraceDecodePacketLayer packetLayer;
 		private final CDCommandLayer<MNPPacket> cmdLayer;
+		private ProgressMonitor progress;
 
 		public DecodePayload(InputStream receivedFromNewton, InputStream sentToNewton) throws Exception {
 			super();
@@ -223,8 +226,26 @@ public class TraceDecode {
 		}
 
 		@Override
+		public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+			System.out.println(DIRECTION_IN + "\tcmd rcv:" + command + " " + progress + "/" + total);
+			ProgressMonitor monitor = getProgress();
+			monitor.setMaximum(total);
+			monitor.setProgress(progress);
+			monitor.setNote(String.format("Receiving %d%%\u2026", (progress * 100) / total));
+		}
+
+		@Override
 		public void commandReceived(IDockCommandFromNewton command) {
 			System.out.println(DIRECTION_IN + "\tcmd rcv:" + command);
+		}
+
+		@Override
+		public void commandSending(IDockCommandToNewton command, int progress, int total) {
+			System.out.println(DIRECTION_OUT + "\tcmd snd:" + command + " " + progress + "/" + total);
+			ProgressMonitor monitor = getProgress();
+			monitor.setMaximum(total);
+			monitor.setProgress(progress);
+			monitor.setNote(String.format("Sending %d%%\u2026", (progress * 100) / total));
 		}
 
 		@Override
@@ -294,6 +315,17 @@ public class TraceDecode {
 			return buf.toString();
 		}
 
+		/**
+		 * Get the progress monitor.
+		 * 
+		 * @return the progress.
+		 */
+		protected ProgressMonitor getProgress() {
+			if (progress == null) {
+				progress = new ProgressMonitor(null, "Decode Payload", null, 0, 255);
+			}
+			return progress;
+		}
 	}
 
 }
