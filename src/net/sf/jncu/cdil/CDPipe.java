@@ -516,10 +516,18 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	}
 
 	@Override
+	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+	}
+
+	@Override
 	public void commandReceived(IDockCommandFromNewton command) {
 		// We keep connection alive either by pinging.
 		if (pingTask != null)
 			restartPing();
+	}
+
+	@Override
+	public void commandSending(IDockCommandToNewton command, int progress, int total) {
 	}
 
 	@Override

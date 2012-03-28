@@ -1,4 +1,20 @@
-/**
+/*
+ * Source file of the jNCU project.
+ * Copyright (c) 2010. All Rights Reserved.
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * Contributors can be contacted by electronic mail via the project Web pages:
+ * 
+ * http://sourceforge.net/projects/jncu
+ * 
+ * http://jncu.sourceforge.net/
+ *
+ * Contributor(s):
+ *   Moshe Waisberg
  * 
  */
 package net.sf.jncu.protocol.v2_0;
@@ -8,10 +24,12 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.swing.ProgressMonitor;
 
 import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.protocol.DockCommandListener;
+import net.sf.jncu.protocol.IDockCommand;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
@@ -54,6 +72,9 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	private final String title;
 	protected final CDPipe<? extends CDPacket> pipe;
 	private final List<IconModuleListener> listeners = new ArrayList<IconModuleListener>();
+	private ProgressMonitor progressMonitor;
+	private IDockCommandFromNewton progressCommandFrom;
+	private IDockCommandToNewton progressCommandTo;
 
 	/**
 	 * Constructs a new module.
@@ -71,6 +92,15 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 			throw new NullPointerException("pipe required");
 		this.pipe = pipe;
 		pipe.addCommandListener(this);
+	}
+
+	/**
+	 * Get the module title.
+	 * 
+	 * @return the title.
+	 */
+	public String getTitle() {
+		return title;
 	}
 
 	@Override
@@ -117,6 +147,10 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	 */
 	protected void done() {
 		pipe.removeCommandListener(this);
+		if (progressMonitor != null) {
+			progressMonitor.close();
+			progressMonitor = null;
+		}
 	}
 
 	/**
@@ -129,7 +163,22 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	}
 
 	@Override
+	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+		if (!isEnabled())
+			return;
+		progressCommandFrom = command;
+		ProgressMonitor monitor = getProgress();
+		monitor.setMaximum(total);
+		monitor.setProgress(progress);
+		monitor.setNote(String.format("Receiving %d%%", (progress * 100) / total));
+	}
+
+	@Override
 	public void commandReceived(IDockCommandFromNewton command) {
+		if (command == progressCommandFrom) {
+			progressCommandFrom = null;
+			closeProgress();
+		}
 		if (!isEnabled())
 			return;
 
@@ -142,7 +191,22 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	}
 
 	@Override
+	public void commandSending(IDockCommandToNewton command, int progress, int total) {
+		if (!isEnabled())
+			return;
+		progressCommandTo = command;
+		ProgressMonitor monitor = getProgress();
+		monitor.setMaximum(total);
+		monitor.setProgress(progress);
+		monitor.setNote(String.format("Sending %d%%", (progress * 100) / total));
+	}
+
+	@Override
 	public void commandSent(IDockCommandToNewton command) {
+		if (command == progressCommandTo) {
+			progressCommandTo = null;
+			closeProgress();
+		}
 		if (!isEnabled())
 			return;
 
@@ -201,6 +265,31 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 		Collection<IconModuleListener> listenersCopy = new ArrayList<IconModuleListener>(listeners);
 		for (IconModuleListener listener : listenersCopy) {
 			listener.cancelModule(this);
+		}
+	}
+
+	/**
+	 * Get the progress monitor.
+	 * 
+	 * @return the progress.
+	 */
+	protected ProgressMonitor getProgress() {
+		if (progressMonitor == null) {
+			synchronized (this) {
+				progressMonitor = new ProgressMonitor(null, getTitle(), "0%%", 0, IDockCommand.LENGTH_WORD);
+			}
+		}
+		return progressMonitor;
+	}
+
+	/**
+	 * Close the progress monitor.
+	 */
+	protected void closeProgress() {
+		if (progressMonitor != null) {
+			if ((progressCommandFrom == null) && (progressCommandTo == null))
+				progressMonitor.close();
+			progressMonitor = null;
 		}
 	}
 }

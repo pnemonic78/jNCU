@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -50,7 +51,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 		None, Initialised, Input, Cancelled, Finished
 	}
 
-	private static final String TITLE = "Keyboard Input";
+	private static final String TITLE = Toolkit.getProperty("AWT.CompositionWindowTitle", "Keyboard Input");
 
 	private State state = State.None;
 	private KeyboardInputDialog dialog;

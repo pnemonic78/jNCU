@@ -143,12 +143,20 @@ public class LoadPackageTester implements IconModuleListener, MNPPacketListener,
 	}
 
 	@Override
+	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+	}
+
+	@Override
 	public void commandReceived(IDockCommandFromNewton command) {
 		final String cmd = command.getCommand();
 
 		if (DDisconnect.COMMAND.equals(cmd)) {
 			loading = false;
 		}
+	}
+
+	@Override
+	public void commandSending(IDockCommandToNewton command, int progress, int total) {
 	}
 
 	@Override
