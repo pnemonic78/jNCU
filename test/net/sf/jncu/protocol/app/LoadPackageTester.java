@@ -86,11 +86,10 @@ public class LoadPackageTester implements IconModuleListener, MNPPacketListener,
 		while (layer.getState() == CDState.LISTENING) {
 			Thread.yield();
 		}
+		pipe.accept();
 	}
 
 	public void run() throws Exception {
-		pipe.accept();
-
 		File file = new File(pkgPath);
 
 		loading = true;
