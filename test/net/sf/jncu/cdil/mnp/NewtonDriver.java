@@ -16,13 +16,16 @@ import net.sf.jncu.crypto.DESNewton;
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFInteger;
 import net.sf.jncu.fdil.NSOFPlainArray;
+import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.IDockCommand;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.v1_0.io.DGetStoreNames;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 import net.sf.jncu.protocol.v2_0.app.DRequestToInstall;
+import net.sf.jncu.protocol.v2_0.io.DSetStoreGetNames;
 import net.sf.jncu.protocol.v2_0.query.DRefResult;
 import net.sf.jncu.protocol.v2_0.session.DDesktopInfo;
 import net.sf.jncu.protocol.v2_0.session.DInitiateDocking;
@@ -37,7 +40,7 @@ import net.sf.jncu.util.NumberUtils;
  * 
  * @author moshe
  */
-public class NewtonDriver implements MNPPacketListener {
+public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 
 	protected static final long PING_TIME = 10000L;
 
@@ -60,6 +63,20 @@ public class NewtonDriver implements MNPPacketListener {
 	private static final byte[] COMMAND_DRES = { 'n', 'e', 'w', 't', 'd', 'o', 'c', 'k', 'd', 'r', 'e', 's', 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00 };
 	private static final byte[] COMMAND_PASS = { 'n', 'e', 'w', 't', 'd', 'o', 'c', 'k', 'p', 'a', 's', 's', 0x00, 0x00, 0x00, 0x08, (byte) 0xdc, (byte) 0xd6, (byte) 0xb6, 'N',
 			(byte) 0x9e, '-', '~', 0x1d };
+	private static final byte[] COMMAND_STOR = { 'n', 'e', 'w', 't', 'd', 'o', 'c', 'k', 's', 't', 'o', 'r', 0x00, 0x00, 0x01, '<', 0x02, 0x05, 0x02, 0x06, 0x0a, 0x07, 0x04, 'n',
+			'a', 'm', 'e', 0x07, 0x09, 's', 'i', 'g', 'n', 'a', 't', 'u', 'r', 'e', 0x07, 0x09, 'T', 'o', 't', 'a', 'l', 'S', 'i', 'z', 'e', 0x07, 0x08, 'U', 's', 'e', 'd', 'S',
+			'i', 'z', 'e', 0x07, 0x04, 'k', 'i', 'n', 'd', 0x07, 0x04, 'i', 'n', 'f', 'o', 0x07, 0x08, 'r', 'e', 'a', 'd', 'O', 'n', 'l', 'y', 0x07, 0x0d, 's', 't', 'o', 'r', 'e',
+			'p', 'a', 's', 's', 'w', 'o', 'r', 'd', 0x07, 0x0c, 'd', 'e', 'f', 'a', 'u', 'l', 't', 'S', 't', 'o', 'r', 'e', 0x07, 0x0c, 's', 't', 'o', 'r', 'e', 'v', 'e', 'r',
+			's', 'i', 'o', 'n', 0x08, 0x12, 0x00, 'I', 0x00, 'n', 0x00, 't', 0x00, 'e', 0x00, 'r', 0x00, 'n', 0x00, 'a', 0x00, 'l', 0x00, 0x00, 0x00, (byte) 0xFf, 0x06,
+			(byte) 0xF9, 'K', '0', 0x00, (byte) 0xff, 0x00, (byte) 0xdc, '8', (byte) 0x80, 0x00, (byte) 0xff, 0x00, (byte) 0x8c, 'L', (byte) 0x80, 0x08, 0x12, 0x00, 'I', 0x00,
+			'n', 0x00, 't', 0x00, 'e', 0x00, 'r', 0x00, 'n', 0x00, 'a', 0x00, 'l', 0x00, 0x00, 0x06, 0x02, 0x07, 0x13, 'l', 'a', 's', 't', 'r', 'e', 's', 't', 'o', 'r', 'e', 'f',
+			'r', 'o', 'm', 'c', 'a', 'r', 'd', 0x09, 0x0a, 0x00, (byte) 0xFf, (byte) 0x8d, 'U', 0x05, (byte) 0xbc, 0x00, 0x1a, 0x0a, 0x0a, 0x00, 0x1a, 0x00, 0x10, 0x06, 0x09,
+			0x09, 0x02, 0x09, 0x03, 0x09, 0x04, 0x09, 0x05, 0x09, 0x06, 0x09, 0x07, 0x09, 0x08, 0x09, 0x09, 0x09, 0x0b, 0x08, 0x16, 0x00, '2', 0x00, 'M', 0x00, 'B', 0x00, ' ',
+			0x00, 'P', 0x00, 'C', 0x00, 'M', 0x00, 'C', 0x00, 'I', 0x00, 'A', 0x00, 0x00, 0x00, (byte) 0xFf, ',', 'U', 0x08, (byte) 0x80, 0x00, (byte) 0xff, 0x00, 'r',
+			(byte) 0x9c, 0x00, 0x00, (byte) 0xFf, 0x00, 'o', 'B', 0x00, 0x08, '&', 0x00, 'F', 0x00, 'l', 0x00, 'a', 0x00, 's', 0x00, 'h', 0x00, ' ', 0x00, 's', 0x00, 't', 0x00,
+			'o', 0x00, 'r', 0x00, 'a', 0x00, 'g', 0x00, 'e', 0x00, ' ', 0x00, 'c', 0x00, 'a', 0x00, 'r', 0x00, 'd', 0x00, 0x00, 0x06, 0x01, 0x09, 0x0a, 0x0a, 0x0a, 0x0a, 0x00,
+			0x10 };
+	private static final byte[] COMMAND_SOUP = {};
 
 	private SerialPort port;
 	private boolean running = false;
@@ -122,6 +139,7 @@ public class NewtonDriver implements MNPPacketListener {
 		packetLayer.setTimeout(Integer.MAX_VALUE);
 		packetLayer.start();
 		commandLayer = new MNPCommandLayer(packetLayer);
+		commandLayer.addCommandListener(this);
 		commandLayer.start();
 	}
 
@@ -202,19 +220,8 @@ public class NewtonDriver implements MNPPacketListener {
 			break;
 		case HANDSHAKE_DONE:
 			logger.log("next", null, "userCommand=" + userCommand);
-			switch (userCommand) {
-			case 0:
+			if (userCommand == 0) {
 				handshakeDone();
-				break;
-			case 1:
-				// Received "rins"
-				break;
-			case 2:
-				sendResult();
-				break;
-			case 3:
-				sendBig();
-				break;
 			}
 			break;
 		default:
@@ -463,6 +470,44 @@ public class NewtonDriver implements MNPPacketListener {
 		logger.log("s", packet, state);
 	}
 
+	@Override
+	public void commandReceived(IDockCommandFromNewton command) {
+		logger.log("cr", null, command);
+	}
+
+	@Override
+	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+	}
+
+	@Override
+	public void commandSent(IDockCommandToNewton command) {
+		logger.log("cs", null, command);
+		final String name = command.getCommand();
+
+		try {
+			if (DRequestToInstall.COMMAND.equals(name)) {
+				sendResult();
+				// sendBig();
+			} else if (DGetStoreNames.COMMAND.equals(name)) {
+				sendStores();
+			} else if (DSetStoreGetNames.COMMAND.equals(name)) {
+				sendSoupNames();
+			}
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} catch (TimeoutException te) {
+			te.printStackTrace();
+		}
+	}
+
+	@Override
+	public void commandSending(IDockCommandToNewton command, int progress, int total) {
+	}
+
+	@Override
+	public void commandEOF() {
+	}
+
 	private void sendLA(byte seq) {
 		MNPLinkAcknowledgementPacket packet = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
 		packet.setSequence(seq);
@@ -508,6 +553,24 @@ public class NewtonDriver implements MNPPacketListener {
 		}
 
 		Iterable<MNPLinkTransferPacket> packets = MNPPacketFactory.getInstance().createTransferPackets(out.toByteArray());
+		for (MNPLinkTransferPacket packet : packets) {
+			send(packet);
+		}
+	}
+
+	private void sendStores() throws IOException, TimeoutException {
+		validateCommand(COMMAND_STOR);
+		userCommand++;
+		Iterable<MNPLinkTransferPacket> packets = MNPPacketFactory.getInstance().createTransferPackets(COMMAND_STOR);
+		for (MNPLinkTransferPacket packet : packets) {
+			send(packet);
+		}
+	}
+
+	private void sendSoupNames() throws IOException, TimeoutException {
+		validateCommand(COMMAND_SOUP);
+		userCommand++;
+		Iterable<MNPLinkTransferPacket> packets = MNPPacketFactory.getInstance().createTransferPackets(COMMAND_SOUP);
 		for (MNPLinkTransferPacket packet : packets) {
 			send(packet);
 		}

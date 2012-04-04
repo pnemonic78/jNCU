@@ -65,12 +65,20 @@ public class TraceDecodePipe extends MNPPipe {
 			}
 			break;
 		}
-
-		super.commandReceived(command);
 	}
 
 	@Override
 	protected void validateState(MNPState oldState, MNPState newState) throws BadPipeStateException, PipeDisconnectedException {
 		// Pretend that all states are valid.
+	}
+
+	@Override
+	protected void disconnectImpl() {
+		try {
+			// Wait for commands to finish.
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+		}
+		super.disconnectImpl();
 	}
 }

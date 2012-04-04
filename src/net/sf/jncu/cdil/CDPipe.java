@@ -44,7 +44,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 
 	protected final CDLayer layer;
 	private PipedOutputStream pipeSource;
-	private PipedInputStream pipeSink;
+	private InputStream pipeSink;
 	private CDPacketLayer<P> packetLayer;
 	private CDCommandLayer<P> cmdLayer;
 	protected DockingProtocol<P> docking;

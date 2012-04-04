@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.cdil.mnp;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -41,7 +42,7 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 	/** Stream for packets to populate commands. */
 	private final PipedOutputStream commandPackets = new PipedOutputStream();
 	/** Stream of commands that have been populated from packets. */
-	private PipedInputStream in;
+	private InputStream in;
 	/** Queue of outgoing commands. */
 	protected final Map<Byte, CommandPiece> queueOut = new TreeMap<Byte, CommandPiece>();
 
@@ -77,7 +78,7 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 		super(packetLayer);
 		setName("MNPCommandLayer-" + getId());
 		try {
-			this.in = new PipedInputStream(commandPackets);
+			this.in = new BufferedInputStream(new PipedInputStream(commandPackets), 1024);
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
@@ -207,6 +208,9 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 		try {
 			commandPackets.write(payload);
 			commandPackets.flush();
+			synchronized (in) {
+				in.notifyAll();
+			}
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}

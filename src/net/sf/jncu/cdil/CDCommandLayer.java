@@ -223,11 +223,12 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 		IDockCommand cmd = null;
 		boolean hasCommand;
 		int length = 0;
+		final byte[] lengthBytes = new byte[IDockCommand.LENGTH_WORD];
 		byte[] data = null;
 		int offset = 0;
 		int available;
 		int count;
-		Vector<InputStream> v = new Vector<InputStream>();
+		final Vector<InputStream> v = new Vector<InputStream>();
 
 		try {
 			do {
@@ -251,13 +252,12 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 							length = DockCommandFromNewton.ntohl(in);
 							// Need to put the length back into the command
 							// stream for decoding.
-							byte[] lengthData = new byte[IDockCommand.LENGTH_WORD];
-							lengthData[0] = (byte) ((length >> 24) & 0xFF);
-							lengthData[1] = (byte) ((length >> 16) & 0xFF);
-							lengthData[2] = (byte) ((length >> 8) & 0xFF);
-							lengthData[3] = (byte) ((length >> 0) & 0xFF);
+							lengthBytes[0] = (byte) ((length >> 24) & 0xFF);
+							lengthBytes[1] = (byte) ((length >> 16) & 0xFF);
+							lengthBytes[2] = (byte) ((length >> 8) & 0xFF);
+							lengthBytes[3] = (byte) ((length >> 0) & 0xFF);
 							v.clear();
-							v.add(new ByteArrayInputStream(lengthData));
+							v.add(new ByteArrayInputStream(lengthBytes));
 						}
 					}
 					available = in.available();
@@ -266,21 +266,7 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 
 						if (cmd instanceof IDockCommandFromNewton) {
 							IDockCommandFromNewton cmdFromNewton = (IDockCommandFromNewton) cmd;
-							if ((length <= available) || (offset == length)) {
-								if (data != null)
-									v.add(new ByteArrayInputStream(data));
-								v.add(in);
-								in = new SequenceInputStream(v.elements());
-								cmdFromNewton.decode(in);
-
-								fireCommandReceiving(cmdFromNewton, length, length);
-								fireCommandReceived(cmdFromNewton);
-								cmd = null;
-								length = 0;
-								data = null;
-								offset = 0;
-								v.clear();
-							} else {
+							if (((offset == 0) && (available < length)) || (offset > 0)) {
 								if (data == null) {
 									data = new byte[length];
 									offset = 0;
@@ -291,10 +277,31 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 									fireCommandReceiving(cmdFromNewton, offset, length);
 								}
 							}
+							if (((offset == 0) && (available >= length)) || (offset == length)) {
+								if (data != null)
+									v.add(new ByteArrayInputStream(data));
+								v.add(in);
+								in = new SequenceInputStream(v.elements());
+								cmdFromNewton.decode(in);
+
+								fireCommandReceived(cmdFromNewton);
+								cmd = null;
+								length = 0;
+								data = null;
+								offset = 0;
+								v.clear();
+							}
 						} else if (cmd instanceof IDockCommandToNewton) {
 							IDockCommandToNewton cmdToNewton = (IDockCommandToNewton) cmd;
-							if ((length <= available) || (offset == length)) {
-								// Commands are word-aligned.
+							if (((offset == 0) && (available < length)) || (offset > 0)) {
+								count = (int) in.skip(Math.min(available, length - offset));
+								if (count >= 0) {
+									offset += count;
+									fireCommandSending(cmdToNewton, offset, length);
+								}
+							}
+							if (((offset == 0) && (available >= length)) || (offset == length)) {
+								// Commands are 4-byte aligned.
 								switch (length & 3) {
 								case 1:
 									length++;
@@ -306,19 +313,12 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 								}
 								in.skip(length);
 
-								fireCommandSending(cmdToNewton, length, length);
 								fireCommandSent(cmdToNewton);
 								cmd = null;
 								length = 0;
 								data = null;
 								offset = 0;
 								v.clear();
-							} else {
-								count = (int) in.skip(Math.min(available, length - offset));
-								if (count >= 0) {
-									offset += count;
-									fireCommandSending(cmdToNewton, offset, length);
-								}
 							}
 						}
 					}
@@ -326,7 +326,7 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 				yield();
 			} while (running && hasCommand);
 		} catch (EOFException eofe) {
-			eofe.printStackTrace();
+			// eofe.printStackTrace();
 			fireCommandEOF();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
