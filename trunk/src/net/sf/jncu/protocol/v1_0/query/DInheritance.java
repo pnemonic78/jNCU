@@ -55,26 +55,27 @@ public class DInheritance extends DockCommandFromNewton {
 		setInheritances(null);
 		NSOFSymbol clazz;
 		NSOFSymbol superclass;
-		char c;
-		StringBuffer buf;
+		byte b;
+		final byte[] buf = new byte[NSOFSymbol.MAX_LENGTH];
+		int bufLength;
 		int count = ntohl(data);
 
 		for (int i = 0; i < count; i++) {
-			buf = new StringBuffer();
-			c = (char) readByte(data);
-			while (c != 0) {
-				buf.append(c);
-				c = (char) readByte(data);
+			b = (byte) readByte(data);
+			bufLength = 0;
+			while (b != 0) {
+				buf[bufLength++] = b;
+				b = (byte) readByte(data);
 			}
-			clazz = new NSOFSymbol(buf.toString());
+			clazz = new NSOFSymbol(new String(buf, 0, bufLength));
 
-			buf = new StringBuffer();
-			c = (char) readByte(data);
-			while (c != 0) {
-				buf.append(c);
-				c = (char) readByte(data);
+			b = (byte) readByte(data);
+			bufLength = 0;
+			while (b != 0) {
+				buf[bufLength++] = b;
+				b = (byte) readByte(data);
 			}
-			superclass = new NSOFSymbol(buf.toString());
+			superclass = new NSOFSymbol(new String(buf, 0, bufLength));
 
 			setInheritance(clazz, superclass);
 		}

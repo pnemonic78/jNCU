@@ -40,6 +40,9 @@ import java.util.TreeMap;
  */
 public class NSOFSymbol extends NSOFString {
 
+	/** Maximum length of a symbol. */
+	public static final int MAX_LENGTH = 254;
+
 	/** Default symbol class. */
 	public static final NSOFSymbol CLASS_SYMBOL = new NSOFSymbol("symbol");
 
@@ -130,7 +133,7 @@ public class NSOFSymbol extends NSOFString {
 			this.valueLower = null;
 		} else {
 			int len = value.length();
-			if (len > 254)
+			if (len > MAX_LENGTH)
 				throw new SymbolTooLongException();
 			char c;
 			for (int i = 0; i < len; i++) {
