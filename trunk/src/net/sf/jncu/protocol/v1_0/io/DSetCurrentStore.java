@@ -57,6 +57,16 @@ public class DSetCurrentStore extends DockCommandToNewton {
 		super(COMMAND);
 	}
 
+	/**
+	 * Creates a new command.
+	 * 
+	 * @param cmd
+	 *            the command.
+	 */
+	protected DSetCurrentStore(String cmd) {
+		super(cmd);
+	}
+
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
 		NSOFEncoder encoder = new NSOFEncoder();

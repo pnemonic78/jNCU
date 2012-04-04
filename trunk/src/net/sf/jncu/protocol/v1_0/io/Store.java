@@ -152,9 +152,11 @@ public class Store {
 			hasDefaultStore = true;
 		}
 
-		info = (NSOFFrame) frame.get(SLOT_INFO);
-		setInfo(info);
-		if (info != null) {
+		value = frame.get(SLOT_INFO);
+		setInfo(null);
+		if ((value != null) && !NSOFImmediate.isNil(value)) {
+			info = (NSOFFrame) value;
+			setInfo(info);
 			if (!hasDefaultStore) {
 				value = info.get(SLOT_DEFAULT);
 				if (value != null) {
@@ -201,7 +203,7 @@ public class Store {
 
 		value = frame.get(SLOT_SIGNATURES);
 		setSoupSignatures(null);
-		if (value != null) {
+		if ((value != null) && !NSOFImmediate.isNil(value)) {
 			NSOFArray arr = (NSOFArray) value;
 			List<Integer> soups = new ArrayList<Integer>();
 			NSOFObject[] entries = arr.getValue();
@@ -213,7 +215,7 @@ public class Store {
 
 		value = frame.get(SLOT_SOUPS);
 		setSoups(null);
-		if (value != null) {
+		if ((value != null) && !NSOFImmediate.isNil(value)) {
 			NSOFArray arr = (NSOFArray) value;
 			List<String> soups = new ArrayList<String>();
 			NSOFObject[] entries = arr.getValue();

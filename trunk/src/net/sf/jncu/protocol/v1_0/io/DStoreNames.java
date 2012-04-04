@@ -100,4 +100,18 @@ public class DStoreNames extends DockCommandFromNewton {
 		this.stores = stores;
 	}
 
+	/**
+	 * Get the default store.
+	 * 
+	 * @return the store.
+	 */
+	public Store getDefaultStore() {
+		for (Store store : stores) {
+			if (store.isDefaultStore())
+				return store;
+		}
+		if (stores.size() > 0)
+			return stores.get(0);
+		return null;
+	}
 }

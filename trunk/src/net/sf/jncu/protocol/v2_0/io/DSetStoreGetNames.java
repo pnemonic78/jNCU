@@ -19,6 +19,8 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
+import net.sf.jncu.protocol.v1_0.io.DSetCurrentStore;
+
 
 /**
  * This command is the same as <tt>kDSetCurrentStore</tt> except that it returns
