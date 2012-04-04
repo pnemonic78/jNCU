@@ -270,4 +270,21 @@ public class NSOFImmediate extends NSOFObject {
 	public NSOFObject deepClone() throws CloneNotSupportedException {
 		return new NSOFImmediate(this.getValue(), this.getType());
 	}
+
+	/**
+	 * Is the object a NIL?
+	 * 
+	 * @param obj
+	 *            the object to test.
+	 * @return true if NIL.
+	 */
+	public static boolean isNil(NSOFObject obj) {
+		if (obj == null)
+			return true;
+		if (obj instanceof NSOFImmediate) {
+			NSOFImmediate imm = (NSOFImmediate) obj;
+			return imm.isNil();
+		}
+		return false;
+	}
 }
