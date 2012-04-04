@@ -161,8 +161,12 @@ public abstract class DockCommand implements IDockCommand {
 			b = in.read();
 		} catch (IOException ioe) {
 			// PipedInputStream throws IOException instead of returning -1.
-			if (in.available() == 0) {
-				throw new EOFException();
+			try {
+				if (in.available() == 0)
+					throw new EOFException();
+			} catch (IOException ioeAvail) {
+				if ("Stream closed".equals(ioe.getMessage()))
+					throw new EOFException();
 			}
 			throw ioe;
 		}
