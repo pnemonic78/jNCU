@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.TreeMap;
 
-import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
@@ -42,29 +41,7 @@ public class DInheritance extends DockCommandFromNewton {
 	/** <tt>kDInheritance</tt> */
 	public static final String COMMAND = "dinh";
 
-	private static final Map<NSOFSymbol, NSOFSymbol> classes = new TreeMap<NSOFSymbol, NSOFSymbol>();
-
-	static {
-		// For compatibility with the version of NewtonScript found on Newton
-		// 1.x OS devices, the following classes are considered subclasses of
-		// "string"
-		setInheritance(NSOFString.CLASS_ADDRESS, NSOFString.CLASS_STRING);
-		setInheritance(NSOFString.CLASS_COMPANY, NSOFString.CLASS_STRING);
-		setInheritance(NSOFString.CLASS_NAME, NSOFString.CLASS_STRING);
-		setInheritance(NSOFString.CLASS_TITLE, NSOFString.CLASS_STRING);
-		setInheritance(NSOFString.CLASS_PHONE, NSOFString.CLASS_STRING);
-
-		// Furthermore the following classes are considered subclasses of
-		// "phone"
-		setInheritance(NSOFString.CLASS_PHONE_HOME, NSOFString.CLASS_PHONE);
-		setInheritance(NSOFString.CLASS_PHONE_WORK, NSOFString.CLASS_PHONE);
-		setInheritance(NSOFString.CLASS_PHONE_FAX, NSOFString.CLASS_PHONE);
-		setInheritance(NSOFString.CLASS_PHONE_OTHER, NSOFString.CLASS_PHONE);
-		setInheritance(NSOFString.CLASS_PHONE_CAR, NSOFString.CLASS_PHONE);
-		setInheritance(NSOFString.CLASS_PHONE_BEEPER, NSOFString.CLASS_PHONE);
-		setInheritance(NSOFString.CLASS_PHONE_MOBILE, NSOFString.CLASS_PHONE);
-		setInheritance(NSOFString.CLASS_PHONE_HOME_FAX, NSOFString.CLASS_PHONE);
-	}
+	private final Map<NSOFSymbol, NSOFSymbol> classes = new TreeMap<NSOFSymbol, NSOFSymbol>();
 
 	/**
 	 * Creates a new command.
@@ -108,7 +85,7 @@ public class DInheritance extends DockCommandFromNewton {
 	 * 
 	 * @return the inheritances.
 	 */
-	public static Map<NSOFSymbol, NSOFSymbol> getInheritances() {
+	public Map<NSOFSymbol, NSOFSymbol> getInheritances() {
 		return classes;
 	}
 
@@ -118,10 +95,11 @@ public class DInheritance extends DockCommandFromNewton {
 	 * @param inheritances
 	 *            the inheritances.
 	 */
-	protected static void setInheritances(Map<NSOFSymbol, NSOFSymbol> inheritances) {
+	protected void setInheritances(Map<NSOFSymbol, NSOFSymbol> inheritances) {
 		classes.clear();
 		if (inheritances != null)
 			classes.putAll(inheritances);
+		NSOFSymbol.setInheritances(inheritances);
 	}
 
 	/**
@@ -132,8 +110,9 @@ public class DInheritance extends DockCommandFromNewton {
 	 * @param superclass
 	 *            the superclass.
 	 */
-	protected static void setInheritance(NSOFSymbol clazz, NSOFSymbol superclass) {
+	protected void setInheritance(NSOFSymbol clazz, NSOFSymbol superclass) {
 		classes.put(clazz, superclass);
+		NSOFSymbol.setInheritance(clazz, superclass);
 	}
 
 	/**
@@ -143,7 +122,7 @@ public class DInheritance extends DockCommandFromNewton {
 	 *            the class.
 	 * @return the superclass - {@code null} otherwise.
 	 */
-	public static NSOFSymbol getInheritance(NSOFSymbol clazz) {
+	public NSOFSymbol getInheritance(NSOFSymbol clazz) {
 		return classes.get(clazz);
 	}
 }
