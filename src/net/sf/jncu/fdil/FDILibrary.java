@@ -38,7 +38,6 @@ import net.sf.jncu.dil.DILReadProc;
 import net.sf.jncu.dil.DILWriteProc;
 import net.sf.jncu.dil.ReadingFromPipeException;
 import net.sf.jncu.dil.WritingToPipeException;
-import net.sf.jncu.protocol.v1_0.query.DInheritance;
 
 /**
  * <h1>FDIL Interface</h1> <br />
@@ -2512,7 +2511,7 @@ public class FDILibrary implements FDConstants {
 		if (prefix1.equals(prefix2))
 			return true;
 
-		NSOFSymbol inheritance = DInheritance.getInheritance(oClass);
+		NSOFSymbol inheritance = NSOFSymbol.getInheritance(oClass);
 		if (inheritance != null) {
 			return inheritance.equals(oSuperclass);
 		}

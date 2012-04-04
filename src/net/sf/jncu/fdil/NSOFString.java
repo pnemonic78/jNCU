@@ -41,20 +41,6 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 	 */
 	public static final NSOFSymbol CLASS_STRING = new NSOFSymbol("string");
 
-	public static final NSOFSymbol CLASS_ADDRESS = new NSOFSymbol("address");
-	public static final NSOFSymbol CLASS_COMPANY = new NSOFSymbol("company");
-	public static final NSOFSymbol CLASS_NAME = new NSOFSymbol("name");
-	public static final NSOFSymbol CLASS_TITLE = new NSOFSymbol("title");
-	public static final NSOFSymbol CLASS_PHONE = new NSOFSymbol("phone");
-	public static final NSOFSymbol CLASS_PHONE_HOME = new NSOFSymbol("homePhone");
-	public static final NSOFSymbol CLASS_PHONE_WORK = new NSOFSymbol("workPhone");
-	public static final NSOFSymbol CLASS_PHONE_FAX = new NSOFSymbol("faxPhone");
-	public static final NSOFSymbol CLASS_PHONE_OTHER = new NSOFSymbol("otherPhone");
-	public static final NSOFSymbol CLASS_PHONE_CAR = new NSOFSymbol("carPhone");
-	public static final NSOFSymbol CLASS_PHONE_BEEPER = new NSOFSymbol("beeperPhone");
-	public static final NSOFSymbol CLASS_PHONE_MOBILE = new NSOFSymbol("mobilePhone");
-	public static final NSOFSymbol CLASS_PHONE_HOME_FAX = new NSOFSymbol("homeFaxPhone");
-
 	/** 8-bit ASCII character encoding. */
 	public static final String CHARSET_ASCII = "ASCII";
 	/** 16-bit Unicode character encoding. */
