@@ -38,6 +38,7 @@ import net.sf.jncu.dil.DILReadProc;
 import net.sf.jncu.dil.DILWriteProc;
 import net.sf.jncu.dil.ReadingFromPipeException;
 import net.sf.jncu.dil.WritingToPipeException;
+import net.sf.jncu.protocol.v1_0.query.DInheritance;
 
 /**
  * <h1>FDIL Interface</h1> <br />
@@ -2490,61 +2491,30 @@ public class FDILibrary implements FDConstants {
 		if ((cls == null) || (cls.length() == 0))
 			return true;
 
-		NSOFSymbol oClass1 = new NSOFSymbol(cls);
-		NSOFSymbol oClass2 = o.getObjectClass();
+		NSOFSymbol oClass = new NSOFSymbol(cls);
+		NSOFSymbol oSuperclass = o.getObjectClass();
 
 		// Every class is a subclass of itself.
-		if (oClass1.equals(oClass2))
+		if (oClass.equals(oSuperclass))
 			return true;
 
 		// A class x is a subclass of y, if y is a prefix of x at a period (.)
 		// boundary.
 		int indexDot;
-		String prefix1 = oClass1.getValue().toLowerCase(Locale.ENGLISH);
+		String prefix1 = oClass.getValue().toLowerCase(Locale.ENGLISH);
 		indexDot = prefix1.indexOf('.');
 		if (indexDot >= 0)
 			prefix1 = prefix1.substring(0, indexDot);
-		String prefix2 = oClass2.getValue().toLowerCase(Locale.ENGLISH);
+		String prefix2 = oSuperclass.getValue().toLowerCase(Locale.ENGLISH);
 		indexDot = prefix2.indexOf('.');
 		if (indexDot >= 0)
 			prefix2 = prefix2.substring(0, indexDot);
 		if (prefix1.equals(prefix2))
 			return true;
 
-		// For compatibility with the version of NewtonScript found on Newton
-		// 1.x OS devices, the following classes are considered subclasses of
-		// "string"
-		if (NSOFString.CLASS_STRING.equals(oClass2)) {
-			if (NSOFString.CLASS_ADDRESS.equals(oClass1))
-				return true;
-			if (NSOFString.CLASS_COMPANY.equals(oClass1))
-				return true;
-			if (NSOFString.CLASS_NAME.equals(oClass1))
-				return true;
-			if (NSOFString.CLASS_TITLE.equals(oClass1))
-				return true;
-			if (NSOFString.CLASS_PHONE.equals(oClass1))
-				return true;
-		}
-		// Furthermore the following classes are considered subclasses of
-		// "phone"
-		if (NSOFString.CLASS_PHONE.equals(oClass2)) {
-			if (NSOFString.CLASS_PHONE_HOME.equals(oClass1))
-				return true;
-			if (NSOFString.CLASS_PHONE_WORK.equals(oClass1))
-				return true;
-			if (NSOFString.CLASS_PHONE_FAX.equals(oClass1))
-				return true;
-			if (NSOFString.CLASS_PHONE_OTHER.equals(oClass1))
-				return true;
-			if (NSOFString.CLASS_PHONE_CAR.equals(oClass1))
-				return true;
-			if (NSOFString.CLASS_PHONE_BEEPER.equals(oClass1))
-				return true;
-			if (NSOFString.CLASS_PHONE_MOBILE.equals(oClass1))
-				return true;
-			if (NSOFString.CLASS_PHONE_HOME_FAX.equals(oClass1))
-				return true;
+		NSOFSymbol inheritance = DInheritance.getInheritance(oClass);
+		if (inheritance != null) {
+			return inheritance.equals(oSuperclass);
 		}
 
 		return false;
