@@ -65,6 +65,8 @@ public class TraceDecode {
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
+		if (!Boolean.getBoolean("debug"))
+			System.exit(0);// Kill all threads.
 	}
 
 	private void setFile(File f) {
@@ -73,6 +75,12 @@ public class TraceDecode {
 
 	public void run() throws Exception {
 		parse(file);
+
+		// Wait for commands to finish.
+		Thread.sleep(2000);
+
+		bufFromNewton.close();
+		bufToNewton.close();
 	}
 
 	public void parse(File file) throws Exception {
@@ -126,11 +134,6 @@ public class TraceDecode {
 
 			b = reader.read();
 		}
-
-		Thread.sleep(2000);// Wait for commands to finish.
-
-		bufFromNewton.close();
-		bufToNewton.close();
 	}
 
 	class DecodePayload extends Thread implements MNPPacketListener, DockCommandListener {
@@ -194,6 +197,8 @@ public class TraceDecode {
 		protected void notifyDone() {
 			if (!runReceived && !runSent) {
 				try {
+					if (progress != null)
+						progress.close();
 					pipe.disconnect();
 					pipe.dispose();
 					layer.shutDown();
@@ -236,7 +241,7 @@ public class TraceDecode {
 
 		@Override
 		public void commandReceived(IDockCommandFromNewton command) {
-			System.out.println(DIRECTION_IN + "\tcmd rcv:" + command);
+			System.out.println(DIRECTION_IN + "\tcmd rvd:" + command);
 		}
 
 		@Override
@@ -303,13 +308,14 @@ public class TraceDecode {
 				b = data[i] & 0xFF;
 				if ((b >= 0x020) && (b <= 0x7E)) {
 					buf.appendCodePoint(b);
-				} else {
-					buf.append("0x");
-					if (b < 0x10) {
-						buf.append('0');
-					}
-					buf.append(Integer.toHexString(b));
+					buf.append('/');
+				}// else {
+				buf.append("0x");
+				if (b < 0x10) {
+					buf.append('0');
 				}
+				buf.append(Integer.toHexString(b));
+				// }
 			}
 			buf.append(']');
 			return buf.toString();

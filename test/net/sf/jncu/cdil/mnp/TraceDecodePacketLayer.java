@@ -1,5 +1,6 @@
 package net.sf.jncu.cdil.mnp;
 
+import java.io.BufferedInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +21,7 @@ public class TraceDecodePacketLayer extends MNPSerialPacketLayer {
 		setName("TraceDecodePacketLayer-" + getId());
 		this.receivedFromNewton = receivedFromNewton;
 		this.nullPort = new NullOutputStream();
-		this.sentToNewton = sentToNewton;
+		this.sentToNewton = new BufferedInputStream(sentToNewton, 1024);
 		setTimeout(Integer.MAX_VALUE);
 	}
 

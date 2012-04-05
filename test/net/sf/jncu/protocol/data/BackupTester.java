@@ -11,9 +11,13 @@ import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.io.DGetStoreNames;
+import net.sf.jncu.protocol.v1_0.io.DStoreNames;
+import net.sf.jncu.protocol.v1_0.io.Store;
+import net.sf.jncu.protocol.v1_0.query.DGetInheritance;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.IconModule.IconModuleListener;
+import net.sf.jncu.protocol.v2_0.io.DSetStoreGetNames;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceled;
 
 /**
@@ -28,6 +32,7 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 	private CDLayer layer;
 	private MNPPipe pipe;
 	private PacketLogger logger;
+	private Store store;
 
 	public BackupTester() {
 		super();
@@ -58,6 +63,7 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
+		System.exit(0);
 	}
 
 	public void setPortName(String portName) {
@@ -84,16 +90,34 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 
 	public void run() throws Exception {
 		running = true;
+		store = null;
 
-		// DGetStoreNames dGetStoreNames = new DGetStoreNames();
-		// pipe.write(dGetStoreNames);
-		// Thread.sleep(2000);
+		DGetStoreNames dGetStoreNames = new DGetStoreNames();
+		pipe.write(dGetStoreNames);
+		Thread.sleep(1000);
 
-		// DSetCurrentStore
-		// DGetSoupNames
-		// DGetInheritance
-		// DSetSoupGetInfo
-		// DLastSyncTime
+		System.out.println(store);
+		while (running && (store == null))
+			Thread.yield();
+		DSetStoreGetNames dSetStoreGetNames = new DSetStoreGetNames();
+		dSetStoreGetNames.setStore(store);
+		pipe.write(dSetStoreGetNames);
+		Thread.sleep(1000);
+
+		DGetInheritance dGetInheritance = new DGetInheritance();
+		pipe.write(dGetInheritance);
+		Thread.sleep(1000);
+
+		// DSetSoupGetInfo dSetSoupGetInfo = new DSetSoupGetInfo();
+		// pipe.write(dSetSoupGetInfo);
+		// Thread.sleep(1000);
+		//
+		// DLastSyncTime dLastSyncTime = new DLastSyncTime();
+		// pipe.write(dLastSyncTime);
+		// Thread.sleep(1000);
+
+		DDisconnect dDisconnect = new DDisconnect();
+		pipe.write(dDisconnect);
 
 		while (running)
 			Thread.yield();
@@ -156,6 +180,9 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 			running = false;
 		} else if (net.sf.jncu.protocol.v1_0.session.DOperationCanceled.COMMAND.equals(cmd)) {
 			running = false;
+		} else if (DStoreNames.COMMAND.equals(cmd)) {
+			DStoreNames dStoreNames = (DStoreNames) command;
+			store = dStoreNames.getDefaultStore();
 		}
 	}
 
@@ -166,6 +193,11 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 	@Override
 	public void commandSent(IDockCommandToNewton command) {
 		System.out.println("snt: " + command);
+		final String cmd = command.getCommand();
+
+		if (DDisconnect.COMMAND.equals(cmd)) {
+			running = false;
+		}
 	}
 
 	@Override

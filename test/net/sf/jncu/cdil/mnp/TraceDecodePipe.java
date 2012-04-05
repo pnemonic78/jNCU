@@ -79,6 +79,7 @@ public class TraceDecodePipe extends MNPPipe {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 		}
-		super.disconnectImpl();
+		if (!Boolean.getBoolean("debug"))
+			super.disconnectImpl();
 	}
 }
