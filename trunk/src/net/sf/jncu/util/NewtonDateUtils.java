@@ -30,10 +30,10 @@ package net.sf.jncu.util;
  */
 public class NewtonDateUtils {
 
-	/** The number of minutes since 1904 January 1, 00:00:00 UTC (GMT). */
-	public static final long MINUTES_1904 = -2082844800000L;
 	/** The number of seconds since 1993 January 1, 00:00:00 UTC (GMT). */
 	public static final long SECONDS_1993 = 725846400000L;
+	/** The number of minutes since 1904 January 1, 00:00:00 UTC (GMT). */
+	public static final long MINUTES_1904 = -2082844800000L;
 
 	/**
 	 * Creates a new utility.
@@ -67,6 +67,18 @@ public class NewtonDateUtils {
 	}
 
 	/**
+	 * Get the number of days since 1904 January 1, 00:00:00 UTC (GMT).
+	 * 
+	 * @param millis
+	 *            the number of milliseconds since 1970 January 1, 00:00:00 UTC
+	 *            (GMT).
+	 * @return the Newton date.
+	 */
+	public static int getDays(long millis) {
+		return (int) ((millis - MINUTES_1904) / 86400000L);
+	}
+
+	/**
 	 * Get the number of milliseconds since 1970 January 1, 00:00:00 UTC (GMT).
 	 * 
 	 * @param seconds
@@ -88,6 +100,18 @@ public class NewtonDateUtils {
 	 */
 	public static long fromMinutes(int minutes) {
 		return (minutes * 60000L) + MINUTES_1904;
+	}
+
+	/**
+	 * Get the number of milliseconds since 1970 January 1, 00:00:00 UTC (GMT).
+	 * 
+	 * @param days
+	 *            the number of days since 1904 January 1, 00:00:00 UTC
+	 *            (GMT).
+	 * @return the Java date.
+	 */
+	public static long fromDays(int days) {
+		return (days * 86400000L) + MINUTES_1904;
 	}
 
 }
