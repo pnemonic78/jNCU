@@ -24,8 +24,8 @@ import java.io.InputStream;
 
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.DockCommandFromNewton;
-import net.sf.jncu.protocol.v1_0.io.Store;
 
 /**
  * This command returns information about the internal store. The info is in the

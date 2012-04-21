@@ -32,7 +32,7 @@ import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.fdil.NSOFTrue;
-import net.sf.jncu.protocol.v1_0.io.Store;
+import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**

@@ -17,7 +17,7 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.protocol.v1_0.io;
+package net.sf.jncu.newton.os;
 
 import java.util.ArrayList;
 import java.util.List;

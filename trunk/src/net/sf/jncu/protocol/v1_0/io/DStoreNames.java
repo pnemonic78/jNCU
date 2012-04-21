@@ -28,6 +28,7 @@ import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
