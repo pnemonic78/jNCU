@@ -42,7 +42,7 @@ public abstract class MNPPacket extends CDPacket {
 	public static final byte LNA = 0x07;
 
 	private byte type;
-	private int headerLength;
+	private int length;
 	private int transmitted;
 
 	/**
@@ -50,13 +50,13 @@ public abstract class MNPPacket extends CDPacket {
 	 * 
 	 * @param type
 	 *            the type.
-	 * @param headerLength
-	 *            the default header length.
+	 * @param length
+	 *            the default data length.
 	 */
-	public MNPPacket(byte type, int headerLength) {
+	public MNPPacket(byte type, int length) {
 		super();
 		this.type = type;
-		this.headerLength = headerLength;
+		this.length = length;
 	}
 
 	/**
@@ -70,12 +70,13 @@ public abstract class MNPPacket extends CDPacket {
 		int offset = 0;
 		if (payload[offset] == 255) {
 			offset++;
-			headerLength = ((payload[offset++] & 0xFF) << 8) + (payload[offset++] & 0xFF);
-			type = payload[offset++];
+			length = ((payload[offset++] & 0xFF) << 8) + (payload[offset++] & 0xFF);
 		} else {
-			headerLength = payload[offset++] & 0xFF;
-			type = payload[offset++];
+			length = payload[offset++] & 0xFF;
 		}
+		if (length > payload.length)
+			throw new ArrayIndexOutOfBoundsException(length);
+		type = payload[offset++];
 		return offset;
 	}
 
@@ -89,12 +90,12 @@ public abstract class MNPPacket extends CDPacket {
 	}
 
 	/**
-	 * Get the header length.
+	 * Get the data length.
 	 * 
-	 * @return the header length.
+	 * @return the length.
 	 */
-	public int getHeaderLength() {
-		return headerLength;
+	public int getLength() {
+		return length;
 	}
 
 	/**

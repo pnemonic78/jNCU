@@ -26,8 +26,11 @@ package net.sf.jncu.cdil.mnp;
  */
 public class MNPLinkAcknowledgementPacket extends MNPPacket {
 
+	/** Maximum outstanding credit. */
+	public static final byte CREDIT = 8;
+
 	private byte sequence;
-	private byte credit;
+	private byte credit = CREDIT;
 	private byte[] data;
 
 	/**
@@ -41,7 +44,7 @@ public class MNPLinkAcknowledgementPacket extends MNPPacket {
 	public int deserialize(byte[] payload) {
 		int offset = super.deserialize(payload);
 
-		if (getHeaderLength() != 3) {
+		if (getLength() != 3) {
 			throw new ArrayIndexOutOfBoundsException();
 		}
 		setSequence(payload[offset++]);

@@ -46,7 +46,7 @@ public class MNPLinkDisconnectPacket extends MNPPacket {
 		offset += 2;
 		setReasonCode(payload[offset++]);
 
-		if (getHeaderLength() == 7) {
+		if (getLength() == 7) {
 			offset += 2;
 			setUserCode(payload[offset++]);
 		}
