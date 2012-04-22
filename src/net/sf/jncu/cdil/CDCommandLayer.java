@@ -389,5 +389,6 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 
 	@Override
 	public void packetEOF() {
+		fireCommandEOF();
 	}
 }

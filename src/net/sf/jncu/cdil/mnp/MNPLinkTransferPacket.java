@@ -26,6 +26,12 @@ package net.sf.jncu.cdil.mnp;
  */
 public class MNPLinkTransferPacket extends MNPPacket {
 
+	/**
+	 * Maximum data length per packet before having to split into multiple
+	 * packets.
+	 */
+	public static final short MAX_DATA_LENGTH = 256;
+
 	private byte[] data;
 	private byte sequence;
 

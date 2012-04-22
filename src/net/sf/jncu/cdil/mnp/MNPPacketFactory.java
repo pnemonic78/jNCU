@@ -32,15 +32,6 @@ import java.util.NoSuchElementException;
  */
 public class MNPPacketFactory {
 
-	/**
-	 * Maximum data length per packet before having to split into multiple
-	 * packets.
-	 */
-	public static final short MAX_DATA_LENGTH = 256;
-
-	/** Maximum outstanding credit. */
-	protected final byte CREDIT = 8;
-
 	private static MNPPacketFactory instance;
 
 	/** Outgoing sequence. */
@@ -127,7 +118,7 @@ public class MNPPacketFactory {
 		if (data == null)
 			return null;
 		MNPLinkTransferPacket packet = createLTSend();
-		length = Math.min(length, MAX_DATA_LENGTH);
+		length = Math.min(length, MNPLinkTransferPacket.MAX_DATA_LENGTH);
 		if (length > 0) {
 			byte[] buf = new byte[length];
 			int count = 0;
@@ -157,9 +148,7 @@ public class MNPPacketFactory {
 	 * @return the packet.
 	 */
 	protected MNPLinkAcknowledgementPacket createLA() {
-		MNPLinkAcknowledgementPacket packetLA = new MNPLinkAcknowledgementPacket();
-		packetLA.setCredit(CREDIT);
-		return packetLA;
+		return new MNPLinkAcknowledgementPacket();
 	}
 
 	/**
@@ -177,10 +166,7 @@ public class MNPPacketFactory {
 	 * @return the packet.
 	 */
 	protected MNPLinkRequestPacket createLR() {
-		MNPLinkRequestPacket packetLR = new MNPLinkRequestPacket();
-		packetLR.setMaxInfoLength(MAX_DATA_LENGTH);
-		packetLR.setMaxOutstanding(CREDIT);
-		return packetLR;
+		return new MNPLinkRequestPacket();
 	}
 
 	/**

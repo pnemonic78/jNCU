@@ -47,6 +47,7 @@ public class DESNewton {
 
 	private SecretKeyFactory keyFactory;
 	private Cipher cipher;
+	private static byte[] zero;
 
 	/**
 	 * Creates a new DES for Newton.
@@ -84,7 +85,8 @@ public class DESNewton {
 			SecretKey skey = getKeyFactory().generateSecret(keySpec);
 			cipher.init(Cipher.ENCRYPT_MODE, skey);
 
-			byte[] zero = NumberUtils.toBytes(0L);
+			if (zero == null)
+				zero = NumberUtils.toBytes(0L);
 			byte[] tmpKeyBytes = cipher.doFinal(zero);
 			long tmpKey = NumberUtils.toLong(tmpKeyBytes);
 			byte[] tmpKeyBits = DESUtils.toBits(tmpKey);
@@ -137,8 +139,8 @@ public class DESNewton {
 	 * @throws IllegalBlockSizeException
 	 * @throws NoSuchPaddingException
 	 */
-	public void init(int opmode, KeySpec keySpec) throws InvalidKeyException, InvalidKeySpecException, NoSuchAlgorithmException, IllegalBlockSizeException,
-			BadPaddingException, NoSuchPaddingException {
+	public void init(int opmode, KeySpec keySpec) throws InvalidKeyException, InvalidKeySpecException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException,
+			NoSuchPaddingException {
 		SecretKey skey = getKeyFactory().generateSecret(keySpec);
 		init(opmode, skey);
 	}

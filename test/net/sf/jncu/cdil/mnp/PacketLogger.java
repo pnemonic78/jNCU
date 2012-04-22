@@ -68,14 +68,14 @@ public class PacketLogger {
 				buf.append(',');
 			}
 			b = data[i] & 0xFF;
+			buf.append("0x");
+			if (b < 0x10) {
+				buf.append('0');
+			}
+			buf.append(Integer.toHexString(b));
 			if ((b >= 0x020) && (b <= 0x7E)) {
+				buf.append(' ');
 				buf.appendCodePoint(b);
-			} else {
-				buf.append("0x");
-				if (b < 0x10) {
-					buf.append('0');
-				}
-				buf.append(Integer.toHexString(b));
 			}
 		}
 		buf.append(']');

@@ -289,7 +289,7 @@ public class TraceDecode {
 
 		private void processLR(char direction, MNPLinkRequestPacket packet) {
 			System.out.println(direction + " type:(LR)" + packet.getType() + " trans:" + packet.getTransmitted() + " dpo:" + packet.getDataPhaseOpt() + " framing:"
-					+ packet.getFramingMode() + " info:" + packet.getMaxInfoLength() + " outstanding:" + packet.getMaxOutstanding());
+					+ packet.getFramingMode() + " info:" + packet.getMaxInfoLength() + " outstanding:" + packet.getMaxOutstanding() + " protocol:" + packet.getProtocol());
 		}
 
 		private void processLT(char direction, MNPLinkTransferPacket packet) {
@@ -306,16 +306,15 @@ public class TraceDecode {
 					buf.append(',');
 				}
 				b = data[i] & 0xFF;
-				if ((b >= 0x020) && (b <= 0x7E)) {
-					buf.appendCodePoint(b);
-					buf.append('/');
-				}// else {
 				buf.append("0x");
 				if (b < 0x10) {
 					buf.append('0');
 				}
 				buf.append(Integer.toHexString(b));
-				// }
+				if ((b >= 0x020) && (b <= 0x7E)) {
+					buf.append(' ');
+					buf.appendCodePoint(b);
+				}
 			}
 			buf.append(']');
 			return buf.toString();

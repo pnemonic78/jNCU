@@ -54,7 +54,7 @@ public class MNPPacketLayerTest extends SFTestCase {
 		assertNotNull(packet);
 		assertEquals(MNPPacket.LR, packet.getType());
 		assertTrue(packet instanceof MNPLinkRequestPacket);
-		assertEquals(frame[3], packet.getHeaderLength());
+		assertEquals(frame[3], packet.getLength());
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class MNPPacketLayerTest extends SFTestCase {
 		out.close();
 		byte[] buf = out.toByteArray();
 		assertNotNull(buf);
-		assertEquals(0x1D, packet.getHeaderLength());
+		assertEquals(0x1D, packet.getLength());
 	}
 
 	/**

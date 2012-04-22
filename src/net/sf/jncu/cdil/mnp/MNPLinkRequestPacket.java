@@ -31,7 +31,6 @@ public class MNPLinkRequestPacket extends MNPPacket {
 	protected static final byte MAX_OUTSTANDING = 0x03;
 	protected static final byte MAX_INFO_LENGTH = 0x04;
 	protected static final byte DATA_PHASE_OPT = 0x08;
-	protected static final byte TYPE9 = 0x09;
 	protected static final byte PROTOCOL = 0x0E;
 	protected static final byte TYPEC5 = (byte) 0xC5;
 
@@ -40,7 +39,6 @@ public class MNPLinkRequestPacket extends MNPPacket {
 	protected static final byte MAX_OUTSTANDING_LENGTH = 1;
 	protected static final byte MAX_INFO_LENGTH_LENGTH = 2;
 	protected static final byte DATA_PHASE_OPT_LENGTH = 1;
-	protected static final byte TYPE9_LENGTH = 1;
 	protected static final byte PROTOCOL_LENGTH = 4;
 	protected static final byte TYPEC5_LENGTH = 6;
 
@@ -51,9 +49,10 @@ public class MNPLinkRequestPacket extends MNPPacket {
 	/** Connect using "Docking" protocol. */
 	public static final byte PROTOCOL_NCU = 0x03;
 
+	private byte type1 = 0x01;
 	private byte framingMode = 0x02;
-	private byte maxOutstanding = 0x08;
-	private short maxInfoLength = 0x0040;
+	private byte maxOutstanding = MNPLinkAcknowledgementPacket.CREDIT;
+	private short maxInfoLength = MNPLinkTransferPacket.MAX_DATA_LENGTH;
 	private byte dataPhaseOpt = 0x03;
 	private byte protocol = PROTOCOL_NCU;
 
@@ -71,11 +70,13 @@ public class MNPLinkRequestPacket extends MNPPacket {
 		// remove fixed fields
 		offset++;
 
-		int type;
+		byte type;
 		int length;
+		int maxInfoLength;
+
 		while (offset < payload.length) {
 			type = payload[offset++];
-			length = payload[offset++];
+			length = payload[offset++] & 0xFF;
 
 			switch (type) {
 			case FRAMING_MODE:
@@ -85,10 +86,9 @@ public class MNPLinkRequestPacket extends MNPPacket {
 				setMaxOutstanding(payload[offset]);
 				break;
 			case MAX_INFO_LENGTH:
-				int maxInfoLength = payload[offset] & 0xFF;
-				if (length > 1) {
+				maxInfoLength = payload[offset] & 0xFF;
+				if (length > 1)
 					maxInfoLength = ((payload[offset + 1] & 0xFF) << 8) | maxInfoLength;
-				}
 				setMaxInfoLength((short) maxInfoLength);
 				break;
 			case DATA_PHASE_OPT:
@@ -107,10 +107,10 @@ public class MNPLinkRequestPacket extends MNPPacket {
 
 	@Override
 	public byte[] serialize() {
-		byte[] payload = new byte[] { 0x00, LR, 0x02, TYPE1, TYPE1_LENGTH, 0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0xFF, FRAMING_MODE, FRAMING_MODE_LENGTH,
-				getFramingMode(), MAX_OUTSTANDING, MAX_OUTSTANDING_LENGTH, maxOutstanding, MAX_INFO_LENGTH, MAX_INFO_LENGTH_LENGTH,
-				(byte) (getMaxInfoLength() & 0xFF), (byte) ((getMaxInfoLength() >> 8) & 0xFF), DATA_PHASE_OPT, DATA_PHASE_OPT_LENGTH, getDataPhaseOpt()
-		/* , PROTOCOL, PROTOCOL_LENGTH, getProtocol(), 0x04, 0x00, (byte) 0xFA */};
+		byte[] payload = new byte[] { 0x00, LR, 0x02, TYPE1, TYPE1_LENGTH, type1, 0x00, 0x00, 0x00, 0x00, (byte) 0xFF, FRAMING_MODE, FRAMING_MODE_LENGTH, framingMode,
+				MAX_OUTSTANDING, MAX_OUTSTANDING_LENGTH, maxOutstanding, MAX_INFO_LENGTH, MAX_INFO_LENGTH_LENGTH, (byte) (maxInfoLength & 0xFF),
+				(byte) ((maxInfoLength >> 8) & 0xFF), DATA_PHASE_OPT, DATA_PHASE_OPT_LENGTH, dataPhaseOpt
+		/* , PROTOCOL, PROTOCOL_LENGTH, protocol, 0x04, 0x00, (byte) 0xFA */};
 		payload[0] = (byte) (payload.length - 1);
 		return payload;
 	}
