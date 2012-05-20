@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import net.sf.jncu.fdil.contrib.NSOFSoupName;
+import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
@@ -61,6 +62,16 @@ public class DSetCurrentSoup extends DockCommandToNewton {
 	}
 
 	/**
+	 * Creates a new command.
+	 * 
+	 * @param cmd
+	 *            the command.
+	 */
+	protected DSetCurrentSoup(String cmd) {
+		super(cmd);
+	}
+
+	/**
 	 * Get the soup name.
 	 * 
 	 * @return the name.
@@ -79,9 +90,23 @@ public class DSetCurrentSoup extends DockCommandToNewton {
 		this.name = name;
 	}
 
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		NSOFSoupName.encode(getName(), data);
+	/**
+	 * Set the soup name.
+	 * 
+	 * @param soup
+	 *            the soup.
+	 */
+	public void setSoup(Soup soup) {
+		setName(soup.getName());
 	}
 
+	@Override
+	protected void writeCommandData(OutputStream data) throws IOException {
+		NSOFSoupName.flatten(getName(), data);
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + ":" + getName();
+	}
 }

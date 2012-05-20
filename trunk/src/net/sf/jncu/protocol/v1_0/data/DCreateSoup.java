@@ -22,10 +22,9 @@ package net.sf.jncu.protocol.v1_0.data;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFEncoder;
-import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.fdil.contrib.NSOFSoupName;
+import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
@@ -45,60 +44,40 @@ public class DCreateSoup extends DockCommandToNewton {
 	/** <tt>kDCreateSoup</tt> */
 	public static final String COMMAND = "csop";
 
-	private String name;
-	private NSOFArray index;
+	private Soup soup;
 
 	/**
 	 * Creates a new command.
 	 */
 	public DCreateSoup() {
 		super(COMMAND);
-		setIndex(new NSOFPlainArray());
+
 	}
 
 	/**
-	 * Get the soup name.
+	 * Get the soup.
 	 * 
-	 * @return the name.
+	 * @return the soup.
 	 */
-	public String getName() {
-		return name;
+	public Soup getSoup() {
+		return soup;
 	}
 
 	/**
-	 * Set the soup name.
+	 * Set the soup.
 	 * 
-	 * @param name
-	 *            the name.
+	 * @param soup
+	 *            the soup.
 	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * Get the index description.
-	 * 
-	 * @return the index.
-	 */
-	public NSOFArray getIndex() {
-		return index;
-	}
-
-	/**
-	 * Set the index description.
-	 * 
-	 * @param index
-	 *            the index.
-	 */
-	public void setIndex(NSOFArray index) {
-		this.index = index;
+	public void setSoup(Soup soup) {
+		this.soup = soup;
 	}
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		NSOFSoupName.encode(getName(), data);
+		NSOFSoupName.flatten(getSoup().getName(), data);
 		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.flatten(getIndex(), data);
+		encoder.flatten(getSoup().getIndex(), data);
 	}
 
 }

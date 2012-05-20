@@ -59,7 +59,7 @@ public class DStoreNames extends DockCommandFromNewton {
 	/** <tt>kDStoreNames</tt> */
 	public static final String COMMAND = "stor";
 
-	private List<Store> stores;
+	private final List<Store> stores = new ArrayList<Store>();
 
 	/**
 	 * Creates a new command.
@@ -72,14 +72,13 @@ public class DStoreNames extends DockCommandFromNewton {
 	protected void decodeCommandData(InputStream data) throws IOException {
 		NSOFDecoder decoder = new NSOFDecoder();
 		NSOFArray arr = (NSOFArray) decoder.inflate(data);
-		List<Store> stores = new ArrayList<Store>();
 		Store store;
+		setStores(null);
 		for (NSOFObject o : arr.getValue()) {
 			store = new Store();
 			store.decode((NSOFFrame) o);
-			stores.add(store);
+			addStore(store);
 		}
-		setStores(stores);
 	}
 
 	/**
@@ -98,7 +97,19 @@ public class DStoreNames extends DockCommandFromNewton {
 	 *            the stores.
 	 */
 	protected void setStores(List<Store> stores) {
-		this.stores = stores;
+		this.stores.clear();
+		if (stores != null)
+			this.stores.addAll(stores);
+	}
+
+	/**
+	 * Add a store.
+	 * 
+	 * @param store
+	 *            the store.
+	 */
+	protected void addStore(Store store) {
+		this.stores.add(store);
 	}
 
 	/**

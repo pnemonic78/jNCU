@@ -72,8 +72,7 @@ public class DRequestToDock extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeCommandData(InputStream data) throws IOException {
-		int protocol = ntohl(data);
-		setProtocol(protocol);
+		setProtocol(ntohl(data));
 	}
 
 }

@@ -1,5 +1,7 @@
 package net.sf.jncu.protocol.data;
 
+import java.util.List;
+
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.cdil.mnp.MNPPacket;
@@ -7,16 +9,20 @@ import net.sf.jncu.cdil.mnp.MNPPacketListener;
 import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
 import net.sf.jncu.cdil.mnp.PacketLogger;
+import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.v1_0.data.DSetCurrentSoup;
+import net.sf.jncu.protocol.v1_0.data.DSoupNames;
 import net.sf.jncu.protocol.v1_0.io.DGetStoreNames;
 import net.sf.jncu.protocol.v1_0.io.DStoreNames;
-import net.sf.jncu.protocol.v1_0.query.DGetInheritance;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
+import net.sf.jncu.protocol.v1_0.sync.DLastSyncTime;
 import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.IconModule.IconModuleListener;
+import net.sf.jncu.protocol.v2_0.data.DSetSoupGetInfo;
 import net.sf.jncu.protocol.v2_0.io.DSetStoreGetNames;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceled;
 
@@ -33,6 +39,7 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 	private MNPPipe pipe;
 	private PacketLogger logger;
 	private Store store;
+	private List<Soup> soups;
 
 	public BackupTester() {
 		super();
@@ -53,6 +60,7 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 		}
 		tester.setPortName(args[0]);
 		// tester.setPath(args[1]);
+
 		try {
 			try {
 				tester.init();
@@ -94,30 +102,56 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 
 		DGetStoreNames dGetStoreNames = new DGetStoreNames();
 		pipe.write(dGetStoreNames);
-		Thread.sleep(1000);
-
-		System.out.println(store);
+		Thread.sleep(2000);
 		while (running && (store == null))
 			Thread.yield();
+
 		DSetStoreGetNames dSetStoreGetNames = new DSetStoreGetNames();
 		dSetStoreGetNames.setStore(store);
 		pipe.write(dSetStoreGetNames);
-		Thread.sleep(1000);
+		Thread.sleep(2000);
+		while (running && ((soups == null) || soups.isEmpty()))
+			Thread.yield();
 
-		DGetInheritance dGetInheritance = new DGetInheritance();
-		pipe.write(dGetInheritance);
-		Thread.sleep(1000);
+		// DGetSyncOptions dGetSyncOptions = new DGetSyncOptions();
+		// pipe.write(dGetSyncOptions);
+		// Thread.sleep(2000);
+
+		DSetCurrentSoup dSetCurrentSoup = new DSetCurrentSoup();
+		dSetCurrentSoup.setSoup(soups.get(0));
+		pipe.write(dSetCurrentSoup);
+		Thread.sleep(2000);
 
 		// DSetSoupGetInfo dSetSoupGetInfo = new DSetSoupGetInfo();
+		// dSetSoupGetInfo.setSoup(soups.get(0));
 		// pipe.write(dSetSoupGetInfo);
-		// Thread.sleep(1000);
-		//
-		// DLastSyncTime dLastSyncTime = new DLastSyncTime();
-		// pipe.write(dLastSyncTime);
-		// Thread.sleep(1000);
+		// Thread.sleep(2000);
 
+		DSetSoupGetInfo dSetSoupGetInfo = new DSetSoupGetInfo();
+		dSetSoupGetInfo.setName("Calendar");
+		pipe.write(dSetSoupGetInfo);
+		Thread.sleep(2000);
+
+		// dLastSyncTime = new DLastSyncTime();
+		// pipe.write(dLastSyncTime);
+		// Thread.sleep(2000);
+		//
+		// DGetInheritance dGetInheritance = new DGetInheritance();
+		// pipe.write(dGetInheritance);
+		// Thread.sleep(2000);
+
+		// DGetPatches dGetPatches = new DGetPatches();
+		// pipe.write(dGetPatches);
+		// Thread.sleep(2000);
+
+		DLastSyncTime dLastSyncTime = new DLastSyncTime();
+		pipe.write(dLastSyncTime);
+		Thread.sleep(2000);
+
+		Thread.sleep(10000);
 		DDisconnect dDisconnect = new DDisconnect();
 		pipe.write(dDisconnect);
+		Thread.sleep(1000);
 
 		while (running)
 			Thread.yield();
@@ -183,6 +217,9 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 		} else if (DStoreNames.COMMAND.equals(cmd)) {
 			DStoreNames dStoreNames = (DStoreNames) command;
 			store = dStoreNames.getDefaultStore();
+		} else if (DSoupNames.COMMAND.equals(cmd)) {
+			DSoupNames dSoupNames = (DSoupNames) command;
+			soups = dSoupNames.getSoups();
 		}
 	}
 

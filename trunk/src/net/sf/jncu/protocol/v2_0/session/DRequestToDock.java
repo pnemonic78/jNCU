@@ -42,8 +42,8 @@ public class DRequestToDock extends net.sf.jncu.protocol.v1_0.session.DRequestTo
 	public static final String COMMAND = net.sf.jncu.protocol.v1_0.session.DRequestToDock.COMMAND;
 
 	/**
-	 * <tt>kProtocolVersion</tt><br>
-	 * The protocol version.
+	 * The protocol version.<br>
+	 * <tt>kProtocolVersion</tt>
 	 */
 	public static final int PROTOCOL_VERSION = 9;
 
