@@ -22,7 +22,8 @@ package net.sf.jncu.protocol.v2_0.query;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
  * The parameter frame must contain a <tt>queryspec</tt> slot and may contain a
@@ -42,7 +43,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DQuery extends DockCommandToNewton {
+public class DQuery extends DockCommandToNewtonScript<NSOFFrame> {
 
 	/** <tt>kDQuery</tt> */
 	public static final String COMMAND = "qury";
@@ -56,6 +57,25 @@ public class DQuery extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
+
 	}
 
+	/**
+	 * Get the parameter frame.
+	 * 
+	 * @return the frame.
+	 */
+	public NSOFFrame getParameter() {
+		return getObject();
+	}
+
+	/**
+	 * Set the parameter frame.
+	 * 
+	 * @param parameter
+	 *            the frame.
+	 */
+	public void setParameter(NSOFFrame parameter) {
+		setObject(parameter);
+	}
 }

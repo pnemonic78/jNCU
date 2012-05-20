@@ -37,51 +37,51 @@ import net.sf.jncu.protocol.DockCommandToNewtonLong;
  * <table>
  * <tr>
  * <th>Desktop</th>
- * <th><-></th>
+ * <th>&#x2194;</th>
  * <th>Newton</th>
  * </tr>
  * <tr>
  * <td>kDBackupSoup</td>
- * <td>-></td>
+ * <td>&#x2192;</td>
  * </tr>
  * <tr>
  * <td></td>
- * <td><-</td>
+ * <td>&#x2190;</td>
  * <td>kDBackupIDs</td>
  * </tr>
  * <tr>
  * <td></td>
- * <td><-</td>
+ * <td>&#x2190;</td>
  * <td>kDEntry</td>
  * </tr>
  * <tr>
  * <td></td>
- * <td><-</td>
+ * <td>&#x2190;</td>
  * <td>kDEntry</td>
  * </tr>
  * <tr>
  * <td></td>
- * <td><-</td>
+ * <td>&#x2190;</td>
  * <td>kDBackupIDs</td>
  * </tr>
  * <tr>
  * <td></td>
- * <td><-</td>
+ * <td>&#x2190;</td>
  * <td>kDEntry</td>
  * </tr>
  * <tr>
  * <td></td>
- * <td><-</td>
+ * <td>&#x2190;</td>
  * <td>kDSetBaseID</td>
  * </tr>
  * <tr>
  * <td></td>
- * <td><-</td>
+ * <td>&#x2190;</td>
  * <td>kDBackupIDs</td>
  * </tr>
  * <tr>
  * <td></td>
- * <td><-</td>
+ * <td>&#x2190;</td>
  * <td>kDBackupSoupDone</td>
  * </tr>
  * </table>

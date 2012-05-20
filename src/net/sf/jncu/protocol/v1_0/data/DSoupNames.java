@@ -29,6 +29,7 @@ import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFImmediate;
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
@@ -47,8 +48,7 @@ public class DSoupNames extends DockCommandFromNewton {
 	/** <tt>kDSoupNames</tt> */
 	public static final String COMMAND = "soup";
 
-	private List<String> names;
-	private List<Integer> signatures;
+	private final List<Soup> soups = new ArrayList<Soup>();
 
 	/**
 	 * Creates a new command.
@@ -59,35 +59,43 @@ public class DSoupNames extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeCommandData(InputStream data) throws IOException {
-		setNames(null);
-		setSignatures(null);
+		setSoups(null);
 
 		NSOFDecoder decoder = new NSOFDecoder();
 		NSOFArray arr = (NSOFArray) decoder.inflate(data);
-		List<String> names = new ArrayList<String>();
 		NSOFObject[] entries = arr.getValue();
-		for (NSOFObject entry : entries) {
-			names.add(((NSOFString) entry).getValue());
+		NSOFObject entry;
+
+		final int length = entries.length;
+		List<Soup> soups = new ArrayList<Soup>(length);
+		Soup soup;
+
+		for (int i = 0; i < length; i++) {
+			entry = entries[i];
+			soup = new Soup();
+			soup.setName(((NSOFString) entry).getValue());
+			soups.add(soup);
 		}
-		setNames(names);
 
 		decoder = new NSOFDecoder();
 		arr = (NSOFArray) decoder.inflate(data);
-		List<Integer> signatures = new ArrayList<Integer>();
 		entries = arr.getValue();
-		for (NSOFObject entry : entries) {
-			signatures.add(((NSOFImmediate) entry).getValue());
+		for (int i = 0; i < length; i++) {
+			entry = entries[i];
+			soup = soups.get(i);
+			soup.setSignature(((NSOFImmediate) entry).getValue());
 		}
-		setSignatures(signatures);
+
+		setSoups(soups);
 	}
 
 	/**
-	 * Get the soup names.
+	 * Get the soups.
 	 * 
-	 * @return the names.
+	 * @return the soups.
 	 */
-	public List<String> getNames() {
-		return names;
+	public List<Soup> getSoups() {
+		return soups;
 	}
 
 	/**
@@ -96,27 +104,9 @@ public class DSoupNames extends DockCommandFromNewton {
 	 * @param names
 	 *            the names.
 	 */
-	protected void setNames(List<String> names) {
-		this.names = names;
+	protected void setSoups(List<Soup> soups) {
+		this.soups.clear();
+		if (soups != null)
+			this.soups.addAll(soups);
 	}
-
-	/**
-	 * Get the soup signatures.
-	 * 
-	 * @return the signatures.
-	 */
-	public List<Integer> getSignatures() {
-		return signatures;
-	}
-
-	/**
-	 * Set the soup signatures.
-	 * 
-	 * @param signatures
-	 *            the signatures.
-	 */
-	protected void setSignatures(List<Integer> signatures) {
-		this.signatures = signatures;
-	}
-
 }

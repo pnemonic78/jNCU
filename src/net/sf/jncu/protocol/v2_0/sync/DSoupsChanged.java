@@ -56,9 +56,6 @@ public class DSoupsChanged extends DockCommandToNewton {
 
 	private final Set<SoupChanged> soups = new TreeSet<SoupChanged>();
 
-	private static final NSOFSymbol SLOT_SOUP = new NSOFSymbol("soupName");
-	private static final NSOFSymbol SLOT_COUNT = new NSOFSymbol("count");
-
 	/**
 	 * Constructs a new command.
 	 */
@@ -108,6 +105,9 @@ public class DSoupsChanged extends DockCommandToNewton {
 	 * Soup that has changed.
 	 */
 	public static class SoupChanged implements Comparable<SoupChanged> {
+
+		public static final NSOFSymbol SLOT_SOUP = new NSOFSymbol("soupName");
+		public static final NSOFSymbol SLOT_COUNT = new NSOFSymbol("count");
 
 		private String soupName;
 		private int count;

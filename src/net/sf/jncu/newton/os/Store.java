@@ -56,7 +56,10 @@ import net.sf.jncu.fdil.NSOFTrue;
  */
 public class Store {
 
+	/** Internal storage card. */
 	public static final String KIND_INTERNAL = "Internal";
+	/** Flash storage card. */
+	public static final String KIND_FLASH = "Flash storage card";
 
 	protected static final NSOFSymbol SLOT_NAME = new NSOFSymbol("name");
 	protected static final NSOFSymbol SLOT_SIGNATURE = new NSOFSymbol("signature");
@@ -70,6 +73,8 @@ public class Store {
 	protected static final NSOFSymbol SLOT_SOUPS = new NSOFSymbol("soups");
 	protected static final NSOFSymbol SLOT_SIGNATURES = new NSOFSymbol("signatures");
 	protected static final NSOFSymbol SLOT_VERSION = new NSOFSymbol("storeVersion");
+	protected static final NSOFSymbol SLOT_INFO_DEFAULT = SLOT_DEFAULT;
+	protected static final NSOFSymbol SLOT_INFO_LAST_RESTORE = new NSOFSymbol("lastrestorefromcard");
 
 	private String name;
 	private int signature;
@@ -158,7 +163,7 @@ public class Store {
 			info = (NSOFFrame) value;
 			setInfo(info);
 			if (!hasDefaultStore) {
-				value = info.get(SLOT_DEFAULT);
+				value = info.get(SLOT_INFO_DEFAULT);
 				if (value != null) {
 					NSOFImmediate imm = (NSOFImmediate) value;
 					setDefaultStore(imm.isTrue());

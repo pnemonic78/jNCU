@@ -25,6 +25,7 @@ import java.io.InputStream;
 
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.fdil.NSOFImmediate;
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFSmallRect;
 import net.sf.jncu.fdil.NSOFSymbol;
@@ -121,11 +122,14 @@ public class NSOFBitmap extends NSOFFrame {
 	public void setValue(byte[] value, NSOFDecoder decoder) throws IOException {
 		// Decode the frame.
 		InputStream in = new ByteArrayInputStream(value);
-		NSOFBitmap bmp = (NSOFBitmap) decoder.inflate(in);
-		setBits(bmp.getBits());
-		setBounds(bmp.getBounds());
-		setMask(bmp.getMask());
-		setObjectClass(bmp.getObjectClass());
+		NSOFObject o = decoder.inflate(in);
+		if (!NSOFImmediate.isNil(o)) {
+			NSOFBitmap bmp = (NSOFBitmap) o;
+			setBits(bmp.getBits());
+			setBounds(bmp.getBounds());
+			setMask(bmp.getMask());
+			setObjectClass(bmp.getObjectClass());
+		}
 	}
 
 	@Override

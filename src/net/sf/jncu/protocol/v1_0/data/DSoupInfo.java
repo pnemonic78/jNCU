@@ -24,6 +24,8 @@ import java.io.InputStream;
 
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.fdil.NSOFImmediate;
+import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
@@ -72,11 +74,14 @@ public class DSoupInfo extends DockCommandFromNewtonScript<NSOFFrame> {
 
 	@Override
 	protected void decodeCommandData(InputStream data) throws IOException {
-		NSOFDecoder decoder = new NSOFDecoder();
-		NSOFFrame frame = (NSOFFrame) decoder.inflate(data);
 		Soup soup = null;
-		if (frame != null) {
-			soup = new Soup();
+		NSOFDecoder decoder = new NSOFDecoder();
+		NSOFObject o = decoder.inflate(data);
+		if (!NSOFImmediate.isNil(o)) {
+			NSOFFrame frame = (NSOFFrame) o;
+			soup = getSoup();
+			if (soup == null)
+				soup = new Soup();
 			soup.decodeFrame(frame);
 		}
 		setSoup(soup);

@@ -57,8 +57,8 @@ public class DPackageTester extends SFTestCase {
 		assertNotNull(iter);
 		assertTrue(iter.hasNext());
 		int count = 0;
-		int numPackets = length / MNPPacketFactory.MAX_DATA_LENGTH;
-		if ((length % MNPPacketFactory.MAX_DATA_LENGTH) > 0)
+		int numPackets = length / MNPLinkTransferPacket.MAX_DATA_LENGTH;
+		if ((length % MNPLinkTransferPacket.MAX_DATA_LENGTH) > 0)
 			numPackets++;
 		assertFalse(0 == numPackets);
 		byte[] b;

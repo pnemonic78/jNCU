@@ -74,7 +74,7 @@ public class DCreateDefaultSoup extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		NSOFSoupName.encode(getName(), data);
+		NSOFSoupName.flatten(getName(), data);
 	}
 
 }

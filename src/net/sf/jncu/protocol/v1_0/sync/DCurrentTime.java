@@ -25,7 +25,8 @@ import java.io.InputStream;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
- * The current time on the Newton.
+ * The current time on the Newton.<br>
+ * The time granularity is minutes.
  * <p>
  * In response to a <tt>kDLastSyncTime</tt> command.
  * 
@@ -75,4 +76,8 @@ public class DCurrentTime extends DockCommandFromNewton {
 		return time;
 	}
 
+	@Override
+	public String toString() {
+		return super.toString() + ":" + getTime();
+	}
 }

@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import net.sf.jncu.fdil.contrib.NSOFSoupName;
+import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
@@ -70,9 +71,19 @@ public class DDeleteSoup extends DockCommandToNewton {
 		this.name = name;
 	}
 
+	/**
+	 * Set the soup name.
+	 * 
+	 * @param soup
+	 *            the soup.
+	 */
+	public void setSoup(Soup soup) {
+		setName(soup.getName());
+	}
+
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		NSOFSoupName.encode(getName(), data);
+		NSOFSoupName.flatten(getName(), data);
 	}
 
 }

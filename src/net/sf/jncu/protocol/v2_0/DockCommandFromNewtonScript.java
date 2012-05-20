@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import net.sf.jncu.fdil.NSOFDecoder;
+import net.sf.jncu.fdil.NSOFImmediate;
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
@@ -49,7 +50,11 @@ public abstract class DockCommandFromNewtonScript<T extends NSOFObject> extends 
 	@Override
 	protected void decodeCommandData(InputStream data) throws IOException {
 		NSOFDecoder decoder = new NSOFDecoder();
-		setResult((T) decoder.inflate(data));
+		NSOFObject o = decoder.inflate(data);
+		T result = null;
+		if (!NSOFImmediate.isNil(o))
+			result = (T) o;
+		setResult(result);
 	}
 
 	/**
