@@ -36,6 +36,8 @@ import java.util.concurrent.TimeoutException;
  */
 public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 
+	/** System property name for a filter class. */
+	public static final String POPERTY_FILTER = "jncu.cdil.filterClass";
 	protected final CDPipe<P> pipe;
 	private boolean running;
 	private int timeout;
@@ -43,6 +45,8 @@ public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 	private CDTimeout timeoutTask;
 	/** List of packet listeners. */
 	private final Collection<CDPacketListener<P>> listeners = new ArrayList<CDPacketListener<P>>();
+	/** List of packet filters. */
+	private final Collection<CDPacketFilter<P>> filters = new ArrayList<CDPacketFilter<P>>();
 
 	/**
 	 * Constructs a new packet layer.
@@ -50,11 +54,29 @@ public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 	 * @param pipe
 	 *            the pipe.
 	 */
+	@SuppressWarnings("unchecked")
 	public CDPacketLayer(CDPipe<P> pipe) {
 		super();
 		setName("CDPacketLayer-" + getId());
 		this.pipe = pipe;
 		setTimeout(30);
+
+		String filterClassName = System.getProperty(POPERTY_FILTER);
+		if (filterClassName != null) {
+			Class<?> clazz;
+			CDPacketFilter<P> filter;
+			try {
+				clazz = Class.forName(filterClassName);
+				filter = (CDPacketFilter<P>) clazz.newInstance();
+				addPacketFilter(filter);
+			} catch (ClassNotFoundException cnfe) {
+				cnfe.printStackTrace();
+			} catch (InstantiationException ie) {
+				ie.printStackTrace();
+			} catch (IllegalAccessException iae) {
+				iae.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -197,7 +219,11 @@ public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 			packet = createPacket(payload);
 			if (packet != null) {
 				restartTimeout();
-				firePacketReceived(packet);
+
+				packet = filterPacket(packet);
+
+				if (packet != null)
+					firePacketReceived(packet);
 			}
 		} catch (EOFException eofe) {
 			firePacketEOF();
@@ -388,5 +414,43 @@ public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 		if (pipe == null)
 			return true;
 		return pipe.isConnected();
+	}
+
+	/**
+	 * Add a packet filter.
+	 * 
+	 * @param filter
+	 *            the filter to add.
+	 */
+	public void addPacketFilter(CDPacketFilter<P> filter) {
+		if (!filters.contains(filter)) {
+			filters.add(filter);
+		}
+	}
+
+	/**
+	 * Remove a packet filter.
+	 * 
+	 * @param filter
+	 *            the filter to remove.
+	 */
+	public void removePacketFilter(CDPacketFilter<P> filter) {
+		filters.remove(filter);
+	}
+
+	/**
+	 * Filter the packet.
+	 * 
+	 * @param packet
+	 *            the packet.
+	 * @return the packet - {@code null} otherwise.
+	 */
+	protected P filterPacket(P packet) {
+		for (CDPacketFilter<P> filter : filters) {
+			packet = filter.filterPacket(packet);
+			if (packet == null)
+				return null;
+		}
+		return packet;
 	}
 }
