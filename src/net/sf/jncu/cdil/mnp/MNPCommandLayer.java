@@ -25,8 +25,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.TimeoutException;
 
 import net.sf.jncu.cdil.CDCommandLayer;
@@ -44,7 +44,9 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 	/** Stream of commands that have been populated from packets. */
 	private InputStream in;
 	/** Queue of outgoing commands. */
-	protected final Map<Byte, CommandPiece> queueOut = new TreeMap<Byte, CommandPiece>();
+	protected final Map<Byte, CommandPiece> queueOut = new HashMap<Byte, CommandPiece>();
+	/** Current LT sequence id. */
+	private int sequenceLT = -1;
 
 	/**
 	 * Command chunk that is sent in a LT packet.
@@ -204,15 +206,24 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 	 */
 	protected void packetReceivedLT(MNPLinkTransferPacket packet) {
 		byte[] payload = packet.getData();
+		int seq = packet.getSequence() & 0xFF;
 
-		try {
-			commandPackets.write(payload);
-			commandPackets.flush();
-			synchronized (in) {
-				in.notifyAll();
+		if (sequenceLT < seq) {
+			sequenceLT = seq;
+			// Byte: 0xFF + 1 == 0x00
+			if (sequenceLT == 0xFF)
+				sequenceLT = -1;
+
+			try {
+				// Ignore duplicate packets?
+				commandPackets.write(payload);
+				commandPackets.flush();
+				synchronized (in) {
+					in.notifyAll();
+				}
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
 			}
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
 		}
 	}
 }
