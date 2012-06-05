@@ -167,13 +167,13 @@ public class Soup {
 		setSignature(0);
 
 		NSOFObject value = frame.get(SLOT_NAME);
-		if (value != null) {
+		if (!NSOFImmediate.isNil(value)) {
 			NSOFString s = (NSOFString) value;
 			setName(s.getValue());
 		}
 
 		value = frame.get(SLOT_SIGNATURE);
-		if (value != null) {
+		if (!NSOFImmediate.isNil(value)) {
 			NSOFImmediate imm = (NSOFImmediate) value;
 			setSignature(imm.getValue());
 		}

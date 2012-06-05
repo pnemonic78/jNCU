@@ -163,6 +163,10 @@ public class DockingProtocol<P extends CDPacket> implements DockCommandListener 
 				setState(DockingState.HANDSHAKE_DOCK);
 				pipe.write(cmdInitiateDocking);
 				break;
+			case HANDSHAKE_DOCK:
+				// Ignore duplicates.
+				if (DRequestToDock.COMMAND.equals(cmd))
+					break;
 			case HANDSHAKE_NNAME:
 				if (DResult.COMMAND.equals(cmd)) {
 					handleError((DResult) command);
@@ -181,6 +185,10 @@ public class DockingProtocol<P extends CDPacket> implements DockCommandListener 
 				setState(DockingState.HANDSHAKE_DINFO);
 				pipe.write(cmdDesktopInfo);
 				break;
+			case HANDSHAKE_DINFO:
+				// Ignore duplicates.
+				if (DNewtonName.COMMAND.equals(cmd))
+					break;
 			case HANDSHAKE_NINFO:
 				if (DResult.COMMAND.equals(cmd)) {
 					handleError((DResult) command);
@@ -201,6 +209,10 @@ public class DockingProtocol<P extends CDPacket> implements DockCommandListener 
 				setState(DockingState.HANDSHAKE_ICONS);
 				pipe.write(cmdWhichIcons);
 				break;
+			case HANDSHAKE_ICONS:
+				// Ignore duplicates.
+				if (DNewtonInfo.COMMAND.equals(cmd))
+					break;
 			case HANDSHAKE_ICONS_RESULT:
 				if (DNewtonInfo.COMMAND.equals(cmd)) {
 					// Ignore duplicates.
@@ -219,6 +231,10 @@ public class DockingProtocol<P extends CDPacket> implements DockCommandListener 
 					handleError((DResult) command);
 				}
 				break;
+			case HANDSHAKE_TIMEOUT:
+				// Ignore duplicates.
+				if (DResult.COMMAND.equals(cmd))
+					break;
 			case HANDSHAKE_PASS:
 				if (DResult.COMMAND.equals(cmd)) {
 					handleError((DResult) command);
@@ -243,6 +259,12 @@ public class DockingProtocol<P extends CDPacket> implements DockCommandListener 
 					pipe.write(cmdError);
 				}
 				break;
+			case HANDSHAKE_PASS_REPLY:
+				// Ignore duplicates.
+				if (DResult.COMMAND.equals(cmd))
+					break;
+				if (DPassword.COMMAND.equals(cmd))
+					break;
 			case HANDSHAKE_DONE:
 				break;
 			case DISCONNECTED:
