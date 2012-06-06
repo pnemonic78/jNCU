@@ -37,7 +37,7 @@ import java.util.concurrent.TimeoutException;
 public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 
 	/** System property name for a filter class. */
-	public static final String POPERTY_FILTER = "jncu.cdil.filterClass";
+	public static final String PROPERTY_FILTER = "jncu.cdil.filterClass";
 	protected final CDPipe<P> pipe;
 	private boolean running;
 	private int timeout;
@@ -61,7 +61,7 @@ public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 		this.pipe = pipe;
 		setTimeout(30);
 
-		String filterClassName = System.getProperty(POPERTY_FILTER);
+		String filterClassName = System.getProperty(PROPERTY_FILTER);
 		if (filterClassName != null) {
 			Class<?> clazz;
 			CDPacketFilter<P> filter;

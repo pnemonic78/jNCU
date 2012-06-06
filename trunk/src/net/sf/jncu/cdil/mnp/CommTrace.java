@@ -24,6 +24,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
@@ -51,19 +53,42 @@ public class CommTrace implements SerialPortEventListener {
 	public static final char CHAR_DIRECTION_1TO2 = '>';
 	/** Outgoing bytes. */
 	public static final char CHAR_DIRECTION_2TO1 = '<';
+	/** System property name for a filter class. */
+	public static final String PROPERTY_FILTER = "jncu.cdil.mnp.MNPSerialPortFilter";
 	private static final char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
-	private SerialPort port1;
-	private SerialPort port2;
+	/** Port attached to Newton. */
+	private SerialPort portN;
+	/** Port attached to PC. */
+	private SerialPort portP;
 	private PrintStream logOut = System.out;
 	private int logWidth = 0;
 	private int baud = MNPSerialPort.BAUD_38400;
+	/** List of filters on the outgoing stream, e.g. from NCU to Newton. */
+	private final Collection<MNPSerialPortFilter> filters = new ArrayList<MNPSerialPortFilter>();
 
 	/**
 	 * Creates a new trace.
 	 */
 	public CommTrace() {
 		super();
+
+		String filterClassName = System.getProperty(PROPERTY_FILTER);
+		if (filterClassName != null) {
+			Class<?> clazz;
+			MNPSerialPortFilter filter;
+			try {
+				clazz = Class.forName(filterClassName);
+				filter = (MNPSerialPortFilter) clazz.newInstance();
+				addFilter(filter);
+			} catch (ClassNotFoundException cnfe) {
+				cnfe.printStackTrace();
+			} catch (InstantiationException ie) {
+				ie.printStackTrace();
+			} catch (IllegalAccessException iae) {
+				iae.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -111,8 +136,8 @@ public class CommTrace implements SerialPortEventListener {
 	}
 
 	public void trace(SerialPort port1, SerialPort port2) throws SerialPortException {
-		this.port1 = port1;
-		this.port2 = port2;
+		this.portN = port1;
+		this.portP = port2;
 
 		port1.setParams(baud, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 		port2.setParams(baud, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
@@ -135,29 +160,33 @@ public class CommTrace implements SerialPortEventListener {
 			byte[] buf;
 
 			try {
-				if (portName.equals(port1.getPortName())) {
+				if (portName.equals(portN.getPortName())) {
 					direction = CHAR_DIRECTION_1TO2;
-					in = port1;
-					out = port2;
+					in = portN;
+					out = portP;
 				} else {
 					direction = CHAR_DIRECTION_2TO1;
-					in = port2;
-					out = port1;
+					in = portP;
+					out = portN;
 				}
 
 				synchronized (in) {
 					buf = in.readBytes(count);
-					for (byte b : buf) {
-						logOut.print(direction);
-						logOut.print(HEX[(b >> 4) & 0x0F]);
-						logOut.print(HEX[b & 0x0F]);
-						logWidth++;
-						if (logWidth >= 32) {
-							logOut.println();
-							logWidth = 0;
+					if (in == portP)
+						buf = filter(buf);
+					if (buf != null) {
+						for (byte b : buf) {
+							logOut.print(direction);
+							logOut.print(HEX[(b >> 4) & 0x0F]);
+							logOut.print(HEX[b & 0x0F]);
+							logWidth++;
+							if (logWidth >= 32) {
+								logOut.println();
+								logWidth = 0;
+							}
 						}
+						out.writeBytes(buf);
 					}
-					out.writeBytes(buf);
 				}
 			} catch (SerialPortException se) {
 				se.printStackTrace();
@@ -223,15 +252,53 @@ public class CommTrace implements SerialPortEventListener {
 	@Override
 	protected void finalize() throws Throwable {
 		try {
-			port1.closePort();
+			portN.closePort();
 		} catch (SerialPortException se) {
 			// ignore
 		}
 		try {
-			port2.closePort();
+			portP.closePort();
 		} catch (SerialPortException se) {
 			// ignore
 		}
 		super.finalize();
+	}
+
+	/**
+	 * Add a packet filter.
+	 * 
+	 * @param filter
+	 *            the filter to add.
+	 */
+	public void addFilter(MNPSerialPortFilter filter) {
+		if (!filters.contains(filter)) {
+			filters.add(filter);
+		}
+	}
+
+	/**
+	 * Remove a packet filter.
+	 * 
+	 * @param filter
+	 *            the filter to remove.
+	 */
+	public void removeFilter(MNPSerialPortFilter filter) {
+		filters.remove(filter);
+	}
+
+	/**
+	 * Filter the packet.
+	 * 
+	 * @param buf
+	 *            the input buffer.
+	 * @return the filter buffer - {@code null} otherwise.
+	 */
+	protected byte[] filter(byte[] buf) {
+		for (MNPSerialPortFilter filter : filters) {
+			buf = filter.filterSerialPort(buf);
+			if (buf == null)
+				return null;
+		}
+		return buf;
 	}
 }
