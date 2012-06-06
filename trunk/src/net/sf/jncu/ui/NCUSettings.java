@@ -28,7 +28,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -42,6 +41,7 @@ import javax.swing.UIManager;
 
 import net.sf.jncu.Settings;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
+import net.sf.swing.SwingUtils;
 
 /**
  * NCU settings.
@@ -422,7 +422,7 @@ public class NCUSettings extends JDialog {
 	}
 
 	public void close() {
-		dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+		SwingUtils.postWindowClosing(this);
 	}
 
 	public void save() {
