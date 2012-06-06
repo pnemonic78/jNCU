@@ -24,7 +24,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -40,6 +39,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 
 import net.sf.jncu.Settings;
+import net.sf.swing.SwingUtils;
 
 /**
  * Main NCU frame.
@@ -345,6 +345,6 @@ public class NCUFrame extends JFrame {
 
 	public void close() {
 		// comm.stopListenForNewton();
-		dispatchEvent(new WindowEvent(jFrame, WindowEvent.WINDOW_CLOSING));
+		SwingUtils.postWindowClosing(jFrame);
 	}
 }
