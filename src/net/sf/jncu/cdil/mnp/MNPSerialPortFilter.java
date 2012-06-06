@@ -17,22 +17,22 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.cdil;
+package net.sf.jncu.cdil.mnp;
 
 /**
- * CD packet filter.
+ * MNP serial stream filter.
  * 
  * @author mwaisberg
  */
-public interface CDPacketFilter<P extends CDPacket> {
+public interface MNPSerialPortFilter {
 
 	/**
-	 * Filter the packet.
+	 * Filter the serial port.
 	 * 
-	 * @param packet
-	 *            the packet.
-	 * @return the filtered packet- {@code null} to ignore the packet.
+	 * @param b
+	 *            the input buffer.
+	 * @return the filtered buffer - {@code null} to ignore the buffer.
 	 */
-	public P filterPacket(P packet);
+	public byte[] filterSerialPort(byte[] b);
 
 }
