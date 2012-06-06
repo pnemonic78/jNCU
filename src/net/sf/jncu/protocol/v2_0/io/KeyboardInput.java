@@ -35,6 +35,8 @@ import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 
 /**
  * Keyboard input for pass-through mode.
+ * <br>
+ * TODO wait 50ms to batch several "kbdc" as single "kbds" (unless the key is control character).
  * 
  * @author Moshe
  */
