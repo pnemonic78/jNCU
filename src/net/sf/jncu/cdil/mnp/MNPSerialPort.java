@@ -58,8 +58,6 @@ public class MNPSerialPort {
 	 *            the serial port.
 	 * @param baud
 	 *            the baud rate.
-	 * @throws TooManyListenersException
-	 *             if too many listeners.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 * @throws PortInUseException
@@ -67,7 +65,7 @@ public class MNPSerialPort {
 	 * @throws NoSuchPortException
 	 *             if port is not found.
 	 */
-	public MNPSerialPort(SerialPort port, int baud) throws TooManyListenersException, IOException, PortInUseException, NoSuchPortException {
+	public MNPSerialPort(SerialPort port, int baud) throws IOException, PortInUseException, NoSuchPortException {
 		super();
 		try {
 			port.openPort();
@@ -91,8 +89,6 @@ public class MNPSerialPort {
 	 * 
 	 * @param port
 	 *            the serial port.
-	 * @throws TooManyListenersException
-	 *             if too many listeners.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 * @throws PortInUseException
@@ -100,7 +96,7 @@ public class MNPSerialPort {
 	 * @throws NoSuchPortException
 	 *             if port is not found.
 	 */
-	public MNPSerialPort(SerialPort port) throws TooManyListenersException, IOException, PortInUseException, NoSuchPortException {
+	public MNPSerialPort(SerialPort port) throws IOException, PortInUseException, NoSuchPortException {
 		this(port, BAUD_38400);
 	}
 
@@ -221,12 +217,10 @@ public class MNPSerialPort {
 	 * @param port
 	 *            the serial port.
 	 * @return the reader.
-	 * @throws TooManyListenersException
-	 *             if too many listeners.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected MNPSerialPortReader createReader(SerialPort port) throws TooManyListenersException, IOException {
+	protected MNPSerialPortReader createReader(SerialPort port) throws IOException {
 		return new MNPSerialPortReader(port);
 	}
 
@@ -236,13 +230,10 @@ public class MNPSerialPort {
 	 * @param port
 	 *            the serial port.
 	 * @return the reader.
-	 * @throws TooManyListenersException
-	 *             if too many listeners.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected MNPSerialPortWriter createWriter(SerialPort port) throws TooManyListenersException, IOException {
+	protected MNPSerialPortWriter createWriter(SerialPort port) throws IOException {
 		return new MNPSerialPortWriter(port);
 	}
-
 }

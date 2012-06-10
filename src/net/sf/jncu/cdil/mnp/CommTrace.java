@@ -22,14 +22,12 @@ package net.sf.jncu.cdil.mnp;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import jssc.SerialPort;
-import jssc.SerialPortEvent;
-import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import net.sf.jncu.io.NoSuchPortException;
 import net.sf.jncu.io.PortInUseException;
@@ -47,48 +45,29 @@ import net.sf.jncu.io.PortInUseException;
  * 
  * @author moshew
  */
-public class CommTrace implements SerialPortEventListener {
+public class CommTrace {
 
 	/** Incoming bytes. */
 	public static final char CHAR_DIRECTION_1TO2 = '>';
 	/** Outgoing bytes. */
 	public static final char CHAR_DIRECTION_2TO1 = '<';
-	/** System property name for a filter class. */
-	public static final String PROPERTY_FILTER = "jncu.cdil.mnp.MNPSerialPortFilter";
 	private static final char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 	/** Port attached to Newton. */
-	private SerialPort portN;
+	private MNPSerialPort portN;
 	/** Port attached to PC. */
-	private SerialPort portP;
+	private MNPSerialPort portP;
 	private PrintStream logOut = System.out;
 	private int logWidth = 0;
-	private int baud = MNPSerialPort.BAUD_38400;
-	/** List of filters on the outgoing stream, e.g. from NCU to Newton. */
-	private final Collection<MNPSerialPortFilter> filters = new ArrayList<MNPSerialPortFilter>();
+	private Tracer traceN;
+	private Tracer traceP;
 
 	/**
 	 * Creates a new trace.
 	 */
 	public CommTrace() {
 		super();
-
-		String filterClassName = System.getProperty(PROPERTY_FILTER);
-		if (filterClassName != null) {
-			Class<?> clazz;
-			MNPSerialPortFilter filter;
-			try {
-				clazz = Class.forName(filterClassName);
-				filter = (MNPSerialPortFilter) clazz.newInstance();
-				addFilter(filter);
-			} catch (ClassNotFoundException cnfe) {
-				cnfe.printStackTrace();
-			} catch (InstantiationException ie) {
-				ie.printStackTrace();
-			} catch (IllegalAccessException iae) {
-				iae.printStackTrace();
-			}
-		}
+		Runtime.runFinalizersOnExit(true);
 	}
 
 	/**
@@ -107,7 +86,7 @@ public class CommTrace implements SerialPortEventListener {
 		CommTrace tracer = new CommTrace();
 		try {
 			if (args.length > 2) {
-				tracer.setBaud(Integer.parseInt(args[2]));
+				// tracer.setBaud(Integer.parseInt(args[2]));
 				if (args.length > 3) {
 					tracer.setOutput(new File(args[3]));
 				}
@@ -119,81 +98,21 @@ public class CommTrace implements SerialPortEventListener {
 		}
 	}
 
-	public void trace(String portName1, String portName2) throws NoSuchPortException, PortInUseException, SerialPortException {
+	public void trace(String portName1, String portName2) throws NoSuchPortException, PortInUseException, SerialPortException, IOException {
 		SerialPort port1 = new SerialPort(portName1);
 		SerialPort port2 = new SerialPort(portName2);
-		try {
-			port1.openPort();
-			port2.openPort();
-			trace(port1, port2);
-		} catch (SerialPortException se) {
-			if (SerialPortException.TYPE_PORT_BUSY == se.getExceptionType())
-				throw new PortInUseException(portName1);
-			if (SerialPortException.TYPE_PORT_NOT_FOUND == se.getExceptionType())
-				throw new NoSuchPortException(portName1);
-			throw se;
-		}
+		trace(port1, port2);
 	}
 
-	public void trace(SerialPort port1, SerialPort port2) throws SerialPortException {
-		this.portN = port1;
-		this.portP = port2;
+	public void trace(SerialPort port1, SerialPort port2) throws SerialPortException, IOException {
+		this.portN = new MNPSerialPort(port1);
+		this.portP = new MNPSerialPort(port2);
 
-		port1.setParams(baud, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-		port2.setParams(baud, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-		port1.setEventsMask(SerialPort.MASK_RXCHAR);
-		port2.setEventsMask(SerialPort.MASK_RXCHAR);
-		port1.addEventListener(this);
-		port2.addEventListener(this);
-	}
+		this.traceN = new Tracer(portN, portP, CHAR_DIRECTION_1TO2);
+		this.traceP = new Tracer(portP, portN, CHAR_DIRECTION_2TO1);
 
-	@Override
-	public void serialEvent(SerialPortEvent e) {
-		String portName = e.getPortName();
-		if (e.isRXCHAR()) {
-			int count = e.getEventValue();
-			if (count == 0)
-				return;
-			char direction;
-			SerialPort in;
-			SerialPort out;
-			byte[] buf;
-
-			try {
-				if (portName.equals(portN.getPortName())) {
-					direction = CHAR_DIRECTION_1TO2;
-					in = portN;
-					out = portP;
-				} else {
-					direction = CHAR_DIRECTION_2TO1;
-					in = portP;
-					out = portN;
-				}
-
-				synchronized (in) {
-					buf = in.readBytes(count);
-					if (in == portP)
-						buf = filter(buf);
-					if (buf != null) {
-						for (byte b : buf) {
-							logOut.print(direction);
-							logOut.print(HEX[(b >> 4) & 0x0F]);
-							logOut.print(HEX[b & 0x0F]);
-							logWidth++;
-							if (logWidth >= 32) {
-								logOut.println();
-								logWidth = 0;
-							}
-						}
-						out.writeBytes(buf);
-					}
-				}
-			} catch (SerialPortException se) {
-				se.printStackTrace();
-			}
-		} else if (e.isERR()) {
-			cancel();
-		}
+		traceN.start();
+		traceP.start();
 	}
 
 	/**
@@ -229,16 +148,6 @@ public class CommTrace implements SerialPortEventListener {
 	}
 
 	/**
-	 * Set the baud rate.
-	 * 
-	 * @param baud
-	 *            the baud rate.
-	 */
-	public void setBaud(int baud) {
-		this.baud = baud;
-	}
-
-	/**
 	 * Cancel tracing.
 	 */
 	public void cancel() {
@@ -251,54 +160,83 @@ public class CommTrace implements SerialPortEventListener {
 
 	@Override
 	protected void finalize() throws Throwable {
-		try {
-			portN.closePort();
-		} catch (SerialPortException se) {
-			// ignore
-		}
-		try {
-			portP.closePort();
-		} catch (SerialPortException se) {
-			// ignore
-		}
+		traceN.cancel();
+		traceP.cancel();
+		portN.close();
+		portP.close();
 		super.finalize();
 	}
 
 	/**
-	 * Add a packet filter.
-	 * 
-	 * @param filter
-	 *            the filter to add.
+	 * Trace the ports in blocking streams.
 	 */
-	public void addFilter(MNPSerialPortFilter filter) {
-		if (!filters.contains(filter)) {
-			filters.add(filter);
-		}
-	}
+	private class Tracer extends Thread {
+		private final MNPSerialPort portSource;
+		private final MNPSerialPort portSink;
+		private final String portSourceName;
+		private final char direction;
+		private boolean running;
 
-	/**
-	 * Remove a packet filter.
-	 * 
-	 * @param filter
-	 *            the filter to remove.
-	 */
-	public void removeFilter(MNPSerialPortFilter filter) {
-		filters.remove(filter);
-	}
-
-	/**
-	 * Filter the packet.
-	 * 
-	 * @param buf
-	 *            the input buffer.
-	 * @return the filter buffer - {@code null} otherwise.
-	 */
-	protected byte[] filter(byte[] buf) {
-		for (MNPSerialPortFilter filter : filters) {
-			buf = filter.filterSerialPort(buf);
-			if (buf == null)
-				return null;
+		/**
+		 * Creates a new tracer.
+		 * 
+		 * @param portSource
+		 *            the input port.
+		 * @param portSink
+		 *            the output port.
+		 * @param direction
+		 *            the direction indicator.
+		 */
+		public Tracer(MNPSerialPort portSource, MNPSerialPort portSink, char direction) {
+			this.portSource = portSource;
+			this.portSink = portSink;
+			this.direction = direction;
+			this.portSourceName = portSource.getPort().getPortName();
+			setName("Tracer-" + portSourceName);
 		}
-		return buf;
+
+		@Override
+		public void run() {
+			running = true;
+
+			InputStream in;
+			OutputStream out;
+			int b;
+
+			try {
+				while (running) {
+					in = portSource.getInputStream();
+					out = portSink.getOutputStream();
+					b = in.read();
+					if (b == -1)
+						break;
+					synchronized (logOut) {
+						logOut.print(direction);
+						logOut.print(HEX[(b >> 4) & 0x0F]);
+						logOut.print(HEX[b & 0x0F]);
+						logWidth++;
+						if (logWidth >= 32) {
+							logOut.println();
+							logWidth = 0;
+						}
+					}
+					out.write(b);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		/**
+		 * Stop tracing.
+		 */
+		public void cancel() {
+			running = false;
+			try {
+				join();
+			} catch (InterruptedException ie) {
+				ie.printStackTrace();
+			}
+		}
 	}
 }

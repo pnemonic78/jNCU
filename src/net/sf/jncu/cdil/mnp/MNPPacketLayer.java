@@ -30,6 +30,7 @@ import net.sf.jncu.cdil.CDPacketLayer;
 import net.sf.jncu.cdil.CDPacketListener;
 import net.sf.lang.ControlCharacter;
 import net.sf.util.zip.CRC16;
+import net.sf.util.zip.ChecksumException;
 
 /**
  * MNP packet layer.
@@ -126,8 +127,7 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 				buf.write(b);
 				crc.update(b);
 			} else {
-				// throw new ProtocolException();
-				return null;
+				 throw new ChecksumException("Unexpected byte");
 			}
 		}
 		buf.close();
@@ -140,8 +140,7 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 		b = readByte(in);
 		crcWord = (b << 8) | crcWord;
 		if (crcWord != crc.getValue()) {
-			// throw new ProtocolException("CRC error on input framing");
-			return null;
+			 throw new ChecksumException("CRC mismatch");
 		}
 
 		return payload;

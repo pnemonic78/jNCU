@@ -149,6 +149,9 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 		Thread.sleep(2000);
 
 		Thread.sleep(10000);
+		DOperationCanceled dOperationCanceled = new DOperationCanceled();
+		pipe.write(dOperationCanceled);
+		Thread.sleep(1000);
 		DDisconnect dDisconnect = new DDisconnect();
 		pipe.write(dDisconnect);
 		Thread.sleep(1000);
