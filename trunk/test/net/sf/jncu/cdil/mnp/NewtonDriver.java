@@ -24,6 +24,7 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.io.DGetStoreNames;
 import net.sf.jncu.protocol.v1_0.query.DGetInheritance;
 import net.sf.jncu.protocol.v1_0.query.DResult;
+import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v1_0.sync.DLastSyncTime;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 import net.sf.jncu.protocol.v2_0.app.DRequestToInstall;
@@ -535,6 +536,8 @@ public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 				sendInheritance();
 			} else if (DLastSyncTime.COMMAND.equals(name)) {
 				sendTime();
+			} else if (DDisconnect.COMMAND.equals(name)) {
+				done();
 			}
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
