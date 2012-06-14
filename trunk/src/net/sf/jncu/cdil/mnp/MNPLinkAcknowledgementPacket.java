@@ -29,7 +29,7 @@ public class MNPLinkAcknowledgementPacket extends MNPPacket {
 	/** Maximum outstanding credit. */
 	public static final byte CREDIT = 8;
 
-	private byte sequence;
+	private int sequence;
 	private byte credit = CREDIT;
 	private byte[] data;
 
@@ -59,7 +59,7 @@ public class MNPLinkAcknowledgementPacket extends MNPPacket {
 
 	@Override
 	public byte[] serialize() {
-		return new byte[] { 3, LA, sequence, credit };
+		return new byte[] { 3, LA, (byte) sequence, credit };
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class MNPLinkAcknowledgementPacket extends MNPPacket {
 	 * 
 	 * @return the sequence.
 	 */
-	public byte getSequence() {
+	public int getSequence() {
 		return sequence;
 	}
 
@@ -77,8 +77,18 @@ public class MNPLinkAcknowledgementPacket extends MNPPacket {
 	 * @param sequence
 	 *            the sequence.
 	 */
-	public void setSequence(byte sequence) {
+	public void setSequence(int sequence) {
 		this.sequence = sequence;
+	}
+
+	/**
+	 * Set the sequence number.
+	 * 
+	 * @param sequence
+	 *            the sequence.
+	 */
+	public void setSequence(byte sequence) {
+		setSequence(sequence & 0xFF);
 	}
 
 	/**
