@@ -44,7 +44,7 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 	/** Stream of commands that have been populated from packets. */
 	private InputStream in;
 	/** Queue of outgoing commands. */
-	protected final Map<Byte, CommandPiece> queueOut = new HashMap<Byte, CommandPiece>();
+	protected final Map<Integer, CommandPiece> queueOut = new HashMap<Integer, CommandPiece>();
 	/** Current LT sequence id. */
 	private int sequenceLT = -1;
 
@@ -114,7 +114,7 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 			return;
 		int length = cmd.getCommandPayloadLength();
 		int progress = 0;
-		Byte seq;
+		Integer seq;
 		CommandPiece piece;
 		try {
 			Iterable<MNPLinkTransferPacket> packets = MNPPacketFactory.getInstance().createTransferPackets(payload, length);
@@ -162,7 +162,7 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 	 *            the packet.
 	 */
 	protected void packetReceivedLA(MNPLinkAcknowledgementPacket packet) {
-		Byte seq = packet.getSequence();
+		Integer seq = packet.getSequence();
 		// Do not use queueOut.remove(seq) because we want to catch ignore
 		// packets.
 		CommandPiece piece = queueOut.get(seq);
@@ -206,7 +206,7 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 	 */
 	protected void packetReceivedLT(MNPLinkTransferPacket packet) {
 		byte[] payload = packet.getData();
-		int seq = packet.getSequence() & 0xFF;
+		int seq = packet.getSequence();
 
 		if (sequenceLT < seq) {
 			sequenceLT = seq;

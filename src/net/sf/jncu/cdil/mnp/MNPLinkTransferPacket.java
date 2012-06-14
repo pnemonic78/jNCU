@@ -33,7 +33,7 @@ public class MNPLinkTransferPacket extends MNPPacket {
 	public static final short MAX_DATA_LENGTH = 256;
 
 	private byte[] data;
-	private byte sequence;
+	private int sequence;
 
 	/**
 	 * Creates a new MNP LT packet.
@@ -66,7 +66,7 @@ public class MNPLinkTransferPacket extends MNPPacket {
 		}
 		payload[0] = 2;
 		payload[1] = LT;
-		payload[2] = sequence;
+		payload[2] = (byte) sequence;
 		return payload;
 	}
 
@@ -113,7 +113,7 @@ public class MNPLinkTransferPacket extends MNPPacket {
 	 * 
 	 * @return the sequence.
 	 */
-	public byte getSequence() {
+	public int getSequence() {
 		return sequence;
 	}
 
@@ -123,8 +123,17 @@ public class MNPLinkTransferPacket extends MNPPacket {
 	 * @param sequence
 	 *            the sequence.
 	 */
-	public void setSequence(byte sequence) {
+	public void setSequence(int sequence) {
 		this.sequence = sequence;
 	}
 
+	/**
+	 * Set the sequence number.
+	 * 
+	 * @param sequence
+	 *            the sequence.
+	 */
+	public void setSequence(byte sequence) {
+		setSequence(sequence & 0xFF);
+	}
 }
