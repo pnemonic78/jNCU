@@ -554,7 +554,7 @@ public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 	public void commandEOF() {
 	}
 
-	private void sendLA(byte seq) {
+	private void sendLA(int seq) {
 		MNPLinkAcknowledgementPacket packet = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
 		packet.setSequence(seq);
 		try {
