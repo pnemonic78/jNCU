@@ -20,12 +20,14 @@
 package net.sf.jncu.cdil.mnp;
 
 import java.io.Closeable;
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.util.TooManyListenersException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
@@ -36,6 +38,9 @@ import jssc.SerialPortException;
  * @author moshew
  */
 public class MNPSerialPortReader extends Thread implements Closeable {
+
+	/** System property name for a reader filter class. */
+	public static final String PROPERTY_FILTER = "jncu.cdil.mnp.MNPSerialPortReaderFilter";
 
 	protected final SerialPort port;
 	private MNPSerialPortEventListener listener;
@@ -49,12 +54,11 @@ public class MNPSerialPortReader extends Thread implements Closeable {
 	 * 
 	 * @param port
 	 *            the serial port.
-	 * @throws TooManyListenersException
-	 *             if too many listeners.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public MNPSerialPortReader(SerialPort port) throws TooManyListenersException, IOException {
+	@SuppressWarnings("unchecked")
+	public MNPSerialPortReader(SerialPort port) throws IOException {
 		super();
 		setName("MNPSerialPortReader-" + getId());
 		this.port = port;
@@ -63,12 +67,25 @@ public class MNPSerialPortReader extends Thread implements Closeable {
 		try {
 			port.addEventListener(listener);
 		} catch (SerialPortException se) {
-			throw new TooManyListenersException(se.getMessage());
+			throw new IOException(se.getMessage());
+		}
+
+		String filterClassName = System.getProperty(PROPERTY_FILTER);
+		if (filterClassName != null) {
+			Class<? extends FilterInputStream> clazz;
+			try {
+				clazz = (Class<? extends FilterInputStream>) Class.forName(filterClassName);
+				addFilter(clazz);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	@Override
 	public void close() throws IOException {
+		// TODO flush the filters.
+
 		if (listener != null) {
 			listener.close();
 			listener = null;
@@ -109,4 +126,27 @@ public class MNPSerialPortReader extends Thread implements Closeable {
 		return new MNPSerialPortEventListener(port, out);
 	}
 
+	/**
+	 * Add a stream filter. Wraps the input stream.
+	 * 
+	 * @param filterClass
+	 *            the filter class to create and add. Must have a constructor
+	 *            with {@code InputStream} parameter.
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws IllegalArgumentException
+	 */
+	public void addFilter(Class<? extends FilterInputStream> filterClass) throws IllegalArgumentException, InstantiationException, IllegalAccessException,
+			InvocationTargetException {
+		Constructor<? extends FilterInputStream> cons;
+		FilterInputStream filter;
+		try {
+			cons = filterClass.getConstructor(InputStream.class);
+			filter = cons.newInstance(getInputStream());
+			this.in = filter;
+		} catch (NoSuchMethodException nsme) {
+			throw new IllegalArgumentException(nsme);
+		}
+	}
 }
