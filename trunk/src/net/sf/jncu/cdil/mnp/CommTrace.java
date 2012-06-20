@@ -65,6 +65,7 @@ public class CommTrace {
 	/**
 	 * Creates a new trace.
 	 */
+	@SuppressWarnings("deprecation")
 	public CommTrace() {
 		super();
 		Runtime.runFinalizersOnExit(true);
@@ -233,6 +234,7 @@ public class CommTrace {
 		public void cancel() {
 			running = false;
 			try {
+				interrupt();
 				join();
 			} catch (InterruptedException ie) {
 				ie.printStackTrace();
