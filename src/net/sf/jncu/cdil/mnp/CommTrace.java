@@ -205,7 +205,7 @@ public class CommTrace {
 			int b;
 
 			try {
-				while (running) {
+				while (running && isAlive() && !isInterrupted()) {
 					in = portSource.getInputStream();
 					out = portSink.getOutputStream();
 					b = in.read();
@@ -222,6 +222,7 @@ public class CommTrace {
 						}
 					}
 					out.write(b);
+					out.flush();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

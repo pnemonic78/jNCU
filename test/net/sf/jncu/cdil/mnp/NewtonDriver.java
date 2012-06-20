@@ -513,6 +513,11 @@ public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 	@Override
 	public void commandReceived(IDockCommandFromNewton command) {
 		logger.log("cr", null, command);
+		final String name = command.getCommand();
+
+		if (DDisconnect.COMMAND.equals(name)) {
+			done();
+		}
 	}
 
 	@Override

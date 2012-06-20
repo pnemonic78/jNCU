@@ -20,8 +20,11 @@
 package net.sf.jncu.cdil.mnp;
 
 import java.io.Closeable;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
@@ -33,6 +36,9 @@ import jssc.SerialPortException;
  */
 public class MNPSerialPortWriter extends Thread implements Closeable {
 
+	/** System property name for a reader filter class. */
+	public static final String PROPERTY_FILTER = "jncu.cdil.mnp.MNPSerialPortWriterFilter";
+
 	protected final SerialPort port;
 	private OutputStream out;
 
@@ -42,14 +48,28 @@ public class MNPSerialPortWriter extends Thread implements Closeable {
 	 * @param port
 	 *            the serial port.
 	 */
+	@SuppressWarnings("unchecked")
 	public MNPSerialPortWriter(SerialPort port) {
 		super();
 		setName("MNPSerialPortWriter-" + getId());
 		this.port = port;
+
+		String filterClassName = System.getProperty(PROPERTY_FILTER);
+		if (filterClassName != null) {
+			Class<? extends FilterOutputStream> clazz;
+			try {
+				clazz = (Class<? extends FilterOutputStream>) Class.forName(filterClassName);
+				addFilter(clazz);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
 	public void close() throws IOException {
+		// TODO flush the filters.
+
 		getOutputStream().close();
 	}
 
@@ -97,10 +117,8 @@ public class MNPSerialPortWriter extends Thread implements Closeable {
 	 * Get the port output stream.
 	 * 
 	 * @return the stream.
-	 * @throws IOException
-	 *             if an I/O error occurs.
 	 */
-	public OutputStream getOutputStream() throws IOException {
+	public OutputStream getOutputStream() {
 		if (out == null)
 			out = new SerialPortOutputStream(port);
 		return out;
@@ -135,6 +153,29 @@ public class MNPSerialPortWriter extends Thread implements Closeable {
 			} catch (SerialPortException se) {
 				throw new IOException(se.getCause());
 			}
+		}
+	}
+
+	/**
+	 * Add a stream filter. Wraps the output stream.
+	 * 
+	 * @param filterClass
+	 *            the filter to add.
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws IllegalArgumentException
+	 */
+	public void addFilter(Class<? extends FilterOutputStream> filterClass) throws IllegalArgumentException, InstantiationException, IllegalAccessException,
+			InvocationTargetException {
+		Constructor<? extends FilterOutputStream> cons;
+		FilterOutputStream filter;
+		try {
+			cons = filterClass.getConstructor(OutputStream.class);
+			filter = cons.newInstance(getOutputStream());
+			this.out = filter;
+		} catch (NoSuchMethodException nsme) {
+			throw new IllegalArgumentException(nsme);
 		}
 	}
 }
