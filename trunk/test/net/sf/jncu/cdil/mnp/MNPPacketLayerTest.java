@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+import org.junit.Test;
+
 import net.sf.jncu.protocol.DockCommand;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.IDockCommand;
@@ -17,6 +19,7 @@ import net.sf.junit.SFTestCase;
 
 public class MNPPacketLayerTest extends SFTestCase {
 
+	@Test
 	public void testMultiCmd() {
 		byte[] data = { 'n', 'e', 'w', 't', 'd', 'o', 'c', 'k', 'u', 'n', 'k', 'n', 0x00, 0x00, 0x00, 0x04, 'k', 'b', 'd', 'c', 'n', 'e', 'w', 't', 'd', 'o', 'c', 'k', 'd', 'r',
 				'e', 's', 0x00, 0x00, 0x00, 0x04, (byte) 0xff, (byte) 0xff, (byte) 0xb1, (byte) 0xdf };
@@ -31,6 +34,7 @@ public class MNPPacketLayerTest extends SFTestCase {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testReceive() throws Exception {
 		byte[] frame = { 0x16, 0x10, 0x02, 0x26, 0x01, 0x02, 0x01, 0x06, 0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0xFF, 0x02, 0x01, 0x02, 0x03, 0x01, 0x08, 0x04, 0x02, 0x40, 0x00,
 				0x08, 0x01, 0x03, 0x09, 0x01, 0x01, 0x0E, 0x04, 0x03, 0x04, 0x00, (byte) 0xFA, (byte) 0xC5, 0x06, 0x01, 0x04, 0x00, 0x00, (byte) 0xE1, 0x00, 0x10, 0x03,
@@ -62,6 +66,7 @@ public class MNPPacketLayerTest extends SFTestCase {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testSend() throws Exception {
 		byte[] frame = { 0x16, 0x10, 0x02, 0x26, 0x01, 0x02, 0x01, 0x06, 0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0xFF, 0x02, 0x01, 0x02, 0x03, 0x01, 0x08, 0x04, 0x02, 0x40, 0x00,
 				0x08, 0x01, 0x03, 0x09, 0x01, 0x01, 0x0E, 0x04, 0x03, 0x04, 0x00, (byte) 0xFA, (byte) 0xC5, 0x06, 0x01, 0x04, 0x00, 0x00, (byte) 0xE1, 0x00, 0x10, 0x03,
@@ -92,6 +97,7 @@ public class MNPPacketLayerTest extends SFTestCase {
 	/**
 	 * Test receiving a command "name".
 	 */
+	@Test
 	public void testReceiveName() throws Exception {
 		byte[] data = { 110, 101, 119, 116, 100, 111, 99, 107, 110, 97, 109, 101, 0, 0, 0, 122, 0, 0, 0, 72, 18, 126, 21, 116, 1, 0, 0, 0, 16, 0, 48, 0, 0, 2, 0, 2, 0, 0, -128, 0,
 				0, 14, 32, 0, 0, 0, 1, -32, 0, 0, 1, 64, 0, 0, 0, 1, 0, 0, 0, 1, 1, -66, 82, -52, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0, 4, 0, 0, 0, 3, 0, 0, 0, 0, 1, -66, 82, -52,
@@ -111,6 +117,7 @@ public class MNPPacketLayerTest extends SFTestCase {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testDesktopInfo() throws Exception {
 		DockCommandToNewton cmd = new DDesktopInfo();
 		assertNotNull(cmd);

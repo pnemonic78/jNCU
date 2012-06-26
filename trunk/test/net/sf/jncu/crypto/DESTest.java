@@ -2,6 +2,8 @@ package net.sf.jncu.crypto;
 
 import javax.crypto.Cipher;
 
+import org.junit.Test;
+
 import net.sf.junit.SFTestCase;
 
 /**
@@ -20,6 +22,7 @@ public class DESTest extends SFTestCase {
 		super();
 	}
 
+	@Test
 	public void testNewtonCipher() throws Exception {
 		DESNewton newt = new DESNewton();
 		assertNotNull(newt);
@@ -67,6 +70,7 @@ public class DESTest extends SFTestCase {
 		return s.toString();
 	}
 
+	@Test
 	public void testChallenge() throws Exception {
 		long challengeDesktop = 0xf43291f715464670L;
 		long challengeNewton = 0x540f04ffc4a990L;

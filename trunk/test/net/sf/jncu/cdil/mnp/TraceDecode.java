@@ -181,7 +181,7 @@ public class TraceDecode {
 					packet = MNPPacketFactory.getInstance().createLinkPacket(payload);
 					if (runSent && (packet != null))
 						packetLayer.send(packet);
-				} while (runSent && (packet != null));
+				} while (runSent && (packet != null) && isAlive() && !isInterrupted());
 			} catch (EOFException eofe) {
 				// ignore
 				System.err.println("EOF");

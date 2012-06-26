@@ -21,7 +21,6 @@ package net.sf.jncu.cdil;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.Timer;
@@ -43,7 +42,11 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	protected static final long PING_TIME = 10000L;
 
 	protected final CDLayer layer;
+	/** @deprecated */
+	@Deprecated
 	private PipedOutputStream pipeSource;
+	/** @deprecated */
+	@Deprecated
 	private InputStream pipeSink;
 	private CDPacketLayer<P> packetLayer;
 	private CDCommandLayer<P> cmdLayer;
@@ -187,7 +190,6 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 
 	@Override
 	public void run() {
-		super.run();
 		getPacketLayer().start();
 		getCommandLayer().start();
 	}
@@ -252,7 +254,9 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	 *             if the pipe is disconnected.
 	 * @throws TimeoutException
 	 *             if timeout occurs.
+	 * @deprecated
 	 */
+	@Deprecated
 	public InputStream getInput() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		layer.checkConnected();
 		if (pipeSink == null) {
@@ -263,17 +267,6 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 			}
 		}
 		return pipeSink;
-	}
-
-	/**
-	 * Get the output stream to write actual data that was received from the
-	 * Newton. This is the pipe source that is fed to the sink and read using
-	 * {@link #getInput()}.
-	 * 
-	 * @return the source.
-	 */
-	protected OutputStream getOutput() {
-		return pipeSource;
 	}
 
 	/**

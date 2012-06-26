@@ -40,7 +40,7 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
 public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 
 	/** Stream for packets to populate commands. */
-	private final PipedOutputStream commandPackets = new PipedOutputStream();
+	private OutputStream packetsToCommands;
 	/** Stream of commands that have been populated from packets. */
 	private InputStream in;
 	/** Queue of outgoing commands. */
@@ -79,8 +79,10 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 	public MNPCommandLayer(MNPPacketLayer packetLayer) {
 		super(packetLayer);
 		setName("MNPCommandLayer-" + getId());
+		PipedOutputStream pipeSource = new PipedOutputStream();
 		try {
-			this.in = new BufferedInputStream(new PipedInputStream(commandPackets), 1024);
+			this.packetsToCommands = pipeSource;
+			this.in = new BufferedInputStream(new PipedInputStream(pipeSource), 1024);
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
@@ -99,7 +101,7 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 	@Override
 	public void close() {
 		try {
-			commandPackets.close();
+			packetsToCommands.close();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
@@ -216,8 +218,8 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 
 			try {
 				// Ignore duplicate packets?
-				commandPackets.write(payload);
-				commandPackets.flush();
+				packetsToCommands.write(payload);
+				// commandPacketsStream.flush();
 				synchronized (in) {
 					in.notifyAll();
 				}

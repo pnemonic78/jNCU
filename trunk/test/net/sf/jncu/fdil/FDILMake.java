@@ -1,5 +1,7 @@
 package net.sf.jncu.fdil;
 
+import org.junit.Test;
+
 import net.sf.junit.SFTestCase;
 
 public class FDILMake extends SFTestCase {
@@ -11,6 +13,7 @@ public class FDILMake extends SFTestCase {
 		super();
 	}
 
+	@Test
 	public void testMake() throws Exception {
 		FDILibrary.startup();
 
