@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
+import org.junit.Test;
+
 import jssc.SerialPort;
 import net.sf.jncu.io.NoSuchPortException;
 import net.sf.junit.SFTestCase;
@@ -20,6 +22,7 @@ import net.sf.junit.SFTestCase;
  */
 public class NullModem extends SFTestCase {
 
+	@Test
 	public void testNModem() throws Exception {
 		CommPorts commPorts = new CommPorts();
 		Collection<SerialPort> ports = commPorts.getPorts();
@@ -73,7 +76,7 @@ public class NullModem extends SFTestCase {
 
 	private class Reader extends Thread {
 		private boolean running;
-		private InputStream in;
+		private final InputStream in;
 
 		Reader(MNPSerialPort port) {
 			super();
@@ -92,7 +95,7 @@ public class NullModem extends SFTestCase {
 						break;
 					}
 					logRead(b);
-				} while (running);
+				} while (running && isAlive() && !isInterrupted());
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
 			}

@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 
+import org.junit.Test;
+
 import net.sf.junit.SFTestCase;
 
 public class NSOFEncoding extends SFTestCase {
@@ -26,6 +28,7 @@ public class NSOFEncoding extends SFTestCase {
 	/**
 	 * Test character encoding.
 	 */
+	@Test
 	public void testEncoding() {
 		Charset cs = Charset.forName(NSOFString.CHARSET_MAC);
 		assertNotNull(cs);

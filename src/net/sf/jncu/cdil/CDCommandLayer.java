@@ -235,17 +235,17 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 				hasCommand = false;
 
 				in = getInput();
-				while (running && (in.available() == 0)) {
+				while (running && isAlive() && !isInterrupted() && (in.available() == 0)) {
 					synchronized (in) {
 						try {
-							in.wait();
+							in.wait(1000);
 						} catch (InterruptedException ie) {
 							// Probably received some data, or closed.
 						}
 					}
 				}
 
-				if (running) {
+				if (running && isAlive() && !isInterrupted()) {
 					if (cmd == null) {
 						if (DockCommand.isCommand(in)) {
 							cmd = DockCommandFactory.getInstance().create(in);
@@ -324,7 +324,7 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 					}
 				}
 				yield();
-			} while (running && hasCommand);
+			} while (running && hasCommand && isAlive() && !isInterrupted());
 		} catch (EOFException eofe) {
 			// eofe.printStackTrace();
 			fireCommandEOF();

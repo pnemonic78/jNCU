@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.cdil.mnp;
 
+import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -45,7 +46,7 @@ public class MNPSerialPortReader extends Thread implements Closeable {
 	protected final SerialPort port;
 	private MNPSerialPortEventListener listener;
 	/** Stream for the serial port to populate with data. */
-	private final PipedOutputStream data = new PipedOutputStream();
+	private OutputStream data;
 	/** Stream of usable data that has been populated from the serial port. */
 	private InputStream in;
 
@@ -62,7 +63,9 @@ public class MNPSerialPortReader extends Thread implements Closeable {
 		super();
 		setName("MNPSerialPortReader-" + getId());
 		this.port = port;
-		this.in = new PipedInputStream(data);
+		PipedOutputStream pipeSource = new PipedOutputStream();
+		this.data = pipeSource;
+		this.in = new BufferedInputStream(new PipedInputStream(pipeSource), 1024);
 		this.listener = createPortListener(port, data);
 		try {
 			port.addEventListener(listener);

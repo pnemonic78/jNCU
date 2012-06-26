@@ -401,7 +401,7 @@ public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 					ioe.printStackTrace();
 				}
 			}
-		} while (running && isConnected());
+		} while (running && isAlive() && !isInterrupted() && isConnected());
 		running = false;
 	}
 

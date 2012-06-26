@@ -134,8 +134,8 @@ public class MNPSerialPortEventListener implements SerialPortEventListener {
 
 	/**
 	 * Handle data available events.<br>
-	 * This method is <tt>synchronized</tt> to try and keep the input sequential
-	 * and correctly ordered.
+	 * This method is <tt>synchronized</tt> to try and keep the events
+	 * sequential and correctly ordered.
 	 * 
 	 * @param event
 	 *            the event.
@@ -156,6 +156,7 @@ public class MNPSerialPortEventListener implements SerialPortEventListener {
 					q.put(b);
 			} else {
 				out.write(buf);
+				out.flush();
 			}
 		} catch (IOException ioe) {
 			ioe.printStackTrace();

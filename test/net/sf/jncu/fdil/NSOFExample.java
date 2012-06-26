@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.junit.Test;
+
 import net.sf.junit.SFTestCase;
 
 /**
@@ -96,6 +98,7 @@ public class NSOFExample extends SFTestCase {
 	 * 
 	 * @throws IOException
 	 */
+	@Test
 	public void testEncode() throws IOException {
 		NSOFObject[] phones = new NSOFObject[] { new NSOFString("408-996-1010"), null };
 		NSOFBinaryObject faxPhone = new NSOFBinaryObject();
@@ -139,6 +142,7 @@ public class NSOFExample extends SFTestCase {
 	 * 
 	 * @throws IOException
 	 */
+	@Test
 	public void testDecode() throws IOException {
 		InputStream in = new ByteArrayInputStream(nsof);
 		NSOFDecoder decoder = new NSOFDecoder();
