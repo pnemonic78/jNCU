@@ -17,7 +17,7 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.protocol;
+package net.sf.jncu.newton.os;
 
 /**
  * Newton version information.
@@ -33,6 +33,7 @@ public class NewtonInfo {
 	/** German. */
 	public static final int GERMAN = 2;
 
+	private String name;
 	private int newtonId;
 	private int manufacturerId;
 	private int machineType;
@@ -426,4 +427,22 @@ public class NewtonInfo {
 		this.targetProtocol = targetProtocol;
 	}
 
+	/**
+	 * Get the name.
+	 * 
+	 * @return the name.
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Set the name.
+	 * 
+	 * @param name
+	 *            the name.
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 }

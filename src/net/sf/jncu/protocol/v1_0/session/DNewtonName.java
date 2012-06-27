@@ -25,8 +25,8 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.protocol.DockCommandFromNewton;
-import net.sf.jncu.protocol.NewtonInfo;
 
 /**
  * The name of the Newton.<br>
@@ -47,7 +47,6 @@ public class DNewtonName extends DockCommandFromNewton {
 	/** <tt>kDNewtonName</tt> */
 	public static final String COMMAND = "name";
 
-	private String name;
 	private NewtonInfo info;
 	protected int versionInfoLength;
 
@@ -132,7 +131,7 @@ public class DNewtonName extends DockCommandFromNewton {
 	 * @return the name.
 	 */
 	public String getName() {
-		return name;
+		return getInformation().getName();
 	}
 
 	/**
@@ -142,7 +141,7 @@ public class DNewtonName extends DockCommandFromNewton {
 	 *            the name.
 	 */
 	protected void setName(String name) {
-		this.name = name;
+		getInformation().setName(name);
 	}
 
 	/**
@@ -151,6 +150,8 @@ public class DNewtonName extends DockCommandFromNewton {
 	 * @return the information.
 	 */
 	public NewtonInfo getInformation() {
+		if (info == null)
+			info = new NewtonInfo();
 		return info;
 	}
 

@@ -22,7 +22,7 @@ package net.sf.jncu.protocol.v2_0.session;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jncu.protocol.NewtonInfo;
+import net.sf.jncu.newton.os.NewtonInfo;
 
 /**
  * This command is sent in response to a correct <tt>kDInitiateDocking</tt>

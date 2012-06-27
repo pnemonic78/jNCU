@@ -31,10 +31,10 @@ import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.crypto.DESNewton;
 import net.sf.jncu.newton.NewtonError;
+import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
-import net.sf.jncu.protocol.NewtonInfo;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 
 /**
