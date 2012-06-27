@@ -219,7 +219,7 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 			try {
 				// Ignore duplicate packets?
 				packetsToCommands.write(payload);
-				// commandPacketsStream.flush();
+				packetsToCommands.flush();
 				synchronized (in) {
 					in.notifyAll();
 				}
