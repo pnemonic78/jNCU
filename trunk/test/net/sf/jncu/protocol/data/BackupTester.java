@@ -15,6 +15,7 @@ import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.data.DSetCurrentSoup;
+import net.sf.jncu.protocol.v1_0.data.DSoupInfo;
 import net.sf.jncu.protocol.v1_0.data.DSoupNames;
 import net.sf.jncu.protocol.v1_0.io.DGetStoreNames;
 import net.sf.jncu.protocol.v1_0.io.DStoreNames;
@@ -40,6 +41,7 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 	private PacketLogger logger;
 	private Store store;
 	private List<Soup> soups;
+	private Soup soup;
 
 	public BackupTester() {
 		super();
@@ -127,10 +129,13 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 		// pipe.write(dSetSoupGetInfo);
 		// Thread.sleep(2000);
 
+		soup = null;
 		DSetSoupGetInfo dSetSoupGetInfo = new DSetSoupGetInfo();
 		dSetSoupGetInfo.setName("Calendar");
 		pipe.write(dSetSoupGetInfo);
 		Thread.sleep(2000);
+		while (running && (soup == null))
+			Thread.yield();
 
 		// dLastSyncTime = new DLastSyncTime();
 		// pipe.write(dLastSyncTime);
@@ -223,6 +228,9 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 		} else if (DSoupNames.COMMAND.equals(cmd)) {
 			DSoupNames dSoupNames = (DSoupNames) command;
 			soups = dSoupNames.getSoups();
+		} else if (DSoupInfo.COMMAND.equals(cmd)) {
+			DSoupInfo dSoupInfo = (DSoupInfo) command;
+			soup = dSoupInfo.getSoup();
 		}
 	}
 
