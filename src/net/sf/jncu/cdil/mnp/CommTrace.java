@@ -48,9 +48,9 @@ import net.sf.jncu.io.PortInUseException;
 public class CommTrace {
 
 	/** Incoming bytes. */
-	public static final char CHAR_DIRECTION_1TO2 = '>';
+	public static final char DIRECTION_FROM_NEWTON = '>';
 	/** Outgoing bytes. */
-	public static final char CHAR_DIRECTION_2TO1 = '<';
+	public static final char DIRECTION_FROM_PC = '<';
 	private static final char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 	/** Port attached to Newton. */
@@ -59,8 +59,11 @@ public class CommTrace {
 	private MNPSerialPort portP;
 	private PrintStream logOut = System.out;
 	private int logWidth = 0;
+	/** Newton to PC tracer. */
 	private Tracer traceN;
+	/** PC to Newton tracer. */
 	private Tracer traceP;
+	private int baud;
 
 	/**
 	 * Creates a new trace.
@@ -68,6 +71,7 @@ public class CommTrace {
 	@SuppressWarnings("deprecation")
 	public CommTrace() {
 		super();
+		setBaud(SerialPort.BAUDRATE_38400);
 		Runtime.runFinalizersOnExit(true);
 	}
 
@@ -87,7 +91,7 @@ public class CommTrace {
 		CommTrace tracer = new CommTrace();
 		try {
 			if (args.length > 2) {
-				// tracer.setBaud(Integer.parseInt(args[2]));
+				tracer.setBaud(Integer.parseInt(args[2]));
 				if (args.length > 3) {
 					tracer.setOutput(new File(args[3]));
 				}
@@ -99,18 +103,28 @@ public class CommTrace {
 		}
 	}
 
-	public void trace(String portName1, String portName2) throws NoSuchPortException, PortInUseException, SerialPortException, IOException {
-		SerialPort port1 = new SerialPort(portName1);
-		SerialPort port2 = new SerialPort(portName2);
-		trace(port1, port2);
+	/**
+	 * Set the baud rate.
+	 * 
+	 * @param baud
+	 *            the baud.
+	 */
+	private void setBaud(int baud) {
+		this.baud = baud;
 	}
 
-	public void trace(SerialPort port1, SerialPort port2) throws SerialPortException, IOException {
-		this.portN = new MNPSerialPort(port1);
-		this.portP = new MNPSerialPort(port2);
+	public void trace(String portNameN, String portNameP) throws NoSuchPortException, PortInUseException, SerialPortException, IOException {
+		SerialPort portN = new SerialPort(portNameN);
+		SerialPort portP = new SerialPort(portNameP);
+		trace(portN, portP);
+	}
 
-		this.traceN = new Tracer(portN, portP, CHAR_DIRECTION_1TO2);
-		this.traceP = new Tracer(portP, portN, CHAR_DIRECTION_2TO1);
+	public void trace(SerialPort portN, SerialPort portP) throws SerialPortException, IOException {
+		this.portN = new MNPSerialPort(portN, baud);
+		this.portP = new MNPSerialPort(portP, baud);
+
+		this.traceN = new Tracer(this.portN, this.portP, DIRECTION_FROM_NEWTON);
+		this.traceP = new Tracer(this.portP, this.portN, DIRECTION_FROM_PC);
 
 		traceN.start();
 		traceP.start();
@@ -202,26 +216,43 @@ public class CommTrace {
 
 			InputStream in;
 			OutputStream out;
+			int avail, count;
+			byte[] buf = new byte[1024];
 			int b;
 
 			try {
 				while (running && isAlive() && !isInterrupted()) {
 					in = portSource.getInputStream();
 					out = portSink.getOutputStream();
-					b = in.read();
-					if (b == -1)
+					avail = in.available();
+					if (avail == 0)
+						avail = 1;
+					count = in.read(buf, 0, Math.min(avail, buf.length));
+					if (count == -1)
 						break;
-					synchronized (logOut) {
-						logOut.print(direction);
-						logOut.print(HEX[(b >> 4) & 0x0F]);
-						logOut.print(HEX[b & 0x0F]);
-						logWidth++;
-						if (logWidth >= 32) {
-							logOut.println();
-							logWidth = 0;
+					for (int i = 0; i < count; i++) {
+						b = buf[i] & 0xFF;
+						synchronized (logOut) {
+							logOut.print(direction);
+							logOut.print(HEX[(b >> 4) & 0x0F]);
+							logOut.print(HEX[b & 0x0F]);
+							logWidth++;
+							if (logOut != System.out) {
+								System.out.print(direction);
+								System.out.print(HEX[(b >> 4) & 0x0F]);
+								System.out.print(HEX[b & 0x0F]);
+								System.out.print(' ');
+							}
+							if (logWidth >= 32) {
+								logOut.println();
+								if (logOut != System.out) {
+									System.out.println();
+								}
+								logWidth = 0;
+							}
 						}
+						out.write(b);
 					}
-					out.write(b);
 					out.flush();
 				}
 			} catch (IOException e) {

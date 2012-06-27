@@ -25,8 +25,8 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
  */
 public class TraceDecode {
 
-	private static final char DIRECTION_IN = CommTrace.CHAR_DIRECTION_1TO2;
-	private static final char DIRECTION_OUT = CommTrace.CHAR_DIRECTION_2TO1;
+	private static final char DIRECTION_IN = CommTrace.DIRECTION_FROM_NEWTON;
+	private static final char DIRECTION_OUT = CommTrace.DIRECTION_FROM_PC;
 
 	private static final String HEX = "0123456789ABCDEF";
 
