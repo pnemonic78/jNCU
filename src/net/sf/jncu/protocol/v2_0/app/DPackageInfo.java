@@ -24,8 +24,8 @@ import java.io.InputStream;
 
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.newton.os.PackageInfo;
 import net.sf.jncu.protocol.DockCommandFromNewton;
-import net.sf.jncu.protocol.v1_0.app.PackageInfo;
 
 /**
  * This command is sent in response to a <tt>kDGetPackageInfo</tt> command. An

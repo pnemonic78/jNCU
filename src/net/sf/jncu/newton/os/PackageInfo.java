@@ -1,4 +1,4 @@
-package net.sf.jncu.protocol.v1_0.app;
+package net.sf.jncu.newton.os;
 
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFImmediate;
@@ -17,16 +17,16 @@ import net.sf.jncu.fdil.NSOFTrue;
 public class PackageInfo {
 
 	public static final NSOFSymbol SLOT_NAME = new NSOFSymbol("name");
-	public static final NSOFSymbol SLOT_SIZE = new NSOFSymbol("packagesize");
-	public static final NSOFSymbol SLOT_ID = new NSOFSymbol("packageid");
-	public static final NSOFSymbol SLOT_VERSION = new NSOFSymbol("packageversion");
+	public static final NSOFSymbol SLOT_SIZE = new NSOFSymbol("packageSize");
+	public static final NSOFSymbol SLOT_ID = new NSOFSymbol("packageId");
+	public static final NSOFSymbol SLOT_VERSION = new NSOFSymbol("packageVersion");
 	public static final NSOFSymbol SLOT_FORMAT = new NSOFSymbol("format");
-	public static final NSOFSymbol SLOT_DEVICE_KIND = new NSOFSymbol("devicekind");
-	public static final NSOFSymbol SLOT_DEVICE_NUM = new NSOFSymbol("devicenumber");
-	public static final NSOFSymbol SLOT_DEVICE_ID = new NSOFSymbol("deviceid");
-	public static final NSOFSymbol SLOT_MODIFIED = new NSOFSymbol("modtime");
-	public static final NSOFSymbol SLOT_COPY_PROTECT = new NSOFSymbol("iscopyprotected");
-	public static final NSOFSymbol SLOT_REMOVE = new NSOFSymbol("safetoremove");
+	public static final NSOFSymbol SLOT_DEVICE_KIND = new NSOFSymbol("deviceKind");
+	public static final NSOFSymbol SLOT_DEVICE_NUM = new NSOFSymbol("deviceNumber");
+	public static final NSOFSymbol SLOT_DEVICE_ID = new NSOFSymbol("deviceId");
+	public static final NSOFSymbol SLOT_MODIFIED = new NSOFSymbol("modTime");
+	public static final NSOFSymbol SLOT_COPY_PROTECT = new NSOFSymbol("isCopyProtected");
+	public static final NSOFSymbol SLOT_REMOVE = new NSOFSymbol("safeToRemove");
 
 	private String name;
 	private int packageSize;

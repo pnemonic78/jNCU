@@ -20,16 +20,16 @@
 package net.sf.jncu.newton.os;
 
 /**
- * Package information.
+ * Application package information.
  * 
  * @author moshew
  */
-public class Package {
+public class ApplicationPackage {
 
 	/**
 	 * Creates a new package.
 	 */
-	public Package() {
+	public ApplicationPackage() {
 		super();
 	}
 

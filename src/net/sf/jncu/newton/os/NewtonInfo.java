@@ -19,6 +19,11 @@
  */
 package net.sf.jncu.newton.os;
 
+import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.fdil.NSOFInteger;
+import net.sf.jncu.fdil.NSOFReal;
+import net.sf.jncu.fdil.NSOFString;
+
 /**
  * Newton version information.
  * 
@@ -141,12 +146,21 @@ public class NewtonInfo {
 	}
 
 	/**
+	 * Get the ROM version.
+	 * 
+	 * @return the version.
+	 */
+	public int getROMVersion() {
+		return romVersion;
+	}
+
+	/**
 	 * Set the ROM version.
 	 * 
 	 * @param romVersion
 	 *            the version.
 	 */
-	public void setRomVersion(int romVersion) {
+	public void setROMVersion(int romVersion) {
 		this.romVersion = romVersion;
 	}
 
@@ -176,12 +190,21 @@ public class NewtonInfo {
 	}
 
 	/**
+	 * Get the ROM stage.
+	 * 
+	 * @return the ROM stage.
+	 */
+	public int getROMStage() {
+		return romStage;
+	}
+
+	/**
 	 * Set the ROM stage.
 	 * 
 	 * @param romStage
 	 *            the ROM stage.
 	 */
-	public void setRomStage(int romStage) {
+	public void setROMStage(int romStage) {
 		this.romStage = romStage;
 	}
 
@@ -192,7 +215,7 @@ public class NewtonInfo {
 	 * 
 	 * @return the RAM size.
 	 */
-	public int getRamSize() {
+	public int getRAMSize() {
 		return ramSize;
 	}
 
@@ -202,7 +225,7 @@ public class NewtonInfo {
 	 * @param ramSize
 	 *            the RAM size.
 	 */
-	public void setRamSize(int ramSize) {
+	public void setRAMSize(int ramSize) {
 		this.ramSize = ramSize;
 	}
 
@@ -444,5 +467,34 @@ public class NewtonInfo {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * Get the information as a frame.
+	 * 
+	 * @return the frame.
+	 */
+	public NSOFFrame toFrame() {
+		NSOFFrame frame = new NSOFFrame();
+
+		frame.put("name", new NSOFString(getName()));
+		frame.put("newtonId", new NSOFInteger(getNewtonId()));
+		frame.put("manufacturerId", new NSOFInteger(getManufacturerId()));
+		frame.put("machineType", new NSOFInteger(getMachineType()));
+		frame.put("romVersion", new NSOFInteger(getROMVersion()));
+		frame.put("romStage", new NSOFInteger(getROMStage()));
+		frame.put("ramSize", new NSOFInteger(getRAMSize()));
+		frame.put("screenHeight", new NSOFInteger(getScreenHeight()));
+		frame.put("screenWidth", new NSOFInteger(getScreenWidth()));
+		frame.put("patchVersion", new NSOFInteger(getPatchVersion()));
+		frame.put("objectSystemVersion", new NSOFInteger(getObjectSystemVersion()));
+		frame.put("internalStoreSignature", new NSOFInteger(getInternalStoreSignature()));
+		frame.put("screenResolutionVertical", new NSOFInteger(getScreenResolutionVertical()));
+		frame.put("screenResolutionHorizontal", new NSOFInteger(getScreenResolutionHorizontal()));
+		frame.put("screenDepth", new NSOFInteger(getScreenDepth()));
+		frame.put("serialNumber", new NSOFReal(getSerialNumber()));
+		frame.put("targetProtocol", new NSOFInteger(getTargetProtocol()));
+
+		return frame;
 	}
 }

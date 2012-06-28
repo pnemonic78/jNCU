@@ -23,6 +23,7 @@ public class BackupDecode extends TraceDecode implements DockCommandListener {
 	private List<Soup> soups;
 	private Soup soup;
 	private Archive archive;
+	private boolean done;
 
 	public BackupDecode() throws IOException {
 		this.archive = new Archive();
@@ -48,11 +49,13 @@ public class BackupDecode extends TraceDecode implements DockCommandListener {
 			decoder = new BackupDecode();
 			decoder.setFile(f);
 			decoder.run();
+			if (!Boolean.getBoolean("debug")) {
+				Thread.sleep(1000L);
+				System.exit(0);// Kill all threads.
+			}
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
-		if (!Boolean.getBoolean("debug"))
-			System.exit(0);// Kill all threads.
 	}
 
 	@Override
@@ -94,6 +97,18 @@ public class BackupDecode extends TraceDecode implements DockCommandListener {
 
 	@Override
 	public void commandEOF() {
+		if (done)
+			return;
+		String dir = System.getProperty("user.dir");
+		File f = new File(dir, "Backups/backup.zip");
+		try {
+			archive.save(f);
+			done = true;
+			System.out.println("archive saved to " + f);
+			System.exit(0);
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
 	}
 
 }

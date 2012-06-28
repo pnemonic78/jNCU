@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.jncu.newton.os.PackageInfo;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
