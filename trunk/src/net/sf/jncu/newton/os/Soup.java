@@ -33,7 +33,26 @@ import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.fdil.contrib.NSOFSoupName;
 
 /**
- * Soup information.
+ * Newton soup.
+ * <p>
+ * Typical soup information frame might look like this: <br>
+ * {<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;'name="Calendar",<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;'signature=-23730660,<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;'soupDef={<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'userName="calendar
+ * meetings",<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'userDescr="non-repeating
+ * meetings in the calendar",<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'name="Calendar",<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'ownerAppName="Dates",<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'indexes=[{'structure='slot,
+ * 'path='mtgStartDate, 'type='int}, {'structure='slot, 'path='mtgAlarm,
+ * 'type='int}],<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'ownerApp='calendar<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;},<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;'NCKLastBackupTime=57030835<br>
+ * }<br>
  * 
  * @author moshew
  */
@@ -41,10 +60,18 @@ public class Soup {
 
 	protected static final NSOFSymbol SLOT_NAME = new NSOFSymbol("name");
 	protected static final NSOFSymbol SLOT_SIGNATURE = new NSOFSymbol("signature");
+	protected static final NSOFSymbol SLOT_SOUP_DEF = new NSOFSymbol("soupDef");
+	protected static final NSOFSymbol SLOT_USER_NAME = new NSOFSymbol("userName");
+	protected static final NSOFSymbol SLOT_USER_DESCRIPTION = new NSOFSymbol("userDescr");
+	protected static final NSOFSymbol SLOT_OWNER_APP_NAME = new NSOFSymbol("ownerAppName");
+	protected static final NSOFSymbol SLOT_INDEXES = new NSOFSymbol("indexes");
+	protected static final NSOFSymbol SLOT_STRUCTURE = new NSOFSymbol("structure");
+	protected static final NSOFSymbol SLOT_PATH = new NSOFSymbol("path");
+	protected static final NSOFSymbol SLOT_TYPE = new NSOFSymbol("type");
+	protected static final NSOFSymbol SLOT_OWNER_APP = new NSOFSymbol("ownerApp");
+	protected static final NSOFSymbol SLOT_BACKUP = new NSOFSymbol("NCKLastBackupTime");
 
-	private String name;
-	private int signature;
-	private NSOFArray index;
+	private NSOFFrame info;
 	private final Set<SoupEntry> entries = new TreeSet<SoupEntry>();
 
 	/**
@@ -52,7 +79,6 @@ public class Soup {
 	 */
 	public Soup() {
 		super();
-		setIndex(new NSOFPlainArray());
 	}
 
 	/**
@@ -61,7 +87,15 @@ public class Soup {
 	 * @return the name.
 	 */
 	public String getName() {
-		return name;
+		NSOFObject value = getInformation().get(SLOT_NAME);
+		if (NSOFImmediate.isNil(value)) {
+			value = getDefinition().get(SLOT_NAME);
+		}
+		if (!NSOFImmediate.isNil(value)) {
+			NSOFString s = (NSOFString) value;
+			return s.getValue();
+		}
+		return null;
 	}
 
 	/**
@@ -71,7 +105,7 @@ public class Soup {
 	 *            the name.
 	 */
 	public void setName(String name) {
-		this.name = name;
+		getInformation().put(SLOT_NAME, new NSOFString(name));
 	}
 
 	/**
@@ -80,7 +114,12 @@ public class Soup {
 	 * @return the signature.
 	 */
 	public int getSignature() {
-		return signature;
+		NSOFObject value = getInformation().get(SLOT_SIGNATURE);
+		if (!NSOFImmediate.isNil(value)) {
+			NSOFImmediate imm = (NSOFImmediate) value;
+			setSignature(imm.getValue());
+		}
+		return 0;
 	}
 
 	/**
@@ -90,26 +129,33 @@ public class Soup {
 	 *            the signature.
 	 */
 	public void setSignature(int signature) {
-		this.signature = signature;
+		getInformation().put(SLOT_SIGNATURE, new NSOFInteger(signature));
 	}
 
 	/**
-	 * Get the index description.
+	 * Get the indexes description.
 	 * 
-	 * @return the index.
+	 * @return the indexes.
 	 */
-	public NSOFArray getIndex() {
-		return index;
+	public NSOFArray getIndexes() {
+		NSOFArray indexes = (NSOFArray) getDefinition().get(SLOT_INDEXES);
+		if (indexes == null) {
+			indexes = new NSOFPlainArray();
+			setIndexes(indexes);
+		}
+		return indexes;
 	}
 
 	/**
-	 * Set the index description.
+	 * Set the indexes description.
 	 * 
-	 * @param index
-	 *            the index.
+	 * @param indexes
+	 *            the indexes.
 	 */
-	public void setIndex(NSOFArray index) {
-		this.index = index;
+	public void setIndexes(NSOFArray indexes) {
+		if (indexes == null)
+			indexes = new NSOFPlainArray();
+		getDefinition().put(SLOT_INDEXES, indexes);
 	}
 
 	/**
@@ -163,19 +209,47 @@ public class Soup {
 	 *            the frame.
 	 */
 	public void decodeFrame(NSOFFrame frame) {
-		setName(null);
-		setSignature(0);
+		NSOFFrame info = new NSOFFrame();
+		info.putAll(frame);
+		setInformation(info);
+	}
 
-		NSOFObject value = frame.get(SLOT_NAME);
-		if (!NSOFImmediate.isNil(value)) {
-			NSOFString s = (NSOFString) value;
-			setName(s.getValue());
-		}
+	/**
+	 * Get the soup information.
+	 * 
+	 * @return the information.
+	 */
+	public NSOFFrame getInformation() {
+		if (info == null)
+			info = new NSOFFrame();
+		return info;
+	}
 
-		value = frame.get(SLOT_SIGNATURE);
-		if (!NSOFImmediate.isNil(value)) {
-			NSOFImmediate imm = (NSOFImmediate) value;
-			setSignature(imm.getValue());
+	/**
+	 * Set the soup information.
+	 * 
+	 * @param info
+	 *            the information.
+	 */
+	public void setInformation(NSOFFrame info) {
+		this.info = info;
+	}
+
+	/**
+	 * Get the soup definition.
+	 * 
+	 * @return the definition.
+	 */
+	public NSOFFrame getDefinition() {
+		NSOFFrame soupDef = (NSOFFrame) getInformation().get(SLOT_SOUP_DEF);
+		if (soupDef == null) {
+			soupDef = new NSOFFrame();
 		}
+		return soupDef;
+	}
+	
+	@Override
+	public String toString() {
+		return getName();
 	}
 }

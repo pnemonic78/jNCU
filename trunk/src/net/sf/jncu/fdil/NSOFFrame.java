@@ -275,4 +275,14 @@ public class NSOFFrame extends NSOFPointer {
 		}
 		return copy;
 	}
+
+	/**
+	 * Add all the slots.
+	 * 
+	 * @param frame
+	 *            the source frame.
+	 */
+	public void putAll(NSOFFrame frame) {
+		this.slots.putAll(frame.slots);
+	}
 }

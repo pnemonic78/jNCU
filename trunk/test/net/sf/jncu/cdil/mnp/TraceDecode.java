@@ -100,7 +100,7 @@ public class TraceDecode {
 	}
 
 	public void parse(Reader reader) throws Exception {
-		DecodePayload dp = new DecodePayload(receivedFromNewton, sentToNewton);
+		DecodePayload dp = createDecodePayload(receivedFromNewton, sentToNewton);
 		dp.start();
 
 		char c;

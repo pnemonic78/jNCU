@@ -535,11 +535,18 @@ public class Store {
 	 * 
 	 * @return the soup - {@code null} otherwise.
 	 */
-	public Soup getSoup(String name, int signature) {
+	public Soup findSoup(String name, int signature) {
+		if (name == null)
+			return null;
 		for (Soup soup : getSoups()) {
 			if (name.equals(soup.getName()) && (signature == soup.getSignature()))
 				return soup;
 		}
 		return null;
+	}
+
+	@Override
+	public String toString() {
+		return getName();
 	}
 }

@@ -64,8 +64,8 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 	protected static final char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 	private String value;
-	private boolean valueSet;
-	private String toString;
+	protected boolean valueSet;
+	protected String toString;
 
 	/**
 	 * Constructs a new string.
@@ -201,7 +201,9 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 	@Override
 	public String toString() {
 		if (toString == null) {
-			if (value != null) {
+			if (value == null) {
+				toString = NSOFNil.NIL.toString();
+			} else {
 				StringBuffer buf = new StringBuffer();
 				int len = value.length();
 				char c;
@@ -228,7 +230,7 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 						buf.append(HEX[(c >>> 0) & 0x000F]);
 					}
 				}
-				toString = "\"" + value + "\"";
+				toString = "\"" + buf.toString() + "\"";
 			}
 		}
 		return toString;
