@@ -19,10 +19,15 @@
  */
 package net.sf.jncu.data;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipOutputStream;
 
 import net.sf.jncu.newton.os.NewtonInfo;
+import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.Store;
 
 /**
@@ -67,6 +72,21 @@ import net.sf.jncu.newton.os.Store;
  * 
  */
 public class Archive {
+
+	/** Entry name for the device information. */
+	public static final String ENTRY_DEVICE = "device";
+	/** Entry name for the stores folder. */
+	public static final String ENTRY_STORES = "stores";
+	/** Entry name for the store information. */
+	public static final String ENTRY_STORE = "store";
+	/** Entry name for the packages folder. */
+	public static final String ENTRY_PACKAGES = "packages";
+	/** Entry name for the soups folder. */
+	public static final String ENTRY_SOUPS = "soups";
+	/** Entry name for the soup information. */
+	public static final String ENTRY_SOUP = "soup";
+	/** Entry name for the entries database. */
+	public static final String ENTRY_ENTRIES = "entries";
 
 	private NewtonInfo deviceInfo;
 	private final List<Store> stores = new ArrayList<Store>();
@@ -117,4 +137,125 @@ public class Archive {
 			this.stores.addAll(stores);
 	}
 
+	/**
+	 * Save the archive.
+	 * 
+	 * @param file
+	 *            the destination file.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	public void save(File file) throws IOException {
+		FileOutputStream fout = null;
+		ZipOutputStream out = null;
+		// ZipEntry entryDevice = new
+
+		try {
+			fout = new FileOutputStream(file);
+			out = new ZipOutputStream(fout);
+
+			// out.putNextEntry(entry);
+			out.closeEntry();
+
+			out.finish();
+		} finally {
+			if (fout != null) {
+				try {
+					fout.close();
+				} catch (Exception e) {
+				}
+			}
+			if (out != null) {
+				try {
+					out.close();
+				} catch (Exception e) {
+				}
+			}
+		}
+	}
+
+	/**
+	 * Write the device information.
+	 * 
+	 * @param out
+	 *            the output.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected void writeDevice(ZipOutputStream out) throws IOException {
+	}
+
+	/**
+	 * Write the stores.
+	 * 
+	 * @param out
+	 *            the output.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected void writeStores(ZipOutputStream out) throws IOException {
+	}
+
+	/**
+	 * Write a store.
+	 * 
+	 * @param out
+	 *            the output.
+	 * @param store
+	 *            the store.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected void writeStore(ZipOutputStream out, Store store) throws IOException {
+	}
+
+	/**
+	 * Write the packages.
+	 * 
+	 * @param out
+	 *            the output.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected void writePackages(ZipOutputStream out) throws IOException {
+	}
+
+	/**
+	 * Write the soups.
+	 * 
+	 * @param out
+	 *            the output.
+	 * @param store
+	 *            the store.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected void writeSoups(ZipOutputStream out, Store store) throws IOException {
+	}
+
+	/**
+	 * Write a soup.
+	 * 
+	 * @param out
+	 *            the output.
+	 * @param soup
+	 *            the soup.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected void writeSoup(ZipOutputStream out, Soup soup) throws IOException {
+	}
+
+	/**
+	 * Write soup entries.
+	 * 
+	 * @param out
+	 *            the output.
+	 * @param soup
+	 *            the soup.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected void writeSoupEntries(ZipOutputStream out, Soup soup) throws IOException {
+	}
 }
