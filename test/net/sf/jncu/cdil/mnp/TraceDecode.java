@@ -69,7 +69,7 @@ public class TraceDecode {
 			System.exit(0);// Kill all threads.
 	}
 
-	private void setFile(File f) {
+	protected void setFile(File f) {
 		this.file = f;
 	}
 
@@ -136,7 +136,11 @@ public class TraceDecode {
 		}
 	}
 
-	class DecodePayload extends Thread implements MNPPacketListener, DockCommandListener {
+	protected DecodePayload createDecodePayload(InputStream receivedFromNewton, InputStream sentToNewton) throws Exception {
+		return new DecodePayload(receivedFromNewton, sentToNewton);
+	}
+
+	protected class DecodePayload extends Thread implements MNPPacketListener, DockCommandListener {
 
 		private boolean runReceived;
 		private boolean runSent;
@@ -145,6 +149,7 @@ public class TraceDecode {
 		private final TraceDecodePacketLayer packetLayer;
 		private final CDCommandLayer<MNPPacket> cmdLayer;
 		private ProgressMonitor progress;
+		private boolean done;
 
 		public DecodePayload(InputStream receivedFromNewton, InputStream sentToNewton) throws Exception {
 			super();
@@ -162,6 +167,10 @@ public class TraceDecode {
 			layer.setState(pipe, CDState.DISCONNECTED);
 			pipe.startListening();
 			runReceived = true;
+		}
+		
+		public MNPPipe getPipe(){
+			return pipe;
 		}
 
 		/**
@@ -206,6 +215,7 @@ public class TraceDecode {
 					e.printStackTrace();
 				}
 			}
+			done = true;
 		}
 
 		@Override
@@ -224,7 +234,8 @@ public class TraceDecode {
 
 		@Override
 		public void packetEOF() {
-			System.out.println("packet EOF");
+			if (!done)
+				System.out.println("packet EOF");
 			runReceived = false;
 			runSent = false;
 			notifyDone();
@@ -260,7 +271,8 @@ public class TraceDecode {
 
 		@Override
 		public void commandEOF() {
-			System.out.println("cmd EOF");
+			if (!done)
+				System.out.println("cmd EOF");
 		}
 
 		private void processPacket(char direction, MNPPacket packet) {
