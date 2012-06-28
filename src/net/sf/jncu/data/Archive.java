@@ -19,30 +19,35 @@
  */
 package net.sf.jncu.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.sf.jncu.newton.os.NewtonInfo;
+import net.sf.jncu.newton.os.Store;
+
 /**
  * Archive file for backup from the Newton device, and restore to the Newton
  * device.
  * <p>
  * The contents of a jNCU archive typically have the following structure:
  * <ul>
- * <li><tt>device.meta</tt></li>
+ * <li><tt>device</tt></li>
  * <li><tt>stores</tt>
  * <ul>
  * <li><tt>Internal</tt>
  * <ul>
- * <li><tt>store.meta</tt></li>
+ * <li><tt>store</tt></li>
  * <li><tt>packages</tt>
  * <ul>
- * <li>package #1</li>
+ * <li>package1<tt>.pkg</tt></li>
  * <li>...</li>
- * <li>package #n</li>
  * </ul>
  * </li>
  * <li><tt>soups</tt>
  * <ul>
  * <li>soup name #1
  * <ul>
- * <li><tt>soup.meta</tt></li>
+ * <li><tt>soup</tt></li>
  * <li><tt>entries</tt></li>
  * </ul>
  * </li>
@@ -63,9 +68,53 @@ package net.sf.jncu.data;
  */
 public class Archive {
 
+	private NewtonInfo deviceInfo;
+	private final List<Store> stores = new ArrayList<Store>();
+
 	/**
 	 * Creates a new archive.
 	 */
 	public Archive() {
 	}
+
+	/**
+	 * Get the device information.
+	 * 
+	 * @return the the information.
+	 */
+	public NewtonInfo getDeviceInfo() {
+		return deviceInfo;
+	}
+
+	/**
+	 * Set the device information.
+	 * 
+	 * @param info
+	 *            the information.
+	 */
+	public void setDeviceInfo(NewtonInfo info) {
+		this.deviceInfo = info;
+	}
+
+	/**
+	 * Get the stores.
+	 * 
+	 * @return the list of stores.
+	 */
+	public List<Store> getStores() {
+		return stores;
+	}
+
+	/**
+	 * Set the stores.
+	 * 
+	 * @param stores
+	 *            the list of stores.
+	 */
+	public void setStores(List<Store> stores) {
+		this.stores.clear();
+		if (stores != null)
+			this.stores.addAll(stores);
+	}
+
 }
