@@ -86,8 +86,8 @@ public class Store {
 	private boolean defaultStore;
 	private int password;
 	private int version;
-	private List<String> soups;
-	private List<Integer> soupSignatures;
+	private final List<Soup> soups = new ArrayList<Soup>();
+	private final List<Package> packages = new ArrayList<Package>();
 
 	/**
 	 * Creates a new store.
@@ -114,23 +114,18 @@ public class Store {
 		if (getPassword() != 0) {
 			frame.put(SLOT_PASSWORD, new NSOFInteger(getPassword()));
 		}
-		if (getSoups() != null) {
-			List<String> soupNames = getSoups();
-			NSOFString[] entries = new NSOFString[soupNames.size()];
+		List<Soup> soups = getSoups();
+		if (!soups.isEmpty()) {
+			NSOFString[] names = new NSOFString[soups.size()];
+			NSOFInteger[] signatures = new NSOFInteger[names.length];
 			int i = 0;
-			for (String soup : soupNames) {
-				entries[i++] = new NSOFString(soup);
+			for (Soup soup : soups) {
+				names[i] = new NSOFString(soup.getName());
+				signatures[i] = new NSOFInteger(soup.getSignature());
+				i++;
 			}
-			frame.put(SLOT_SOUPS, new NSOFPlainArray(entries));
-		}
-		if (getSoupSignatures() != null) {
-			List<Integer> soupIds = getSoupSignatures();
-			NSOFInteger[] entries = new NSOFInteger[soupIds.size()];
-			int i = 0;
-			for (Integer soup : soupIds) {
-				entries[i++] = new NSOFInteger(soup);
-			}
-			frame.put(SLOT_SIGNATURES, new NSOFPlainArray(entries));
+			frame.put(SLOT_SOUPS, new NSOFPlainArray(names));
+			frame.put(SLOT_SIGNATURES, new NSOFPlainArray(signatures));
 		}
 		if (getVersion() != 0) {
 			frame.put(SLOT_VERSION, new NSOFInteger(getVersion()));
@@ -206,28 +201,32 @@ public class Store {
 			setSignature(imm.getValue());
 		}
 
-		value = frame.get(SLOT_SIGNATURES);
-		setSoupSignatures(null);
-		if ((value != null) && !NSOFImmediate.isNil(value)) {
-			NSOFArray arr = (NSOFArray) value;
-			List<Integer> soups = new ArrayList<Integer>();
-			NSOFObject[] entries = arr.getValue();
-			for (NSOFObject entry : entries) {
-				soups.add(((NSOFImmediate) entry).getValue());
-			}
-			setSoupSignatures(soups);
-		}
-
 		value = frame.get(SLOT_SOUPS);
 		setSoups(null);
-		if ((value != null) && !NSOFImmediate.isNil(value)) {
+		if (!NSOFImmediate.isNil(value)) {
 			NSOFArray arr = (NSOFArray) value;
-			List<String> soups = new ArrayList<String>();
+			List<Soup> soups = new ArrayList<Soup>();
 			NSOFObject[] entries = arr.getValue();
+			Soup soup;
+			String name;
 			for (NSOFObject entry : entries) {
-				soups.add(((NSOFString) entry).getValue());
+				name = ((NSOFString) entry).getValue();
+				soup = new Soup();
+				soup.setName(name);
 			}
 			setSoups(soups);
+		}
+
+		value = frame.get(SLOT_SIGNATURES);
+		setSoupSignatures(null);
+		if (!NSOFImmediate.isNil(value)) {
+			NSOFArray arr = (NSOFArray) value;
+			List<Integer> signatures = new ArrayList<Integer>();
+			NSOFObject[] entries = arr.getValue();
+			for (NSOFObject entry : entries) {
+				signatures.add(((NSOFImmediate) entry).getValue());
+			}
+			setSoupSignatures(signatures);
 		}
 
 		value = frame.get(SLOT_TOTALSIZE);
@@ -443,22 +442,24 @@ public class Store {
 	}
 
 	/**
-	 * Get the soup names.
+	 * Get the soups.
 	 * 
 	 * @return the soups.
 	 */
-	public List<String> getSoups() {
+	public List<Soup> getSoups() {
 		return soups;
 	}
 
 	/**
-	 * Set the soup names.
+	 * Set the soups.
 	 * 
 	 * @param soups
 	 *            the soups.
 	 */
-	public void setSoups(List<String> soups) {
-		this.soups = soups;
+	public void setSoups(List<Soup> soups) {
+		this.soups.clear();
+		if (soups != null)
+			this.soups.addAll(soups);
 	}
 
 	/**
@@ -467,7 +468,11 @@ public class Store {
 	 * @return the signatures.
 	 */
 	public List<Integer> getSoupSignatures() {
-		return soupSignatures;
+		List<Integer> signatures = new ArrayList<Integer>();
+		for (Soup soup : getSoups()) {
+			signatures.add(soup.getSignature());
+		}
+		return signatures;
 	}
 
 	/**
@@ -477,7 +482,15 @@ public class Store {
 	 *            the signatures.
 	 */
 	public void setSoupSignatures(List<Integer> soupSignatures) {
-		this.soupSignatures = soupSignatures;
+		List<Soup> soups = getSoups();
+		if (soups == null)
+			return;
+		final int size = soups.size();
+		Soup soup;
+		for (int i = 0; i < size; i++) {
+			soup = soups.get(i);
+			soup.setSignature((soupSignatures == null) ? 0 : soupSignatures.get(i));
+		}
 	}
 
 	/**
@@ -491,4 +504,42 @@ public class Store {
 		return getTotalSize() - getUsedSize();
 	}
 
+	/**
+	 * Get the packages.
+	 * 
+	 * @return the packages.
+	 */
+	public List<Package> getPackages() {
+		return packages;
+	}
+
+	/**
+	 * Set the packages.
+	 * 
+	 * @param packages
+	 *            the packages.
+	 */
+	public void setPackages(List<Package> packages) {
+		this.packages.clear();
+		if (packages != null)
+			this.packages.addAll(packages);
+	}
+
+	/**
+	 * Find a soup.
+	 * 
+	 * @param name
+	 *            the soup name.
+	 * @param signature
+	 *            the soup signature.
+	 * 
+	 * @return the soup - {@code null} otherwise.
+	 */
+	public Soup getSoup(String name, int signature) {
+		for (Soup soup : getSoups()) {
+			if (name.equals(soup.getName()) && (signature == soup.getSignature()))
+				return soup;
+		}
+		return null;
+	}
 }
