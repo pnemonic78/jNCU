@@ -216,4 +216,37 @@ public class NSOFSymbol extends NSOFString {
 	public static NSOFSymbol getInheritance(NSOFSymbol clazz) {
 		return classes.get(clazz);
 	}
+
+	@Override
+	public String toString() {
+		if (toString == null) {
+			String value = getValue();
+			if (value == null) {
+				toString = NSOFNil.NIL.toString();
+			} else {
+				StringBuffer buf = new StringBuffer();
+				int len = value.length();
+				char c;
+				boolean colon = false;
+
+				for (int i = 0; i < len; i++) {
+					c = value.charAt(i);
+
+					if ((c < 32) || (c > 127))
+						throw new IllegalCharInSymbolException(c);
+					if ((c == '|') || (c == '\\'))
+						throw new IllegalCharInSymbolException(c);
+					if (c == ':')
+						colon = true;
+					buf.append(c);
+				}
+				if (colon) {
+					buf.insert(0, '|');
+					buf.append('|');
+				}
+				toString = "'" + buf.toString();
+			}
+		}
+		return toString;
+	}
 }
