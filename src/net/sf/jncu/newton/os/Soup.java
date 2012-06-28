@@ -127,7 +127,7 @@ public class Soup {
 	 * @param entries
 	 *            the entries.
 	 */
-	public void setIds(Set<SoupEntry> entries) {
+	public void setEntries(Set<SoupEntry> entries) {
 		this.entries.clear();
 		if (entries != null)
 			this.entries.addAll(entries);
