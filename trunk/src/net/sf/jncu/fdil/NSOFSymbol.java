@@ -228,6 +228,7 @@ public class NSOFSymbol extends NSOFString {
 				int len = value.length();
 				char c;
 				boolean colon = false;
+				boolean dot = false;
 
 				for (int i = 0; i < len; i++) {
 					c = value.charAt(i);
@@ -238,9 +239,11 @@ public class NSOFSymbol extends NSOFString {
 						throw new IllegalCharInSymbolException(c);
 					if (c == ':')
 						colon = true;
+					else if (c == '.')
+						dot = true;
 					buf.append(c);
 				}
-				if (colon) {
+				if (colon || dot) {
 					buf.insert(0, '|');
 					buf.append('|');
 				}

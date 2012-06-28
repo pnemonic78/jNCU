@@ -97,4 +97,9 @@ public class NSOFReal extends NSOFBinaryObject {
 	public NSOFObject deepClone() throws CloneNotSupportedException {
 		return new NSOFReal(this.getReal());
 	}
+
+	@Override
+	public String toString() {
+		return String.valueOf(getReal());
+	}
 }

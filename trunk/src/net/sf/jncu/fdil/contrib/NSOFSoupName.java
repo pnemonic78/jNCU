@@ -30,7 +30,8 @@ import net.sf.jncu.fdil.SymbolTooLongException;
 /**
  * Soup name.
  * <p>
- * A soup name must be shorter than 25 characters.
+ * A soup name must be shorter than 38 characters:<br>
+ * <tt>The userName is limited to 19 characters. You must ensure that the user's soup name doesn't exceed 19 characters if it will be used in multi-user mode.</tt>
  * 
  * @author Moshe
  */
@@ -55,8 +56,8 @@ public class NSOFSoupName extends NSOFString {
 
 	@Override
 	protected void setValue(String value) {
-		if ((value != null) && (value.length() >= 25))
-			throw new SymbolTooLongException();
+		if ((value != null) && (value.length() >= 38))
+			throw new SymbolTooLongException(value);
 		super.setValue(value);
 	}
 

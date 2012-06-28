@@ -19,13 +19,19 @@
  */
 package net.sf.jncu.data;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import net.sf.jncu.fdil.NSOFEncoder;
+import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.newton.os.ApplicationPackage;
 import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.Store;
@@ -39,7 +45,7 @@ import net.sf.jncu.newton.os.Store;
  * <li><tt>device</tt></li>
  * <li><tt>stores</tt>
  * <ul>
- * <li><tt>Internal</tt>
+ * <li>store #1
  * <ul>
  * <li><tt>store</tt></li>
  * <li><tt>packages</tt>
@@ -61,9 +67,8 @@ import net.sf.jncu.newton.os.Store;
  * </ul>
  * </ul>
  * </li>
- * <li>external store #1</li>
  * <li>...</li>
- * <li>external store #n</li>
+ * <li>store #n</li>
  * </ul>
  * </li>
  * </ul>
@@ -73,16 +78,19 @@ import net.sf.jncu.newton.os.Store;
  */
 public class Archive {
 
+	/** Character to mark entry as directory or folder. */
+	protected static final String DIRECTORY = "/";
+
 	/** Entry name for the device information. */
 	public static final String ENTRY_DEVICE = "device";
 	/** Entry name for the stores folder. */
-	public static final String ENTRY_STORES = "stores";
+	public static final String ENTRY_STORES = "stores" + DIRECTORY;
 	/** Entry name for the store information. */
 	public static final String ENTRY_STORE = "store";
 	/** Entry name for the packages folder. */
-	public static final String ENTRY_PACKAGES = "packages";
+	public static final String ENTRY_PACKAGES = "packages" + DIRECTORY;
 	/** Entry name for the soups folder. */
-	public static final String ENTRY_SOUPS = "soups";
+	public static final String ENTRY_SOUPS = "soups" + DIRECTORY;
 	/** Entry name for the soup information. */
 	public static final String ENTRY_SOUP = "soup";
 	/** Entry name for the entries database. */
@@ -146,18 +154,27 @@ public class Archive {
 	 *             if an I/O error occurs.
 	 */
 	public void save(File file) throws IOException {
-		FileOutputStream fout = null;
+		File parent = file.getParentFile();
+		File tmp;
+		OutputStream fout = null;
 		ZipOutputStream out = null;
-		// ZipEntry entryDevice = new
 
 		try {
-			fout = new FileOutputStream(file);
+			parent.mkdirs();
+			tmp = File.createTempFile("jncu", null, parent);
+			tmp.deleteOnExit();
+			fout = new BufferedOutputStream(new FileOutputStream(tmp));
 			out = new ZipOutputStream(fout);
 
-			// out.putNextEntry(entry);
-			out.closeEntry();
+			writeDevice(out);
+			writeStores(out);
 
 			out.finish();
+			out.close();
+			fout = null;
+			out = null;
+
+			tmp.renameTo(file);
 		} finally {
 			if (fout != null) {
 				try {
@@ -183,6 +200,14 @@ public class Archive {
 	 *             if an I/O error occurs.
 	 */
 	protected void writeDevice(ZipOutputStream out) throws IOException {
+		NewtonInfo info = getDeviceInfo();
+		if (info == null)
+			return;
+		ZipEntry entry = new ZipEntry(ENTRY_DEVICE);
+		out.putNextEntry(entry);
+		NSOFFrame frame = info.toFrame();
+		NSOFEncoder encoder = new NSOFEncoder();
+		encoder.flatten(frame, out);
 	}
 
 	/**
@@ -194,6 +219,16 @@ public class Archive {
 	 *             if an I/O error occurs.
 	 */
 	protected void writeStores(ZipOutputStream out) throws IOException {
+		ZipEntry entry = new ZipEntry(ENTRY_STORES);
+		out.putNextEntry(entry);
+
+		List<Store> stores = getStores();
+		int size = stores.size();
+		Store store;
+		for (int i = 0; i < size; i++) {
+			store = stores.get(i);
+			writeStore(out, entry, store, String.valueOf(i));
+		}
 	}
 
 	/**
@@ -201,12 +236,27 @@ public class Archive {
 	 * 
 	 * @param out
 	 *            the output.
+	 * @param parent
+	 *            the parent entry.
 	 * @param store
 	 *            the store.
+	 * @param id
+	 *            the file-system-friendly id.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected void writeStore(ZipOutputStream out, Store store) throws IOException {
+	protected void writeStore(ZipOutputStream out, ZipEntry parent, Store store, String id) throws IOException {
+		ZipEntry entry = new ZipEntry(parent.getName() + id + DIRECTORY);
+		out.putNextEntry(entry);
+
+		ZipEntry entryStore = new ZipEntry(entry.getName() + ENTRY_STORE);
+		out.putNextEntry(entryStore);
+		NSOFFrame frame = store.toFrame();
+		NSOFEncoder encoder = new NSOFEncoder();
+		encoder.flatten(frame, out);
+
+		writePackages(out, entry, store);
+		writeSoups(out, entry, store);
 	}
 
 	/**
@@ -214,23 +264,20 @@ public class Archive {
 	 * 
 	 * @param out
 	 *            the output.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
-	protected void writePackages(ZipOutputStream out) throws IOException {
-	}
-
-	/**
-	 * Write the soups.
-	 * 
-	 * @param out
-	 *            the output.
+	 * @param parent
+	 *            the parent entry.
 	 * @param store
 	 *            the store.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected void writeSoups(ZipOutputStream out, Store store) throws IOException {
+	protected void writePackages(ZipOutputStream out, ZipEntry parent, Store store) throws IOException {
+		ZipEntry entry = new ZipEntry(parent.getName() + ENTRY_PACKAGES);
+		out.putNextEntry(entry);
+
+		for (ApplicationPackage pkg : store.getPackages()) {
+			writePackage(out, entry, pkg);
+		}
 	}
 
 	/**
@@ -238,12 +285,66 @@ public class Archive {
 	 * 
 	 * @param out
 	 *            the output.
-	 * @param soup
-	 *            the soup.
+	 * @param parent
+	 *            the parent entry.
+	 * @param pkg
+	 *            the package.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected void writeSoup(ZipOutputStream out, Soup soup) throws IOException {
+	protected void writePackage(ZipOutputStream out, ZipEntry parent, ApplicationPackage pkg) throws IOException {
+	}
+
+	/**
+	 * Write the soups.
+	 * 
+	 * @param out
+	 *            the output.
+	 * @param parent
+	 *            the parent entry.
+	 * @param store
+	 *            the store.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected void writeSoups(ZipOutputStream out, ZipEntry parent, Store store) throws IOException {
+		ZipEntry entry = new ZipEntry(parent.getName() + ENTRY_SOUPS);
+		out.putNextEntry(entry);
+
+		List<Soup> soups = store.getSoups();
+		int size = soups.size();
+		Soup soup;
+		for (int i = 0; i < size; i++) {
+			soup = soups.get(i);
+			writeSoup(out, entry, soup, String.valueOf(i));
+		}
+	}
+
+	/**
+	 * Write a soup.
+	 * 
+	 * @param out
+	 *            the output.
+	 * @param parent
+	 *            the parent entry.
+	 * @param soup
+	 *            the soup.
+	 * @param id
+	 *            the file-system-friendly id.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected void writeSoup(ZipOutputStream out, ZipEntry parent, Soup soup, String id) throws IOException {
+		ZipEntry entry = new ZipEntry(parent.getName() + id + DIRECTORY);
+		out.putNextEntry(entry);
+
+		ZipEntry entryStore = new ZipEntry(entry.getName() + ENTRY_SOUP);
+		out.putNextEntry(entryStore);
+		NSOFFrame frame = soup.toFrame();
+		NSOFEncoder encoder = new NSOFEncoder();
+		encoder.flatten(frame, out);
+
+		writeSoupEntries(out, entry, soup);
 	}
 
 	/**
@@ -251,11 +352,15 @@ public class Archive {
 	 * 
 	 * @param out
 	 *            the output.
+	 * @param parent
+	 *            the parent entry.
 	 * @param soup
 	 *            the soup.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected void writeSoupEntries(ZipOutputStream out, Soup soup) throws IOException {
+	protected void writeSoupEntries(ZipOutputStream out, ZipEntry parent, Soup soup) throws IOException {
+		ZipEntry entry = new ZipEntry(parent.getName() + ENTRY_ENTRIES);
+		out.putNextEntry(entry);
 	}
 }

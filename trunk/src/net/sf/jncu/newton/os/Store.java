@@ -87,7 +87,7 @@ public class Store {
 	private int password;
 	private int version;
 	private final List<Soup> soups = new ArrayList<Soup>();
-	private final List<Package> packages = new ArrayList<Package>();
+	private final List<ApplicationPackage> packages = new ArrayList<ApplicationPackage>();
 
 	/**
 	 * Creates a new store.
@@ -126,9 +126,6 @@ public class Store {
 			}
 			frame.put(SLOT_SOUPS, new NSOFPlainArray(names));
 			frame.put(SLOT_SIGNATURES, new NSOFPlainArray(signatures));
-		}
-		if (getVersion() != 0) {
-			frame.put(SLOT_VERSION, new NSOFInteger(getVersion()));
 		}
 		return frame;
 	}
@@ -509,7 +506,7 @@ public class Store {
 	 * 
 	 * @return the packages.
 	 */
-	public List<Package> getPackages() {
+	public List<ApplicationPackage> getPackages() {
 		return packages;
 	}
 
@@ -519,7 +516,7 @@ public class Store {
 	 * @param packages
 	 *            the packages.
 	 */
-	public void setPackages(List<Package> packages) {
+	public void setPackages(List<ApplicationPackage> packages) {
 		this.packages.clear();
 		if (packages != null)
 			this.packages.addAll(packages);

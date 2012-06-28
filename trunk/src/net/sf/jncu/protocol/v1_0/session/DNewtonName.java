@@ -83,9 +83,9 @@ public class DNewtonName extends DockCommandFromNewton {
 		info.setNewtonId(ntohl(data)); // #1
 		info.setManufacturerId(ntohl(data)); // #2
 		info.setMachineType(ntohl(data)); // #3
-		info.setRomVersion(ntohl(data)); // #4
-		info.setRomStage(ntohl(data)); // #5
-		info.setRamSize(ntohl(data)); // #6
+		info.setROMVersion(ntohl(data)); // #4
+		info.setROMStage(ntohl(data)); // #5
+		info.setRAMSize(ntohl(data)); // #6
 		info.setScreenHeight(ntohl(data)); // #7
 		info.setScreenWidth(ntohl(data)); // #8
 		info.setPatchVersion(ntohl(data)); // #9
