@@ -72,8 +72,7 @@ public class DSoupNames extends DockCommandFromNewton {
 
 		for (int i = 0; i < length; i++) {
 			entry = entries[i];
-			soup = new Soup();
-			soup.setName(((NSOFString) entry).getValue());
+			soup = new Soup(((NSOFString) entry).getValue());
 			soups.add(soup);
 		}
 

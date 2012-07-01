@@ -56,7 +56,7 @@ import net.sf.jncu.fdil.contrib.NSOFSoupName;
  * 
  * @author moshew
  */
-public class Soup {
+public class Soup implements Comparable<Soup> {
 
 	protected static final NSOFSymbol SLOT_NAME = new NSOFSymbol("name");
 	protected static final NSOFSymbol SLOT_SIGNATURE = new NSOFSymbol("signature");
@@ -71,14 +71,20 @@ public class Soup {
 	protected static final NSOFSymbol SLOT_OWNER_APP = new NSOFSymbol("ownerApp");
 	protected static final NSOFSymbol SLOT_BACKUP = new NSOFSymbol("NCKLastBackupTime");
 
-	private NSOFFrame info;
+	private String name;
+	private final NSOFFrame info;
 	private final Set<SoupEntry> entries = new TreeSet<SoupEntry>();
 
 	/**
 	 * Creates a new soup.
+	 * 
+	 * @param name
+	 *            the soup name.
 	 */
-	public Soup() {
+	public Soup(String name) {
 		super();
+		this.info = new NSOFFrame();
+		setName(name);
 	}
 
 	/**
@@ -87,15 +93,7 @@ public class Soup {
 	 * @return the name.
 	 */
 	public String getName() {
-		NSOFObject value = getInformation().get(SLOT_NAME);
-		if (NSOFImmediate.isNil(value)) {
-			value = getDefinition().get(SLOT_NAME);
-		}
-		if (!NSOFImmediate.isNil(value)) {
-			NSOFString s = (NSOFString) value;
-			return s.getValue();
-		}
-		return null;
+		return name;
 	}
 
 	/**
@@ -104,7 +102,8 @@ public class Soup {
 	 * @param name
 	 *            the name.
 	 */
-	public void setName(String name) {
+	private void setName(String name) {
+		this.name = name;
 		getInformation().put(SLOT_NAME, new NSOFString(name));
 	}
 
@@ -196,9 +195,8 @@ public class Soup {
 	 */
 	public NSOFFrame toFrame() {
 		NSOFFrame frame = new NSOFFrame();
+		frame.putAll(getInformation());
 		frame.put(SLOT_NAME, new NSOFSoupName(getName()));
-		if (getSignature() != 0)
-			frame.put(SLOT_SIGNATURE, new NSOFInteger(getSignature()));
 		return frame;
 	}
 
@@ -212,6 +210,19 @@ public class Soup {
 		NSOFFrame info = new NSOFFrame();
 		info.putAll(frame);
 		setInformation(info);
+
+		if (this.name == null) {
+			NSOFObject value = info.get(SLOT_NAME);
+			if (NSOFImmediate.isNil(value)) {
+				NSOFFrame soupDef = (NSOFFrame) info.get(SLOT_SOUP_DEF);
+				if (soupDef != null)
+					value = soupDef.get(SLOT_NAME);
+			}
+			if (!NSOFImmediate.isNil(value)) {
+				NSOFString s = (NSOFString) value;
+				this.name = s.getValue();
+			}
+		}
 	}
 
 	/**
@@ -220,8 +231,6 @@ public class Soup {
 	 * @return the information.
 	 */
 	public NSOFFrame getInformation() {
-		if (info == null)
-			info = new NSOFFrame();
 		return info;
 	}
 
@@ -232,7 +241,11 @@ public class Soup {
 	 *            the information.
 	 */
 	public void setInformation(NSOFFrame info) {
-		this.info = info;
+		this.info.clear();
+		if (info != null) {
+			this.info.putAll(info);
+		}
+		this.info.put(SLOT_NAME, new NSOFString(name));
 	}
 
 	/**
@@ -247,9 +260,43 @@ public class Soup {
 		}
 		return soupDef;
 	}
-	
+
 	@Override
 	public String toString() {
-		return getName();
+		return info.toString();
+	}
+
+	@Override
+	public int hashCode() {
+		return (name == null) ? 0 : name.hashCode();
+	}
+
+	@Override
+	public int compareTo(Soup that) {
+		int n = 0;
+		if (this.name == null) {
+			if (that.name != null) {
+				return -1;
+			}
+		} else if (that.name == null) {
+			return 1;
+		} else {
+			n = this.name.compareTo(that.name);
+		}
+		if (n != 0)
+			return n;
+		n = this.getSignature() - that.getSignature();
+		return 0;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj instanceof Soup) {
+			Soup that = (Soup) obj;
+			return compareTo(that) == 0;
+		}
+		return super.equals(obj);
 	}
 }

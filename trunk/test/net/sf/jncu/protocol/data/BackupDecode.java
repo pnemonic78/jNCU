@@ -7,6 +7,7 @@ import java.util.List;
 
 import net.sf.jncu.cdil.mnp.TraceDecode;
 import net.sf.jncu.data.Archive;
+import net.sf.jncu.data.ArchiveWriter;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.DockCommandListener;
@@ -101,13 +102,15 @@ public class BackupDecode extends TraceDecode implements DockCommandListener {
 			return;
 		String dir = System.getProperty("user.dir");
 		File f = new File(dir, "Backups/backup.zip");
+		ArchiveWriter writer;
 		try {
-			archive.save(f);
+			writer = new ArchiveWriter(f);
+			writer.write(archive);
 			done = true;
 			System.out.println("archive saved to " + f);
 			System.exit(0);
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

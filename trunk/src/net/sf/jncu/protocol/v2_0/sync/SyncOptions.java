@@ -165,8 +165,8 @@ public class SyncOptions {
 			NSOFObject[] entries = arr.getValue();
 			Store store;
 			for (NSOFObject entry : entries) {
-				store = new Store();
-				store.decode((NSOFFrame) entry);
+				store = new Store(null);
+				store.decodeFrame((NSOFFrame) entry);
 			}
 			setStores(stores);
 		}

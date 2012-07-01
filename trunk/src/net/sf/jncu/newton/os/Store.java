@@ -20,18 +20,19 @@
 package net.sf.jncu.newton.os;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.sf.jncu.fdil.NSOFArray;
+import net.sf.jncu.fdil.NSOFBoolean;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFImmediate;
 import net.sf.jncu.fdil.NSOFInteger;
-import net.sf.jncu.fdil.NSOFNil;
 import net.sf.jncu.fdil.NSOFObject;
-import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.NSOFSymbol;
-import net.sf.jncu.fdil.NSOFTrue;
 
 /**
  * Store information.
@@ -54,7 +55,7 @@ import net.sf.jncu.fdil.NSOFTrue;
  * 
  * @author moshew
  */
-public class Store {
+public class Store implements Comparable<Store> {
 
 	/** Internal storage card. */
 	public static final String KIND_INTERNAL = "Internal";
@@ -77,23 +78,20 @@ public class Store {
 	protected static final NSOFSymbol SLOT_INFO_LAST_RESTORE = new NSOFSymbol("lastrestorefromcard");
 
 	private String name;
-	private int signature;
-	private int totalSize;
-	private int usedSize;
-	private String kind;
-	private NSOFFrame info;
-	private boolean readOnly;
-	private boolean defaultStore;
-	private int password;
-	private int version;
-	private final List<Soup> soups = new ArrayList<Soup>();
+	private final NSOFFrame frame;
+	private final Set<Soup> soups = new HashSet<Soup>();
 	private final List<ApplicationPackage> packages = new ArrayList<ApplicationPackage>();
 
 	/**
 	 * Creates a new store.
+	 * 
+	 * @param name
+	 *            the store name.
 	 */
-	public Store() {
+	public Store(String name) {
 		super();
+		this.frame = new NSOFFrame();
+		setName(name);
 	}
 
 	/**
@@ -102,31 +100,33 @@ public class Store {
 	 * @return the frame.
 	 */
 	public NSOFFrame toFrame() {
-		NSOFFrame frame = new NSOFFrame();
-		frame.put(SLOT_NAME, new NSOFString(getName()));
-		frame.put(SLOT_SIGNATURE, new NSOFInteger(getSignature()));
-		frame.put(SLOT_TOTALSIZE, new NSOFInteger(getTotalSize()));
-		frame.put(SLOT_USEDSIZE, new NSOFInteger(getUsedSize()));
-		frame.put(SLOT_KIND, new NSOFString(getKind()));
-		frame.put(SLOT_INFO, getInfo());
-		frame.put(SLOT_READONLY, isReadOnly() ? new NSOFTrue() : new NSOFNil());
-		frame.put(SLOT_DEFAULT, isDefaultStore() ? new NSOFTrue() : new NSOFNil());
-		if (getPassword() != 0) {
-			frame.put(SLOT_PASSWORD, new NSOFInteger(getPassword()));
-		}
-		List<Soup> soups = getSoups();
-		if (!soups.isEmpty()) {
-			NSOFString[] names = new NSOFString[soups.size()];
-			NSOFInteger[] signatures = new NSOFInteger[names.length];
-			int i = 0;
-			for (Soup soup : soups) {
-				names[i] = new NSOFString(soup.getName());
-				signatures[i] = new NSOFInteger(soup.getSignature());
-				i++;
-			}
-			frame.put(SLOT_SOUPS, new NSOFPlainArray(names));
-			frame.put(SLOT_SIGNATURES, new NSOFPlainArray(signatures));
-		}
+		// NSOFFrame frame = new NSOFFrame();
+		// frame.put(SLOT_NAME, new NSOFString(getName()));
+		// frame.put(SLOT_SIGNATURE, new NSOFInteger(getSignature()));
+		// frame.put(SLOT_TOTALSIZE, new NSOFInteger(getTotalSize()));
+		// frame.put(SLOT_USEDSIZE, new NSOFInteger(getUsedSize()));
+		// frame.put(SLOT_KIND, new NSOFString(getKind()));
+		// frame.put(SLOT_INFO, getInformation());
+		// frame.put(SLOT_READONLY, isReadOnly() ? new NSOFTrue() : new
+		// NSOFNil());
+		// frame.put(SLOT_DEFAULT, isDefaultStore() ? new NSOFTrue() : new
+		// NSOFNil());
+		// if (getPassword() != 0) {
+		// frame.put(SLOT_PASSWORD, new NSOFInteger(getPassword()));
+		// }
+		// List<Soup> soups = getSoups();
+		// if (!soups.isEmpty()) {
+		// NSOFString[] names = new NSOFString[soups.size()];
+		// NSOFInteger[] signatures = new NSOFInteger[names.length];
+		// int i = 0;
+		// for (Soup soup : soups) {
+		// names[i] = new NSOFString(soup.getName());
+		// signatures[i] = new NSOFInteger(soup.getSignature());
+		// i++;
+		// }
+		// frame.put(SLOT_SOUPS, new NSOFPlainArray(names));
+		// frame.put(SLOT_SIGNATURES, new NSOFPlainArray(signatures));
+		// }
 		return frame;
 	}
 
@@ -136,67 +136,11 @@ public class Store {
 	 * @param frame
 	 *            the frame.
 	 */
-	public void decode(NSOFFrame frame) {
+	public void decodeFrame(NSOFFrame frame) {
 		NSOFObject value;
-		NSOFFrame info;
-		boolean hasDefaultStore = false;
 
-		value = frame.get(SLOT_DEFAULT);
-		setDefaultStore(false);
-		if (value != null) {
-			NSOFImmediate imm = (NSOFImmediate) value;
-			setDefaultStore(imm.isTrue());
-			hasDefaultStore = true;
-		}
-
-		value = frame.get(SLOT_INFO);
-		setInfo(null);
-		if ((value != null) && !NSOFImmediate.isNil(value)) {
-			info = (NSOFFrame) value;
-			setInfo(info);
-			if (!hasDefaultStore) {
-				value = info.get(SLOT_INFO_DEFAULT);
-				if (value != null) {
-					NSOFImmediate imm = (NSOFImmediate) value;
-					setDefaultStore(imm.isTrue());
-				}
-			}
-		}
-
-		value = frame.get(SLOT_KIND);
-		setKind(null);
-		if (value != null) {
-			NSOFString s = (NSOFString) value;
-			setKind(s.getValue());
-		}
-
-		value = frame.get(SLOT_NAME);
-		setName(null);
-		if (value != null) {
-			NSOFString s = (NSOFString) value;
-			setName(s.getValue());
-		}
-
-		value = frame.get(SLOT_PASSWORD);
-		setPassword(0);
-		if (value != null) {
-			NSOFImmediate imm = (NSOFImmediate) value;
-			setPassword(imm.getValue());
-		}
-
-		value = frame.get(SLOT_READONLY);
-		setReadOnly(false);
-		if (value != null) {
-			NSOFImmediate imm = (NSOFImmediate) value;
-			setReadOnly(imm.isTrue());
-		}
-
-		value = frame.get(SLOT_SIGNATURE);
-		setSignature(0);
-		if (value != null) {
-			NSOFImmediate imm = (NSOFImmediate) value;
-			setSignature(imm.getValue());
-		}
+		this.frame.clear();
+		this.frame.putAll(frame);
 
 		value = frame.get(SLOT_SOUPS);
 		setSoups(null);
@@ -208,14 +152,14 @@ public class Store {
 			String name;
 			for (NSOFObject entry : entries) {
 				name = ((NSOFString) entry).getValue();
-				soup = new Soup();
-				soup.setName(name);
+				soup = new Soup(name);
+				soups.add(soup);
 			}
 			setSoups(soups);
 		}
 
 		value = frame.get(SLOT_SIGNATURES);
-		setSoupSignatures(null);
+		// setSoupSignatures(null);
 		if (!NSOFImmediate.isNil(value)) {
 			NSOFArray arr = (NSOFArray) value;
 			List<Integer> signatures = new ArrayList<Integer>();
@@ -226,25 +170,12 @@ public class Store {
 			setSoupSignatures(signatures);
 		}
 
-		value = frame.get(SLOT_TOTALSIZE);
-		setTotalSize(0);
-		if (value != null) {
-			NSOFImmediate imm = (NSOFImmediate) value;
-			setTotalSize(imm.getValue());
-		}
-
-		value = frame.get(SLOT_USEDSIZE);
-		setUsedSize(0);
-		if (value != null) {
-			NSOFImmediate imm = (NSOFImmediate) value;
-			setUsedSize(imm.getValue());
-		}
-
-		value = frame.get(SLOT_VERSION);
-		setVersion(0);
-		if (value != null) {
-			NSOFImmediate imm = (NSOFImmediate) value;
-			setVersion(imm.getValue());
+		if (this.name == null) {
+			value = frame.get(SLOT_NAME);
+			if (!NSOFImmediate.isNil(value)) {
+				NSOFString s = (NSOFString) value;
+				this.name = s.getValue();
+			}
 		}
 	}
 
@@ -263,7 +194,7 @@ public class Store {
 	 * @param name
 	 *            the name.
 	 */
-	public void setName(String name) {
+	private void setName(String name) {
 		this.name = name;
 	}
 
@@ -273,7 +204,12 @@ public class Store {
 	 * @return the signature.
 	 */
 	public int getSignature() {
-		return signature;
+		NSOFObject value = frame.get(SLOT_SIGNATURE);
+		if (value != null) {
+			NSOFImmediate imm = (NSOFImmediate) value;
+			return imm.getValue();
+		}
+		return 0;
 	}
 
 	/**
@@ -283,7 +219,7 @@ public class Store {
 	 *            the signature.
 	 */
 	public void setSignature(int signature) {
-		this.signature = signature;
+		frame.put(SLOT_SIGNATURE, new NSOFInteger(signature));
 	}
 
 	/**
@@ -292,17 +228,12 @@ public class Store {
 	 * @return the size.
 	 */
 	public int getTotalSize() {
-		return totalSize;
-	}
-
-	/**
-	 * Set the total size.
-	 * 
-	 * @param totalSize
-	 *            the size.
-	 */
-	public void setTotalSize(int totalSize) {
-		this.totalSize = totalSize;
+		NSOFObject value = frame.get(SLOT_TOTALSIZE);
+		if (value != null) {
+			NSOFImmediate imm = (NSOFImmediate) value;
+			return imm.getValue();
+		}
+		return 0;
 	}
 
 	/**
@@ -311,17 +242,12 @@ public class Store {
 	 * @return the size.
 	 */
 	public int getUsedSize() {
-		return usedSize;
-	}
-
-	/**
-	 * Set the used size.
-	 * 
-	 * @param usedSize
-	 *            the size.
-	 */
-	public void setUsedSize(int usedSize) {
-		this.usedSize = usedSize;
+		NSOFObject value = frame.get(SLOT_USEDSIZE);
+		if (value != null) {
+			NSOFImmediate imm = (NSOFImmediate) value;
+			return imm.getValue();
+		}
+		return 0;
 	}
 
 	/**
@@ -330,7 +256,12 @@ public class Store {
 	 * @return the kind.
 	 */
 	public String getKind() {
-		return kind;
+		NSOFObject value = frame.get(SLOT_KIND);
+		if (!NSOFImmediate.isNil(value)) {
+			NSOFString s = (NSOFString) value;
+			return s.getValue();
+		}
+		return null;
 	}
 
 	/**
@@ -340,7 +271,7 @@ public class Store {
 	 *            the kind.
 	 */
 	public void setKind(String kind) {
-		this.kind = kind;
+		frame.put(SLOT_KIND, new NSOFString(kind));
 	}
 
 	/**
@@ -348,7 +279,15 @@ public class Store {
 	 * 
 	 * @return the information.
 	 */
-	public NSOFFrame getInfo() {
+	public NSOFFrame getInformation() {
+		NSOFObject value = frame.get(SLOT_INFO);
+		if (!NSOFImmediate.isNil(value)) {
+			return (NSOFFrame) value;
+		}
+
+		NSOFFrame info = new NSOFFrame();
+		frame.put(SLOT_INFO, info);
+
 		return info;
 	}
 
@@ -358,8 +297,12 @@ public class Store {
 	 * @param info
 	 *            the information.
 	 */
-	public void setInfo(NSOFFrame info) {
-		this.info = info;
+	public void setInformation(NSOFFrame info) {
+		NSOFFrame myInfo = getInformation();
+		myInfo.clear();
+		if (info != null)
+			myInfo.putAll(info);
+		myInfo.put(SLOT_NAME, new NSOFString(name));
 	}
 
 	/**
@@ -368,7 +311,12 @@ public class Store {
 	 * @return true if read-only.
 	 */
 	public boolean isReadOnly() {
-		return readOnly;
+		NSOFObject value = frame.get(SLOT_READONLY);
+		if (value != null) {
+			NSOFImmediate imm = (NSOFImmediate) value;
+			return imm.isTrue();
+		}
+		return false;
 	}
 
 	/**
@@ -378,7 +326,7 @@ public class Store {
 	 *            true if read-only.
 	 */
 	public void setReadOnly(boolean readOnly) {
-		this.readOnly = readOnly;
+		frame.put(SLOT_READONLY, NSOFBoolean.valueOf(readOnly));
 	}
 
 	/**
@@ -387,7 +335,19 @@ public class Store {
 	 * @return true if the default store.
 	 */
 	public boolean isDefaultStore() {
-		return defaultStore;
+		NSOFObject value = frame.get(SLOT_DEFAULT);
+		if (!NSOFImmediate.isNil(value)) {
+			NSOFImmediate imm = (NSOFImmediate) value;
+			return imm.isTrue();
+		}
+
+		value = getInformation().get(SLOT_INFO_DEFAULT);
+		if (value != null) {
+			NSOFImmediate imm = (NSOFImmediate) value;
+			return imm.isTrue();
+		}
+
+		return false;
 	}
 
 	/**
@@ -397,7 +357,9 @@ public class Store {
 	 *            true if the default store.
 	 */
 	public void setDefaultStore(boolean defaultStore) {
-		this.defaultStore = defaultStore;
+		NSOFBoolean value = NSOFBoolean.valueOf(defaultStore);
+		frame.put(SLOT_DEFAULT, value);
+		getInformation().put(SLOT_INFO_DEFAULT, value);
 	}
 
 	/**
@@ -406,7 +368,12 @@ public class Store {
 	 * @return the password.
 	 */
 	public int getPassword() {
-		return password;
+		NSOFObject value = frame.get(SLOT_PASSWORD);
+		if (value != null) {
+			NSOFImmediate imm = (NSOFImmediate) value;
+			return imm.getValue();
+		}
+		return 0;
 	}
 
 	/**
@@ -416,7 +383,7 @@ public class Store {
 	 *            the password.
 	 */
 	public void setPassword(int password) {
-		this.password = password;
+		frame.put(SLOT_PASSWORD, new NSOFInteger(password));
 	}
 
 	/**
@@ -425,7 +392,12 @@ public class Store {
 	 * @return the version.
 	 */
 	public int getVersion() {
-		return version;
+		NSOFObject value = frame.get(SLOT_VERSION);
+		if (value != null) {
+			NSOFImmediate imm = (NSOFImmediate) value;
+			return imm.getValue();
+		}
+		return 0;
 	}
 
 	/**
@@ -435,7 +407,7 @@ public class Store {
 	 *            the version.
 	 */
 	public void setVersion(int version) {
-		this.version = version;
+		frame.put(SLOT_VERSION, new NSOFInteger(version));
 	}
 
 	/**
@@ -443,7 +415,7 @@ public class Store {
 	 * 
 	 * @return the soups.
 	 */
-	public List<Soup> getSoups() {
+	public Collection<Soup> getSoups() {
 		return soups;
 	}
 
@@ -453,7 +425,7 @@ public class Store {
 	 * @param soups
 	 *            the soups.
 	 */
-	public void setSoups(List<Soup> soups) {
+	public void setSoups(Collection<Soup> soups) {
 		this.soups.clear();
 		if (soups != null)
 			this.soups.addAll(soups);
@@ -479,14 +451,12 @@ public class Store {
 	 *            the signatures.
 	 */
 	public void setSoupSignatures(List<Integer> soupSignatures) {
-		List<Soup> soups = getSoups();
+		Collection<Soup> soups = getSoups();
 		if (soups == null)
 			return;
-		final int size = soups.size();
-		Soup soup;
-		for (int i = 0; i < size; i++) {
-			soup = soups.get(i);
-			soup.setSignature((soupSignatures == null) ? 0 : soupSignatures.get(i));
+		int i = 0;
+		for (Soup soup : soups) {
+			soup.setSignature((soupSignatures == null) ? 0 : soupSignatures.get(i++));
 		}
 	}
 
@@ -527,6 +497,23 @@ public class Store {
 	 * 
 	 * @param name
 	 *            the soup name.
+	 * @return the soup - {@code null} otherwise.
+	 */
+	public Soup findSoup(String name) {
+		if (name == null)
+			return null;
+		for (Soup soup : getSoups()) {
+			if (name.equals(soup.getName()))
+				return soup;
+		}
+		return null;
+	}
+
+	/**
+	 * Find a soup.
+	 * 
+	 * @param name
+	 *            the soup name.
 	 * @param signature
 	 *            the soup signature.
 	 * 
@@ -544,6 +531,40 @@ public class Store {
 
 	@Override
 	public String toString() {
-		return getName();
+		return frame.toString();
+	}
+
+	@Override
+	public int hashCode() {
+		return (name == null) ? 0 : name.hashCode();
+	}
+
+	@Override
+	public int compareTo(Store that) {
+		int n = 0;
+		if (this.name == null) {
+			if (that.name != null) {
+				return -1;
+			}
+		} else if (that.name == null) {
+			return 1;
+		} else {
+			n = this.name.compareTo(that.name);
+		}
+		if (n != 0)
+			return n;
+		n = this.getSignature() - that.getSignature();
+		return 0;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj instanceof Store) {
+			Store that = (Store) obj;
+			return compareTo(that) == 0;
+		}
+		return super.equals(obj);
 	}
 }
