@@ -76,4 +76,15 @@ public class NSOFBoolean extends NSOFImmediate {
 	public NSOFObject deepClone() throws CloneNotSupportedException {
 		return isTrue() ? TRUE : FALSE;
 	}
+
+	/**
+	 * Get the boolean object.
+	 * 
+	 * @param value
+	 *            the boolean value.
+	 * @return
+	 */
+	public static NSOFBoolean valueOf(boolean value) {
+		return value ? TRUE : FALSE;
+	}
 }
