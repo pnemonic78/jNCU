@@ -7,6 +7,7 @@ import java.util.List;
 
 import net.sf.jncu.cdil.mnp.TraceDecode;
 import net.sf.jncu.data.Archive;
+import net.sf.jncu.data.ArchiveReader;
 import net.sf.jncu.data.ArchiveWriter;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.Store;
@@ -50,6 +51,7 @@ public class BackupDecode extends TraceDecode implements DockCommandListener {
 			decoder = new BackupDecode();
 			decoder.setFile(f);
 			decoder.run();
+			// unzip(args);
 			if (!Boolean.getBoolean("debug")) {
 				Thread.sleep(1000L);
 				System.exit(0);// Kill all threads.
@@ -57,6 +59,17 @@ public class BackupDecode extends TraceDecode implements DockCommandListener {
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
+	}
+
+	protected static void unzip(String[] args) throws Exception {
+		String dir = System.getProperty("user.dir");
+		File f = new File(dir, "Backups/backup.zip");
+		ArchiveReader reader;
+		Archive archive = null;
+		reader = new ArchiveReader(f);
+		archive = reader.read();
+		System.out.println("archive read from " + f);
+		System.out.println("archive=" + archive);
 	}
 
 	@Override
