@@ -279,20 +279,4 @@ public class ArchiveReader {
 	 */
 	protected void readSoupEntries(Archive archive, ZipInputStream in, ZipEntry entry, Soup soup) throws IOException {
 	}
-
-	public static void main(String[] args) {
-		String dir = System.getProperty("user.dir");
-		File f = new File(dir, "Backups/backup.zip");
-		ArchiveReader reader;
-		Archive archive = null;
-		try {
-			reader = new ArchiveReader(f);
-			archive = reader.read();
-			System.out.println("archive read from " + f);
-			System.out.println("archive=" + archive);
-			System.exit(0);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }
