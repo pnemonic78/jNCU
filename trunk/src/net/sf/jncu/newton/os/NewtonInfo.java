@@ -23,6 +23,7 @@ import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFInteger;
 import net.sf.jncu.fdil.NSOFReal;
 import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.fdil.NSOFSymbol;
 
 /**
  * Newton version information.
@@ -37,6 +38,24 @@ public class NewtonInfo {
 	public static final int FRENCH = 1;
 	/** German. */
 	public static final int GERMAN = 2;
+
+	public static final NSOFSymbol SLOT_NAME = new NSOFSymbol("name");
+	public static final NSOFSymbol SLOT_ID = new NSOFSymbol("newtonId");
+	public static final NSOFSymbol SLOT_MANUFACTURER = new NSOFSymbol("manufacturerId");
+	public static final NSOFSymbol SLOT_MACHINE = new NSOFSymbol("machineType");
+	public static final NSOFSymbol SLOT_ROM_VERSION = new NSOFSymbol("romVersion");
+	public static final NSOFSymbol SLOT_ROM_STAGE = new NSOFSymbol("romStage");
+	public static final NSOFSymbol SLOT_RAM_SIZE = new NSOFSymbol("ramSize");
+	public static final NSOFSymbol SLOT_SCREEN_HEIGHT = new NSOFSymbol("screenHeight");
+	public static final NSOFSymbol SLOT_SCREEN_WIDTH = new NSOFSymbol("screenWidth");
+	public static final NSOFSymbol SLOT_PATCH = new NSOFSymbol("patchVersion");
+	public static final NSOFSymbol SLOT_OBJECTS = new NSOFSymbol("objectSystemVersion");
+	public static final NSOFSymbol SLOT_INTERNAL_SIGNATURE = new NSOFSymbol("internalStoreSignature");
+	public static final NSOFSymbol SLOT_SCREEN_VERTICAL = new NSOFSymbol("screenResolutionVertical");
+	public static final NSOFSymbol SLOT_SCREEN_HORIZONTAL = new NSOFSymbol("screenResolutionHorizontal");
+	public static final NSOFSymbol SLOT_SCREEN_DEPTH = new NSOFSymbol("screenDepth");
+	public static final NSOFSymbol SLOT_SERIAL = new NSOFSymbol("serialNumber");
+	public static final NSOFSymbol SLOT_PROTOCOL = new NSOFSymbol("targetProtocol");
 
 	private String name;
 	private int newtonId;
@@ -477,24 +496,49 @@ public class NewtonInfo {
 	public NSOFFrame toFrame() {
 		NSOFFrame frame = new NSOFFrame();
 
-		frame.put("name", new NSOFString(getName()));
-		frame.put("newtonId", new NSOFInteger(getNewtonId()));
-		frame.put("manufacturerId", new NSOFInteger(getManufacturerId()));
-		frame.put("machineType", new NSOFInteger(getMachineType()));
-		frame.put("romVersion", new NSOFInteger(getROMVersion()));
-		frame.put("romStage", new NSOFInteger(getROMStage()));
-		frame.put("ramSize", new NSOFInteger(getRAMSize()));
-		frame.put("screenHeight", new NSOFInteger(getScreenHeight()));
-		frame.put("screenWidth", new NSOFInteger(getScreenWidth()));
-		frame.put("patchVersion", new NSOFInteger(getPatchVersion()));
-		frame.put("objectSystemVersion", new NSOFInteger(getObjectSystemVersion()));
-		frame.put("internalStoreSignature", new NSOFInteger(getInternalStoreSignature()));
-		frame.put("screenResolutionVertical", new NSOFInteger(getScreenResolutionVertical()));
-		frame.put("screenResolutionHorizontal", new NSOFInteger(getScreenResolutionHorizontal()));
-		frame.put("screenDepth", new NSOFInteger(getScreenDepth()));
-		frame.put("serialNumber", new NSOFReal(getSerialNumber()));
-		frame.put("targetProtocol", new NSOFInteger(getTargetProtocol()));
+		frame.put(SLOT_NAME, new NSOFString(getName()));
+		frame.put(SLOT_ID, new NSOFInteger(getNewtonId()));
+		frame.put(SLOT_MANUFACTURER, new NSOFInteger(getManufacturerId()));
+		frame.put(SLOT_MACHINE, new NSOFInteger(getMachineType()));
+		frame.put(SLOT_ROM_VERSION, new NSOFInteger(getROMVersion()));
+		frame.put(SLOT_ROM_STAGE, new NSOFInteger(getROMStage()));
+		frame.put(SLOT_RAM_SIZE, new NSOFInteger(getRAMSize()));
+		frame.put(SLOT_SCREEN_HEIGHT, new NSOFInteger(getScreenHeight()));
+		frame.put(SLOT_SCREEN_WIDTH, new NSOFInteger(getScreenWidth()));
+		frame.put(SLOT_PATCH, new NSOFInteger(getPatchVersion()));
+		frame.put(SLOT_OBJECTS, new NSOFInteger(getObjectSystemVersion()));
+		frame.put(SLOT_INTERNAL_SIGNATURE, new NSOFInteger(getInternalStoreSignature()));
+		frame.put(SLOT_SCREEN_VERTICAL, new NSOFInteger(getScreenResolutionVertical()));
+		frame.put(SLOT_SCREEN_HORIZONTAL, new NSOFInteger(getScreenResolutionHorizontal()));
+		frame.put(SLOT_SCREEN_DEPTH, new NSOFInteger(getScreenDepth()));
+		frame.put(SLOT_SERIAL, new NSOFReal(getSerialNumber()));
+		frame.put(SLOT_PROTOCOL, new NSOFInteger(getTargetProtocol()));
 
 		return frame;
+	}
+
+	/**
+	 * Decode the information from a frame.
+	 * 
+	 * @return the frame.
+	 */
+	public void fromFrame(NSOFFrame frame) {
+		this.setName(((NSOFString) frame.get(NewtonInfo.SLOT_NAME)).getValue());
+		this.setNewtonId(((NSOFInteger) frame.get(NewtonInfo.SLOT_ID)).getValue());
+		this.setManufacturerId(((NSOFInteger) frame.get(NewtonInfo.SLOT_MANUFACTURER)).getValue());
+		this.setMachineType(((NSOFInteger) frame.get(NewtonInfo.SLOT_MACHINE)).getValue());
+		this.setROMVersion(((NSOFInteger) frame.get(NewtonInfo.SLOT_ROM_VERSION)).getValue());
+		this.setROMStage(((NSOFInteger) frame.get(NewtonInfo.SLOT_ROM_STAGE)).getValue());
+		this.setRAMSize(((NSOFInteger) frame.get(NewtonInfo.SLOT_RAM_SIZE)).getValue());
+		this.setScreenHeight(((NSOFInteger) frame.get(NewtonInfo.SLOT_SCREEN_HEIGHT)).getValue());
+		this.setScreenWidth(((NSOFInteger) frame.get(NewtonInfo.SLOT_SCREEN_WIDTH)).getValue());
+		this.setPatchVersion(((NSOFInteger) frame.get(NewtonInfo.SLOT_PATCH)).getValue());
+		this.setObjectSystemVersion(((NSOFInteger) frame.get(NewtonInfo.SLOT_OBJECTS)).getValue());
+		this.setInternalStoreSignature(((NSOFInteger) frame.get(NewtonInfo.SLOT_INTERNAL_SIGNATURE)).getValue());
+		this.setScreenResolutionVertical(((NSOFInteger) frame.get(NewtonInfo.SLOT_SCREEN_VERTICAL)).getValue());
+		this.setScreenResolutionHorizontal(((NSOFInteger) frame.get(NewtonInfo.SLOT_SCREEN_HORIZONTAL)).getValue());
+		this.setScreenDepth(((NSOFInteger) frame.get(NewtonInfo.SLOT_SCREEN_DEPTH)).getValue());
+		this.setSerialNumber((long) ((NSOFReal) frame.get(NewtonInfo.SLOT_SERIAL)).getReal());
+		this.setTargetProtocol(((NSOFInteger) frame.get(NewtonInfo.SLOT_PROTOCOL)).getValue());
 	}
 }

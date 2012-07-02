@@ -19,8 +19,8 @@
  */
 package net.sf.jncu.data;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 
 import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.newton.os.Store;
@@ -73,20 +73,20 @@ public class Archive {
 	/** Entry name for the device information. */
 	public static final String ENTRY_DEVICE = "device";
 	/** Entry name for the stores folder. */
-	public static final String ENTRY_STORES = "stores" + DIRECTORY;
+	public static final String ENTRY_STORES = "stores";
 	/** Entry name for the store information. */
 	public static final String ENTRY_STORE = "store";
 	/** Entry name for the packages folder. */
-	public static final String ENTRY_PACKAGES = "packages" + DIRECTORY;
+	public static final String ENTRY_PACKAGES = "packages";
 	/** Entry name for the soups folder. */
-	public static final String ENTRY_SOUPS = "soups" + DIRECTORY;
+	public static final String ENTRY_SOUPS = "soups";
 	/** Entry name for the soup information. */
 	public static final String ENTRY_SOUP = "soup";
 	/** Entry name for the entries database. */
 	public static final String ENTRY_ENTRIES = "entries";
 
 	private NewtonInfo deviceInfo;
-	private final List<Store> stores = new ArrayList<Store>();
+	private final Collection<Store> stores = new HashSet<Store>();
 
 	/**
 	 * Creates a new archive.
@@ -118,7 +118,7 @@ public class Archive {
 	 * 
 	 * @return the list of stores.
 	 */
-	public List<Store> getStores() {
+	public Collection<Store> getStores() {
 		return stores;
 	}
 
@@ -128,7 +128,7 @@ public class Archive {
 	 * @param stores
 	 *            the list of stores.
 	 */
-	public void setStores(List<Store> stores) {
+	public void setStores(Collection<Store> stores) {
 		this.stores.clear();
 		if (stores != null)
 			this.stores.addAll(stores);
