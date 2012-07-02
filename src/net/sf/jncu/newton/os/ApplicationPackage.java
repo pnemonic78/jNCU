@@ -33,4 +33,14 @@ public class ApplicationPackage {
 		super();
 	}
 
+	/**
+	 * Creates a new package.
+	 * 
+	 * @param name
+	 *            the name.
+	 */
+	public ApplicationPackage(String name) {
+		super();
+	}
+
 }

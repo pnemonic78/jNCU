@@ -207,14 +207,12 @@ public class Soup implements Comparable<Soup> {
 	 *            the frame.
 	 */
 	public void decodeFrame(NSOFFrame frame) {
-		NSOFFrame info = new NSOFFrame();
-		info.putAll(frame);
-		setInformation(info);
+		setInformation(frame);
 
 		if (this.name == null) {
-			NSOFObject value = info.get(SLOT_NAME);
+			NSOFObject value = frame.get(SLOT_NAME);
 			if (NSOFImmediate.isNil(value)) {
-				NSOFFrame soupDef = (NSOFFrame) info.get(SLOT_SOUP_DEF);
+				NSOFFrame soupDef = (NSOFFrame) frame.get(SLOT_SOUP_DEF);
 				if (soupDef != null)
 					value = soupDef.get(SLOT_NAME);
 			}

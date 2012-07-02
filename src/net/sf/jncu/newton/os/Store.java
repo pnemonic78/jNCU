@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFBoolean;
@@ -79,7 +78,7 @@ public class Store implements Comparable<Store> {
 
 	private String name;
 	private final NSOFFrame frame;
-	private final Set<Soup> soups = new HashSet<Soup>();
+	private final Collection<Soup> soups = new HashSet<Soup>();
 	private final List<ApplicationPackage> packages = new ArrayList<ApplicationPackage>();
 
 	/**

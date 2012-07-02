@@ -132,7 +132,7 @@ public class ArchiveWriter {
 	 *             if an I/O error occurs.
 	 */
 	protected void writeStores(Archive archive, ZipOutputStream out) throws IOException {
-		ZipEntry entry = new ZipEntry(Archive.ENTRY_STORES);
+		ZipEntry entry = new ZipEntry(Archive.ENTRY_STORES + Archive.DIRECTORY);
 		out.putNextEntry(entry);
 
 		for (Store store : archive.getStores()) {
@@ -183,7 +183,7 @@ public class ArchiveWriter {
 	 *             if an I/O error occurs.
 	 */
 	protected void writePackages(Archive archive, ZipOutputStream out, ZipEntry parent, Store store) throws IOException {
-		ZipEntry entry = new ZipEntry(parent.getName() + Archive.ENTRY_PACKAGES);
+		ZipEntry entry = new ZipEntry(parent.getName() + Archive.ENTRY_PACKAGES + Archive.DIRECTORY);
 		out.putNextEntry(entry);
 
 		for (ApplicationPackage pkg : store.getPackages()) {
@@ -192,7 +192,7 @@ public class ArchiveWriter {
 	}
 
 	/**
-	 * Write a soup.
+	 * Write a package.
 	 * 
 	 * @param archive
 	 *            the archive to write.
@@ -206,6 +206,9 @@ public class ArchiveWriter {
 	 *             if an I/O error occurs.
 	 */
 	protected void writePackage(Archive archive, ZipOutputStream out, ZipEntry parent, ApplicationPackage pkg) throws IOException {
+		ZipEntry entry = new ZipEntry(parent.getName() + pkg.toString());
+		out.putNextEntry(entry);
+		// TODO implement me!
 	}
 
 	/**
@@ -223,7 +226,7 @@ public class ArchiveWriter {
 	 *             if an I/O error occurs.
 	 */
 	protected void writeSoups(Archive archive, ZipOutputStream out, ZipEntry parent, Store store) throws IOException {
-		ZipEntry entry = new ZipEntry(parent.getName() + Archive.ENTRY_SOUPS);
+		ZipEntry entry = new ZipEntry(parent.getName() + Archive.ENTRY_SOUPS + Archive.DIRECTORY);
 		out.putNextEntry(entry);
 
 		for (Soup soup : store.getSoups()) {
@@ -275,6 +278,7 @@ public class ArchiveWriter {
 	protected void writeSoupEntries(Archive archive, ZipOutputStream out, ZipEntry parent, Soup soup) throws IOException {
 		ZipEntry entry = new ZipEntry(parent.getName() + Archive.ENTRY_ENTRIES);
 		out.putNextEntry(entry);
+		// TODO implement me!
 	}
 
 }
