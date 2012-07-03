@@ -24,16 +24,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.newton.os.ApplicationPackage;
 import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.newton.os.Soup;
+import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.newton.os.Store;
 
 /**
@@ -278,5 +282,16 @@ public class ArchiveReader {
 	 *             if an I/O error occurs.
 	 */
 	protected void readSoupEntries(Archive archive, ZipInputStream in, ZipEntry entry, Soup soup) throws IOException {
+		NSOFDecoder decoder = new NSOFDecoder();
+		NSOFArray arr = (NSOFArray) decoder.inflate(in);
+
+		List<SoupEntry> entries = new ArrayList<SoupEntry>();
+		int size = arr.getLength();
+		NSOFFrame frame;
+		for (int i = 0; i < size; i++) {
+			frame = (NSOFFrame) arr.get(i);
+			entries.add(new SoupEntry(frame));
+		}
+		soup.setEntries(entries);
 	}
 }

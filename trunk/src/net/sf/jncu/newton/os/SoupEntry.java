@@ -19,17 +19,21 @@
  */
 package net.sf.jncu.newton.os;
 
-import net.sf.jncu.fdil.NSOFObject;
-import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.fdil.NSOFImmediate;
+import net.sf.jncu.fdil.NSOFInteger;
+import net.sf.jncu.fdil.NSOFSymbol;
+import net.sf.jncu.util.NewtonDateUtils;
 
 /**
- * @author moshe
+ * Soup entry.
  * 
+ * @author moshe
  */
-public class SoupEntry implements Comparable<SoupEntry> {
+public class SoupEntry extends NSOFFrame implements Comparable<SoupEntry> {
 
-	private int id;
-	private NSOFObject value;
+	public static final NSOFSymbol SLOT_ID = new NSOFSymbol("_uniqueID");
+	public static final NSOFSymbol SLOT_MODIFIED = new NSOFSymbol("_modTime");
 
 	/**
 	 * Creates a new entry.
@@ -39,66 +43,72 @@ public class SoupEntry implements Comparable<SoupEntry> {
 	}
 
 	/**
+	 * Creates a new entry.
+	 * 
+	 * @param frame
+	 *            the source entry frame.
+	 */
+	public SoupEntry(NSOFFrame frame) {
+		super();
+		this.putAll(frame);
+	}
+
+	/**
 	 * Get the entry ID.
 	 * 
-	 * @return the ID.
+	 * @return the unique ID.
 	 */
-	public Integer getId() {
-		return id;
+	public int getId() {
+		return ((NSOFInteger) get(SLOT_ID)).getValue();
 	}
 
 	/**
 	 * Set the entry ID.
 	 * 
 	 * @param id
-	 *            the ID.
+	 *            the unique ID.
 	 */
-	public void setId(Integer id) {
-		this.id = id;
+	public void setId(int id) {
+		put(SLOT_ID, new NSOFInteger(id));
 	}
 
 	/**
-	 * Get the entry value.
+	 * Get the modified time.
 	 * 
-	 * @return the value.
+	 * @return the time in milliseconds.
 	 */
-	public NSOFObject getValue() {
-		return value;
+	public long getModifiedTime() {
+		NSOFImmediate imm = (NSOFImmediate) get(SLOT_MODIFIED);
+		return (imm == null) ? 0 : NewtonDateUtils.fromMinutes(imm.getValue());
 	}
 
 	/**
-	 * Set the entry value.
+	 * Set the modified time.
 	 * 
-	 * @param value
-	 *            the value.
+	 * @param time
+	 *            the time in milliseconds.
 	 */
-	public void setValue(NSOFObject value) {
-		this.value = value;
+	public void setModifiedTime(long time) {
+		put(SLOT_MODIFIED, new NSOFInteger(NewtonDateUtils.getMinutes(time)));
 	}
 
 	@Override
 	public int hashCode() {
-		return id;
+		return getId();
 	}
 
 	@Override
 	public int compareTo(SoupEntry that) {
-		int c = this.id - that.id;
-		if (c != 0)
-			return c;
-		if (this.value == null) {
-			if (that.value == null)
-				return 0;
-			return -1;
-		}
-		if (that.value == null)
-			return +1;
-		if ((this.value instanceof NSOFString) && (that.value instanceof NSOFString)) {
-			NSOFString sThis = (NSOFString) this.value;
-			NSOFString sThat = (NSOFString) that.value;
+		return this.getId() - that.getId();
+	}
 
-			return sThis.compareTo(sThat);
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj instanceof SoupEntry) {
+			return compareTo((SoupEntry) obj) == 0;
 		}
-		return 0;
+		return super.equals(obj);
 	}
 }

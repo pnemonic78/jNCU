@@ -14,9 +14,11 @@ import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.v1_0.data.DEntry;
 import net.sf.jncu.protocol.v1_0.data.DSoupInfo;
 import net.sf.jncu.protocol.v1_0.data.DSoupNames;
 import net.sf.jncu.protocol.v1_0.io.DStoreNames;
+import net.sf.jncu.protocol.v2_0.data.DBackupSoupDone;
 import net.sf.jncu.protocol.v2_0.session.DNewtonName;
 
 public class BackupDecode extends TraceDecode implements DockCommandListener {
@@ -48,10 +50,13 @@ public class BackupDecode extends TraceDecode implements DockCommandListener {
 		File f = new File(args[0]);
 		BackupDecode decoder;
 		try {
-			decoder = new BackupDecode();
-			decoder.setFile(f);
-			decoder.run();
-			// unzip(args);
+			if ((args.length > 1) && (args[1].charAt(0) == 'r')) {
+				unzip(args);
+			} else {
+				decoder = new BackupDecode();
+				decoder.setFile(f);
+				decoder.run();
+			}
 			if (!Boolean.getBoolean("debug")) {
 				Thread.sleep(1000L);
 				System.exit(0);// Kill all threads.
@@ -86,6 +91,7 @@ public class BackupDecode extends TraceDecode implements DockCommandListener {
 		} else if (DSoupNames.COMMAND.equals(cmd)) {
 			DSoupNames dSoupNames = (DSoupNames) command;
 			soups = dSoupNames.getSoups();
+			soup = soups.get(0);
 			store.setSoups(soups);
 		} else if (DSoupInfo.COMMAND.equals(cmd)) {
 			DSoupInfo dSoupInfo = (DSoupInfo) command;
@@ -94,6 +100,11 @@ public class BackupDecode extends TraceDecode implements DockCommandListener {
 			if (soupFound != null) {
 				soupFound.getInformation().putAll(soup.getInformation());
 			}
+		} else if (DEntry.COMMAND.equals(cmd)) {
+			DEntry dEntry = (DEntry) command;
+			soup.addEntry(dEntry.getEntry());
+		}else if (DBackupSoupDone.COMMAND.equals(cmd)) {
+			System.out.println();
 		}
 	}
 
