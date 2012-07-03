@@ -64,6 +64,7 @@ public class CommTrace {
 	/** PC to Newton tracer. */
 	private Tracer traceP;
 	private int baud;
+	private boolean sout = false;
 
 	/**
 	 * Creates a new trace.
@@ -237,7 +238,7 @@ public class CommTrace {
 							logOut.print(HEX[(b >> 4) & 0x0F]);
 							logOut.print(HEX[b & 0x0F]);
 							logWidth++;
-							if (logOut != System.out) {
+							if (sout && (logOut != System.out)) {
 								System.out.print(direction);
 								System.out.print(HEX[(b >> 4) & 0x0F]);
 								System.out.print(HEX[b & 0x0F]);
@@ -245,7 +246,7 @@ public class CommTrace {
 							}
 							if (logWidth >= 32) {
 								logOut.println();
-								if (logOut != System.out) {
+								if (sout && (logOut != System.out)) {
 									System.out.println();
 								}
 								logWidth = 0;
