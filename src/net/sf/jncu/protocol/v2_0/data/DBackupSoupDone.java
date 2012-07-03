@@ -19,10 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
 
 /**
  * This command terminates the sequence of commands sent in response to a
@@ -35,7 +32,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DBackupSoupDone extends DockCommandFromNewton {
+public class DBackupSoupDone extends DockCommandFromNewtonBlank {
 
 	/** <tt>kDBackupSoupDone</tt> */
 	public static final String COMMAND = "bsdn";
@@ -46,9 +43,4 @@ public class DBackupSoupDone extends DockCommandFromNewton {
 	public DBackupSoupDone() {
 		super(COMMAND);
 	}
-
-	@Override
-	protected void decodeCommandData(InputStream data) throws IOException {
-	}
-
 }

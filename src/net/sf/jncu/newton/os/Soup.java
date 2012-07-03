@@ -19,7 +19,9 @@
  */
 package net.sf.jncu.newton.os;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.TreeSet;
 
 import net.sf.jncu.fdil.NSOFArray;
@@ -58,22 +60,23 @@ import net.sf.jncu.fdil.contrib.NSOFSoupName;
  */
 public class Soup implements Comparable<Soup> {
 
-	protected static final NSOFSymbol SLOT_NAME = new NSOFSymbol("name");
-	protected static final NSOFSymbol SLOT_SIGNATURE = new NSOFSymbol("signature");
-	protected static final NSOFSymbol SLOT_SOUP_DEF = new NSOFSymbol("soupDef");
-	protected static final NSOFSymbol SLOT_USER_NAME = new NSOFSymbol("userName");
-	protected static final NSOFSymbol SLOT_USER_DESCRIPTION = new NSOFSymbol("userDescr");
-	protected static final NSOFSymbol SLOT_OWNER_APP_NAME = new NSOFSymbol("ownerAppName");
-	protected static final NSOFSymbol SLOT_INDEXES = new NSOFSymbol("indexes");
-	protected static final NSOFSymbol SLOT_STRUCTURE = new NSOFSymbol("structure");
-	protected static final NSOFSymbol SLOT_PATH = new NSOFSymbol("path");
-	protected static final NSOFSymbol SLOT_TYPE = new NSOFSymbol("type");
-	protected static final NSOFSymbol SLOT_OWNER_APP = new NSOFSymbol("ownerApp");
-	protected static final NSOFSymbol SLOT_BACKUP = new NSOFSymbol("NCKLastBackupTime");
+	public static final NSOFSymbol SLOT_NAME = new NSOFSymbol("name");
+	public static final NSOFSymbol SLOT_SIGNATURE = new NSOFSymbol("signature");
+	public static final NSOFSymbol SLOT_SOUP_DEF = new NSOFSymbol("soupDef");
+	public static final NSOFSymbol SLOT_USER_NAME = new NSOFSymbol("userName");
+	public static final NSOFSymbol SLOT_USER_DESCRIPTION = new NSOFSymbol("userDescr");
+	public static final NSOFSymbol SLOT_OWNER_APP_NAME = new NSOFSymbol("ownerAppName");
+	public static final NSOFSymbol SLOT_INDEXES = new NSOFSymbol("indexes");
+	public static final NSOFSymbol SLOT_STRUCTURE = new NSOFSymbol("structure");
+	public static final NSOFSymbol SLOT_PATH = new NSOFSymbol("path");
+	public static final NSOFSymbol SLOT_TYPE = new NSOFSymbol("type");
+	public static final NSOFSymbol SLOT_OWNER_APP = new NSOFSymbol("ownerApp");
+	public static final NSOFSymbol SLOT_BACKUP = new NSOFSymbol("NCKLastBackupTime");
 
 	private String name;
 	private final NSOFFrame info;
-	private final Set<SoupEntry> entries = new TreeSet<SoupEntry>();
+	private final Collection<SoupEntry> entries = new TreeSet<SoupEntry>();
+	private final List<SoupIndex> indexes = new ArrayList<SoupIndex>();
 
 	/**
 	 * Creates a new soup.
@@ -134,14 +137,9 @@ public class Soup implements Comparable<Soup> {
 	/**
 	 * Get the indexes description.
 	 * 
-	 * @return the indexes.
+	 * @return the array of indexes.
 	 */
-	public NSOFArray getIndexes() {
-		NSOFArray indexes = (NSOFArray) getDefinition().get(SLOT_INDEXES);
-		if (indexes == null) {
-			indexes = new NSOFPlainArray();
-			setIndexes(indexes);
-		}
+	public List<SoupIndex> getIndexes() {
 		return indexes;
 	}
 
@@ -149,11 +147,45 @@ public class Soup implements Comparable<Soup> {
 	 * Set the indexes description.
 	 * 
 	 * @param indexes
-	 *            the indexes.
+	 *            the array of indexes.
+	 */
+	public void setIndexes(List<SoupIndex> indexes) {
+		int size = (indexes == null) ? 0 : indexes.size();
+		NSOFArray arr = new NSOFPlainArray(size);
+		if (indexes != null) {
+			SoupIndex index;
+			for (int i = 0; i < size; i++) {
+				index = indexes.get(i);
+				arr.set(i, index.toFrame());
+			}
+		}
+		getDefinition().put(SLOT_INDEXES, arr);
+	}
+
+	/**
+	 * Set the indexes description.
+	 * 
+	 * @param indexes
+	 *            the array of indexes.
 	 */
 	public void setIndexes(NSOFArray indexes) {
 		if (indexes == null)
 			indexes = new NSOFPlainArray();
+		this.indexes.clear();
+
+		int size = indexes.getLength();
+		SoupIndex index;
+		NSOFObject o;
+
+		for (int i = 0; i < size; i++) {
+			o = indexes.get(i);
+			if (!NSOFImmediate.isNil(o)) {
+				index = new SoupIndex();
+				index.decodeFrame((NSOFFrame) o);
+				this.indexes.add(index);
+			}
+		}
+
 		getDefinition().put(SLOT_INDEXES, indexes);
 	}
 
@@ -162,7 +194,7 @@ public class Soup implements Comparable<Soup> {
 	 * 
 	 * @return the entries.
 	 */
-	public Set<SoupEntry> getEntries() {
+	public Collection<SoupEntry> getEntries() {
 		return entries;
 	}
 
@@ -172,7 +204,7 @@ public class Soup implements Comparable<Soup> {
 	 * @param entries
 	 *            the entries.
 	 */
-	public void setEntries(Set<SoupEntry> entries) {
+	public void setEntries(Collection<SoupEntry> entries) {
 		this.entries.clear();
 		if (entries != null)
 			this.entries.addAll(entries);
@@ -242,6 +274,11 @@ public class Soup implements Comparable<Soup> {
 		this.info.clear();
 		if (info != null) {
 			this.info.putAll(info);
+
+			NSOFObject value = info.get(SLOT_INDEXES);
+			if (!NSOFImmediate.isNil(value)) {
+				setIndexes((NSOFArray) value);
+			}
 		}
 		this.info.put(SLOT_NAME, new NSOFString(name));
 	}

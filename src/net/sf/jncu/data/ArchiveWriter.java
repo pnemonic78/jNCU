@@ -24,14 +24,18 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.newton.os.ApplicationPackage;
 import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.newton.os.Soup;
+import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.newton.os.Store;
 
 /**
@@ -278,7 +282,14 @@ public class ArchiveWriter {
 	protected void writeSoupEntries(Archive archive, ZipOutputStream out, ZipEntry parent, Soup soup) throws IOException {
 		ZipEntry entry = new ZipEntry(parent.getName() + Archive.ENTRY_ENTRIES);
 		out.putNextEntry(entry);
-		// TODO implement me!
-	}
 
+		Collection<SoupEntry> entries = soup.getEntries();
+		NSOFArray arr = new NSOFPlainArray(entries.size());
+		int i = 0;
+		for (SoupEntry item : entries) {
+			arr.set(i++, item);
+		}
+		NSOFEncoder encoder = new NSOFEncoder();
+		encoder.flatten(arr, out);
+	}
 }

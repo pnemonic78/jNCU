@@ -19,7 +19,11 @@
  */
 package net.sf.jncu.protocol.v1_0.data;
 
-import net.sf.jncu.fdil.NSOFBinaryObject;
+import java.io.IOException;
+import java.io.InputStream;
+
+import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
 /**
@@ -33,15 +37,37 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  * entry  // binary data
  * </pre>
  */
-public class DEntry extends DockCommandFromNewtonScript<NSOFBinaryObject> {
+public class DEntry extends DockCommandFromNewtonScript<NSOFFrame> {
 
 	/** <tt>kDEntry</tt> */
 	public static final String COMMAND = "entr";
+
+	private SoupEntry entry;
 
 	/**
 	 * Creates a new command.
 	 */
 	public DEntry() {
 		super(COMMAND);
+	}
+
+	@Override
+	protected void decodeCommandData(InputStream data) throws IOException {
+		super.decodeCommandData(data);
+
+		NSOFFrame frame = getResult();
+		this.entry = null;
+		if (frame != null) {
+			this.entry = new SoupEntry(frame);
+		}
+	}
+
+	/**
+	 * Get the soup entry.
+	 * 
+	 * @return the entry.
+	 */
+	public SoupEntry getEntry() {
+		return entry;
 	}
 }

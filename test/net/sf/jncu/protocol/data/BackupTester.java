@@ -1,5 +1,6 @@
 package net.sf.jncu.protocol.data;
 
+import java.util.Collection;
 import java.util.List;
 
 import net.sf.jncu.cdil.CDLayer;
@@ -10,22 +11,30 @@ import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
 import net.sf.jncu.cdil.mnp.PacketLogger;
 import net.sf.jncu.newton.os.Soup;
+import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.v1_0.data.DEntry;
+import net.sf.jncu.protocol.v1_0.data.DIndexDescription;
 import net.sf.jncu.protocol.v1_0.data.DSetCurrentSoup;
+import net.sf.jncu.protocol.v1_0.data.DSoupIDs;
 import net.sf.jncu.protocol.v1_0.data.DSoupInfo;
 import net.sf.jncu.protocol.v1_0.data.DSoupNames;
 import net.sf.jncu.protocol.v1_0.io.DGetStoreNames;
 import net.sf.jncu.protocol.v1_0.io.DStoreNames;
+import net.sf.jncu.protocol.v1_0.query.DResult;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v1_0.sync.DLastSyncTime;
 import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.IconModule.IconModuleListener;
-import net.sf.jncu.protocol.v2_0.data.DSetSoupGetInfo;
+import net.sf.jncu.protocol.v2_0.data.DBackupSoupDone;
+import net.sf.jncu.protocol.v2_0.data.DSendSoup;
+import net.sf.jncu.protocol.v2_0.data.DSoupNotDirty;
 import net.sf.jncu.protocol.v2_0.io.DSetStoreGetNames;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceled;
+import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 
 /**
  * Test to backup from the Newton.
@@ -42,6 +51,8 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 	private Store store;
 	private List<Soup> soups;
 	private Soup soup;
+	private Integer result;
+	private boolean backupDone = false;
 
 	public BackupTester() {
 		super();
@@ -101,6 +112,7 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 	public void run() throws Exception {
 		running = true;
 		store = null;
+		result = null;
 
 		DGetStoreNames dGetStoreNames = new DGetStoreNames();
 		pipe.write(dGetStoreNames);
@@ -108,34 +120,87 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 		while (running && (store == null))
 			Thread.yield();
 
+		result = null;
 		DSetStoreGetNames dSetStoreGetNames = new DSetStoreGetNames();
 		dSetStoreGetNames.setStore(store);
 		pipe.write(dSetStoreGetNames);
 		Thread.sleep(2000);
-		while (running && ((soups == null) || soups.isEmpty()))
+		while (running && ((soups == null) || soups.isEmpty()) && (result == null))
 			Thread.yield();
+		if (soups == null) {
+			exit();
+			return;
+		}
+		soup = soups.get(0);
 
 		// DGetSyncOptions dGetSyncOptions = new DGetSyncOptions();
 		// pipe.write(dGetSyncOptions);
 		// Thread.sleep(2000);
 
-		DSetCurrentSoup dSetCurrentSoup = new DSetCurrentSoup();
-		dSetCurrentSoup.setSoup(soups.get(0));
-		pipe.write(dSetCurrentSoup);
-		Thread.sleep(2000);
+		int size = Math.min(1, soups.size());
+		for (int i = 0; i < size && running; i++) {
+			soup = soups.get(i);
+			System.out.println("@@@ soup=" + soup.getName());
 
-		// DSetSoupGetInfo dSetSoupGetInfo = new DSetSoupGetInfo();
-		// dSetSoupGetInfo.setSoup(soups.get(0));
-		// pipe.write(dSetSoupGetInfo);
-		// Thread.sleep(2000);
+			result = null;
+			DSetCurrentSoup dSetCurrentSoup = new DSetCurrentSoup();
+			dSetCurrentSoup.setSoup(soup);
+			pipe.write(dSetCurrentSoup);
+			Thread.sleep(1000);
+			while (running && (result == null))
+				Thread.yield();
+			if (result != 0) {
+				exit();
+				return;
+			}
 
-		soup = null;
-		DSetSoupGetInfo dSetSoupGetInfo = new DSetSoupGetInfo();
-		dSetSoupGetInfo.setName("Calendar");
-		pipe.write(dSetSoupGetInfo);
-		Thread.sleep(2000);
-		while (running && (soup == null))
-			Thread.yield();
+			// result = null;
+			// soup = null;
+			// DSetSoupGetInfo dSetSoupGetInfo = new DSetSoupGetInfo();
+			// dSetSoupGetInfo.setSoup(soup));
+			// pipe.write(dSetSoupGetInfo);
+			// Thread.sleep(2000);
+			// while (running && (soup == null) && (result == null))
+			// Thread.yield();
+			// if (soup == null) {
+			// exit();
+			// return;
+			// }
+
+			// DONE
+			// DGetIndexDescription dGetIndexDescription = new
+			// DGetIndexDescription();
+			// pipe.write(dGetIndexDescription);
+			// Thread.sleep(2000);
+
+			// DONE
+			// DGetSoupIDs dGetSoupIDs = new DGetSoupIDs();
+			// pipe.write(dGetSoupIDs);
+			// Thread.sleep(2000);
+
+			// DONE
+			// DReturnEntry dReturnEntry = new DReturnEntry();
+			// dReturnEntry.setId(840);
+			// pipe.write(dReturnEntry);
+			// Thread.sleep(2000);
+
+			// DONE
+			backupDone = false;
+			DSendSoup dSendSoup = new DSendSoup();
+			pipe.write(dSendSoup);
+			Thread.sleep(1000);
+			while (running && !backupDone)
+				Thread.yield();
+
+			// DONE
+			// backupDone = false;
+			// DBackupSoup dBackupSoup = new DBackupSoup();
+			// dBackupSoup.setId(850);
+			// pipe.write(dBackupSoup);
+			// Thread.sleep(1000);
+			// while (running && !backupDone)
+			// Thread.yield();
+		}
 
 		// dLastSyncTime = new DLastSyncTime();
 		// pipe.write(dLastSyncTime);
@@ -154,15 +219,22 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 		Thread.sleep(2000);
 
 		Thread.sleep(10000);
+		exit();
+
+		while (running)
+			Thread.yield();
+	}
+
+	private void exit() throws Exception {
+		DOperationDone dOperationDone = new DOperationDone();
+		pipe.write(dOperationDone);
+		Thread.sleep(1000);
 		DOperationCanceled dOperationCanceled = new DOperationCanceled();
 		pipe.write(dOperationCanceled);
 		Thread.sleep(1000);
 		DDisconnect dDisconnect = new DDisconnect();
 		pipe.write(dDisconnect);
 		Thread.sleep(1000);
-
-		while (running)
-			Thread.yield();
 	}
 
 	private void done() throws Exception {
@@ -222,6 +294,9 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 			running = false;
 		} else if (net.sf.jncu.protocol.v1_0.session.DOperationCanceled.COMMAND.equals(cmd)) {
 			running = false;
+		} else if (DResult.COMMAND.equals(cmd)) {
+			DResult dResult = (DResult) command;
+			result = dResult.getErrorCode();
 		} else if (DStoreNames.COMMAND.equals(cmd)) {
 			DStoreNames dStoreNames = (DStoreNames) command;
 			store = dStoreNames.getDefaultStore();
@@ -231,6 +306,26 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 		} else if (DSoupInfo.COMMAND.equals(cmd)) {
 			DSoupInfo dSoupInfo = (DSoupInfo) command;
 			soup = dSoupInfo.getSoup();
+		} else if (DIndexDescription.COMMAND.equals(cmd)) {
+			DIndexDescription dIndexDescription = (DIndexDescription) command;
+			soup.setIndexes(dIndexDescription.getIndexes());
+		} else if (DSoupIDs.COMMAND.equals(cmd)) {
+			DSoupIDs dSoupIDs = (DSoupIDs) command;
+			Collection<SoupEntry> entries = soup.getEntries();
+			entries.clear();
+			SoupEntry entry;
+			for (Integer id : dSoupIDs.getIDs()) {
+				entry = new SoupEntry();
+				entry.setId(id);
+				entries.add(entry);
+			}
+		} else if (DEntry.COMMAND.equals(cmd)) {
+			DEntry dEntry = (DEntry) command;
+			soup.addEntry(dEntry.getEntry());
+		} else if (DBackupSoupDone.COMMAND.equals(cmd)) {
+			backupDone = true;
+		} else if (DSoupNotDirty.COMMAND.equals(cmd)) {
+			backupDone = true;
 		}
 	}
 
