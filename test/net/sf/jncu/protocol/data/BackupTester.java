@@ -26,6 +26,7 @@ import net.sf.jncu.protocol.v1_0.io.DGetStoreNames;
 import net.sf.jncu.protocol.v1_0.io.DStoreNames;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
+import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v1_0.sync.DLastSyncTime;
 import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.IconModule.IconModuleListener;
@@ -33,7 +34,7 @@ import net.sf.jncu.protocol.v2_0.data.DBackupSoupDone;
 import net.sf.jncu.protocol.v2_0.data.DSendSoup;
 import net.sf.jncu.protocol.v2_0.data.DSoupNotDirty;
 import net.sf.jncu.protocol.v2_0.io.DSetStoreGetNames;
-import net.sf.jncu.protocol.v2_0.session.DOperationCanceled;
+import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 
 /**
@@ -288,6 +289,8 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 		if (DDisconnect.COMMAND.equals(cmd)) {
 			running = false;
 		} else if (DOperationCanceled.COMMAND.equals(cmd)) {
+			running = false;
+		} else if (DOperationCanceled2.COMMAND.equals(cmd)) {
 			running = false;
 		} else if (net.sf.jncu.protocol.v1_0.session.DOperationCanceled.COMMAND.equals(cmd)) {
 			running = false;

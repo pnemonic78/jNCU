@@ -129,10 +129,7 @@ public class DDesktopInfo extends DockCommandToNewton {
 		super(COMMAND);
 		setSessionType(DInitiateDocking.SESSION_SETTING_UP);
 		// FIXME Windows type doesn't support many commands.
-		// setDesktopType(System.getProperty("os.name").startsWith("Windows") ?
-		// WINDOWS : MACINTOSH);
 		setDesktopType((File.separatorChar == '\\') ? WINDOWS : MACINTOSH);
-		// setDesktopType(MACINTOSH);
 		setSelectiveSync(true);
 		setEncryptedKey(rand.nextLong());
 		setDesktopApps(null);
@@ -219,8 +216,8 @@ public class DDesktopInfo extends DockCommandToNewton {
 			app.put("name", new NSOFString("Newton Connection Utilities"));
 			app.put("version", new NSOFInteger(1));
 
-			this.desktopApps = new NSOFPlainArray();
-			desktopApps.setValue(new NSOFFrame[] { app });
+			this.desktopApps = new NSOFPlainArray(1);
+			desktopApps.set(0, app);
 		}
 		return desktopApps;
 	}

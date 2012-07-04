@@ -104,7 +104,7 @@ import net.sf.jncu.protocol.v2_0.session.DGetPassword;
 import net.sf.jncu.protocol.v2_0.session.DInitiateDocking;
 import net.sf.jncu.protocol.v2_0.session.DNewtonInfo;
 import net.sf.jncu.protocol.v2_0.session.DNewtonName;
-import net.sf.jncu.protocol.v2_0.session.DOperationCanceled;
+import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.jncu.protocol.v2_0.session.DPassword;
@@ -149,7 +149,7 @@ public class DockCommandFactory extends net.sf.jncu.protocol.v1_0.DockCommandFac
 		registry.put(DNewtonInfo.COMMAND, DNewtonInfo.class);
 		registry.put(DNewtonName.COMMAND, DNewtonName.class);
 		registry.put(DRequestToDock.COMMAND, DRequestToDock.class);
-		registry.put(DOperationCanceled.COMMAND, DOperationCanceled.class);
+		registry.put(DOperationCanceled2.COMMAND, DOperationCanceled2.class);
 		registry.put(DPassword.COMMAND, DPassword.class);
 		registry.put(DPackageInfo.COMMAND, DPackageInfo.class);
 		registry.put(DLoadPackageFile.COMMAND, DLoadPackageFile.class);
@@ -226,7 +226,7 @@ public class DockCommandFactory extends net.sf.jncu.protocol.v1_0.DockCommandFac
 		registry.put(DKeyboardChar.COMMAND, DKeyboardChar.class);
 		registry.put(DKeyboardPassthrough.COMMAND, DKeyboardPassthrough.class);
 		registry.put(DKeyboardString.COMMAND, DKeyboardString.class);
-		registry.put(DOperationCanceled.COMMAND, DOperationCanceled.class);
+		registry.put(DOperationCanceled2.COMMAND, DOperationCanceled2.class);
 		registry.put(DOperationCanceledAck.COMMAND, DOperationCanceledAck.class);
 		registry.put(DOperationDone.COMMAND, DOperationDone.class);
 		registry.put(DPath.COMMAND, DPath.class);
