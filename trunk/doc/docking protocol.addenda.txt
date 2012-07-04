@@ -1,0 +1,27 @@
+docking protocol, addenda & erratum
+
+kDSyncOptions		4 longs + frame length
+		'sopt'
+		length	// length of data
+		frame of info
+
+
+Backup protocol:
+
+DSNC command
+(length = 0)
+
+dsnc				->
+kDRequestToSync		->
+			<-	kDResult
+kDGetSyncOptions	->	/* This provides the list of stores */
+			<-	kDSyncOptions
+kDLastSyncTIme		->
+			<-	kDCurrentTime
+kDSetCurrentStore	->		/* Could be simplified with kDSetStoreGetNames	*/
+			<-	kDResult	/*												*/
+kDGetAppNames		->		/*												*/
+			<-	kDAppNames
+kDLastSyncTIme		->		/* ??? */
+			<-	kDCurrentTime
+kDGetSoupNames		->
