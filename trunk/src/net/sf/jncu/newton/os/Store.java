@@ -61,20 +61,20 @@ public class Store implements Comparable<Store> {
 	/** Flash storage card. */
 	public static final String KIND_FLASH = "Flash storage card";
 
-	protected static final NSOFSymbol SLOT_NAME = new NSOFSymbol("name");
-	protected static final NSOFSymbol SLOT_SIGNATURE = new NSOFSymbol("signature");
-	protected static final NSOFSymbol SLOT_TOTALSIZE = new NSOFSymbol("totalSize");
-	protected static final NSOFSymbol SLOT_USEDSIZE = new NSOFSymbol("usedSize");
-	protected static final NSOFSymbol SLOT_KIND = new NSOFSymbol("kind");
-	protected static final NSOFSymbol SLOT_INFO = new NSOFSymbol("info");
-	protected static final NSOFSymbol SLOT_READONLY = new NSOFSymbol("readOnly");
-	protected static final NSOFSymbol SLOT_DEFAULT = new NSOFSymbol("defaultStore");
-	protected static final NSOFSymbol SLOT_PASSWORD = new NSOFSymbol("storePassword");
-	protected static final NSOFSymbol SLOT_SOUPS = new NSOFSymbol("soups");
-	protected static final NSOFSymbol SLOT_SIGNATURES = new NSOFSymbol("signatures");
-	protected static final NSOFSymbol SLOT_VERSION = new NSOFSymbol("storeVersion");
-	protected static final NSOFSymbol SLOT_INFO_DEFAULT = SLOT_DEFAULT;
-	protected static final NSOFSymbol SLOT_INFO_LAST_RESTORE = new NSOFSymbol("lastrestorefromcard");
+	public static final NSOFSymbol SLOT_NAME = new NSOFSymbol("name");
+	public static final NSOFSymbol SLOT_SIGNATURE = new NSOFSymbol("signature");
+	public static final NSOFSymbol SLOT_TOTALSIZE = new NSOFSymbol("totalSize");
+	public static final NSOFSymbol SLOT_USEDSIZE = new NSOFSymbol("usedSize");
+	public static final NSOFSymbol SLOT_KIND = new NSOFSymbol("kind");
+	public static final NSOFSymbol SLOT_INFO = new NSOFSymbol("info");
+	public static final NSOFSymbol SLOT_READONLY = new NSOFSymbol("readOnly");
+	public static final NSOFSymbol SLOT_DEFAULT = new NSOFSymbol("defaultStore");
+	public static final NSOFSymbol SLOT_PASSWORD = new NSOFSymbol("storePassword");
+	public static final NSOFSymbol SLOT_SOUPS = new NSOFSymbol("soups");
+	public static final NSOFSymbol SLOT_SIGNATURES = new NSOFSymbol("signatures");
+	public static final NSOFSymbol SLOT_VERSION = new NSOFSymbol("storeVersion");
+	public static final NSOFSymbol SLOT_INFO_DEFAULT = SLOT_DEFAULT;
+	public static final NSOFSymbol SLOT_INFO_LAST_RESTORE = new NSOFSymbol("lastrestorefromcard");
 
 	private String name;
 	private final NSOFFrame frame;
@@ -99,33 +99,6 @@ public class Store implements Comparable<Store> {
 	 * @return the frame.
 	 */
 	public NSOFFrame toFrame() {
-		// NSOFFrame frame = new NSOFFrame();
-		// frame.put(SLOT_NAME, new NSOFString(getName()));
-		// frame.put(SLOT_SIGNATURE, new NSOFInteger(getSignature()));
-		// frame.put(SLOT_TOTALSIZE, new NSOFInteger(getTotalSize()));
-		// frame.put(SLOT_USEDSIZE, new NSOFInteger(getUsedSize()));
-		// frame.put(SLOT_KIND, new NSOFString(getKind()));
-		// frame.put(SLOT_INFO, getInformation());
-		// frame.put(SLOT_READONLY, isReadOnly() ? new NSOFTrue() : new
-		// NSOFNil());
-		// frame.put(SLOT_DEFAULT, isDefaultStore() ? new NSOFTrue() : new
-		// NSOFNil());
-		// if (getPassword() != 0) {
-		// frame.put(SLOT_PASSWORD, new NSOFInteger(getPassword()));
-		// }
-		// List<Soup> soups = getSoups();
-		// if (!soups.isEmpty()) {
-		// NSOFString[] names = new NSOFString[soups.size()];
-		// NSOFInteger[] signatures = new NSOFInteger[names.length];
-		// int i = 0;
-		// for (Soup soup : soups) {
-		// names[i] = new NSOFString(soup.getName());
-		// signatures[i] = new NSOFInteger(soup.getSignature());
-		// i++;
-		// }
-		// frame.put(SLOT_SOUPS, new NSOFPlainArray(names));
-		// frame.put(SLOT_SIGNATURES, new NSOFPlainArray(signatures));
-		// }
 		return frame;
 	}
 

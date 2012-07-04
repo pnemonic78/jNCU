@@ -21,10 +21,14 @@ package net.sf.jncu.protocol.v2_0.app;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
+import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFFrame;
-import net.sf.jncu.newton.os.PackageInfo;
+import net.sf.jncu.fdil.NSOFImmediate;
+import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
@@ -61,7 +65,7 @@ public class DPackageInfo extends DockCommandFromNewton {
 	/** <tt>kDPackageInfo</tt> */
 	public static final String COMMAND = "pinf";
 
-	private PackageInfo info;
+	private final List<PackageInfo> info = new ArrayList<PackageInfo>();
 
 	/**
 	 * Creates a new command.
@@ -72,25 +76,27 @@ public class DPackageInfo extends DockCommandFromNewton {
 
 	@Override
 	protected void decodeCommandData(InputStream data) throws IOException {
+		info.clear();
+
 		NSOFDecoder decoder = new NSOFDecoder();
-		PackageInfo pkg = new PackageInfo();
-		pkg.decode((NSOFFrame)decoder.inflate(data));
-		setInfo(pkg);
+		NSOFObject o = decoder.inflate(data);
+		if (!NSOFImmediate.isNil(o)) {
+			NSOFArray arr = (NSOFArray) o;
+			int size = arr.getLength();
+			PackageInfo pkg;
+			for (int i = 0; i < size; i++) {
+				pkg = new PackageInfo((NSOFFrame) arr.get(i));
+				info.add(pkg);
+			}
+		}
 	}
 
 	/**
-	 * @return the info.
+	 * Get the packages information.
+	 * 
+	 * @return the information.
 	 */
-	public PackageInfo getInfo() {
+	public List<PackageInfo> getPackages() {
 		return info;
 	}
-
-	/**
-	 * @param info
-	 *            the info.
-	 */
-	protected void setInfo(PackageInfo info) {
-		this.info = info;
-	}
-
 }

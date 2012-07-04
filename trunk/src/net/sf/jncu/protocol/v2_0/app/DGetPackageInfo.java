@@ -32,6 +32,8 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * could be returned because there may be multiple packages with the same title
  * but different package ids. Note that this finds packages only in the current
  * store.
+ * <p>
+ * <em>"Package title" is not the same as "Application name".
  * 
  * <pre>
  * 'gpin'

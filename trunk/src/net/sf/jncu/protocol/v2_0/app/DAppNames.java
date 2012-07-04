@@ -19,8 +19,17 @@
  */
 package net.sf.jncu.protocol.v2_0.app;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.sf.jncu.fdil.NSOFArray;
+import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFFrame;
-import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
+import net.sf.jncu.fdil.NSOFImmediate;
+import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
  * This command returns the names of the applications present on the Newton. It
@@ -41,15 +50,17 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  * <pre>
  * 'appn'
  * length
- * result frame
+ * result frames
  * </pre>
  * 
  * @author Moshe
  */
-public class DAppNames extends DockCommandFromNewtonScript<NSOFFrame> {
+public class DAppNames extends DockCommandFromNewton {
 
 	/** <tt>kDAppNames</tt> */
 	public static final String COMMAND = "appn";
+
+	private final List<AppName> names = new ArrayList<AppName>();
 
 	/**
 	 * Creates a new command.
@@ -58,4 +69,29 @@ public class DAppNames extends DockCommandFromNewtonScript<NSOFFrame> {
 		super(COMMAND);
 	}
 
+	@Override
+	protected void decodeCommandData(InputStream data) throws IOException {
+		names.clear();
+
+		NSOFDecoder decoder = new NSOFDecoder();
+		NSOFObject o = decoder.inflate(data);
+		if (!NSOFImmediate.isNil(o)) {
+			NSOFArray arr = (NSOFArray) o;
+			int size = arr.getLength();
+			AppName name;
+			for (int i = 0; i < size; i++) {
+				name = new AppName((NSOFFrame) arr.get(i));
+				names.add(name);
+			}
+		}
+	}
+
+	/**
+	 * Get the application names.
+	 * 
+	 * @return the names.
+	 */
+	public List<AppName> getNames() {
+		return names;
+	}
 }

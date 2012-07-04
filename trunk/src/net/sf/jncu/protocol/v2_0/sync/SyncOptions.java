@@ -48,7 +48,7 @@ public class SyncOptions {
 
 	private boolean packages;
 	private boolean syncAll;
-	private List<Store> stores;
+	private final List<Store> stores = new ArrayList<Store>();
 
 	/**
 	 * Creates new options.
@@ -110,7 +110,9 @@ public class SyncOptions {
 	 *            the list of stores.
 	 */
 	public void setStores(List<Store> stores) {
-		this.stores = stores;
+		this.stores.clear();
+		if (stores != null)
+			this.stores.addAll(stores);
 	}
 
 	/**

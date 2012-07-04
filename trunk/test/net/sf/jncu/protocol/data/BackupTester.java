@@ -98,7 +98,7 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 		layer.startUp();
 		// Create a connection object
 		pipe = layer.createMNPSerial(portName, MNPSerialPort.BAUD_38400);
-		pipe.setTimeout(Integer.MAX_VALUE);
+		pipe.setTimeout(30);
 		pipe.startListening();
 		pipe.addPacketListener(this);
 		pipe.addCommandListener(this);
@@ -111,9 +111,9 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 
 	public void run() throws Exception {
 		running = true;
-		store = null;
-		result = null;
 
+		result = null;
+		store = null;
 		DGetStoreNames dGetStoreNames = new DGetStoreNames();
 		pipe.write(dGetStoreNames);
 		Thread.sleep(2000);
@@ -149,7 +149,7 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 			Thread.sleep(1000);
 			while (running && (result == null))
 				Thread.yield();
-			if (result != 0) {
+			if ((result != null) && (result != 0)) {
 				exit();
 				return;
 			}
@@ -228,9 +228,6 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 	private void exit() throws Exception {
 		DOperationDone dOperationDone = new DOperationDone();
 		pipe.write(dOperationDone);
-		Thread.sleep(1000);
-		DOperationCanceled dOperationCanceled = new DOperationCanceled();
-		pipe.write(dOperationCanceled);
 		Thread.sleep(1000);
 		DDisconnect dDisconnect = new DDisconnect();
 		pipe.write(dDisconnect);
