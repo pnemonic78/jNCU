@@ -216,7 +216,23 @@ public class NSOFFrame extends NSOFPointer {
 
 	@Override
 	public String toString() {
-		return slots.toString();
+		StringBuilder sb = new StringBuilder();
+		sb.append('{');
+
+		NSOFObject value;
+		int i = 0;
+		for (NSOFSymbol key : slots.keySet()) {
+			if (i > 0)
+				sb.append(", ");
+			value = slots.get(key);
+			sb.append(key.getValue());
+			sb.append('=');
+			sb.append(value.toString());
+			i++;
+		}
+		sb.append('}');
+
+		return sb.toString();
 	}
 
 	/**
