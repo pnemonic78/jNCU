@@ -14,10 +14,15 @@ import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.v1_0.app.DPackageIDList;
 import net.sf.jncu.protocol.v1_0.data.DEntry;
 import net.sf.jncu.protocol.v1_0.data.DSoupInfo;
 import net.sf.jncu.protocol.v1_0.data.DSoupNames;
 import net.sf.jncu.protocol.v1_0.io.DStoreNames;
+import net.sf.jncu.protocol.v1_0.query.DResult;
+import net.sf.jncu.protocol.v2_0.app.AppName;
+import net.sf.jncu.protocol.v2_0.app.DAppNames;
+import net.sf.jncu.protocol.v2_0.app.PackageInfo;
 import net.sf.jncu.protocol.v2_0.data.DBackupSoupDone;
 import net.sf.jncu.protocol.v2_0.session.DNewtonName;
 
@@ -81,7 +86,13 @@ public class BackupDecode extends TraceDecode implements DockCommandListener {
 	public void commandReceived(IDockCommandFromNewton command) {
 		final String cmd = command.getCommand();
 
-		if (DNewtonName.COMMAND.equals(cmd)) {
+		if (DResult.COMMAND.equals(cmd)) {
+			DResult dResult = (DResult) command;
+			int r = dResult.getErrorCode();
+			if (r != 0) {
+				System.out.println("result=" + r);
+			}
+		} else if (DNewtonName.COMMAND.equals(cmd)) {
 			DNewtonName dNewtonName = (DNewtonName) command;
 			archive.setDeviceInfo(dNewtonName.getInformation());
 		} else if (DStoreNames.COMMAND.equals(cmd)) {
@@ -103,8 +114,17 @@ public class BackupDecode extends TraceDecode implements DockCommandListener {
 		} else if (DEntry.COMMAND.equals(cmd)) {
 			DEntry dEntry = (DEntry) command;
 			soup.addEntry(dEntry.getEntry());
-		}else if (DBackupSoupDone.COMMAND.equals(cmd)) {
+		} else if (DBackupSoupDone.COMMAND.equals(cmd)) {
 			System.out.println();
+		} else if (DAppNames.COMMAND.equals(cmd)) {
+			DAppNames dAppNames = (DAppNames) command;
+			List<AppName> names = dAppNames.getNames();
+			System.out.println("names=" + names);
+		} else if (DPackageIDList.COMMAND.equals(cmd)) {
+			DPackageIDList dPackageIDList = (DPackageIDList) command;
+			List<PackageInfo> pkgInfo = dPackageIDList.getPackages();
+			if (!pkgInfo.isEmpty())
+				System.out.println();
 		}
 	}
 
@@ -132,7 +152,9 @@ public class BackupDecode extends TraceDecode implements DockCommandListener {
 			writer.write(archive);
 			done = true;
 			System.out.println("archive saved to " + f);
-			System.exit(0);
+			if (!Boolean.getBoolean("debug")) {
+				System.exit(0);// Kill all threads.
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1,20 +1,38 @@
-package net.sf.jncu.newton.os;
+/*
+ * Source file of the jNCU project.
+ * Copyright (c) 2010. All Rights Reserved.
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * Contributors can be contacted by electronic mail via the project Web pages:
+ * 
+ * http://sourceforge.net/projects/jncu
+ * 
+ * http://jncu.sourceforge.net/
+ *
+ * Contributor(s):
+ *   Moshe Waisberg
+ * 
+ */
+package net.sf.jncu.protocol.v2_0.app;
 
+import net.sf.jncu.fdil.NSOFBoolean;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFImmediate;
 import net.sf.jncu.fdil.NSOFInteger;
-import net.sf.jncu.fdil.NSOFNil;
 import net.sf.jncu.fdil.NSOFObject;
-import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.NSOFSymbol;
-import net.sf.jncu.fdil.NSOFTrue;
+import net.sf.jncu.util.NewtonDateUtils;
 
 /**
  * Package information.
  * 
  * @author moshew
  */
-public class PackageInfo {
+public class PackageInfo extends NSOFFrame {
 
 	public static final NSOFSymbol SLOT_NAME = new NSOFSymbol("name");
 	public static final NSOFSymbol SLOT_SIZE = new NSOFSymbol("packageSize");
@@ -27,18 +45,9 @@ public class PackageInfo {
 	public static final NSOFSymbol SLOT_MODIFIED = new NSOFSymbol("modTime");
 	public static final NSOFSymbol SLOT_COPY_PROTECT = new NSOFSymbol("isCopyProtected");
 	public static final NSOFSymbol SLOT_REMOVE = new NSOFSymbol("safeToRemove");
+	public static final NSOFSymbol SLOT_LENGTH = new NSOFSymbol("length");
 
 	private String name;
-	private int packageSize;
-	private int packageId;
-	private int packageVersion;
-	private int format;
-	private int deviceKind;
-	private int deviceNumber;
-	private int deviceId;
-	private int modifyDate;
-	private boolean copyProtected;
-	private boolean safeToRemove;
 
 	/**
 	 * Creates a new package info.
@@ -48,12 +57,26 @@ public class PackageInfo {
 	}
 
 	/**
+	 * Creates a new package info.
+	 * 
+	 * @param frame
+	 *            the source frame.
+	 */
+	public PackageInfo(NSOFFrame frame) {
+		super();
+		this.putAll(frame);
+	}
+
+	/**
 	 * Get the package size.
 	 * 
 	 * @return the size.
 	 */
 	public int getPackageSize() {
-		return packageSize;
+		NSOFObject value = this.get(SLOT_SIZE);
+		if (value != null)
+			return ((NSOFImmediate) value).getValue();
+		return 0;
 	}
 
 	/**
@@ -63,7 +86,7 @@ public class PackageInfo {
 	 *            the size.
 	 */
 	public void setPackageSize(int packageSize) {
-		this.packageSize = packageSize;
+		this.put(SLOT_SIZE, new NSOFInteger(packageSize));
 	}
 
 	/**
@@ -72,7 +95,10 @@ public class PackageInfo {
 	 * @return the id.
 	 */
 	public int getPackageId() {
-		return packageId;
+		NSOFObject value = this.get(SLOT_ID);
+		if (value != null)
+			return ((NSOFImmediate) value).getValue();
+		return 0;
 	}
 
 	/**
@@ -82,14 +108,17 @@ public class PackageInfo {
 	 *            the id.
 	 */
 	public void setPackageId(int packageId) {
-		this.packageId = packageId;
+		this.put(SLOT_ID, new NSOFInteger(packageId));
 	}
 
 	/**
 	 * @return the packageVersion
 	 */
 	public int getPackageVersion() {
-		return packageVersion;
+		NSOFObject value = this.get(SLOT_VERSION);
+		if (value != null)
+			return ((NSOFImmediate) value).getValue();
+		return 0;
 	}
 
 	/**
@@ -97,7 +126,7 @@ public class PackageInfo {
 	 *            the packageVersion to set
 	 */
 	public void setPackageVersion(int packageVersion) {
-		this.packageVersion = packageVersion;
+		this.put(SLOT_VERSION, new NSOFInteger(packageVersion));
 	}
 
 	/**
@@ -106,7 +135,10 @@ public class PackageInfo {
 	 * @return the format.
 	 */
 	public int getFormat() {
-		return format;
+		NSOFObject value = this.get(SLOT_FORMAT);
+		if (value != null)
+			return ((NSOFImmediate) value).getValue();
+		return 0;
 	}
 
 	/**
@@ -116,7 +148,7 @@ public class PackageInfo {
 	 *            the format.
 	 */
 	public void setFormat(int format) {
-		this.format = format;
+		this.put(SLOT_FORMAT, new NSOFInteger(format));
 	}
 
 	/**
@@ -125,7 +157,10 @@ public class PackageInfo {
 	 * @return the kind.
 	 */
 	public int getDeviceKind() {
-		return deviceKind;
+		NSOFObject value = this.get(SLOT_DEVICE_KIND);
+		if (value != null)
+			return ((NSOFImmediate) value).getValue();
+		return 0;
 	}
 
 	/**
@@ -135,7 +170,7 @@ public class PackageInfo {
 	 *            the kind.
 	 */
 	public void setDeviceKind(int deviceKind) {
-		this.deviceKind = deviceKind;
+		this.put(SLOT_DEVICE_KIND, new NSOFInteger(deviceKind));
 	}
 
 	/**
@@ -144,7 +179,10 @@ public class PackageInfo {
 	 * @return the number.
 	 */
 	public int getDeviceNumber() {
-		return deviceNumber;
+		NSOFObject value = this.get(SLOT_DEVICE_NUM);
+		if (value != null)
+			return ((NSOFImmediate) value).getValue();
+		return 0;
 	}
 
 	/**
@@ -154,7 +192,7 @@ public class PackageInfo {
 	 *            the number.
 	 */
 	public void setDeviceNumber(int deviceNumber) {
-		this.deviceNumber = deviceNumber;
+		this.put(SLOT_DEVICE_NUM, new NSOFInteger(deviceNumber));
 	}
 
 	/**
@@ -163,7 +201,10 @@ public class PackageInfo {
 	 * @return the id.
 	 */
 	public int getDeviceId() {
-		return deviceId;
+		NSOFObject value = this.get(SLOT_DEVICE_ID);
+		if (value != null)
+			return ((NSOFImmediate) value).getValue();
+		return 0;
 	}
 
 	/**
@@ -173,7 +214,7 @@ public class PackageInfo {
 	 *            the id.
 	 */
 	public void setDeviceId(int deviceId) {
-		this.deviceId = deviceId;
+		this.put(SLOT_DEVICE_ID, new NSOFInteger(deviceId));
 	}
 
 	/**
@@ -181,18 +222,34 @@ public class PackageInfo {
 	 * 
 	 * @return the date.
 	 */
-	public int getModifyDate() {
-		return modifyDate;
+	public long getModifyDate() {
+		NSOFObject value = this.get(SLOT_MODIFIED);
+		if (value != null) {
+			int minutes = ((NSOFImmediate) value).getValue();
+			return NewtonDateUtils.fromMinutes(minutes);
+		}
+		return 0;
 	}
 
 	/**
 	 * Set the modified date.
 	 * 
 	 * @param modifyDate
-	 *            the date.
+	 *            the date in milliseconds.
+	 */
+	public void setModifyDate(long modifyDate) {
+		int minutes = NewtonDateUtils.getMinutes(modifyDate);
+		this.put(SLOT_MODIFIED, new NSOFInteger(minutes));
+	}
+
+	/**
+	 * Set the modified date.
+	 * 
+	 * @param modifyDate
+	 *            the date in minutes.
 	 */
 	public void setModifyDate(int modifyDate) {
-		this.modifyDate = modifyDate;
+		this.put(SLOT_MODIFIED, new NSOFInteger(modifyDate));
 	}
 
 	/**
@@ -201,7 +258,10 @@ public class PackageInfo {
 	 * @return true if protected.
 	 */
 	public boolean isCopyProtected() {
-		return copyProtected;
+		NSOFObject value = this.get(SLOT_COPY_PROTECT);
+		if (value != null)
+			return ((NSOFImmediate) value).isTrue();
+		return false;
 	}
 
 	/**
@@ -211,7 +271,7 @@ public class PackageInfo {
 	 *            is protected?
 	 */
 	public void setCopyProtected(boolean copyProtected) {
-		this.copyProtected = copyProtected;
+		this.put(SLOT_COPY_PROTECT, NSOFBoolean.valueOf(copyProtected));
 	}
 
 	/**
@@ -239,7 +299,10 @@ public class PackageInfo {
 	 * @return true if safe to remove.
 	 */
 	public boolean isSafeToRemove() {
-		return safeToRemove;
+		NSOFObject value = this.get(SLOT_REMOVE);
+		if (value != null)
+			return ((NSOFImmediate) value).isTrue();
+		return false;
 	}
 
 	/**
@@ -249,115 +312,6 @@ public class PackageInfo {
 	 *            safe to remove?
 	 */
 	public void setSafeToRemove(boolean safeToRemove) {
-		this.safeToRemove = safeToRemove;
+		this.put(SLOT_REMOVE, NSOFBoolean.valueOf(safeToRemove));
 	}
-
-	/**
-	 * Get the frame.
-	 * 
-	 * @return the frame.
-	 */
-	public NSOFFrame toFrame() {
-		NSOFFrame frame = new NSOFFrame();
-		frame.put(SLOT_COPY_PROTECT, isCopyProtected() ? new NSOFTrue() : new NSOFNil());
-		frame.put(SLOT_DEVICE_ID, new NSOFInteger(getDeviceId()));
-		frame.put(SLOT_DEVICE_KIND, new NSOFInteger(getDeviceKind()));
-		frame.put(SLOT_DEVICE_NUM, new NSOFInteger(getDeviceNumber()));
-		frame.put(SLOT_FORMAT, new NSOFInteger(getFormat()));
-		frame.put(SLOT_ID, new NSOFInteger(getPackageId()));
-		frame.put(SLOT_MODIFIED, new NSOFInteger(getModifyDate()));
-		frame.put(SLOT_NAME, new NSOFString(getName()));
-		frame.put(SLOT_REMOVE, isSafeToRemove() ? new NSOFTrue() : new NSOFNil());
-		frame.put(SLOT_SIZE, new NSOFInteger(getPackageSize()));
-		frame.put(SLOT_VERSION, new NSOFInteger(getPackageVersion()));
-		return frame;
-	}
-
-	/**
-	 * Decode the frame.
-	 * 
-	 * @param frame
-	 *            the frame.
-	 */
-	public void decode(NSOFFrame frame) {
-		NSOFObject value;
-
-		value = frame.get(SLOT_COPY_PROTECT);
-		setCopyProtected(false);
-		if (value != null) {
-			NSOFImmediate imm = (NSOFImmediate) value;
-			setCopyProtected(imm.isTrue());
-		}
-
-		value = frame.get(SLOT_DEVICE_ID);
-		setDeviceId(0);
-		if (value != null) {
-			NSOFImmediate imm = (NSOFImmediate) value;
-			setDeviceId(imm.getValue());
-		}
-
-		value = frame.get(SLOT_DEVICE_KIND);
-		setDeviceKind(0);
-		if (value != null) {
-			NSOFImmediate imm = (NSOFImmediate) value;
-			setDeviceKind(imm.getValue());
-		}
-
-		value = frame.get(SLOT_DEVICE_NUM);
-		setDeviceNumber(0);
-		if (value != null) {
-			NSOFImmediate imm = (NSOFImmediate) value;
-			setDeviceNumber(imm.getValue());
-		}
-
-		value = frame.get(SLOT_FORMAT);
-		setFormat(0);
-		if (value != null) {
-			NSOFImmediate imm = (NSOFImmediate) value;
-			setFormat(imm.getValue());
-		}
-
-		value = frame.get(SLOT_ID);
-		setPackageId(0);
-		if (value != null) {
-			NSOFImmediate imm = (NSOFImmediate) value;
-			setPackageId(imm.getValue());
-		}
-
-		value = frame.get(SLOT_MODIFIED);
-		setModifyDate(0);
-		if (value != null) {
-			NSOFImmediate imm = (NSOFImmediate) value;
-			setModifyDate(imm.getValue());
-		}
-
-		value = frame.get(SLOT_NAME);
-		setName(null);
-		if (value != null) {
-			NSOFString s = (NSOFString) value;
-			setName(s.getValue());
-		}
-
-		value = frame.get(SLOT_REMOVE);
-		setSafeToRemove(false);
-		if (value != null) {
-			NSOFImmediate imm = (NSOFImmediate) value;
-			setSafeToRemove(imm.isTrue());
-		}
-
-		value = frame.get(SLOT_SIZE);
-		setPackageSize(0);
-		if (value != null) {
-			NSOFImmediate imm = (NSOFImmediate) value;
-			setPackageSize(imm.getValue());
-		}
-
-		value = frame.get(SLOT_VERSION);
-		setPackageVersion(0);
-		if (value != null) {
-			NSOFImmediate imm = (NSOFImmediate) value;
-			setPackageVersion(imm.getValue());
-		}
-	}
-
 }

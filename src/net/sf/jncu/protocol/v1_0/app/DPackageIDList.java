@@ -24,8 +24,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.jncu.newton.os.PackageInfo;
 import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.v2_0.app.PackageInfo;
 
 /**
  * This command sends a list of package frames to the desktop. For each package

@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import net.sf.jncu.fdil.NSOFEncoder;
+import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.DockCommandToNewton;
 
@@ -70,8 +71,14 @@ public class DSetCurrentStore extends DockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
+		NSOFFrame storeFrame = store.toFrame();
+		NSOFFrame frame = new NSOFFrame();
+		frame.put(Store.SLOT_NAME, storeFrame.get(Store.SLOT_NAME));
+		frame.put(Store.SLOT_KIND, storeFrame.get(Store.SLOT_KIND));
+		frame.put(Store.SLOT_SIGNATURE, storeFrame.get(Store.SLOT_SIGNATURE));
+
 		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.flatten(getStore().toFrame(), data);
+		encoder.flatten(frame, data);
 	}
 
 	/**

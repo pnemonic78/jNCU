@@ -48,20 +48,20 @@ public class DGetAppNames extends DockCommandToNewtonLong {
 	public static final String COMMAND = "gapp";
 
 	/** Return names and soups for all stores. */
-	public static final int NAMES_AND_SOUPS_ALL = 0;
+	public static final int ALL_STORES_NAMES_SOUPS = 0;
 	/** Return names and soups for current store. */
-	public static final int NAMES_AND_SOUPS_CURRENT = 1;
+	public static final int CURRENT_STORE_NAMES_SOUPS = 1;
 	/** Return just names for all stores. */
-	public static final int NAMES_ALL = 2;
+	public static final int ALL_STORES_NAMES = 2;
 	/** Return just names for current store. */
-	public static final int NAMES_CURRENT = 3;
+	public static final int CURRENT_STORE_NAMES = 3;
 
 	/**
 	 * Constructs a new command.
 	 */
 	public DGetAppNames() {
 		super(COMMAND);
-		setWhat(NAMES_AND_SOUPS_ALL);
+		setWhat(ALL_STORES_NAMES_SOUPS);
 	}
 
 	/**
