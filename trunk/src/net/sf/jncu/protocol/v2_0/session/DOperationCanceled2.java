@@ -35,7 +35,7 @@ import net.sf.jncu.protocol.IDockCommandFromNewton;
  * length = 0
  * </pre>
  */
-public class DOperationCanceled extends DockCommandToNewtonBlank implements IDockCommandFromNewton {
+public class DOperationCanceled2 extends DockCommandToNewtonBlank implements IDockCommandFromNewton {
 
 	/** <tt>kDOperationCanceled</tt> */
 	public static final String COMMAND = "opcn";
@@ -43,7 +43,7 @@ public class DOperationCanceled extends DockCommandToNewtonBlank implements IDoc
 	/**
 	 * Creates a new command.
 	 */
-	public DOperationCanceled() {
+	public DOperationCanceled2() {
 		super(COMMAND);
 	}
 

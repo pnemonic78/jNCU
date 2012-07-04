@@ -29,7 +29,7 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.app.DLoadPackage;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 import net.sf.jncu.protocol.v2_0.IconModule;
-import net.sf.jncu.protocol.v2_0.session.DOperationCanceled;
+import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 
@@ -78,7 +78,7 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 
 		String cmd = command.getCommand();
 
-		if (DOperationCanceled.COMMAND.equals(cmd)) {
+		if (DOperationCanceled2.COMMAND.equals(cmd)) {
 			// TODO Stop sending the package command.
 			// pipe.cancel(load);
 			// loader.kill();

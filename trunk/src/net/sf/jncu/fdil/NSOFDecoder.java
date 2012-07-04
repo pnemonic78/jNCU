@@ -109,7 +109,7 @@ public class NSOFDecoder {
 			object = new NSOFLargeBinary();
 			break;
 		case NewtonStreamedObjectFormat.NSOF_NIL:
-			object = new NSOFNil();
+			object = NSOFNil.NIL;
 			break;
 		case NewtonStreamedObjectFormat.NSOF_PLAIN_ARRAY:
 			object = new NSOFPlainArray();
