@@ -29,7 +29,7 @@ import net.sf.jncu.protocol.v2_0.app.DGetPackageInfo;
 import net.sf.jncu.protocol.v2_0.app.DPackageInfo;
 import net.sf.jncu.protocol.v2_0.app.PackageInfo;
 import net.sf.jncu.protocol.v2_0.io.DSetStoreToDefault;
-import net.sf.jncu.protocol.v2_0.session.DOperationCanceled;
+import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.jncu.protocol.v2_0.session.DUnknownCommand;
 
@@ -269,7 +269,7 @@ public class PackagesTester implements IconModuleListener, MNPPacketListener, Do
 
 		if (DDisconnect.COMMAND.equals(cmd)) {
 			running = false;
-		} else if (DOperationCanceled.COMMAND.equals(cmd)) {
+		} else if (DOperationCanceled2.COMMAND.equals(cmd)) {
 			running = false;
 		} else if (net.sf.jncu.protocol.v1_0.session.DOperationCanceled.COMMAND.equals(cmd)) {
 			running = false;

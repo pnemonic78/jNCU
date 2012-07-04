@@ -731,7 +731,7 @@ kDDesktopInfo
 
 This command is used to negotiate the real protocol version. The protocol version sent with the kDRequestToDock command is now fixed at version 9 (the version used by the 1.0 ROMs) so we can support package loading with NPI 1.0, Connection 2.0 and NTK 1.0. Connection 3.0 will send this command with the real protocol version it wants to use to talk to the Newton. The Newton will respond with a number equal to or lower than the number sent to it by the desktop. The desktop can then decide whether it can talk the specified protocol or not. 
 
-The desktop type is a long that identifies the sender�0 for the Mac and 1 for Windows. The password key is used as part of the password verification.
+The desktop type is a long that identifies the sender, 0 for the Mac and 1 for Windows. The password key is used as part of the password verification.
 
 Session type will be the real session type and should override what was sent in kDInitiateDocking. In fact, it will either be the same as was sent in kDInitiateDocking or "settingUp" to indicate that altho the desktop has accepted a connection, the user has not yet specified an operation.
 
@@ -791,7 +791,7 @@ After the session is started (see above) these commands would be sent.
 				<-	kDCurrentTime	
 	kDSetCurrentStore	->
 				<-	kDResult
-	kDLastSyncTime	->
+	kDLastSyncTIme	->
 				<-	kDCurrentTime
 
 The following would appear only if syncing system info:
@@ -812,7 +812,7 @@ Note that the above only syncs 1.x style packages on locked 1.x cards. To comple
 The sync would continue like this:
 	kDSetSoupGetInfo	->
 				<-	kDSoupInfo
-	kDLastSyncTime	->
+	kDLastSyncTIme	->
 				<-	kDCurrentTime
 	kDGetSoupIDs	->
 				<-	kDSoupIDs
@@ -911,13 +911,13 @@ kDGetChangedIndex		4 longs
 		'cidx'
 		length
 
-This command is like kDGetIndexDescription except that it only returns the index description if it has been changed since the time set by the kDLastSyncTime command. If the index hasn't changed a kDRes with 0 is returned.
+This command is like kDGetIndexDescription except that it only returns the index description if it has been changed since the time set by the kDLastSyncTIme command. If the index hasn't changed a kDRes with 0 is returned.
 
 kDGetChangedInfo			4 longs
 		'cinf'
 		length
 
-This command is like kDGetSoupInfo except that it only returns the soup info if it has been changed since the time set by the kDLastSyncTime command. If the info hasn't changed a kDRes with 0 is returned.
+This command is like kDGetSoupInfo except that it only returns the soup info if it has been changed since the time set by the kDLastSyncTIme command. If the info hasn't changed a kDRes with 0 is returned.
 
 _____________________________________________________
 
@@ -1469,7 +1469,7 @@ kDPatches	'patc' 	// no data
 Desktop -> Newton
 
 kDInitiateDocking	'dock'	// data = session type
-kDLastSyncTime	'stme'	// The time of the last sync
+kDLastSyncTIme	'stme'	// The time of the last sync
 kDGetStoreNames	'gsto'	// no data
 kDGetSoupNames	'gets'	// no data
 kDSetCurrentStore	'ssto'	// data = store frane
@@ -1522,7 +1522,7 @@ A typical synchronize session might continue like this:
 				<-	kDCurrentTime	
 	kDSetCurrentStore	->
 				<-	kDResult
-	kDLastSyncTime	->
+	kDLastSyncTIme	->
 				<-	kDCurrentTime
 	kDGetPatches	->
 				<-	kDPatches
