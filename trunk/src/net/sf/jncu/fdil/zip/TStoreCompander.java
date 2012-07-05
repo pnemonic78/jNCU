@@ -20,13 +20,14 @@
 package net.sf.jncu.fdil.zip;
 
 /**
- * @author mwaisberg
+ * Base class for a store compressor-expander (compander).
  * 
+ * @author mwaisberg
  */
-public abstract class TStoreCompander {
+public abstract class TStoreCompander extends TCompander {
 
 	/**
-	 * Creates a new compressor.
+	 * Creates a new compander.
 	 */
 	public TStoreCompander() {
 	}

@@ -26,7 +26,7 @@ package net.sf.jncu.fdil.zip;
 public class TStoreCompanderWrapper extends TStoreCompander {
 
 	/**
-	 * Creates a new compressor.
+	 * Creates a new compander.
 	 */
 	public TStoreCompanderWrapper() {
 	}
