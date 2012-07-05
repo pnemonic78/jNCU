@@ -94,4 +94,9 @@ public abstract class NSOFObject extends NewtonStreamedObjectFormat implements C
 	public NSOFObject deepClone() throws CloneNotSupportedException {
 		return this;
 	}
+
+	@Override
+	public String toString() {
+		return getObjectClass().toString();
+	}
 }

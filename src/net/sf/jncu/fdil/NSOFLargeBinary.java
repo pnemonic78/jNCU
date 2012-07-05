@@ -62,6 +62,16 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	 */
 	public static final String COMPANDER_PIXELMAP = "TPixelMapCompander";
 
+	/**
+	 * Specifies the use of the Zippy expander.
+	 */
+	public static final String COMPANDER_ZIPPY = "TZippyStoreDecompressor";
+
+	/**
+	 * Specifies the use of the simple expander.
+	 */
+	public static final String COMPANDER_SIMPLE = "TSimpleStoreDecompressor";
+
 	/** Data is not compressed. */
 	protected static final byte UNCOMPRESSED = 0;
 	/** Data is compressed. */
@@ -254,6 +264,11 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 		this.companderArgs = companderArgs;
 	}
 
+	/**
+	 * Get the BLOB value.
+	 * 
+	 * @return the BLOB.
+	 */
 	public Blob getBlob() {
 		Blob blob = null;
 		try {
@@ -267,15 +282,15 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	}
 
 	/**
-	 * Set the value.
+	 * Set the BLOB value.
 	 * 
 	 * @param value
-	 *            the value.
+	 *            the BLOB.
 	 */
 	public void setBlob(Blob value) {
 		byte[] buf;
 		try {
-			buf = value.getBytes(0, (int) value.length());
+			buf = value.getBytes(1, (int) value.length());
 		} catch (SQLException se) {
 			throw new InvalidParameterException(se);
 		}
