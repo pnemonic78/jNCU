@@ -19,6 +19,9 @@
  */
 package net.sf.jncu.fdil.zip;
 
+import java.io.InputStream;
+import java.util.zip.InflaterInputStream;
+
 /**
  * @author mwaisberg
  * 
@@ -26,9 +29,15 @@ package net.sf.jncu.fdil.zip;
 public class TLZStoreDecompressor extends TStoreDecompressor {
 
 	/**
-	 * Creates a new expander.
+	 * Creates a new decompressor.
 	 */
 	public TLZStoreDecompressor() {
+	}
+
+	@Override
+	protected InflaterInputStream createInflaterStream(InputStream in) {
+		// TODO implement me!
+		return null;
 	}
 
 }

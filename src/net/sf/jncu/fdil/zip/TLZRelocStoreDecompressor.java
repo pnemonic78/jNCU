@@ -26,7 +26,7 @@ package net.sf.jncu.fdil.zip;
 public class TLZRelocStoreDecompressor extends TLZStoreDecompressor {
 
 	/**
-	 * Creates a new expander.
+	 * Creates a new decompressor.
 	 */
 	public TLZRelocStoreDecompressor() {
 	}

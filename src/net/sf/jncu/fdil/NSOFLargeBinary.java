@@ -30,6 +30,7 @@ import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialException;
 
 import net.sf.jncu.dil.InvalidParameterException;
+import net.sf.jncu.fdil.zip.CompanderFactory;
 
 /**
  * Newton Streamed Object Format - Large Binary Object.<br>
@@ -49,28 +50,8 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	/** Default large binary class. */
 	public static final NSOFSymbol CLASS_LARGE_BINARY = new NSOFSymbol("largeBinary");
 
-	/**
-	 * Specifies the use of the Lempel-Ziv compressor-expander.
-	 */
-	public static final String COMPANDER_LZ = "TLZStoreCompander";
-	/**
-	 * Specifies the use of a compander specialized for pixel map data. (A
-	 * bitmap is a pixel map having a bit depth of 1.) This compander assumes
-	 * that the data in the VBO is a pixel map and that the pixel map data is
-	 * 32-bit aligned; that is, the length of the rows in the pixel map is an
-	 * even multiple of 4 bytes.
-	 */
-	public static final String COMPANDER_PIXELMAP = "TPixelMapCompander";
-
-	/**
-	 * Specifies the use of the Zippy expander.
-	 */
-	public static final String COMPANDER_ZIPPY = "TZippyStoreDecompressor";
-
-	/**
-	 * Specifies the use of the simple expander.
-	 */
-	public static final String COMPANDER_SIMPLE = "TSimpleStoreDecompressor";
+	public static final String COMPANDER_LZ = CompanderFactory.COMPANDER_LZ;
+	public static final String COMPANDER_PIXELMAP = CompanderFactory.COMPANDER_PIXELMAP;
 
 	/** Data is not compressed. */
 	protected static final byte UNCOMPRESSED = 0;

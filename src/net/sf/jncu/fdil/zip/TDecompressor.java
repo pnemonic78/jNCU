@@ -20,15 +20,16 @@
 package net.sf.jncu.fdil.zip;
 
 /**
- * @author mwaisberg
+ * Base class for all decompressors.
  * 
+ * @author mwaisberg
  */
-public class TSimpleStoreCompander extends TStoreCompander {
+public abstract class TDecompressor {
 
 	/**
-	 * Creates a new compander.
+	 * Creates a new decompressor.
 	 */
-	public TSimpleStoreCompander() {
+	public TDecompressor() {
 	}
 
 }

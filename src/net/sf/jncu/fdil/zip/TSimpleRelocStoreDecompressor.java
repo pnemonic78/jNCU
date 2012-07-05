@@ -23,10 +23,10 @@ package net.sf.jncu.fdil.zip;
  * @author mwaisberg
  * 
  */
-public class TSimpleRelocStoreDecompressor extends TStoreDecompressor {
+public class TSimpleRelocStoreDecompressor extends TSimpleStoreDecompressor {
 
 	/**
-	 * Creates a new expander.
+	 * Creates a new decompressor.
 	 */
 	public TSimpleRelocStoreDecompressor() {
 	}
