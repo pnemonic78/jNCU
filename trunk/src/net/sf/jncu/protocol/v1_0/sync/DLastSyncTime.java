@@ -19,7 +19,7 @@
  */
 package net.sf.jncu.protocol.v1_0.sync;
 
-import net.sf.jncu.protocol.DockCommandToNewtonBlank;
+import net.sf.jncu.protocol.DockCommandToNewtonLong;
 
 /**
  * The time of the last sync.
@@ -31,7 +31,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  * 
  * @author moshew
  */
-public class DLastSyncTime extends DockCommandToNewtonBlank {
+public class DLastSyncTime extends DockCommandToNewtonLong {
 
 	/** <tt>kDLastSyncTime</tt> */
 	public static final String COMMAND = "stme";

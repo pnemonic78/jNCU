@@ -58,7 +58,9 @@ public class DOperationCanceled extends DockCommandFromNewtonBlank implements ID
 
 	@Override
 	public int getCommandPayloadLength() throws IOException {
-		return 0;
+		if (blank == null)
+			blank = new DockCommandToNewtonBlank(COMMAND);
+		return blank.getCommandPayloadLength();
 	}
 
 }

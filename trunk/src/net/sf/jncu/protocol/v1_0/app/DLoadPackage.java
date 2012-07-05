@@ -61,19 +61,22 @@ public class DLoadPackage extends DockCommandToNewton {
 
 		if (file.length() < 8L)
 			throw new PackageException("package size too small");
-		InputStream in = new FileInputStream(file);
+		InputStream in = null;
 
 		// Check that the file header starts with "package"
 		byte[] buf = new byte[7];
 		try {
+			in = new FileInputStream(file);
 			in.read(buf);
 			if ((buf[0] != 'p') || (buf[1] != 'a') || (buf[2] != 'c') || (buf[3] != 'k') || (buf[4] != 'a') || (buf[5] != 'g') || (buf[6] != 'e'))
 				throw new PackageException("package header must start with 'package'");
 		} finally {
-			try {
-				in.close();
-			} catch (Exception e) {
-				// ignore
+			if (in != null) {
+				try {
+					in.close();
+				} catch (Exception e) {
+					// ignore
+				}
 			}
 		}
 		in = new FileInputStream(file);
