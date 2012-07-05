@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.util.zip.InflaterInputStream;
 
 /**
+ * Simple store decompressor.
+ * 
  * @author mwaisberg
  * 
  */
@@ -36,8 +38,6 @@ public class TSimpleStoreDecompressor extends TStoreDecompressor {
 
 	@Override
 	protected InflaterInputStream createInflaterStream(InputStream in) {
-		// TODO implement me!
-		return null;
+		return new SimpleStoreInputStream(in);
 	}
-
 }

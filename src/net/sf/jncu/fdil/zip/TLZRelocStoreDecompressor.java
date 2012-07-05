@@ -20,6 +20,8 @@
 package net.sf.jncu.fdil.zip;
 
 /**
+ * Lempel-Ziv relocation store decompressor.
+ * 
  * @author mwaisberg
  * 
  */

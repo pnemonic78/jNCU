@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.util.zip.InflaterInputStream;
 
 /**
+ * Lempel-Ziv store decompressor.
+ * 
  * @author mwaisberg
  * 
  */
@@ -36,8 +38,8 @@ public class TLZStoreDecompressor extends TStoreDecompressor {
 
 	@Override
 	protected InflaterInputStream createInflaterStream(InputStream in) {
+		InflaterInputStream inflater = null;
 		// TODO implement me!
-		return null;
+		return inflater;
 	}
-
 }
