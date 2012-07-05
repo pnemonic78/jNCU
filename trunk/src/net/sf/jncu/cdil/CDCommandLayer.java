@@ -250,6 +250,26 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 						if (DockCommand.isCommand(in)) {
 							cmd = DockCommandFactory.getInstance().create(in);
 							length = DockCommandFromNewton.ntohl(in);
+							if (length == 0x6e657774) { // 'newt'
+								// This command was not sent properly, and
+								// instead we started receiving the next
+								// command.
+								cmd = null;
+								lengthBytes[0] = (byte) ((length >> 24) & 0xFF);
+								lengthBytes[1] = (byte) ((length >> 16) & 0xFF);
+								lengthBytes[2] = (byte) ((length >> 8) & 0xFF);
+								lengthBytes[3] = (byte) ((length >> 0) & 0xFF);
+								v.clear();
+								v.add(new ByteArrayInputStream(lengthBytes));
+								v.add(in);
+								in = new SequenceInputStream(v.elements());
+								if (DockCommand.isCommand(in)) {
+									cmd = DockCommandFactory.getInstance().create(in);
+									length = DockCommandFromNewton.ntohl(in);
+								} else {
+									continue;
+								}
+							}
 							// Need to put the length back into the command
 							// stream for decoding.
 							lengthBytes[0] = (byte) ((length >> 24) & 0xFF);
