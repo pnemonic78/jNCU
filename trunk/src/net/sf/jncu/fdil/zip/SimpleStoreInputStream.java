@@ -32,8 +32,8 @@ import java.util.zip.InflaterInputStream;
  */
 public class SimpleStoreInputStream extends InflaterInputStream {
 
-	private int pos;
-	private int posNext = 0;
+	private int pos = 0;
+	private int posSkip = 0;
 
 	/**
 	 * Creates a new input stream.
@@ -47,16 +47,15 @@ public class SimpleStoreInputStream extends InflaterInputStream {
 
 	@Override
 	public int read(byte[] b, int off, int len) throws IOException {
-		if (pos == posNext) {
-			if (posNext == 0) {
-				in.skip(16);
-				pos += 16;
-				posNext += 12;
-			} else {
+		if (pos == posSkip) {
+			if (posSkip == 0) {
 				in.skip(8);
 				pos += 8;
+				posSkip += 12;
 			}
-			posNext += 1030;
+			in.skip(8);
+			pos += 8;
+			posSkip += 1030;
 		}
 		int count = in.read(b, off, Math.min(1024, len));
 		if (count > 0)
