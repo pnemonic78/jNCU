@@ -20,13 +20,15 @@
 package net.sf.jncu.protocol.v1_0.sync;
 
 import net.sf.jncu.protocol.DockCommandToNewtonLong;
+import net.sf.jncu.util.NewtonDateUtils;
 
 /**
  * The time of the last sync.
  * 
  * <pre>
  * 'stme'
- * length = 0
+ * length
+ * time
  * </pre>
  * 
  * @author moshew
@@ -43,4 +45,22 @@ public class DLastSyncTime extends DockCommandToNewtonLong {
 		super(COMMAND);
 	}
 
+	/**
+	 * Get time of the last sync.
+	 * 
+	 * @return the time in milliseconds.
+	 */
+	public long getLastSyncTime() {
+		return NewtonDateUtils.fromMinutes(getValue());
+	}
+
+	/**
+	 * Set time of the last sync.
+	 * 
+	 * @param time
+	 *            the time in milliseconds.
+	 */
+	public void setLastSyncTime(long time) {
+		setValue(NewtonDateUtils.getMinutes(time));
+	}
 }
