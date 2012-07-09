@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javax.swing.Icon;
+
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFInteger;
@@ -147,15 +149,13 @@ public class DFileInfo extends DockCommandToNewton {
 	 * @return the icon.
 	 */
 	protected NSOFBitmap getIcon(File file) {
-		// TODO
-		// Icon icon = SwingUtils.getFileSystemView().getSystemIcon(file);
-		// if (icon == null) {
-		// return null;
-		// }
-		NSOFBitmap bmp = null;
+		Icon icon = SwingUtils.getFileSystemView().getSystemIcon(file);
+		if (icon == null) {
+			return null;
+		}
 		// Convert "Java Icon" to "Newton bitmap" or "Apple PICT image".
-		// see "developer/QAs-2.x/html/newtbitm.htm"
-		// bmp = new NSOFBitmap();
+		NSOFBitmap bmp = new NSOFBitmap();
+		bmp.fromIcon(icon);
 		return bmp;
 	}
 }
