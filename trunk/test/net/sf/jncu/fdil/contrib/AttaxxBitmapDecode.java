@@ -34,7 +34,7 @@ public class AttaxxBitmapDecode {
 
 	public static void main(String[] args) {
 		try {
-			NSOFBitmap bmp = new NSOFBitmap();
+			NSOFIcon bmp = new NSOFIcon();
 
 			NSOFSmallRect bounds = new NSOFSmallRect(0, 0, 31, 31);
 			bmp.setBounds(bounds);
@@ -59,7 +59,7 @@ public class AttaxxBitmapDecode {
 			// JOptionPane.showMessageDialog(null, "Attaxx", null,
 			// JOptionPane.PLAIN_MESSAGE, icon);
 
-			NSOFBitmap bmp2 = new NSOFBitmap();
+			NSOFIcon bmp2 = new NSOFIcon();
 			bmp2.setBounds(bounds);
 			bmp2.fromIcon(icon);
 			byte[] pixels2 = bmp2.getBits().getPixels();

@@ -27,7 +27,7 @@ import java.io.InvalidObjectException;
 import java.util.Hashtable;
 import java.util.Map;
 
-import net.sf.jncu.fdil.contrib.NSOFBitmap;
+import net.sf.jncu.fdil.contrib.NSOFIcon;
 import net.sf.jncu.fdil.contrib.NSOFInstructions;
 import net.sf.jncu.fdil.contrib.NSOFLiterals;
 import net.sf.jncu.fdil.contrib.NSOFRawBitmap;
@@ -170,8 +170,8 @@ public class NSOFDecoder {
 			NSOFBinaryObject bin = (NSOFBinaryObject) object;
 			nsClass = object.getObjectClass();
 
-			if (NSOFBitmap.CLASS_BITMAP.equals(nsClass)) {
-				NSOFBitmap bin2 = new NSOFBitmap();
+			if (NSOFIcon.CLASS_ICON.equals(nsClass)) {
+				NSOFIcon bin2 = new NSOFIcon();
 				bin2.setValue(bin.getValue(), this);
 				object = bin2;
 			} else if (NSOFInstructions.CLASS_INSTRUCTIONS.equals(nsClass)) {
