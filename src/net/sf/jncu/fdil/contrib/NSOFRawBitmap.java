@@ -20,13 +20,12 @@
 package net.sf.jncu.fdil.contrib;
 
 import java.awt.Color;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import net.sf.jncu.fdil.NSOFBinaryObject;
 import net.sf.jncu.fdil.NSOFDecoder;
-import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFSmallRect;
 import net.sf.jncu.fdil.NSOFSymbol;
@@ -127,7 +126,7 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 		// 0-3 long ignored
 		this.header = ntohl(in);
 		// 4-5 word #bytes per row of the bitmap data (must be a multiple of 4)
-		setRowBytes(ntohs(in));
+		int rowBytes = ntohs(in);
 		// 6-7 word ignored
 		in.skip(2);
 		// 8-9 word top
@@ -138,6 +137,7 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 		setBottom(ntohs(in));
 		// 14-15 word right
 		setRight(ntohs(in));
+		setRowBytes(rowBytes);
 		// 16-* bits pixel data, 1 for "on" pixel, 0 for "off"
 		byte[] pixels = new byte[in.available()];
 		readAll(in, pixels);
@@ -145,25 +145,37 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	}
 
 	@Override
-	public void flatten(OutputStream out, NSOFEncoder encoder) throws IOException {
-		super.flatten(out, encoder);
+	public byte[] getValue() {
+		byte[] value = super.getValue();
 
-		// 0-3 long ignored
-		htonl(header, out);
-		// 4-5 word #bytes per row of the bitmap data (must be a multiple of 4)
-		htons(rowBytes, out);
-		// 6-7 word ignored
-		htons(0, out);
-		// 8-9 word top
-		htons(top, out);
-		// 10-11 word left
-		htons(left, out);
-		// 12-13 word bottom
-		htons(bottom, out);
-		// 14-15 word right
-		htons(right, out);
-		// 16-* bits pixel data, 1 for "on" pixel, 0 for "off"
-		out.write(pixels);
+		if (value == null) {
+			ByteArrayOutputStream out = new ByteArrayOutputStream(16 + pixels.length);
+			try {
+				// 0-3 long ignored
+				htonl(header, out);
+				// 4-5 word #bytes per row of the bitmap data (must be a
+				// multiple of 4)
+				htons(rowBytes, out);
+				// 6-7 word ignored
+				htons(0, out);
+				// 8-9 word top
+				htons(top, out);
+				// 10-11 word left
+				htons(left, out);
+				// 12-13 word bottom
+				htons(bottom, out);
+				// 14-15 word right
+				htons(right, out);
+				// 16-* bits pixel data, 1 for "on" pixel, 0 for "off"
+				out.write(pixels);
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+			value = out.toByteArray();
+			super.setValue(value);
+		}
+
+		return value;
 	}
 
 	/**
@@ -176,13 +188,15 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	}
 
 	/**
-	 * Set the number of bytes per row. Will always be 32-bit aligned.
+	 * Set the number of bytes per row.<br>
+	 * <em>Must always be 32 bit aligned.</em>
 	 * 
 	 * @param rowBytes
 	 *            the number of bytes.
 	 */
 	protected void setRowBytes(int rowBytes) {
-		this.rowBytes = rowBytes & 0xFC;
+		this.rowBytes = (rowBytes & 0xFC) | 0x04;
+		setValue(null);
 	}
 
 	/**
@@ -215,6 +229,7 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	 */
 	public void setTop(int top) {
 		this.top = top;
+		setValue(null);
 	}
 
 	/**
@@ -237,7 +252,7 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 
 		final int width = getRight() - left;
 		int rowBytes = width >> 3;
-		if ((width & 7) > 0)
+		if ((width & 7) != 0)
 			rowBytes++;
 		setRowBytes(rowBytes);
 	}
@@ -259,6 +274,7 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	 */
 	public void setBottom(int bottom) {
 		this.bottom = bottom;
+		setValue(null);
 	}
 
 	/**
@@ -281,7 +297,7 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 
 		final int width = right - getLeft();
 		int rowBytes = width >> 3;
-		if ((width & 7) > 0)
+		if ((width & 7) != 0)
 			rowBytes++;
 		setRowBytes(rowBytes);
 	}
@@ -305,6 +321,7 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	 */
 	public void setPixels(byte[] pixels) {
 		this.pixels = pixels;
+		setValue(null);
 	}
 
 	@Override
@@ -372,15 +389,15 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 		if ((pixel != PIXEL_OFF) && (pixel != PIXEL_ON))
 			throw new IllegalArgumentException("Invalid pixel " + pixel);
 		if (pixels == null) {
-			int width = getRight() - getLeft();
 			int height = getBottom() - getTop();
-			this.pixels = new byte[width * height];
+			this.pixels = new byte[rowBytes * height];
 		}
 		int off = (y * rowBytes) + (x >> 3);
 		int shift = 7 - (x & 7);
 		int mask = (pixel << shift);
 		pixels[off] &= ~mask; // Clear the bit.
 		pixels[off] |= mask; // Set the bit.
+		setValue(null);
 	}
 
 	/**
@@ -408,14 +425,16 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	 *            the RGB color.
 	 */
 	public void setRGB(int x, int y, int rgb) {
-		int bit = NSOFRawBitmap.PIXEL_OFF;
-		if (rgb == 0xFF000000) {// Is black?
-			bit = NSOFRawBitmap.PIXEL_ON;
-		} else if ((rgb & 0xFF000000) != 0) { // Is non-transparent?
-			if ((rgb & 0x00FFFFFF) < 0x00888888) {// Is colour dark?
-				bit = NSOFRawBitmap.PIXEL_ON;
+		int pixel = NSOFRawBitmap.PIXEL_OFF;
+		if (rgb != 0x00000000) {
+			if (rgb == 0xFF000000) {// Is black?
+				pixel = NSOFRawBitmap.PIXEL_ON;
+			} else if ((rgb & 0xFF000000) != 0) { // Is non-transparent?
+				if ((rgb & 0x00FFFFFF) < 0x00888888) {// Is colour dark?
+					pixel = NSOFRawBitmap.PIXEL_ON;
+				}
 			}
 		}
-		setPixel(x, y, bit);
+		setPixel(x, y, pixel);
 	}
 }

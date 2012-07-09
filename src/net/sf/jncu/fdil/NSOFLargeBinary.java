@@ -285,11 +285,6 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	}
 
 	@Override
-	public void setObject(NSOFObject value) {
-		super.setObject(null);
-	}
-
-	@Override
 	public Object clone() throws CloneNotSupportedException {
 		NSOFLargeBinary copy = new NSOFLargeBinary();
 		copy.setObjectClass(this.getObjectClass());

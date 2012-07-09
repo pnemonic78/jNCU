@@ -168,29 +168,13 @@ public class NSOFBitmap extends NSOFFrame {
 		NSOFRawBitmap bits = getBits();
 		int width = bits.getRight() - bits.getLeft();
 		int height = bits.getBottom() - bits.getTop();
-		int rowBytes = bits.getRowBytes();
-		byte[] pixels = bits.getPixels();
 		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-		int off = 0;
-		int x;
-		int pixelByte;
-		int pixelMask;
-		int bit;
 		int rgb;
 
 		for (int y = 0; y < height; y++) {
-			x = 0;
-
-			for (int c = 0; c < rowBytes; c++) {
-				pixelMask = 0x80;
-				pixelByte = pixels[off++] & 0xFF;
-
-				for (int b = 0; (b < 8) && (x < width); b++, x++) {
-					bit = pixelByte & pixelMask;
-					rgb = (bit == NSOFRawBitmap.PIXEL_OFF) ? 0x00000000 : 0xFF000000;
-					img.setRGB(x, y, rgb);
-					pixelMask >>>= 1;
-				}
+			for (int x = 0; x < width; x++) {
+				rgb = bits.getRGB(x, y);
+				img.setRGB(x, y, rgb);
 			}
 		}
 
@@ -212,7 +196,7 @@ public class NSOFBitmap extends NSOFFrame {
 		int width = image.getWidth(null);
 		int height = image.getHeight(null);
 		BufferedImage bimage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		Graphics g = image.getGraphics();
+		Graphics g = bimage.getGraphics();
 		g.drawImage(image, 0, 0, null);
 		g.finalize();
 		fromImage(bimage);
@@ -239,11 +223,6 @@ public class NSOFBitmap extends NSOFFrame {
 		mask.setBottom(height);
 		NSOFSmallRect bounds = new NSOFSmallRect(0, 0, width, height);
 		setBounds(bounds);
-
-		int rowBytes = width >> 3;
-		if ((width & 0x07) > 0)
-			rowBytes++;
-		bits.setRowBytes(rowBytes);
 
 		int rgb;
 		for (int y = 0; y < height; y++) {
