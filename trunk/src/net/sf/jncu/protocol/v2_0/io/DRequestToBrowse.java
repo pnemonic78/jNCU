@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
@@ -70,12 +71,16 @@ public class DRequestToBrowse extends DockCommandFromNewton {
 		NSOFDecoder decoder = new NSOFDecoder();
 
 		int length = getLength();
+		byte[] buf = new byte[length];
+		readAll(data, buf);
+		ByteArrayInputStream in = new ByteArrayInputStream(buf);
 		int start, end;
 		NSOFObject next;
+
 		while (length > 0) {
-			start = data.available();
-			next = decoder.inflate(data);
-			end = data.available();
+			start = in.available();
+			next = decoder.inflate(in);
+			end = in.available();
 			length -= (start - end);
 
 			if (next instanceof NSOFString) {

@@ -19,7 +19,6 @@
  */
 package net.sf.jncu.fdil;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -39,7 +38,6 @@ public class NSOFBinaryObject extends NSOFPointer {
 	public static final NSOFSymbol CLASS_BINARY = new NSOFSymbol("binary");
 
 	private byte[] value;
-	private NSOFObject object;
 
 	/**
 	 * Constructs a new binary object.
@@ -58,17 +56,6 @@ public class NSOFBinaryObject extends NSOFPointer {
 	public NSOFBinaryObject(byte[] value) {
 		this();
 		setValue(value);
-	}
-
-	/**
-	 * Constructs a new binary object.
-	 * 
-	 * @param value
-	 *            the value.
-	 */
-	public NSOFBinaryObject(NSOFObject value) {
-		this();
-		setObject(value);
 	}
 
 	@Override
@@ -91,15 +78,6 @@ public class NSOFBinaryObject extends NSOFPointer {
 		out.write(NSOF_BINARY);
 
 		byte[] v = getValue();
-		NSOFObject o = getObject();
-
-		if (o != null) {
-			ByteArrayOutputStream bout = new ByteArrayOutputStream();
-			NSOFEncoder enc = new NSOFEncoder(false);
-			enc.setPrecedents(false);
-			enc.flatten(o, bout);
-			v = bout.toByteArray();
-		}
 
 		if (v == null) {
 			// Number of bytes of data (xlong)
@@ -136,34 +114,12 @@ public class NSOFBinaryObject extends NSOFPointer {
 	 */
 	public void setValue(byte[] value) {
 		this.value = value;
-		this.object = null;
-	}
-
-	/**
-	 * Set the object value.
-	 * 
-	 * @param value
-	 *            the value.
-	 */
-	protected void setObject(NSOFObject value) {
-		this.value = null;
-		this.object = value;
-	}
-
-	/**
-	 * Get the object value.
-	 * 
-	 * @return the value.
-	 */
-	public NSOFObject getObject() {
-		return object;
 	}
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		NSOFBinaryObject copy = new NSOFBinaryObject();
 		copy.setObjectClass(this.getObjectClass());
-		copy.object = this.object;
 		copy.value = this.value;
 		return copy;
 	}
@@ -172,7 +128,6 @@ public class NSOFBinaryObject extends NSOFPointer {
 	public NSOFObject deepClone() throws CloneNotSupportedException {
 		NSOFBinaryObject copy = new NSOFBinaryObject();
 		copy.setObjectClass(this.getObjectClass());
-		copy.object = (this.object == null) ? null : this.object.deepClone();
 		if (this.value != null) {
 			copy.value = new byte[this.value.length];
 			System.arraycopy(this.value, 0, copy.value, 0, this.value.length);

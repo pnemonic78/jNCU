@@ -1,6 +1,4 @@
-package net.sf.jncu.protocol.app;
-
-import java.io.File;
+package net.sf.jncu.protocol.io;
 
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDState;
@@ -15,24 +13,24 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.IconModule.IconModuleListener;
-import net.sf.jncu.protocol.v2_0.app.LoadPackage;
+import net.sf.jncu.protocol.v2_0.io.DRequestToBrowse;
+import net.sf.jncu.protocol.v2_0.io.win.FileChooser;
 
 /**
- * Test to load a package into the Newton.
+ * Test to interact with file choose of the Newton.
  * 
  * @author moshew
  */
-public class LoadPackageTester implements IconModuleListener, MNPPacketListener, DockCommandListener {
+public class FileChooserTester implements IconModuleListener, MNPPacketListener, DockCommandListener {
 
 	private String portName;
-	private String pkgPath;
-	private LoadPackage pkg;
-	private boolean loading = false;
+	private boolean choosing;
+	private FileChooser chooser;
 	private CDLayer layer;
 	private MNPPipe pipe;
 	private PacketLogger logger;
 
-	public LoadPackageTester() {
+	public FileChooserTester() {
 		super();
 	}
 
@@ -43,14 +41,13 @@ public class LoadPackageTester implements IconModuleListener, MNPPacketListener,
 	 *            the array of arguments.
 	 */
 	public static void main(String[] args) {
-		LoadPackageTester tester = new LoadPackageTester();
-		if (args.length < 2) {
-			System.out.println("args: port file");
+		FileChooserTester tester = new FileChooserTester();
+		if (args.length < 1) {
+			System.out.println("args: port");
 			System.exit(1);
 			return;
 		}
 		tester.setPortName(args[0]);
-		tester.setPath(args[1]);
 		try {
 			try {
 				tester.init();
@@ -67,10 +64,6 @@ public class LoadPackageTester implements IconModuleListener, MNPPacketListener,
 		this.portName = portName;
 	}
 
-	public void setPath(String path) {
-		this.pkgPath = path;
-	}
-
 	public void init() throws Exception {
 		logger = new PacketLogger('P');
 		layer = CDLayer.getInstance();
@@ -78,7 +71,7 @@ public class LoadPackageTester implements IconModuleListener, MNPPacketListener,
 		layer.startUp();
 		// Create a connection object
 		pipe = layer.createMNPSerial(portName, MNPSerialPort.BAUD_38400);
-		// pipe.setTimeout(Integer.MAX_VALUE);
+		// pipe.setTimeout();
 		pipe.startListening();
 		pipe.addPacketListener(this);
 		pipe.addCommandListener(this);
@@ -90,13 +83,9 @@ public class LoadPackageTester implements IconModuleListener, MNPPacketListener,
 	}
 
 	public void run() throws Exception {
-		File file = new File(pkgPath);
-
-		loading = true;
-		pkg = new LoadPackage(pipe, false);
-		pkg.loadPackage(file);
-		while (loading)
-			Thread.yield();
+		choosing = true;
+		while (choosing)
+			Thread.sleep(1000);
 	}
 
 	private void done() throws Exception {
@@ -111,14 +100,14 @@ public class LoadPackageTester implements IconModuleListener, MNPPacketListener,
 
 	@Override
 	public void successModule(IconModule module) {
-		System.out.println("successModule");
-		loading = false;
+		System.out.println("successModule file=" + chooser.getSelectedFile());
+		choosing = false;
 	}
 
 	@Override
 	public void cancelModule(IconModule module) {
 		System.out.println("cancelModule");
-		loading = false;
+		choosing = false;
 	}
 
 	@Override
@@ -150,7 +139,9 @@ public class LoadPackageTester implements IconModuleListener, MNPPacketListener,
 		final String cmd = command.getCommand();
 
 		if (DDisconnect.COMMAND.equals(cmd)) {
-			loading = false;
+			choosing = false;
+		} else if (DRequestToBrowse.COMMAND.equals(cmd)) {
+			chooser = new FileChooser(pipe, FileChooser.PACKAGES);
 		}
 	}
 
@@ -164,6 +155,7 @@ public class LoadPackageTester implements IconModuleListener, MNPPacketListener,
 
 	@Override
 	public void commandEOF() {
+		choosing = false;
 	}
 
 }

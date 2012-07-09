@@ -73,6 +73,7 @@ public class DFileInfo extends DockCommandToNewton {
 	protected static final NSOFSymbol SLOT_CREATED = new NSOFSymbol("created");
 	protected static final NSOFSymbol SLOT_MODIFIED = new NSOFSymbol("modified");
 	protected static final NSOFSymbol SLOT_ICON = new NSOFSymbol("icon");
+	protected static final NSOFSymbol SLOT_ICONPRO = new NSOFSymbol("iconPro");
 	protected static final NSOFSymbol SLOT_PATH = new NSOFSymbol("path");
 
 	private File file;
@@ -87,8 +88,7 @@ public class DFileInfo extends DockCommandToNewton {
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
 		NSOFEncoder encoder = new NSOFEncoder();
-		NSOFFrame frame = getFrame(getFile());
-		encoder.flatten(frame, data);
+		encoder.flatten(toFrame(), data);
 	}
 
 	/**
@@ -113,24 +113,19 @@ public class DFileInfo extends DockCommandToNewton {
 	/**
 	 * Get the file frame.
 	 * 
-	 * @param file
-	 *            the file.
 	 * @return the frame.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected NSOFFrame getFrame(File file) throws IOException {
+	public NSOFFrame toFrame() throws IOException {
 		NSOFFrame frame = new NSOFFrame();
 
 		frame.put(SLOT_PATH, new NSOFString(file.getCanonicalPath()));
 
 		String description = SwingUtils.getFileSystemView().getSystemTypeDescription(file);
-		if (description != null)
-			frame.put(SLOT_KIND, new NSOFString(description));
-
-		NSOFBitmap icon = getIcon(file);
-		if (icon != null)
-			frame.put(SLOT_ICON, icon);
+		if (description == null)
+			description = "Unknown";
+		frame.put(SLOT_KIND, new NSOFString(description));
 
 		NSOFInteger mtime = new NSOFInteger(NewtonDateUtils.getMinutes(file.lastModified()));
 		frame.put(SLOT_CREATED, mtime);
@@ -138,17 +133,20 @@ public class DFileInfo extends DockCommandToNewton {
 
 		int size = (int) (file.length() & 0xFFFFFFFFL);
 		frame.put(SLOT_SIZE, new NSOFInteger(size));
+
+		NSOFBitmap icon = getIcon();
+		if (icon != null)
+			frame.put(SLOT_ICON, icon);
+
 		return frame;
 	}
 
 	/**
 	 * Get the file icon.
 	 * 
-	 * @param file
-	 *            the file.
 	 * @return the icon.
 	 */
-	protected NSOFBitmap getIcon(File file) {
+	protected NSOFBitmap getIcon() {
 		Icon icon = SwingUtils.getFileSystemView().getSystemIcon(file);
 		if (icon == null) {
 			return null;
