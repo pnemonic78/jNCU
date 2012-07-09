@@ -19,44 +19,24 @@
  */
 package net.sf.jncu.fdil.zip;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.InflaterInputStream;
 
 /**
- * This class implements an input stream filter for reading files in the Simple
- * Store file format.
+ * This class implements an input stream filter for reading files in the
+ * Lempel-Ziv Store file format.
  * 
  * @author mwaisberg
  * 
  */
-public class SimpleStoreInputStream extends InflaterInputStream {
-
-	private int pos = 0;
-	private int posSkip = 0;
+public class LZStoreInputStream extends InflaterInputStream {
 
 	/**
 	 * Creates a new input stream.
 	 * 
 	 * @param in
-	 *            the actual input stream.
 	 */
-	public SimpleStoreInputStream(InputStream in) {
+	public LZStoreInputStream(InputStream in) {
 		super(in);
-	}
-
-	@Override
-	public int read(byte[] b, int off, int len) throws IOException {
-		if (pos == posSkip) {
-			if (posSkip == 0)
-				posSkip += 12;
-			in.skip(8);
-			pos += 8;
-			posSkip += 1030;
-		}
-		int count = in.read(b, off, Math.min(1024, len));
-		if (count > 0)
-			pos += count;
-		return count;
 	}
 }

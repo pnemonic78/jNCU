@@ -19,7 +19,11 @@
  */
 package net.sf.jncu.fdil.zip;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.zip.InflaterInputStream;
 
 /**
@@ -38,8 +42,38 @@ public class TLZStoreDecompressor extends TStoreDecompressor {
 
 	@Override
 	protected InflaterInputStream createInflaterStream(InputStream in) {
-		InflaterInputStream inflater = null;
-		// TODO implement me!
-		return inflater;
+		return new LZStoreInputStream(in);
+	}
+
+	public static void main(String[] args) throws Exception {
+		TDecompressor decomp = CompanderFactory.getInstance().createDecompressor("TLZStoreDecompressor");
+
+		File f = new File("Packages/Hebrew Font:Prism(48).TLZStoreDecompressor");
+		File f2 = new File("Packages/Decompressor/Hebrew.pkg");
+		InputStream fin = null;
+		InputStream de = null;
+		OutputStream fout = null;
+		int b;
+
+		try {
+			fin = new FileInputStream(f);
+			de = decomp.decompress(fin);
+			f2.getParentFile().mkdirs();
+			fout = new FileOutputStream(f2);
+			b = de.read();
+			while (b != -1) {
+				fout.write(b);
+				b = de.read();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (fin != null)
+				fin.close();
+			if (fout != null)
+				fout.close();
+		}
+		if (f2.length() != decomp.getLength())
+			throw new ArrayIndexOutOfBoundsException(decomp.getLength());
 	}
 }
