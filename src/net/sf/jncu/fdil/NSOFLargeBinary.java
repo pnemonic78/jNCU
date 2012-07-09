@@ -79,6 +79,8 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	 */
 	private byte[] companderArgs;
 
+	private Blob blob;
+
 	/**
 	 * Constructs a new large binary object.
 	 */
@@ -128,15 +130,7 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 		} else {
 			byte[] data = new byte[numBytesData];
 			readAll(in, data);
-			Blob blob = null;
-			try {
-				blob = new SerialBlob(data);
-				setValue(blob);
-			} catch (SerialException se) {
-				throw new IOException(se);
-			} catch (SQLException se) {
-				throw new IOException(se);
-			}
+			setValue(data);
 		}
 	}
 
@@ -251,13 +245,14 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	 * @return the BLOB.
 	 */
 	public Blob getBlob() {
-		Blob blob = null;
-		try {
-			blob = new SerialBlob(getValue());
-		} catch (SerialException se) {
-			throw new InvalidParameterException(se);
-		} catch (SQLException se) {
-			throw new InvalidParameterException(se);
+		if (blob == null) {
+			try {
+				this.blob = new SerialBlob(getValue());
+			} catch (SerialException se) {
+				se.printStackTrace();
+			} catch (SQLException se) {
+				se.printStackTrace();
+			}
 		}
 		return blob;
 	}
@@ -269,6 +264,7 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	 *            the BLOB.
 	 */
 	public void setBlob(Blob value) {
+		this.blob = value;
 		byte[] buf;
 		try {
 			buf = value.getBytes(1, (int) value.length());

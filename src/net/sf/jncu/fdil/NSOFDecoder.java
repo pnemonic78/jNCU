@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.fdil;
 
+import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -179,7 +180,13 @@ public class NSOFDecoder {
 				object = bin2;
 			} else if (NSOFRawBitmap.CLASS_BITS.equals(nsClass)) {
 				NSOFRawBitmap bin2 = new NSOFRawBitmap();
-				bin2.setValue(bin.getValue());
+				bin2.setObjectClass(NSOFRawBitmap.CLASS_BITS);
+				bin2.inflate(new ByteArrayInputStream(bin.getValue()), this);
+				object = bin2;
+			} else if (NSOFRawBitmap.CLASS_MASK.equals(nsClass)) {
+				NSOFRawBitmap bin2 = new NSOFRawBitmap();
+				bin2.setObjectClass(NSOFRawBitmap.CLASS_MASK);
+				bin2.inflate(new ByteArrayInputStream(bin.getValue()), this);
 				object = bin2;
 			} else if (NSOFReal.CLASS_REAL.equals(nsClass)) {
 				NSOFReal bin2 = new NSOFReal();

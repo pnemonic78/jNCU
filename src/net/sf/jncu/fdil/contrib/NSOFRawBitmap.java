@@ -19,13 +19,14 @@
  */
 package net.sf.jncu.fdil.contrib;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import net.sf.jncu.fdil.NSOFBinaryObject;
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFEncoder;
-import net.sf.jncu.fdil.NSOFLargeBinary;
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFSmallRect;
 import net.sf.jncu.fdil.NSOFSymbol;
@@ -48,47 +49,47 @@ import net.sf.jncu.fdil.NSOFSymbol;
  * <th>description</th>
  * </tr>
  * <tr>
- * <td>0-3</td>
+ * <td align="right">0-3</td>
  * <td>long</td>
  * <td>ignored</td>
  * </tr>
  * <tr>
- * <td>4-5</td>
+ * <td align="right">4-5</td>
  * <td>word</td>
  * <td>#bytes per row of the bitmap data (must be a multiple of 4)</td>
  * </tr>
  * <tr>
- * <td>6-7</td>
+ * <td align="right">6-7</td>
  * <td>word</td>
  * <td>ignored</td>
  * </tr>
  * <tr>
- * <td>8-15</td>
+ * <td align="right">8-15</td>
  * <td>bitmap</td>
  * <td>rectangle - portion of bits to use--see IM I</td>
  * </tr>
  * <tr>
- * <td>&nbsp;&nbsp;8-9</td>
+ * <td align="right">&nbsp;&nbsp;&nbsp;&nbsp;8-9</td>
  * <td>word</td>
  * <td>top</td>
  * </tr>
  * <tr>
- * <td>&nbsp;&nbsp;10-11</td>
+ * <td align="right">&nbsp;&nbsp;&nbsp;&nbsp;10-11</td>
  * <td>word</td>
  * <td>left</td>
  * </tr>
  * <tr>
- * <td>&nbsp;&nbsp;12-13</td>
+ * <td align="right">&nbsp;&nbsp;&nbsp;&nbsp;12-13</td>
  * <td>word</td>
  * <td>bottom</td>
  * </tr>
  * <tr>
- * <td>&nbsp;&nbsp;14-15</td>
+ * <td align="right">&nbsp;&nbsp;&nbsp;&nbsp;14-15</td>
  * <td>word</td>
  * <td>right</td>
  * </tr>
  * <tr>
- * <td>16-*</td>
+ * <td align="right">16-*</td>
  * <td>bits</td>
  * <td>pixel data, 1 for "on" pixel, 0 for "off"</td>
  * </tr>
@@ -96,10 +97,17 @@ import net.sf.jncu.fdil.NSOFSymbol;
  * 
  * @author Moshe
  */
-public class NSOFRawBitmap extends NSOFLargeBinary {
+public class NSOFRawBitmap extends NSOFBinaryObject {
 
 	/** Default bitmap bits class. */
 	public static final NSOFSymbol CLASS_BITS = new NSOFSymbol("bits");
+	/** Default bitmap mask class. */
+	public static final NSOFSymbol CLASS_MASK = new NSOFSymbol("mask");
+
+	/** Pixel is "on", i.e. black. */
+	public static final int PIXEL_ON = 1;
+	/** Pixel is "off", i.e. white or transparent. */
+	public static final int PIXEL_OFF = 0;
 
 	private int header;
 	private int rowBytes;
@@ -116,8 +124,6 @@ public class NSOFRawBitmap extends NSOFLargeBinary {
 
 	@Override
 	public void inflate(InputStream in, NSOFDecoder decoder) throws IOException {
-		super.inflate(in, decoder);
-
 		// 0-3 long ignored
 		this.header = ntohl(in);
 		// 4-5 word #bytes per row of the bitmap data (must be a multiple of 4)
@@ -281,7 +287,8 @@ public class NSOFRawBitmap extends NSOFLargeBinary {
 	}
 
 	/**
-	 * Get the bits pixel data.
+	 * Get the bits pixel data.<br>
+	 * {@code 1} for "on" pixel, {@code 0} for "off".
 	 * 
 	 * @return the pixels.
 	 */
@@ -290,7 +297,8 @@ public class NSOFRawBitmap extends NSOFLargeBinary {
 	}
 
 	/**
-	 * Set the bits pixel data.
+	 * Set the bits pixel data.<br>
+	 * {@code 1} for "on" pixel, {@code 0} for "off".
 	 * 
 	 * @param pixels
 	 *            the pixels.
@@ -328,5 +336,86 @@ public class NSOFRawBitmap extends NSOFLargeBinary {
 			System.arraycopy(this.pixels, 0, copy.pixels, 0, this.pixels.length);
 		}
 		return copy;
+	}
+
+	/**
+	 * Get the pixel.
+	 * 
+	 * @param x
+	 *            the X co-ordinate of the pixel.
+	 * @param ythe
+	 *            Y co-ordinate of the pixel.
+	 * @return the pixel.
+	 * @see #PIXEL_OFF
+	 * @see #PIXEL_ON
+	 */
+	public int getPixel(int x, int y) {
+		int off = (y * rowBytes) + (x >> 3);
+		int shift = 7 - (x & 7);
+		int pixelByte = pixels[off] & 0xFF;
+		return (pixelByte >> shift) & 1;
+	}
+
+	/**
+	 * Sets a pixel to the RGB color.
+	 * 
+	 * @param x
+	 *            the X co-ordinate of the pixel.
+	 * @param y
+	 *            the Y co-ordinate of the pixel.
+	 * @param pixel
+	 *            the pixel.
+	 * @see #PIXEL_OFF
+	 * @see #PIXEL_ON
+	 */
+	public void setPixel(int x, int y, int pixel) {
+		if ((pixel != PIXEL_OFF) && (pixel != PIXEL_ON))
+			throw new IllegalArgumentException("Invalid pixel " + pixel);
+		if (pixels == null) {
+			int width = getRight() - getLeft();
+			int height = getBottom() - getTop();
+			this.pixels = new byte[width * height];
+		}
+		int off = (y * rowBytes) + (x >> 3);
+		int shift = 7 - (x & 7);
+		int mask = (pixel << shift);
+		pixels[off] &= ~mask; // Clear the bit.
+		pixels[off] |= mask; // Set the bit.
+	}
+
+	/**
+	 * Get the pixel as an RGB color.
+	 * 
+	 * @param x
+	 *            the X co-ordinate of the pixel.
+	 * @param y
+	 *            the Y co-ordinate of the pixel.
+	 * @return the pixel color.
+	 */
+	public int getRGB(int x, int y) {
+		int pixel = getPixel(x, y);
+		return (pixel == PIXEL_ON) ? Color.BLACK.getRGB() : 0;
+	}
+
+	/**
+	 * Sets a pixel to the RGB color.
+	 * 
+	 * @param x
+	 *            the X co-ordinate of the pixel.
+	 * @param y
+	 *            the Y co-ordinate of the pixel.
+	 * @param argb
+	 *            the RGB color.
+	 */
+	public void setRGB(int x, int y, int rgb) {
+		int bit = NSOFRawBitmap.PIXEL_OFF;
+		if (rgb == 0xFF000000) {// Is black?
+			bit = NSOFRawBitmap.PIXEL_ON;
+		} else if ((rgb & 0xFF000000) != 0) { // Is non-transparent?
+			if ((rgb & 0x00FFFFFF) < 0x00888888) {// Is colour dark?
+				bit = NSOFRawBitmap.PIXEL_ON;
+			}
+		}
+		setPixel(x, y, bit);
 	}
 }
