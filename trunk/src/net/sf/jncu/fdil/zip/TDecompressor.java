@@ -20,6 +20,7 @@
 package net.sf.jncu.fdil.zip;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.InflaterInputStream;
 
@@ -31,6 +32,11 @@ import net.sf.jncu.fdil.NSOFLargeBinary;
  * @author mwaisberg
  */
 public abstract class TDecompressor {
+
+	protected static final int LENGTH_VERSION = 4;
+	protected static final int LENGTH_SIZE = 4;
+
+	private int length = 0;
 
 	/**
 	 * Creates a new decompressor.
@@ -53,8 +59,20 @@ public abstract class TDecompressor {
 	 * @param in
 	 *            the input stream.
 	 * @return the inflater stream.
+	 * @throws IOException
+	 *             if an I/O error occurs.
 	 */
-	public InputStream decompress(InputStream in) {
+	public InflaterInputStream decompress(InputStream in) throws IOException {
+		// Skip some header - version (usually 0x00000001).
+		in.skip(LENGTH_VERSION);
+
+		// Read some header - uncompressed length.
+		int n24 = (in.read() & 0xFF) << 24;
+		int n16 = (in.read() & 0xFF) << 16;
+		int n08 = (in.read() & 0xFF) << 8;
+		int n00 = (in.read() & 0xFF) << 0;
+		setLength(n24 | n16 | n08 | n00);
+
 		return createInflaterStream(in);
 	}
 
@@ -64,8 +82,10 @@ public abstract class TDecompressor {
 	 * @param b
 	 *            the input array.
 	 * @return the inflater stream.
+	 * @throws IOException
+	 *             if an I/O error occurs.
 	 */
-	public InputStream decompress(byte[] b) {
+	public InflaterInputStream decompress(byte[] b) throws IOException {
 		return decompress(new ByteArrayInputStream(b));
 	}
 
@@ -75,8 +95,29 @@ public abstract class TDecompressor {
 	 * @param blob
 	 *            the BLOB.
 	 * @return the inflater stream.
+	 * @throws IOException
+	 *             if an I/O error occurs.
 	 */
-	public InputStream decompress(NSOFLargeBinary blob) {
+	public InflaterInputStream decompress(NSOFLargeBinary blob) throws IOException {
 		return decompress(blob.getValue());
+	}
+
+	/**
+	 * Set the uncompressed length.
+	 * 
+	 * @param length
+	 *            the length.
+	 */
+	protected void setLength(int length) {
+		this.length = length;
+	}
+
+	/**
+	 * Get the uncompressed length.
+	 * 
+	 * @return the length.
+	 */
+	public int getLength() {
+		return length;
 	}
 }
