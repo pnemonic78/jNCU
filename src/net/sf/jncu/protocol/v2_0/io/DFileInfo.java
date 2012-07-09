@@ -30,7 +30,7 @@ import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFInteger;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.NSOFSymbol;
-import net.sf.jncu.fdil.contrib.NSOFBitmap;
+import net.sf.jncu.fdil.contrib.NSOFIcon;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.util.NewtonDateUtils;
 import net.sf.swing.SwingUtils;
@@ -134,7 +134,7 @@ public class DFileInfo extends DockCommandToNewton {
 		int size = (int) (file.length() & 0xFFFFFFFFL);
 		frame.put(SLOT_SIZE, new NSOFInteger(size));
 
-		NSOFBitmap icon = getIcon();
+		NSOFIcon icon = getIcon();
 		if (icon != null)
 			frame.put(SLOT_ICON, icon);
 
@@ -146,13 +146,13 @@ public class DFileInfo extends DockCommandToNewton {
 	 * 
 	 * @return the icon.
 	 */
-	protected NSOFBitmap getIcon() {
+	protected NSOFIcon getIcon() {
 		Icon icon = SwingUtils.getFileSystemView().getSystemIcon(file);
 		if (icon == null) {
 			return null;
 		}
 		// Convert "Java Icon" to "Newton bitmap" or "Apple PICT image".
-		NSOFBitmap bmp = new NSOFBitmap();
+		NSOFIcon bmp = new NSOFIcon();
 		bmp.fromIcon(icon);
 		return bmp;
 	}

@@ -39,15 +39,15 @@ import net.sf.jncu.fdil.NSOFSmallRect;
 import net.sf.jncu.fdil.NSOFSymbol;
 
 /**
- * Newton Streamed Object Format - Bitmap object.
+ * Newton Streamed Object Format - Icon object.
  * 
  * @author moshew
  * @see "developer/QAs-2.x/html/newtbitm.htm"
  */
-public class NSOFBitmap extends NSOFFrame {
+public class NSOFIcon extends NSOFFrame {
 
-	/** Default bitmap class. */
-	public static final NSOFSymbol CLASS_BITMAP = new NSOFSymbol("bitmap");
+	/** Default icon class. */
+	public static final NSOFSymbol CLASS_ICON = new NSOFSymbol("icon");
 
 	public static final NSOFSymbol SLOT_BOUNDS = new NSOFSymbol("bounds");
 	public static final NSOFSymbol SLOT_BITS = new NSOFSymbol("bits");
@@ -56,9 +56,9 @@ public class NSOFBitmap extends NSOFFrame {
 	/**
 	 * Creates a new bitmap.
 	 */
-	public NSOFBitmap() {
+	public NSOFIcon() {
 		super();
-		setObjectClass(CLASS_BITMAP);
+		setObjectClass(CLASS_ICON);
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class NSOFBitmap extends NSOFFrame {
 		InputStream in = new ByteArrayInputStream(value);
 		NSOFObject o = decoder.inflate(in);
 		if (!NSOFImmediate.isNil(o)) {
-			NSOFBitmap bmp = (NSOFBitmap) o;
+			NSOFIcon bmp = (NSOFIcon) o;
 			setBits(bmp.getBits());
 			setBounds(bmp.getBounds());
 			setMask(bmp.getMask());
@@ -143,7 +143,7 @@ public class NSOFBitmap extends NSOFFrame {
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		NSOFBitmap copy = new NSOFBitmap();
+		NSOFIcon copy = new NSOFIcon();
 		copy.setBits(this.getBits());
 		copy.setBounds(this.getBounds());
 		copy.setMask(this.getMask());
@@ -152,7 +152,7 @@ public class NSOFBitmap extends NSOFFrame {
 
 	@Override
 	public NSOFObject deepClone() throws CloneNotSupportedException {
-		NSOFBitmap copy = new NSOFBitmap();
+		NSOFIcon copy = new NSOFIcon();
 		copy.setBits((NSOFRawBitmap) this.getBits().deepClone());
 		copy.setBounds((NSOFSmallRect) this.getBounds().deepClone());
 		copy.setMask((NSOFRawBitmap) this.getMask().deepClone());

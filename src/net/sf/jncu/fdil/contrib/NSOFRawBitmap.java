@@ -95,6 +95,7 @@ import net.sf.jncu.fdil.NSOFSymbol;
  * </table>
  * 
  * @author Moshe
+ * @see "developer/QAs-2.x/html/newtbitm.htm"
  */
 public class NSOFRawBitmap extends NSOFBinaryObject {
 
