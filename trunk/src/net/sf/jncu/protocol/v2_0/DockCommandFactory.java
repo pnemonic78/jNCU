@@ -41,7 +41,7 @@ import net.sf.jncu.protocol.v2_0.data.DImportFile;
 import net.sf.jncu.protocol.v2_0.data.DImportParametersSlip;
 import net.sf.jncu.protocol.v2_0.data.DImportParametersSlipResult;
 import net.sf.jncu.protocol.v2_0.data.DImporting;
-import net.sf.jncu.protocol.v2_0.data.DNewtonTICommand;
+import net.sf.jncu.protocol.v2_0.data.DRequestToBackup;
 import net.sf.jncu.protocol.v2_0.data.DRequestToRestore;
 import net.sf.jncu.protocol.v2_0.data.DRestoreAll;
 import net.sf.jncu.protocol.v2_0.data.DRestoreFile;
@@ -159,7 +159,7 @@ public class DockCommandFactory extends net.sf.jncu.protocol.v1_0.DockCommandFac
 		registry.put(DRestoreFile.COMMAND, DRestoreFile.class);
 		registry.put(DRestoreAll.COMMAND, DRestoreAll.class);
 		registry.put(DImportParametersSlipResult.COMMAND, DImportParametersSlipResult.class);
-		registry.put(DNewtonTICommand.COMMAND, DNewtonTICommand.class);
+		registry.put(DRequestToBackup.COMMAND, DRequestToBackup.class);
 		registry.put(DGetRestoreOptions.COMMAND, DGetRestoreOptions.class);
 		registry.put(DBackupSoupDone.COMMAND, DBackupSoupDone.class);
 		registry.put(DBackupIDs.COMMAND, DBackupIDs.class);
