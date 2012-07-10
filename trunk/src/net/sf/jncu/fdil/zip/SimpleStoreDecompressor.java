@@ -19,16 +19,25 @@
  */
 package net.sf.jncu.fdil.zip;
 
+import java.io.InputStream;
+import java.util.zip.InflaterInputStream;
+
 /**
+ * Simple store decompressor.
+ * 
  * @author mwaisberg
  * 
  */
-public class TStoreCompanderWrapper extends TStoreCompander {
+public class SimpleStoreDecompressor extends StoreDecompressor {
 
 	/**
-	 * Creates a new compander.
+	 * Creates a new decompressor.
 	 */
-	public TStoreCompanderWrapper() {
+	public SimpleStoreDecompressor() {
 	}
 
+	@Override
+	protected InflaterInputStream createInflaterStream(InputStream in) {
+		return new SimpleStoreInputStream(in);
+	}
 }

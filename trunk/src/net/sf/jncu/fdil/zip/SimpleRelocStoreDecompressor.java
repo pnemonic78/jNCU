@@ -20,16 +20,15 @@
 package net.sf.jncu.fdil.zip;
 
 /**
- * Lempel-Ziv compressor-expander (compander).
- * 
  * @author mwaisberg
+ * 
  */
-public class TLZStoreCompander extends TStoreCompander {
+public class SimpleRelocStoreDecompressor extends SimpleStoreDecompressor {
 
 	/**
-	 * Creates a new compander.
+	 * Creates a new decompressor.
 	 */
-	public TLZStoreCompander() {
+	public SimpleRelocStoreDecompressor() {
 	}
 
 }

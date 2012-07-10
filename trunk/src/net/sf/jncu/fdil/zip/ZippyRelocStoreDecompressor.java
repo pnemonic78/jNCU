@@ -19,25 +19,16 @@
  */
 package net.sf.jncu.fdil.zip;
 
-import java.io.InputStream;
-import java.util.zip.InflaterInputStream;
-
 /**
  * @author mwaisberg
  * 
  */
-public class TUnicodeDecompressor extends TDecompressor {
+public class ZippyRelocStoreDecompressor extends ZippyStoreDecompressor {
 
 	/**
-	 * Creates new decompressor.
+	 * Creates a new decompressor.
 	 */
-	public TUnicodeDecompressor() {
-	}
-
-	@Override
-	protected InflaterInputStream createInflaterStream(InputStream in) {
-		// TODO Auto-generated method stub
-		return null;
+	public ZippyRelocStoreDecompressor() {
 	}
 
 }

@@ -19,25 +19,17 @@
  */
 package net.sf.jncu.fdil.zip;
 
-import java.io.InputStream;
-import java.util.zip.InflaterInputStream;
-
 /**
- * @author mwaisberg
+ * Base class for a store compressor-expander (compander).
  * 
+ * @author mwaisberg
  */
-public class TZippyDecompressor extends TDecompressor {
+public abstract class StoreCompander extends Compander {
 
 	/**
-	 * Creates new decompressor.
+	 * Creates a new compander.
 	 */
-	public TZippyDecompressor() {
-	}
-
-	@Override
-	protected InflaterInputStream createInflaterStream(InputStream in) {
-		// TODO Auto-generated method stub
-		return null;
+	public StoreCompander() {
 	}
 
 }

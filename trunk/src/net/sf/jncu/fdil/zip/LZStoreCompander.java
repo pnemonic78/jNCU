@@ -20,19 +20,16 @@
 package net.sf.jncu.fdil.zip;
 
 /**
- * A compressor-expander (compander) specialized for pixel map data. (A bitmap
- * is a pixel map having a bit depth of 1.) This compander assumes that the data
- * in the VBO is a pixel map and that the pixel map data is 32-bit aligned; that
- * is, the length of the rows in the pixel map is an even multiple of 4 bytes.
+ * Lempel-Ziv compressor-expander (compander).
  * 
  * @author mwaisberg
  */
-public class TPixelMapCompander extends TCompander {
+public class LZStoreCompander extends StoreCompander {
 
 	/**
 	 * Creates a new compander.
 	 */
-	public TPixelMapCompander() {
+	public LZStoreCompander() {
 	}
 
 }
