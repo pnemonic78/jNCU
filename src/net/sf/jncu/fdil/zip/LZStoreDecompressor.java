@@ -32,12 +32,12 @@ import java.util.zip.InflaterInputStream;
  * @author mwaisberg
  * 
  */
-public class TLZStoreDecompressor extends TStoreDecompressor {
+public class LZStoreDecompressor extends StoreDecompressor {
 
 	/**
 	 * Creates a new decompressor.
 	 */
-	public TLZStoreDecompressor() {
+	public LZStoreDecompressor() {
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class TLZStoreDecompressor extends TStoreDecompressor {
 	}
 
 	public static void main(String[] args) throws Exception {
-		TDecompressor decomp = CompanderFactory.getInstance().createDecompressor("TLZStoreDecompressor");
+		Decompressor decomp = CompanderFactory.getInstance().createDecompressor("TLZStoreDecompressor");
 
 		File f = new File("Packages/Hebrew Font:Prism(48).TLZStoreDecompressor");
 		File f2 = new File("Packages/Decompressor/Hebrew.pkg");

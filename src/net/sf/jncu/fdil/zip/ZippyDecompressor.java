@@ -23,21 +23,21 @@ import java.io.InputStream;
 import java.util.zip.InflaterInputStream;
 
 /**
- * Simple store decompressor.
- * 
  * @author mwaisberg
  * 
  */
-public class TSimpleStoreDecompressor extends TStoreDecompressor {
+public class ZippyDecompressor extends Decompressor {
 
 	/**
-	 * Creates a new decompressor.
+	 * Creates new decompressor.
 	 */
-	public TSimpleStoreDecompressor() {
+	public ZippyDecompressor() {
 	}
 
 	@Override
 	protected InflaterInputStream createInflaterStream(InputStream in) {
-		return new SimpleStoreInputStream(in);
+		// TODO Auto-generated method stub
+		return null;
 	}
+
 }

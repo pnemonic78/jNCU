@@ -46,8 +46,8 @@ public class CompanderFactory {
 	public static final String COMPANDER_PIXELMAP = "TPixelMapCompander";
 
 	private static CompanderFactory instance;
-	private static final Map<String, Class<? extends TCompander>> registryCompanders = new HashMap<String, Class<? extends TCompander>>();
-	private static final Map<String, Class<? extends TDecompressor>> registryDecompressors = new HashMap<String, Class<? extends TDecompressor>>();
+	private static final Map<String, Class<? extends Compander>> registryCompanders = new HashMap<String, Class<? extends Compander>>();
+	private static final Map<String, Class<? extends Decompressor>> registryDecompressors = new HashMap<String, Class<? extends Decompressor>>();
 
 	/**
 	 * Creates a new factory.
@@ -69,22 +69,22 @@ public class CompanderFactory {
 	 * Register the companders.
 	 */
 	private void registerCompanders() {
-		registryCompanders.put(COMPANDER_LZ, TLZStoreCompander.class);
-		registryCompanders.put(COMPANDER_PIXELMAP, TPixelMapCompander.class);
-		registryCompanders.put("TSimpleStoreCompander", TSimpleStoreCompander.class);
-		registryCompanders.put("TStoreCompanderWrapper", TStoreCompanderWrapper.class);
+		registryCompanders.put(COMPANDER_LZ, LZStoreCompander.class);
+		registryCompanders.put(COMPANDER_PIXELMAP, PixelMapCompander.class);
+		registryCompanders.put("TSimpleStoreCompander", SimpleStoreCompander.class);
+		registryCompanders.put("TStoreCompanderWrapper", StoreCompanderWrapper.class);
 	}
 
 	/**
 	 * Register the decompressors.
 	 */
 	private void registerDecompressors() {
-		registryDecompressors.put("TLZRelocStoreDecompressor", TLZRelocStoreDecompressor.class);
-		registryDecompressors.put("TLZStoreDecompressor", TLZStoreDecompressor.class);
-		registryDecompressors.put("TSimpleRelocStoreDecompressor", TSimpleRelocStoreDecompressor.class);
-		registryDecompressors.put("TSimpleStoreDecompressor", TSimpleStoreDecompressor.class);
-		registryDecompressors.put("TZippyRelocStoreDecompressor", TZippyRelocStoreDecompressor.class);
-		registryDecompressors.put("TZippyStoreDecompressor", TZippyStoreDecompressor.class);
+		registryDecompressors.put("TLZRelocStoreDecompressor", LZRelocStoreDecompressor.class);
+		registryDecompressors.put("TLZStoreDecompressor", LZStoreDecompressor.class);
+		registryDecompressors.put("TSimpleRelocStoreDecompressor", SimpleRelocStoreDecompressor.class);
+		registryDecompressors.put("TSimpleStoreDecompressor", SimpleStoreDecompressor.class);
+		registryDecompressors.put("TZippyRelocStoreDecompressor", ZippyRelocStoreDecompressor.class);
+		registryDecompressors.put("TZippyStoreDecompressor", ZippyStoreDecompressor.class);
 	}
 
 	/**
@@ -106,8 +106,8 @@ public class CompanderFactory {
 	 *            the compander name.
 	 * @return the new compander - {@code null} otherwise.
 	 */
-	public TCompander createCompander(String name) {
-		Class<? extends TCompander> clazz = registryCompanders.get(name);
+	public Compander createCompander(String name) {
+		Class<? extends Compander> clazz = registryCompanders.get(name);
 		if (clazz == null)
 			return null;
 		try {
@@ -127,7 +127,7 @@ public class CompanderFactory {
 	 *            the BLOB.
 	 * @return the new compander.
 	 */
-	public TCompander createCompander(NSOFLargeBinary blob) {
+	public Compander createCompander(NSOFLargeBinary blob) {
 		return createCompander(blob.getCompanderName());
 	}
 
@@ -138,8 +138,8 @@ public class CompanderFactory {
 	 *            the decompressor name.
 	 * @return the new decompressor - {@code null} otherwise.
 	 */
-	public TDecompressor createDecompressor(String name) {
-		Class<? extends TDecompressor> clazz = registryDecompressors.get(name);
+	public Decompressor createDecompressor(String name) {
+		Class<? extends Decompressor> clazz = registryDecompressors.get(name);
 		if (clazz == null)
 			return null;
 		try {
@@ -159,7 +159,7 @@ public class CompanderFactory {
 	 *            the BLOB.
 	 * @return the new decompressor.
 	 */
-	public TDecompressor createDecompressor(NSOFLargeBinary blob) {
+	public Decompressor createDecompressor(NSOFLargeBinary blob) {
 		return createDecompressor(blob.getCompanderName());
 	}
 }

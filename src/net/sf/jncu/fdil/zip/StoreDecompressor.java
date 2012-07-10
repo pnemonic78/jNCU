@@ -19,26 +19,16 @@
  */
 package net.sf.jncu.fdil.zip;
 
-import java.io.InputStream;
-import java.util.zip.InflaterInputStream;
-
 /**
- * @author mwaisberg
+ * Base class for all store decompressors.
  * 
+ * @author mwaisberg
  */
-public class TLZDecompressor extends TDecompressor {
+public abstract class StoreDecompressor extends Decompressor {
 
 	/**
-	 * Creates new decompressor.
+	 * Creates a new decompressor.
 	 */
-	public TLZDecompressor() {
-		// TODO Auto-generated constructor stub
+	public StoreDecompressor() {
 	}
-
-	@Override
-	protected InflaterInputStream createInflaterStream(InputStream in) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

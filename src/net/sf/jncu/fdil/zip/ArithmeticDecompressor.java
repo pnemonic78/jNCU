@@ -26,12 +26,12 @@ import java.util.zip.InflaterInputStream;
  * @author mwaisberg
  * 
  */
-public class TArithmeticDecompressor extends TDecompressor {
+public class ArithmeticDecompressor extends Decompressor {
 
 	/**
 	 * Creates a new decompressor.
 	 */
-	public TArithmeticDecompressor() {
+	public ArithmeticDecompressor() {
 	}
 
 	@Override

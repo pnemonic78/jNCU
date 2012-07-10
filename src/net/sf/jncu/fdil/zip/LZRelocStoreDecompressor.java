@@ -25,12 +25,12 @@ package net.sf.jncu.fdil.zip;
  * @author mwaisberg
  * 
  */
-public class TLZRelocStoreDecompressor extends TLZStoreDecompressor {
+public class LZRelocStoreDecompressor extends LZStoreDecompressor {
 
 	/**
 	 * Creates a new decompressor.
 	 */
-	public TLZRelocStoreDecompressor() {
+	public LZRelocStoreDecompressor() {
 	}
 
 }

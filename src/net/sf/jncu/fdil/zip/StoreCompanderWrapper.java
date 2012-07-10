@@ -19,25 +19,16 @@
  */
 package net.sf.jncu.fdil.zip;
 
-import java.io.InputStream;
-import java.util.zip.InflaterInputStream;
-
 /**
  * @author mwaisberg
  * 
  */
-public class TObjTextDecompressor extends TDecompressor {
+public class StoreCompanderWrapper extends StoreCompander {
 
 	/**
-	 * Creates new decompressor.
+	 * Creates a new compander.
 	 */
-	public TObjTextDecompressor() {
-	}
-
-	@Override
-	protected InflaterInputStream createInflaterStream(InputStream in) {
-		// TODO Auto-generated method stub
-		return null;
+	public StoreCompanderWrapper() {
 	}
 
 }

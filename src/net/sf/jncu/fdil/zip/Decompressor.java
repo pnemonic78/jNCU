@@ -31,7 +31,7 @@ import net.sf.jncu.fdil.NSOFLargeBinary;
  * 
  * @author mwaisberg
  */
-public abstract class TDecompressor {
+public abstract class Decompressor {
 
 	protected static final int LENGTH_VERSION = 4;
 	protected static final int LENGTH_SIZE = 4;
@@ -41,7 +41,7 @@ public abstract class TDecompressor {
 	/**
 	 * Creates a new decompressor.
 	 */
-	public TDecompressor() {
+	public Decompressor() {
 	}
 
 	/**
