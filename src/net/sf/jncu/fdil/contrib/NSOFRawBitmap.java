@@ -140,7 +140,11 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 		setRight(ntohs(in));
 		setRowBytes(rowBytes);
 		// 16-* bits pixel data, 1 for "on" pixel, 0 for "off"
-		byte[] pixels = new byte[in.available()];
+		int height = getBottom() - getTop();
+		int size = rowBytes * height;
+		if (size < in.available())
+			throw new ArrayIndexOutOfBoundsException("Expected array length " + size);
+		byte[] pixels = new byte[size];
 		readAll(in, pixels);
 		setPixels(pixels);
 	}

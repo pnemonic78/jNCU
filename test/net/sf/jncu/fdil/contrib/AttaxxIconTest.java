@@ -8,7 +8,6 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFSmallRect;
 
 /**
@@ -18,50 +17,47 @@ import net.sf.jncu.fdil.NSOFSmallRect;
  * @author mwaisberg
  * 
  */
-public class AttaxxBitmapDecode {
+public class AttaxxIconTest {
 
-	private static final byte[] BITS_ATTAXX = { 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 31, 0, 31, -1, -1, -1, -2, -128, 32, 8, 2, -114, 32, 8, -30, -111, 32, 9, 50, -84, -96, 10,
+	private static final byte[] BITS_VALUE = { 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 31, 0, 31, -1, -1, -1, -2, -128, 32, 8, 2, -114, 32, 8, -30, -111, 32, 9, 50, -84, -96, 10,
 			-6, -88, -96, 10, -6, -96, -96, 11, -6, -111, 32, 9, -14, -114, 32, 8, -30, -128, 32, 8, 2, -1, -1, -1, -2, -128, 32, 8, 2, -128, 39, -56, 2, -128, 42, -88, 2, -128,
 			45, 104, 2, -128, 42, -88, 2, -128, 45, 104, 2, -128, 42, -88, 2, -128, 39, -56, 2, -128, 32, 8, 2, -1, -1, -1, -2, -128, 32, 8, 2, -114, 32, 8, -30, -109, 32, 9, 18,
 			-81, -96, 10, -54, -81, -96, 10, -118, -65, -96, 10, 10, -97, 32, 9, 18, -114, 32, 8, -30, -128, 32, 8, 2, -1, -1, -1, -2 };
-	private static final byte[] MASK_ATTAXX = { 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 31, 0, 31, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2,
+	private static final byte[] MASK_VALUE = { 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 31, 0, 31, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2,
 			-1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1,
 			-1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2,
 			-1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2, -1, -1, -1, -2 };
 
-	public AttaxxBitmapDecode() {
+	public AttaxxIconTest() {
 	}
 
 	public static void main(String[] args) {
 		try {
-			NSOFIcon bmp = new NSOFIcon();
+			NSOFIcon icon = new NSOFIcon();
 
 			NSOFSmallRect bounds = new NSOFSmallRect(0, 0, 31, 31);
-			bmp.setBounds(bounds);
+			icon.setBounds(bounds);
 
-			InputStream bitsIn = new ByteArrayInputStream(BITS_ATTAXX);
-			NSOFDecoder bitsDecoder = new NSOFDecoder();
+			InputStream bitsIn = new ByteArrayInputStream(BITS_VALUE);
 			NSOFRawBitmap bits = new NSOFRawBitmap();
 			bits.setObjectClass(NSOFRawBitmap.CLASS_BITS);
-			bits.inflate(bitsIn, bitsDecoder);
-			bmp.setBits(bits);
+			bits.inflate(bitsIn, null);
+			icon.setBits(bits);
 			byte[] pixelsBits = bits.getPixels();
 
-			InputStream maskIn = new ByteArrayInputStream(MASK_ATTAXX);
-			NSOFDecoder maskDecoder = new NSOFDecoder();
+			InputStream maskIn = new ByteArrayInputStream(MASK_VALUE);
 			NSOFRawBitmap mask = new NSOFRawBitmap();
 			mask.setObjectClass(NSOFRawBitmap.CLASS_MASK);
-			mask.inflate(maskIn, maskDecoder);
-			bmp.setMask(mask);
+			mask.inflate(maskIn, null);
+			icon.setMask(mask);
 
-			Image img = bmp.toImage();
-			Icon icon = new ImageIcon(img);
-			// JOptionPane.showMessageDialog(null, "Attaxx", null,
-			// JOptionPane.PLAIN_MESSAGE, icon);
+			Image img = icon.toImage();
+			Icon ii = new ImageIcon(img);
+			JOptionPane.showMessageDialog(null, "Attaxx", null, JOptionPane.PLAIN_MESSAGE, ii);
 
 			NSOFIcon bmp2 = new NSOFIcon();
 			bmp2.setBounds(bounds);
-			bmp2.fromIcon(icon);
+			bmp2.fromIcon(ii);
 			byte[] pixels2 = bmp2.getBits().getPixels();
 			Image img2 = bmp2.toImage();
 
@@ -69,8 +65,8 @@ public class AttaxxBitmapDecode {
 				if (pixels2[i] != pixelsBits[i])
 					throw new ArrayIndexOutOfBoundsException(i);
 
-			Icon icon2 = new ImageIcon(img2);
-			JOptionPane.showMessageDialog(null, "Attaxx icon#2", null, JOptionPane.PLAIN_MESSAGE, icon2);
+			Icon ii2 = new ImageIcon(img2);
+			JOptionPane.showMessageDialog(null, "Attaxx #2", null, JOptionPane.PLAIN_MESSAGE, ii2);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
