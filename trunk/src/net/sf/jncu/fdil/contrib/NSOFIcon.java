@@ -52,9 +52,12 @@ public class NSOFIcon extends NSOFFrame {
 	public static final NSOFSymbol SLOT_BOUNDS = new NSOFSymbol("bounds");
 	public static final NSOFSymbol SLOT_BITS = new NSOFSymbol("bits");
 	public static final NSOFSymbol SLOT_MASK = new NSOFSymbol("mask");
+	public static final NSOFSymbol SLOT_COLOR_DATA = new NSOFSymbol("colordata");
+	public static final NSOFSymbol SLOT_BIT_DEPTH = new NSOFSymbol("bitdepth");
+	public static final NSOFSymbol SLOT_COLOR_BITS = new NSOFSymbol("cbits");
 
 	/**
-	 * Creates a new bitmap.
+	 * Creates a new icon.
 	 */
 	public NSOFIcon() {
 		super();
@@ -270,4 +273,25 @@ public class NSOFIcon extends NSOFFrame {
 		fromImage(image);
 	}
 
+	/**
+	 * Get the colour data. The is relevant to "iconPro" icons.
+	 * 
+	 * @return the data frame - {@code null} otherwise.
+	 */
+	public NSOFFrame getColorData() {
+		NSOFObject slot = get(SLOT_COLOR_DATA);
+		if (NSOFImmediate.isNil(slot))
+			return null;
+		return (NSOFFrame) slot;
+	}
+
+	/**
+	 * Set the colour data. The is relevant to "iconPro" icons.
+	 * 
+	 * @param data
+	 *            the data frame.
+	 */
+	public void setColorData(NSOFFrame data) {
+		put(SLOT_COLOR_DATA, data);
+	}
 }

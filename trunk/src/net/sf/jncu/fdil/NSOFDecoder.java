@@ -134,14 +134,21 @@ public class NSOFDecoder {
 		if (object == null) {
 			throw new InvalidObjectException("unknown data type " + dataType);
 		}
+		NSOFPrecedent id = null;
 		if (object instanceof Precedent) {
 			Precedent p = (Precedent) object;
-			NSOFPrecedent id = new NSOFPrecedent(this.idMax);
+			id = new NSOFPrecedent(this.idMax);
 			precedents.put(id, p);
 			this.idMax++;
 		}
 		object.inflate(in, this);
 		object = postInflate(object, dataType);
+
+		// Replace the old precedent.
+		if ((id != null) && (object instanceof Precedent)) {
+			Precedent p = (Precedent) object;
+			precedents.put(id, p);
+		}
 
 		return object;
 	}
@@ -181,14 +188,14 @@ public class NSOFDecoder {
 			} else if (NSOFRawBitmap.CLASS_BITS.equals(nsClass)) {
 				NSOFRawBitmap bin2 = new NSOFRawBitmap();
 				bin2.setObjectClass(NSOFRawBitmap.CLASS_BITS);
-				bin2.setValue(bin.getValue());
 				bin2.inflate(new ByteArrayInputStream(bin.getValue()), this);
+				bin2.setValue(bin.getValue());
 				object = bin2;
 			} else if (NSOFRawBitmap.CLASS_MASK.equals(nsClass)) {
 				NSOFRawBitmap bin2 = new NSOFRawBitmap();
 				bin2.setObjectClass(NSOFRawBitmap.CLASS_MASK);
-				bin2.setValue(bin.getValue());
 				bin2.inflate(new ByteArrayInputStream(bin.getValue()), this);
+				bin2.setValue(bin.getValue());
 				object = bin2;
 			} else if (NSOFReal.CLASS_REAL.equals(nsClass)) {
 				NSOFReal bin2 = new NSOFReal();
