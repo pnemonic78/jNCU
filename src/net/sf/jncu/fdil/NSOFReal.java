@@ -68,6 +68,16 @@ public class NSOFReal extends NSOFBinaryObject {
 	}
 
 	/**
+	 * Creates a new real number.
+	 * 
+	 * @param bin
+	 *            the source binary object.
+	 */
+	public NSOFReal(NSOFBinaryObject bin) {
+		this(bin.getValue());
+	}
+
+	/**
 	 * Get the value.
 	 * 
 	 * @return the value

@@ -19,7 +19,6 @@
  */
 package net.sf.jncu.fdil;
 
-import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,6 +88,7 @@ public class NSOFDecoder {
 			throw new EOFException();
 		}
 		NSOFObject object = null;
+		NSOFObject object2 = null;
 
 		switch (dataType) {
 		case NewtonStreamedObjectFormat.NSOF_ARRAY:
@@ -141,11 +141,12 @@ public class NSOFDecoder {
 			this.idMax++;
 		}
 		object.inflate(in, this);
-		object = postInflate(object, dataType);
+		object2 = postInflate(object, dataType);
+		object = object2;
 
 		// Replace the old precedent.
-		if ((id != null) && (object instanceof Precedent)) {
-			Precedent p = (Precedent) object;
+		if ((id != null) && (object2 instanceof Precedent)) {
+			Precedent p = (Precedent) object2;
 			precedents.put(id, p);
 		}
 
@@ -177,41 +178,23 @@ public class NSOFDecoder {
 			nsClass = object.getObjectClass();
 
 			if (NSOFInstructions.CLASS_INSTRUCTIONS.equals(nsClass)) {
-				NSOFInstructions bin2 = new NSOFInstructions();
-				bin2.setObjectClass(nsClass);
-				bin2.setValue(bin.getValue());
-				object = bin2;
+				object = new NSOFInstructions(bin);
 			} else if (NSOFRawBitmap.CLASS_BITS.equals(nsClass)) {
-				NSOFRawBitmap bin2 = new NSOFRawBitmap();
-				bin2.setObjectClass(nsClass);
-				bin2.inflate(new ByteArrayInputStream(bin.getValue()), this);
-				bin2.setValue(bin.getValue());
-				object = bin2;
+				object = new NSOFRawBitmap(bin);
 			} else if (NSOFRawBitmap.CLASS_COLOR_BITS.equals(nsClass)) {
-				NSOFRawBitmap bin2 = new NSOFRawBitmap();
-				bin2.setObjectClass(nsClass);
-				bin2.inflate(new ByteArrayInputStream(bin.getValue()), this);
-				bin2.setValue(bin.getValue());
-				object = bin2;
+				object = new NSOFRawBitmap(bin);
 			} else if (NSOFRawBitmap.CLASS_MASK.equals(nsClass)) {
-				NSOFRawBitmap bin2 = new NSOFRawBitmap();
-				bin2.setObjectClass(nsClass);
-				bin2.inflate(new ByteArrayInputStream(bin.getValue()), this);
-				bin2.setValue(bin.getValue());
-				object = bin2;
+				object = new NSOFRawBitmap(bin);
 			} else if (NSOFReal.CLASS_REAL.equals(nsClass)) {
-				NSOFReal bin2 = new NSOFReal();
-				bin2.setValue(bin.getValue());
-				object = bin2;
+				object = new NSOFReal(bin);
 			}
 			break;
 		case NewtonStreamedObjectFormat.NSOF_ARRAY:
 			NSOFArray arr = (NSOFArray) object;
 			nsClass = object.getObjectClass();
+
 			if (NSOFLiterals.CLASS_LITERALS.equals(nsClass)) {
-				NSOFLiterals arr2 = new NSOFLiterals();
-				arr2.setValue(arr.getValue());
-				object = arr2;
+				object = new NSOFLiterals(arr);
 			}
 			break;
 		}

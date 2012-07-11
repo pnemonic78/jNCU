@@ -41,6 +41,27 @@ public class NSOFLiterals extends NSOFArray {
 		setObjectClass(CLASS_LITERALS);
 	}
 
+	/**
+	 * Constructs a new literals array.
+	 * 
+	 * @param value
+	 *            the source value array.
+	 */
+	public NSOFLiterals(NSOFObject[] value) {
+		this();
+		setValue(value);
+	}
+
+	/**
+	 * Constructs a new literals array.
+	 * 
+	 * @param arr
+	 *            the source value array.
+	 */
+	public NSOFLiterals(NSOFArray arr) {
+		this(arr.getValue());
+	}
+
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		NSOFLiterals copy = new NSOFLiterals();

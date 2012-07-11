@@ -34,11 +34,23 @@ public class NSOFInstructions extends NSOFBinaryObject {
 	public static final NSOFSymbol CLASS_INSTRUCTIONS = new NSOFSymbol("instructions");
 
 	/**
-	 * Constructs a new instructions.
+	 * Constructs new instructions.
 	 */
 	public NSOFInstructions() {
 		super();
 		setObjectClass(CLASS_INSTRUCTIONS);
+	}
+
+	/**
+	 * Constructs new instructions.
+	 * 
+	 * @param bin
+	 *            the source binary object.
+	 */
+	public NSOFInstructions(NSOFBinaryObject bin) {
+		this();
+		setObjectClass(bin.getObjectClass());
+		setValue(bin.getValue());
 	}
 
 	@Override

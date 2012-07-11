@@ -20,6 +20,7 @@
 package net.sf.jncu.fdil.contrib;
 
 import java.awt.Color;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -157,6 +158,23 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 		this();
 		setBitDepth(bitDepth);
 		setObjectClass((bitDepth == BIT_DEPTH_1) ? CLASS_BITS : CLASS_COLOR_BITS);
+	}
+
+	/**
+	 * Constructs a new bitmap.
+	 * 
+	 * @param bin
+	 *            the source binary object.
+	 */
+	public NSOFRawBitmap(NSOFBinaryObject bin) {
+		super();
+		setObjectClass(bin.getObjectClass());
+		try {
+			inflate(new ByteArrayInputStream(bin.getValue()), null);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		setValue(bin.getValue());
 	}
 
 	/**
