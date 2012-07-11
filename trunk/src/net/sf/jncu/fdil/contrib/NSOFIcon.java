@@ -23,15 +23,12 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import net.sf.jncu.fdil.NSOFDecoder;
+import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFImmediate;
 import net.sf.jncu.fdil.NSOFObject;
@@ -86,10 +83,13 @@ public class NSOFIcon extends NSOFFrame {
 	/**
 	 * Get the raw bitmap data.
 	 * 
-	 * @return the bits.
+	 * @return the bits - {@code null} otherwise.
 	 */
 	public NSOFRawBitmap getBits() {
-		return (NSOFRawBitmap) get(SLOT_BITS);
+		NSOFObject slot = get(SLOT_BITS);
+		if (NSOFImmediate.isNil(slot))
+			return null;
+		return (NSOFRawBitmap) slot;
 	}
 
 	/**
@@ -103,12 +103,15 @@ public class NSOFIcon extends NSOFFrame {
 	}
 
 	/**
-	 * Get the raw bitmap data for mask.
+	 * Get the raw bitmap mask data.
 	 * 
-	 * @return the mask.
+	 * @return the mask - {@code null} otherwise.
 	 */
 	public NSOFRawBitmap getMask() {
-		return (NSOFRawBitmap) get(SLOT_MASK);
+		NSOFObject slot = get(SLOT_MASK);
+		if (NSOFImmediate.isNil(slot))
+			return null;
+		return (NSOFRawBitmap) slot;
 	}
 
 	/**
@@ -121,44 +124,17 @@ public class NSOFIcon extends NSOFFrame {
 		put(SLOT_MASK, mask);
 	}
 
-	/**
-	 * Set the value from the binary object.
-	 * 
-	 * @param value
-	 *            the encoded bitmap.
-	 * @param decoder
-	 *            the decoder.
-	 * @throws IOException
-	 *             if a decoding error occurs.
-	 */
-	public void setValue(byte[] value, NSOFDecoder decoder) throws IOException {
-		// Decode the frame.
-		InputStream in = new ByteArrayInputStream(value);
-		NSOFObject o = decoder.inflate(in);
-		if (!NSOFImmediate.isNil(o)) {
-			NSOFIcon bmp = (NSOFIcon) o;
-			setBits(bmp.getBits());
-			setBounds(bmp.getBounds());
-			setMask(bmp.getMask());
-			setObjectClass(bmp.getObjectClass());
-		}
-	}
-
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		NSOFIcon copy = new NSOFIcon();
-		copy.setBits(this.getBits());
-		copy.setBounds(this.getBounds());
-		copy.setMask(this.getMask());
+		copy.putAll(this);
 		return copy;
 	}
 
 	@Override
 	public NSOFObject deepClone() throws CloneNotSupportedException {
 		NSOFIcon copy = new NSOFIcon();
-		copy.setBits((NSOFRawBitmap) this.getBits().deepClone());
-		copy.setBounds((NSOFSmallRect) this.getBounds().deepClone());
-		copy.setMask((NSOFRawBitmap) this.getMask().deepClone());
+		copy.putAll((NSOFFrame) super.deepClone());
 		return copy;
 	}
 
@@ -169,8 +145,17 @@ public class NSOFIcon extends NSOFFrame {
 	 */
 	public Image toImage() {
 		NSOFRawBitmap bits = getBits();
-		int width = bits.getRight() - bits.getLeft();
-		int height = bits.getBottom() - bits.getTop();
+		if (bits == null) {
+			NSOFFrame colorData = findColorData(NSOFRawBitmap.BIT_DEPTH_4);
+			if (colorData == null)
+				colorData = findColorData(NSOFRawBitmap.BIT_DEPTH_1);
+			if (colorData != null)
+				bits = (NSOFRawBitmap) colorData.get(SLOT_COLOR_BITS);
+			if ((bits == null) || NSOFImmediate.isNil(bits))
+				throw new IllegalArgumentException("Bits required");
+		}
+		int width = bits.getWidth();
+		int height = bits.getHeight();
 		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 		int rgb;
 
@@ -276,13 +261,10 @@ public class NSOFIcon extends NSOFFrame {
 	/**
 	 * Get the colour data. The is relevant to "iconPro" icons.
 	 * 
-	 * @return the data frame - {@code null} otherwise.
+	 * @return the data frame or array of data frames.
 	 */
-	public NSOFFrame getColorData() {
-		NSOFObject slot = get(SLOT_COLOR_DATA);
-		if (NSOFImmediate.isNil(slot))
-			return null;
-		return (NSOFFrame) slot;
+	public NSOFObject getColorData() {
+		return get(SLOT_COLOR_DATA);
 	}
 
 	/**
@@ -293,5 +275,51 @@ public class NSOFIcon extends NSOFFrame {
 	 */
 	public void setColorData(NSOFFrame data) {
 		put(SLOT_COLOR_DATA, data);
+	}
+
+	/**
+	 * Set the colour data. The is relevant to "iconPro" icons.
+	 * 
+	 * @param data
+	 *            the array of data frames.
+	 */
+	public void setColorData(NSOFArray data) {
+		put(SLOT_COLOR_DATA, data);
+	}
+
+	/**
+	 * Find colour data.
+	 * 
+	 * @param bitDepth
+	 *            the colour bit depth. Known values are {@code 1} and {@code 4}
+	 *            .
+	 * @return the colour data - {@code null} otherwise.
+	 */
+	public NSOFFrame findColorData(int bitDepth) {
+		if ((bitDepth != NSOFRawBitmap.BIT_DEPTH_1) && (bitDepth != NSOFRawBitmap.BIT_DEPTH_4))
+			throw new IllegalArgumentException("Invalid bit depth: " + bitDepth);
+
+		NSOFObject colorData = getColorData();
+		if (colorData == null)
+			return null;
+		NSOFFrame frame;
+		NSOFImmediate depth;
+
+		if (colorData instanceof NSOFFrame) {
+			frame = (NSOFFrame) colorData;
+			depth = (NSOFImmediate) frame.get(SLOT_BIT_DEPTH);
+			if (depth.getValue() == bitDepth)
+				return frame;
+		} else if (colorData instanceof NSOFArray) {
+			NSOFArray arr = (NSOFArray) colorData;
+			int length = arr.getLength();
+			for (int i = 0; i < length; i++) {
+				frame = (NSOFFrame) arr.get(i);
+				depth = (NSOFImmediate) frame.get(SLOT_BIT_DEPTH);
+				if (depth.getValue() == bitDepth)
+					return frame;
+			}
+		}
+		return null;
 	}
 }

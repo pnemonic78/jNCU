@@ -103,16 +103,41 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	public static final NSOFSymbol CLASS_BITS = new NSOFSymbol("bits");
 	/** Default bitmap mask class. */
 	public static final NSOFSymbol CLASS_MASK = new NSOFSymbol("mask");
+	/** Default bitmap colour bits class. */
+	public static final NSOFSymbol CLASS_COLOR_BITS = new NSOFSymbol("cbits");
 
 	/** Pixel is "on", i.e. black. */
 	public static final int PIXEL_ON = 1;
 	/** Pixel is "off", i.e. white or transparent. */
 	public static final int PIXEL_OFF = 0;
 
+	/** Bit depth for black and white. */
+	public static final int BIT_DEPTH_1 = 1;
+	/** Bit depth for 16 shades of gray. */
+	public static final int BIT_DEPTH_4 = 4;
+
+	/** ARGB for transparent colour. */
+	protected static final int COLOR_TRANSPARENT = 0x00000000;
+	/** Black colour. */
+	protected static final int COLOR_BLACK = Color.BLACK.getRGB();
+	/** ARGB component for opaque colours. */
+	protected static final int COLOR_OPAQUE = 0xFF000000;
+	protected static final int MASK_ALPHA = 0xFF000000;
+	protected static final int MASK_RGB = 0x00FFFFFF;
+
 	private int header;
 	private int rowBytes;
 	private int top, left, bottom, right;
 	private byte[] pixels;
+	/**
+	 * Number of pxiels per byte.
+	 * <p>
+	 * 1 bit depth => 1 byte = 8 pixels<br>
+	 * 4 bit depth => 1 byte = 2 pixels
+	 */
+	private int bitDepth = 0;
+	private int pixelMask = 1;
+	private int pixelShift = 7;
 
 	/**
 	 * Constructs a new bitmap.
@@ -120,6 +145,32 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	public NSOFRawBitmap() {
 		super();
 		setObjectClass(CLASS_BITS);
+	}
+
+	/**
+	 * Constructs a new bitmap.
+	 * 
+	 * @param bitDepth
+	 *            the bit depth.
+	 */
+	public NSOFRawBitmap(int bitDepth) {
+		this();
+		setBitDepth(bitDepth);
+		setObjectClass((bitDepth == BIT_DEPTH_1) ? CLASS_BITS : CLASS_COLOR_BITS);
+	}
+
+	/**
+	 * Set the number of bits per pixel.
+	 * 
+	 * @param bitDepth
+	 *            the bit depth.
+	 */
+	public void setBitDepth(int bitDepth) {
+		if ((bitDepth != BIT_DEPTH_1) && (bitDepth != BIT_DEPTH_4))
+			throw new IllegalArgumentException("Invalid bit depth: " + bitDepth);
+		this.bitDepth = bitDepth;
+		this.pixelMask = (1 << bitDepth) - 1;
+		this.pixelShift = 8 - bitDepth;
 	}
 
 	@Override
@@ -139,9 +190,17 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 		// 14-15 word right
 		setRight(ntohs(in));
 		setRowBytes(rowBytes);
+		if (this.bitDepth == 0) {
+			int bitDepth = BIT_DEPTH_1;
+			if (rowBytes > 4) {
+				bitDepth = (rowBytes << 3) / getWidth();
+				if (bitDepth < BIT_DEPTH_4)
+					bitDepth = BIT_DEPTH_1;
+			}
+			setBitDepth(bitDepth);
+		}
 		// 16-* bits pixel data, 1 for "on" pixel, 0 for "off"
-		int height = getBottom() - getTop();
-		int size = rowBytes * height;
+		int size = rowBytes * getHeight();
 		if (size < in.available())
 			throw new ArrayIndexOutOfBoundsException("Expected array length " + size);
 		byte[] pixels = new byte[size];
@@ -200,7 +259,9 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	 *            the number of bytes.
 	 */
 	protected void setRowBytes(int rowBytes) {
-		this.rowBytes = (rowBytes & 0xFC) | 0x04;
+		if ((rowBytes & 0x03) != 0)
+			rowBytes++;
+		this.rowBytes = rowBytes;
 		setValue(null);
 	}
 
@@ -256,7 +317,7 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 		this.left = left;
 
 		final int width = getRight() - left;
-		int rowBytes = width >> 3;
+		int rowBytes = (width * bitDepth) >> 3;
 		if ((width & 7) != 0)
 			rowBytes++;
 		setRowBytes(rowBytes);
@@ -301,10 +362,28 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 		this.right = right;
 
 		final int width = right - getLeft();
-		int rowBytes = width >> 3;
+		int rowBytes = (width * bitDepth) >> 3;
 		if ((width & 7) != 0)
 			rowBytes++;
 		setRowBytes(rowBytes);
+	}
+
+	/**
+	 * Get the height.
+	 * 
+	 * @return the height.
+	 */
+	public int getHeight() {
+		return getBottom() - getTop();
+	}
+
+	/**
+	 * Get the width.
+	 * 
+	 * @return the width.
+	 */
+	public int getWidth() {
+		return getRight() - getLeft();
 	}
 
 	/**
@@ -372,10 +451,11 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	 * @see #PIXEL_ON
 	 */
 	public int getPixel(int x, int y) {
-		int off = (y * rowBytes) + (x >> 3);
-		int shift = 7 - (x & 7);
+		int xx = x * bitDepth;
+		int off = (y * rowBytes) + (xx >> 3);
+		int shift = pixelShift - (xx & 7);
 		int pixelByte = pixels[off] & 0xFF;
-		return (pixelByte >> shift) & 1;
+		return (pixelByte >> shift) & pixelMask;
 	}
 
 	/**
@@ -391,15 +471,20 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	 * @see #PIXEL_ON
 	 */
 	public void setPixel(int x, int y, int pixel) {
-		if ((pixel != PIXEL_OFF) && (pixel != PIXEL_ON))
-			throw new IllegalArgumentException("Invalid pixel " + pixel);
-		if (pixels == null) {
-			int height = getBottom() - getTop();
-			this.pixels = new byte[rowBytes * height];
+		if (bitDepth == BIT_DEPTH_1) {
+			if ((pixel != PIXEL_OFF) && (pixel != PIXEL_ON))
+				throw new IllegalArgumentException("Invalid pixel " + pixel);
+		} else if (bitDepth == BIT_DEPTH_4) {
+			if ((pixel < 0) || (pixel > 15))
+				throw new IllegalArgumentException("Invalid pixel " + pixel);
 		}
-		int off = (y * rowBytes) + (x >> 3);
-		int shift = 7 - (x & 7);
-		int mask = (pixel << shift);
+		if (pixels == null) {
+			this.pixels = new byte[rowBytes * getHeight()];
+		}
+		int xx = x * bitDepth;
+		int off = (y * rowBytes) + (xx >> 3);
+		int shift = pixelShift - (xx & 7);
+		int mask = (pixel & pixelMask) << shift;
 		pixels[off] &= ~mask; // Clear the bit.
 		pixels[off] |= mask; // Set the bit.
 		setValue(null);
@@ -416,28 +501,42 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	 */
 	public int getRGB(int x, int y) {
 		int pixel = getPixel(x, y);
-		return (pixel == PIXEL_ON) ? Color.BLACK.getRGB() : 0;
+		if (pixel == PIXEL_OFF)
+			return COLOR_TRANSPARENT;
+		if (bitDepth == BIT_DEPTH_4) {
+			int gray = (255 - (pixel * 17)) & 0xFF;
+			int argb = COLOR_OPAQUE | (gray << 16) | (gray << 8) | (gray << 0);
+			return argb;
+		}
+		return COLOR_BLACK;
 	}
 
 	/**
-	 * Sets a pixel to the RGB color.
+	 * Sets a pixel to a RGB colour.
 	 * 
 	 * @param x
 	 *            the X co-ordinate of the pixel.
 	 * @param y
 	 *            the Y co-ordinate of the pixel.
 	 * @param argb
-	 *            the RGB color.
+	 *            the RGB colour.
 	 */
 	public void setRGB(int x, int y, int rgb) {
-		int pixel = NSOFRawBitmap.PIXEL_OFF;
-		if (rgb != 0x00000000) {
-			if (rgb == 0xFF000000) {// Is black?
-				pixel = NSOFRawBitmap.PIXEL_ON;
-			} else if ((rgb & 0xFF000000) != 0) { // Is non-transparent?
-				if ((rgb & 0x00FFFFFF) < 0x00888888) {// Is colour dark?
-					pixel = NSOFRawBitmap.PIXEL_ON;
+		int pixel = PIXEL_OFF;
+		// Is non-transparent?
+		if ((rgb != COLOR_TRANSPARENT) && ((rgb & MASK_ALPHA) != 0)) {
+			if (bitDepth == BIT_DEPTH_1) {
+				if (rgb == COLOR_BLACK) {// Is black?
+					pixel = PIXEL_ON;
+				} else if ((rgb & MASK_RGB) < 0x00888888) {// Is colour dark?
+					pixel = PIXEL_ON;
 				}
+			} else if (bitDepth == BIT_DEPTH_4) {
+				int r = (rgb >> 16) & 0xFF;
+				int g = (rgb >> 8) & 0xFF;
+				int b = (rgb >> 0) & 0xFF;
+				float gray = (r * 0.30f) + (g * 0.59f) + (b * 0.11f);
+				pixel = (255 - Math.round(gray)) / 17;
 			}
 		}
 		setPixel(x, y, pixel);
