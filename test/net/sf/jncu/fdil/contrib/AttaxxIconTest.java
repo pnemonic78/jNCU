@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 import net.sf.jncu.fdil.NSOFSmallRect;
 
 /**
- * Decode the Attaxx bitmap.
+ * Decode the Attaxx icon.
  * <tt>icon={bounds={top: 0, left: 0, bottom: 31, right: 31}, bits='bits, mask='mask}</tt>
  * 
  * @author mwaisberg
@@ -33,42 +33,46 @@ public class AttaxxIconTest {
 
 	public static void main(String[] args) {
 		try {
-			NSOFIcon icon = new NSOFIcon();
-
-			NSOFSmallRect bounds = new NSOFSmallRect(0, 0, 31, 31);
-			icon.setBounds(bounds);
-
-			InputStream bitsIn = new ByteArrayInputStream(BITS_VALUE);
-			NSOFRawBitmap bits = new NSOFRawBitmap();
-			bits.setObjectClass(NSOFRawBitmap.CLASS_BITS);
-			bits.inflate(bitsIn, null);
-			icon.setBits(bits);
-			byte[] pixelsBits = bits.getPixels();
-
-			InputStream maskIn = new ByteArrayInputStream(MASK_VALUE);
-			NSOFRawBitmap mask = new NSOFRawBitmap();
-			mask.setObjectClass(NSOFRawBitmap.CLASS_MASK);
-			mask.inflate(maskIn, null);
-			icon.setMask(mask);
-
-			Image img = icon.toImage();
-			Icon ii = new ImageIcon(img);
-			JOptionPane.showMessageDialog(null, "Attaxx", null, JOptionPane.PLAIN_MESSAGE, ii);
-
-			NSOFIcon bmp2 = new NSOFIcon();
-			bmp2.setBounds(bounds);
-			bmp2.fromIcon(ii);
-			byte[] pixels2 = bmp2.getBits().getPixels();
-			Image img2 = bmp2.toImage();
-
-			for (int i = 0; i < pixelsBits.length; i++)
-				if (pixels2[i] != pixelsBits[i])
-					throw new ArrayIndexOutOfBoundsException(i);
-
-			Icon ii2 = new ImageIcon(img2);
-			JOptionPane.showMessageDialog(null, "Attaxx #2", null, JOptionPane.PLAIN_MESSAGE, ii2);
+			testIcon();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static void testIcon() throws Exception {
+		NSOFIcon icon = new NSOFIcon();
+
+		NSOFSmallRect bounds = new NSOFSmallRect(0, 0, 31, 31);
+		icon.setBounds(bounds);
+
+		InputStream bitsIn = new ByteArrayInputStream(BITS_VALUE);
+		NSOFRawBitmap bits = new NSOFRawBitmap();
+		bits.setObjectClass(NSOFRawBitmap.CLASS_BITS);
+		bits.inflate(bitsIn, null);
+		icon.setBits(bits);
+		byte[] pixelsBits = bits.getPixels();
+
+		InputStream maskIn = new ByteArrayInputStream(MASK_VALUE);
+		NSOFRawBitmap mask = new NSOFRawBitmap();
+		mask.setObjectClass(NSOFRawBitmap.CLASS_MASK);
+		mask.inflate(maskIn, null);
+		icon.setMask(mask);
+
+		Image img = icon.toImage();
+		Icon ii = new ImageIcon(img);
+		JOptionPane.showMessageDialog(null, "Attaxx", null, JOptionPane.PLAIN_MESSAGE, ii);
+
+		NSOFIcon bmp2 = new NSOFIcon();
+		bmp2.setBounds(bounds);
+		bmp2.fromIcon(ii);
+		byte[] pixels2 = bmp2.getBits().getPixels();
+		Image img2 = bmp2.toImage();
+
+		for (int i = 0; i < pixelsBits.length; i++)
+			if (pixels2[i] != pixelsBits[i])
+				throw new ArrayIndexOutOfBoundsException(i);
+
+		Icon ii2 = new ImageIcon(img2);
+		JOptionPane.showMessageDialog(null, "Attaxx #2", null, JOptionPane.PLAIN_MESSAGE, ii2);
 	}
 }

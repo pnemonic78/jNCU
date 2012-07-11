@@ -13,8 +13,7 @@ import net.sf.jncu.fdil.NSOFInteger;
 import net.sf.jncu.fdil.NSOFSmallRect;
 
 /**
- * Decode the Attaxx bitmap.
- * <tt>icon={bounds={top: 0, left: 0, bottom: 31, right: 31}, bits='bits, mask='mask}</tt>
+ * Decode the nBasis icons.
  * 
  * @author mwaisberg
  * 

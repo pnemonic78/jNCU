@@ -27,7 +27,6 @@ import java.io.InvalidObjectException;
 import java.util.Hashtable;
 import java.util.Map;
 
-import net.sf.jncu.fdil.contrib.NSOFIcon;
 import net.sf.jncu.fdil.contrib.NSOFInstructions;
 import net.sf.jncu.fdil.contrib.NSOFLiterals;
 import net.sf.jncu.fdil.contrib.NSOFRawBitmap;
@@ -177,23 +176,26 @@ public class NSOFDecoder {
 			NSOFBinaryObject bin = (NSOFBinaryObject) object;
 			nsClass = object.getObjectClass();
 
-			if (NSOFIcon.CLASS_ICON.equals(nsClass)) {
-				NSOFIcon bin2 = new NSOFIcon();
-				bin2.setValue(bin.getValue(), this);
-				object = bin2;
-			} else if (NSOFInstructions.CLASS_INSTRUCTIONS.equals(nsClass)) {
+			if (NSOFInstructions.CLASS_INSTRUCTIONS.equals(nsClass)) {
 				NSOFInstructions bin2 = new NSOFInstructions();
+				bin2.setObjectClass(nsClass);
 				bin2.setValue(bin.getValue());
 				object = bin2;
 			} else if (NSOFRawBitmap.CLASS_BITS.equals(nsClass)) {
 				NSOFRawBitmap bin2 = new NSOFRawBitmap();
-				bin2.setObjectClass(NSOFRawBitmap.CLASS_BITS);
+				bin2.setObjectClass(nsClass);
+				bin2.inflate(new ByteArrayInputStream(bin.getValue()), this);
+				bin2.setValue(bin.getValue());
+				object = bin2;
+			} else if (NSOFRawBitmap.CLASS_COLOR_BITS.equals(nsClass)) {
+				NSOFRawBitmap bin2 = new NSOFRawBitmap();
+				bin2.setObjectClass(nsClass);
 				bin2.inflate(new ByteArrayInputStream(bin.getValue()), this);
 				bin2.setValue(bin.getValue());
 				object = bin2;
 			} else if (NSOFRawBitmap.CLASS_MASK.equals(nsClass)) {
 				NSOFRawBitmap bin2 = new NSOFRawBitmap();
-				bin2.setObjectClass(NSOFRawBitmap.CLASS_MASK);
+				bin2.setObjectClass(nsClass);
 				bin2.inflate(new ByteArrayInputStream(bin.getValue()), this);
 				bin2.setValue(bin.getValue());
 				object = bin2;
