@@ -58,5 +58,12 @@ public class DaleksIconTest {
 		Image img = icon.toImage();
 		Icon ii = new ImageIcon(img);
 		JOptionPane.showMessageDialog(null, "Daleks", null, JOptionPane.PLAIN_MESSAGE, ii);
+
+		NSOFIcon bmp2 = new NSOFIcon();
+		bmp2.setBounds(bounds);
+		bmp2.fromIcon(ii);
+		Image img2 = bmp2.toImage();
+		Icon ii2 = new ImageIcon(img2);
+		JOptionPane.showMessageDialog(null, "Daleks #2", null, JOptionPane.PLAIN_MESSAGE, ii2);
 	}
 }

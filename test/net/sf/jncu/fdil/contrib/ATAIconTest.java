@@ -100,9 +100,9 @@ public class ATAIconTest {
 
 		InputStream maskIn = new ByteArrayInputStream(MASK_VALUE);
 		NSOFRawBitmap mask = new NSOFRawBitmap();
-		mask.setObjectClass(NSOFRawBitmap.CLASS_BITS);
+		mask.setObjectClass(NSOFRawBitmap.CLASS_MASK);
 		mask.inflate(maskIn, null);
-		icon.setMask(mask);
+		// icon.setMask(mask);
 
 		Image img = icon.toImage();
 		Icon ii = new ImageIcon(img);
@@ -204,6 +204,13 @@ public class ATAIconTest {
 		Image img = icon.toImage();
 		Icon ii = new ImageIcon(img);
 		JOptionPane.showMessageDialog(null, "ATA Pro Unhilited 4", null, JOptionPane.PLAIN_MESSAGE, ii);
+
+		NSOFIcon bmp2 = new NSOFIcon();
+		bmp2.setBounds(bounds);
+		bmp2.fromIcon(ii);
+		Image img2 = bmp2.toImage();
+		Icon ii2 = new ImageIcon(img2);
+		JOptionPane.showMessageDialog(null, "Attaxx Pro Unhilited 4 #2", null, JOptionPane.PLAIN_MESSAGE, ii2);
 	}
 
 	private static void testIconProHilited4() throws Exception {

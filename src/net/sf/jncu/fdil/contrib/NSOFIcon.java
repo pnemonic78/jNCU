@@ -23,6 +23,8 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -31,7 +33,9 @@ import javax.swing.JPanel;
 import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFImmediate;
+import net.sf.jncu.fdil.NSOFInteger;
 import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.fdil.NSOFSmallRect;
 import net.sf.jncu.fdil.NSOFSymbol;
 
@@ -145,6 +149,7 @@ public class NSOFIcon extends NSOFFrame {
 	 */
 	public Image toImage() {
 		NSOFRawBitmap bits = getBits();
+		NSOFRawBitmap mask = getMask();
 		if (bits == null) {
 			NSOFFrame colorData = findColorData(NSOFRawBitmap.BIT_DEPTH_4);
 			if (colorData == null)
@@ -156,13 +161,16 @@ public class NSOFIcon extends NSOFFrame {
 		}
 		int width = bits.getWidth();
 		int height = bits.getHeight();
-		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		int rgb;
+		int maskPixel;
 
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				rgb = bits.getRGB(x, y);
-				img.setRGB(x, y, rgb);
+				maskPixel = (mask == null) ? NSOFRawBitmap.PIXEL_ON : mask.getPixel(x, y);
+				if (maskPixel == NSOFRawBitmap.PIXEL_ON)
+					img.setRGB(x, y, rgb);
 			}
 		}
 
@@ -197,32 +205,37 @@ public class NSOFIcon extends NSOFFrame {
 	 *            the source image.
 	 */
 	public void fromImage(BufferedImage image) {
-		NSOFRawBitmap bits = new NSOFRawBitmap();
-		bits.setObjectClass(NSOFRawBitmap.CLASS_BITS);
+		int width = image.getWidth();
+		int height = image.getHeight();
 
-		NSOFRawBitmap mask = new NSOFRawBitmap();
-		mask.setObjectClass(NSOFRawBitmap.CLASS_MASK);
-
-		int width = image.getWidth(null);
-		int height = image.getHeight(null);
-		bits.setRight(width);
-		bits.setBottom(height);
-		mask.setRight(width);
-		mask.setBottom(height);
 		NSOFSmallRect bounds = new NSOFSmallRect(0, 0, width, height);
 		setBounds(bounds);
+
+		Set<Integer> colors = countHistogram(image);
+
+		NSOFRawBitmap bits = new NSOFRawBitmap((colors.size() < 4) ? NSOFRawBitmap.BIT_DEPTH_1 : NSOFRawBitmap.BIT_DEPTH_4);
+		bits.setObjectClass(NSOFRawBitmap.CLASS_BITS);
+		bits.setRight(width);
+		bits.setBottom(height);
+		setBits(bits);
+
+		NSOFRawBitmap mask = new NSOFRawBitmap(NSOFRawBitmap.BIT_DEPTH_1);
+		mask.setObjectClass(NSOFRawBitmap.CLASS_MASK);
+		mask.setRight(width);
+		mask.setBottom(height);
+		setMask(mask);
 
 		int rgb;
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				rgb = image.getRGB(x, y);
 				bits.setRGB(x, y, rgb);
-				mask.setPixel(x, y, NSOFRawBitmap.PIXEL_ON);
+				if (rgb == NSOFRawBitmap.COLOR_TRANSPARENT)
+					mask.setPixel(x, y, NSOFRawBitmap.PIXEL_OFF);
+				else
+					mask.setPixel(x, y, NSOFRawBitmap.PIXEL_ON);
 			}
 		}
-
-		setBits(bits);
-		setMask(mask);
 	}
 
 	/**
@@ -291,9 +304,10 @@ public class NSOFIcon extends NSOFFrame {
 	 * Find colour data.
 	 * 
 	 * @param bitDepth
-	 *            the colour bit depth. Known values are {@code 1} and {@code 4}
-	 *            .
+	 *            the pixel bit depth. .
 	 * @return the colour data - {@code null} otherwise.
+	 * @see NSOFRawBitmap#BIT_DEPTH_1
+	 * @see NSOFRawBitmap#BIT_DEPTH_4
 	 */
 	public NSOFFrame findColorData(int bitDepth) {
 		if ((bitDepth != NSOFRawBitmap.BIT_DEPTH_1) && (bitDepth != NSOFRawBitmap.BIT_DEPTH_4))
@@ -321,5 +335,91 @@ public class NSOFIcon extends NSOFFrame {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Set colour data bits.
+	 * 
+	 * @param bitDepth
+	 *            the pixel bit depth.
+	 * @param bits
+	 *            the icon bits.
+	 * @see NSOFRawBitmap#BIT_DEPTH_1
+	 * @see NSOFRawBitmap#BIT_DEPTH_4
+	 */
+	public void setColorBits(int bitDepth, NSOFRawBitmap bits) {
+		NSOFFrame data = new NSOFFrame();
+		data.put(SLOT_BIT_DEPTH, new NSOFInteger(bitDepth));
+		data.put(SLOT_COLOR_BITS, bits);
+
+		NSOFObject colorData = getColorData();
+		if (NSOFImmediate.isNil(colorData)) {
+			setColorData(data);
+			return;
+		}
+		NSOFArray arr;
+		NSOFFrame frame;
+		NSOFImmediate depth;
+		int bitDepthValue;
+
+		if (colorData instanceof NSOFFrame) {
+			frame = (NSOFFrame) colorData;
+			depth = (NSOFImmediate) frame.get(SLOT_BIT_DEPTH);
+			if (NSOFImmediate.isNil(depth)) {
+				// Should not happen - bitDepth slot should always exist.
+				setColorData(data);
+				return;
+			}
+			bitDepthValue = depth.getValue();
+			if (bitDepthValue == bitDepth) {
+				setColorData(data);
+				return;
+			}
+			arr = new NSOFPlainArray(2);
+			if (bitDepthValue < bitDepth) {
+				arr.set(0, frame);
+				arr.set(1, data);
+			} else {
+				arr.set(0, data);
+				arr.set(1, frame);
+			}
+		} else if (colorData instanceof NSOFArray) {
+			arr = (NSOFArray) colorData;
+			int length = arr.getLength();
+			int insertAt = length;
+			for (int i = 0; i < length; i++) {
+				frame = (NSOFFrame) arr.get(i);
+				depth = (NSOFImmediate) frame.get(SLOT_BIT_DEPTH);
+				bitDepthValue = depth.getValue();
+				if (bitDepthValue == bitDepth) {
+					arr.set(i, data);
+					return;
+				}
+				if (bitDepth < bitDepthValue)
+					insertAt = i;
+			}
+			arr.insert(insertAt, data);
+		}
+	}
+
+	/**
+	 * Count the number of unique colours, including transparent.
+	 * 
+	 * @param image
+	 *            the image to count.
+	 * @return a type of histogram.
+	 */
+	protected Set<Integer> countHistogram(BufferedImage image) {
+		int w = image.getWidth();
+		int h = image.getHeight();
+		Set<Integer> colors = new HashSet<Integer>();
+
+		for (int y = 0; y < h; y++) {
+			for (int x = 0; x < w; x++) {
+				colors.add(image.getRGB(x, y));
+			}
+		}
+
+		return colors;
 	}
 }
