@@ -117,10 +117,12 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	/** Bit depth for 16 shades of gray. */
 	public static final int BIT_DEPTH_4 = 4;
 
-	/** ARGB for transparent colour. */
+	/** Transparent colour. */
 	protected static final int COLOR_TRANSPARENT = 0x00000000;
 	/** Black colour. */
 	protected static final int COLOR_BLACK = Color.BLACK.getRGB();
+	/** White colour. */
+	protected static final int COLOR_WHITE = Color.WHITE.getRGB();
 	/** ARGB component for opaque colours. */
 	protected static final int COLOR_OPAQUE = 0xFF000000;
 	protected static final int MASK_ALPHA = 0xFF000000;
@@ -189,6 +191,22 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 		this.bitDepth = bitDepth;
 		this.pixelMask = (1 << bitDepth) - 1;
 		this.pixelShift = 8 - bitDepth;
+		if (rowBytes == 0) {
+			final int width = getWidth();
+			int rowBytes = (width * bitDepth) >> 3;
+			if ((width & 7) != 0)
+				rowBytes++;
+			setRowBytes(rowBytes);
+		}
+	}
+
+	/**
+	 * Get the number of bits per pixel.
+	 * 
+	 * @return the bit depth.
+	 */
+	public int getBitDepth() {
+		return bitDepth;
 	}
 
 	@Override
@@ -208,15 +226,6 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 		// 14-15 word right
 		setRight(ntohs(in));
 		setRowBytes(rowBytes);
-		if (this.bitDepth == 0) {
-			int bitDepth = BIT_DEPTH_1;
-			if (rowBytes > 4) {
-				bitDepth = (rowBytes << 3) / getWidth();
-				if (bitDepth < BIT_DEPTH_4)
-					bitDepth = BIT_DEPTH_1;
-			}
-			setBitDepth(bitDepth);
-		}
 		// 16-* bits pixel data, 1 for "on" pixel, 0 for "off"
 		int size = rowBytes * getHeight();
 		if (size < in.available())
@@ -280,6 +289,17 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 		if ((rowBytes & 0x03) != 0)
 			rowBytes++;
 		this.rowBytes = rowBytes;
+
+		if (bitDepth == 0) {
+			int bitDepth = BIT_DEPTH_1;
+			if (rowBytes > 4) {
+				bitDepth = (rowBytes << 3) / getWidth();
+				if (bitDepth < BIT_DEPTH_4)
+					bitDepth = BIT_DEPTH_1;
+			}
+			setBitDepth(bitDepth);
+		}
+
 		setValue(null);
 	}
 
@@ -334,11 +354,13 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	public void setLeft(int left) {
 		this.left = left;
 
-		final int width = getRight() - left;
-		int rowBytes = (width * bitDepth) >> 3;
-		if ((width & 7) != 0)
-			rowBytes++;
-		setRowBytes(rowBytes);
+		if (bitDepth != 0) {
+			final int width = getRight() - left;
+			int rowBytes = (width * bitDepth) >> 3;
+			if ((width & 7) != 0)
+				rowBytes++;
+			setRowBytes(rowBytes);
+		}
 	}
 
 	/**
@@ -379,11 +401,13 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	public void setRight(int right) {
 		this.right = right;
 
-		final int width = right - getLeft();
-		int rowBytes = (width * bitDepth) >> 3;
-		if ((width & 7) != 0)
-			rowBytes++;
-		setRowBytes(rowBytes);
+		if (bitDepth != 0) {
+			final int width = right - getLeft();
+			int rowBytes = (width * bitDepth) >> 3;
+			if ((width & 7) != 0)
+				rowBytes++;
+			setRowBytes(rowBytes);
+		}
 	}
 
 	/**
@@ -520,7 +544,7 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	public int getRGB(int x, int y) {
 		int pixel = getPixel(x, y);
 		if (pixel == PIXEL_OFF)
-			return COLOR_TRANSPARENT;
+			return COLOR_WHITE;
 		if (bitDepth == BIT_DEPTH_4) {
 			int gray = (255 - (pixel * 17)) & 0xFF;
 			int argb = COLOR_OPAQUE | (gray << 16) | (gray << 8) | (gray << 0);

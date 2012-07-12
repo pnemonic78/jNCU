@@ -65,13 +65,13 @@ public class AttaxxIconTest {
 		NSOFIcon bmp2 = new NSOFIcon();
 		bmp2.setBounds(bounds);
 		bmp2.fromIcon(ii);
-		byte[] pixels2 = bmp2.getBits().getPixels();
-		Image img2 = bmp2.toImage();
 
+		byte[] pixels2 = bmp2.getBits().getPixels();
 		for (int i = 0; i < pixelsBits.length; i++)
 			if (pixels2[i] != pixelsBits[i])
-				throw new ArrayIndexOutOfBoundsException(i);
+				throw new ArrayIndexOutOfBoundsException("At index " + i + ", expected " + pixelsBits[i] + " but was " + pixels2[i]);
 
+		Image img2 = bmp2.toImage();
 		Icon ii2 = new ImageIcon(img2);
 		JOptionPane.showMessageDialog(null, "Attaxx #2", null, JOptionPane.PLAIN_MESSAGE, ii2);
 	}
