@@ -1,5 +1,7 @@
 package net.sf.jncu.protocol.io;
 
+import java.io.File;
+
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.cdil.mnp.MNPPacket;
@@ -14,7 +16,9 @@ import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.IconModule.IconModuleListener;
 import net.sf.jncu.protocol.v2_0.io.DRequestToBrowse;
-import net.sf.jncu.protocol.v2_0.io.win.FileChooser;
+import net.sf.jncu.protocol.v2_0.io.FileChooser;
+import net.sf.jncu.protocol.v2_0.io.unix.UnixFileChooser;
+import net.sf.jncu.protocol.v2_0.io.win.WindowsFileChooser;
 
 /**
  * Test to interact with file choose of the Newton.
@@ -141,7 +145,11 @@ public class FileChooserTester implements IconModuleListener, MNPPacketListener,
 		if (DDisconnect.COMMAND.equals(cmd)) {
 			choosing = false;
 		} else if (DRequestToBrowse.COMMAND.equals(cmd)) {
-			chooser = new FileChooser(pipe, FileChooser.PACKAGES);
+			if (File.separatorChar == '\\')
+				chooser = new WindowsFileChooser(pipe, FileChooser.PACKAGES);
+			else
+				// if (File.separatorChar == '/')
+				chooser = new UnixFileChooser(pipe, FileChooser.PACKAGES);
 		}
 	}
 

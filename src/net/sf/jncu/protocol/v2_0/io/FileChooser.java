@@ -17,7 +17,7 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.protocol.v2_0.io.win;
+package net.sf.jncu.protocol.v2_0.io;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,16 +41,6 @@ import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.app.DLoadPackageFile;
 import net.sf.jncu.protocol.v2_0.data.DImportFile;
 import net.sf.jncu.protocol.v2_0.data.DRestoreFile;
-import net.sf.jncu.protocol.v2_0.io.DFileInfo;
-import net.sf.jncu.protocol.v2_0.io.DFilesAndFolders;
-import net.sf.jncu.protocol.v2_0.io.DGetDefaultPath;
-import net.sf.jncu.protocol.v2_0.io.DGetFileInfo;
-import net.sf.jncu.protocol.v2_0.io.DGetFilesAndFolders;
-import net.sf.jncu.protocol.v2_0.io.DGetInternalStore;
-import net.sf.jncu.protocol.v2_0.io.DInternalStore;
-import net.sf.jncu.protocol.v2_0.io.DPath;
-import net.sf.jncu.protocol.v2_0.io.DRequestToBrowse;
-import net.sf.jncu.protocol.v2_0.io.DSetPath;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.jncu.translate.TranslatorFactory;
 import net.sf.swing.AcceptAllFileFilter;
@@ -61,7 +51,7 @@ import net.sf.swing.SwingUtils;
  * 
  * @author Moshe
  */
-public class FileChooser extends IconModule {
+public abstract class FileChooser extends IconModule {
 
 	/**
 	 * File chooser event.
@@ -188,39 +178,21 @@ public class FileChooser extends IconModule {
 			internalStore = cmdStore.getStore();
 			DResult cmdResult = new DResult();
 			write(cmdResult);
-		} else if (DGetDevices.COMMAND.equals(cmd)) {
-			DDevices cmdDevices = new DDevices();
-			write(cmdDevices);
 		} else if (DGetDefaultPath.COMMAND.equals(cmd)) {
 			DPath cmdPath = new DPath();
 			cmdPath.setPath(path);
 			write(cmdPath);
 		} else if (DGetFilesAndFolders.COMMAND.equals(cmd)) {
 			sendFiles();
-		} else if (DGetFilters.COMMAND.equals(cmd)) {
-			DFilters cmdFilters = new DFilters();
-			cmdFilters.addFilters(filters);
-			write(cmdFilters);
 		} else if (DGetFileInfo.COMMAND.equals(cmd)) {
 			DGetFileInfo cmdGet = (DGetFileInfo) command;
 			File f = new File(path, cmdGet.getFilename());
 			DFileInfo cmdInfo = new DFileInfo();
 			cmdInfo.setFile(f);
 			write(cmdInfo);
-		} else if (DSetDrive.COMMAND.equals(cmd)) {
-			DSetDrive cmdSet = (DSetDrive) command;
-			setPath(new File(cmdSet.getDrive()));
-			DPath cmdPath = new DPath();
-			cmdPath.setPath(path);
-			write(cmdPath);
 		} else if (DSetPath.COMMAND.equals(cmd)) {
 			DSetPath cmdSet = (DSetPath) command;
 			setPath(cmdSet.getPath());
-			sendFiles();
-		} else if (DSetFilter.COMMAND.equals(cmd)) {
-			DSetFilter cmdSet = (DSetFilter) command;
-			int index = cmdSet.getIndex();
-			this.filter = filters.get(index);
 			sendFiles();
 		} else if (DImportFile.COMMAND.equals(cmd)) {
 			DImportFile cmdGet = (DImportFile) command;
@@ -309,7 +281,26 @@ public class FileChooser extends IconModule {
 		filter = new AcceptAllFileFilter();
 		filters.add(filter);
 
-		this.filter = filters.get(0);
+		setFilter(filters.get(0));
+	}
+
+	/**
+	 * Set the file filter.
+	 * 
+	 * @param filter
+	 *            the filter.
+	 */
+	protected void setFilter(FileFilter filter) {
+		this.filter = filter;
+	}
+
+	/**
+	 * Get the filters.
+	 * 
+	 * @return the list of filters.
+	 */
+	protected List<FileFilter> getFilters() {
+		return filters;
 	}
 
 	/**
@@ -327,7 +318,7 @@ public class FileChooser extends IconModule {
 	 * @param path
 	 *            the path.
 	 */
-	private void setPath(File path) {
+	protected void setPath(File path) {
 		this.path = path;
 		// Save the last path back to preferences.
 		Preferences prefs = Preferences.getInstance();
