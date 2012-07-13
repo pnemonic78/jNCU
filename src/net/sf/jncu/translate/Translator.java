@@ -19,18 +19,54 @@
  */
 package net.sf.jncu.translate;
 
+import java.io.InputStream;
+
+import net.sf.jncu.fdil.NSOFObject;
+
 /**
- * Translator.
+ * Translator.<br>
+ * One translator class translates only one file type.
  * 
- * @author moshe
- * 
+ * @author Moshe
  */
-public class Translator {
+public abstract class Translator {
 
 	/**
-	 * Creates a new translator.
+	 * Constructs a new translator.
 	 */
 	public Translator() {
+		super();
 	}
 
+	/**
+	 * Get the name.
+	 * 
+	 * @return the name.
+	 */
+	public abstract String getName();
+
+	/**
+	 * Get the default soup name.
+	 * 
+	 * @return the soup name.
+	 */
+	public abstract String getSoupName();
+
+	/**
+	 * Transform the file to Newton format.
+	 * 
+	 * @param in
+	 *            the input file.
+	 * @return the object.
+	 */
+	public abstract NSOFObject translateToNewton(InputStream in);
+
+	/**
+	 * Transform the Newton object to a file.
+	 * 
+	 * @param obj
+	 *            the object.
+	 * @return the file.
+	 */
+	public abstract InputStream translateFromNewton(NSOFObject obj);
 }
