@@ -121,7 +121,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	 * @param flags
 	 *            the state flags.
 	 */
-	protected void writeChar(char c, int flags) {
+	public void writeChar(char c, int flags) {
 		if (state != State.Input)
 			return;
 
@@ -137,7 +137,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	 * @param s
 	 *            the string.
 	 */
-	protected void writeString(String s) {
+	public void writeString(String s) {
 		if (state != State.Input)
 			return;
 
