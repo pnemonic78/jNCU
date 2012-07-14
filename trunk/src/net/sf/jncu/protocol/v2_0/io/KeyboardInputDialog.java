@@ -20,9 +20,7 @@
 package net.sf.jncu.protocol.v2_0.io;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Dialog;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
@@ -120,19 +118,7 @@ public class KeyboardInputDialog extends JDialog implements KeyListener {
 		setSize(w, h);
 
 		// Centre.
-		Container parent = getParent();
-		int x = 0;
-		int y = 0;
-		if ((parent == null) || (parent.getWidth() == 0) || (parent.getHeight() == 0)) {
-			Toolkit tookit = Toolkit.getDefaultToolkit();
-			Dimension size = tookit.getScreenSize();
-			x = (size.width - w) / 2;
-			y = (size.height - h) / 2;
-		} else {
-			x = parent.getX() + ((parent.getWidth() - w) / 2);
-			y = parent.getY() + ((parent.getHeight() - h) / 2);
-		}
-		setLocation(x, y);
+		SwingUtils.centreInOwner(this);
 
 		JPanel buttons = new JPanel();
 		FlowLayout layoutButtons = new FlowLayout(FlowLayout.TRAILING);
