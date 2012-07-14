@@ -103,9 +103,17 @@ public class SwingUtils {
 		int h = window.getHeight();
 		int ox = 0;
 		int oy = 0;
-		int ow;
-		int oh;
+		int ow = 0;
+		int oh = 0;
 		Window owner = window.getOwner();
+		if (owner != null) {
+			ox = owner.getX();
+			oy = owner.getY();
+			ow = owner.getWidth();
+			oh = owner.getHeight();
+			if ((ow == 0) && (oh == 0))
+				owner = null;
+		}
 		if (owner == null) {
 			GraphicsDevice gd;
 			GraphicsConfiguration gc = window.getGraphicsConfiguration();
@@ -117,11 +125,6 @@ public class SwingUtils {
 			DisplayMode dm = gd.getDisplayMode();
 			ow = dm.getWidth();
 			oh = dm.getHeight();
-		} else {
-			ox = owner.getX();
-			oy = owner.getY();
-			ow = owner.getWidth();
-			oh = owner.getHeight();
 		}
 		int x = (ox + (ow / 2)) - (w / 2);
 		int y = (oy + (oh / 2)) - (h / 2);
