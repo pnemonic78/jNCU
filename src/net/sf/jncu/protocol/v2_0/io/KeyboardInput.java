@@ -36,8 +36,6 @@ import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 
 /**
  * Keyboard input for pass-through mode. <br>
- * TODO wait 50ms to batch several "kbdc" as single "kbds" (unless the key is
- * control character).
  * 
  * @author Moshe
  */
@@ -55,13 +53,17 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	}
 
 	private static final String TITLE = Toolkit.getProperty("AWT.CompositionWindowTitle", "Keyboard Input");
-	/** Wait for this long before sending queued characters. */
-	private static final long TIMEOUT = 1000;
+	/**
+	 * Wait to batch several "kbdc" as single "kbds" (unless the key is control
+	 * character).
+	 */
+	private static final long TIMEOUT = 500;
 
 	private State state = State.None;
 	private KeyboardInputDialog dialog;
 	private KeyboardTask task;
 	private Timer timer;
+	private StringBuilder buffer = new StringBuilder();
 
 	/**
 	 * Constructs a new object.
@@ -192,7 +194,13 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 
 		int keyFlags = DKeyboardChar.toNewtonState(ke.getModifiers());
 
-		writeChar(keyChar, keyFlags);
+		if (keyFlags == 0) {
+			buffer.append(keyChar);
+			startTimer();
+		} else {
+			flush();
+			writeChar(keyChar, keyFlags);
+		}
 	}
 
 	@Override
@@ -201,10 +209,8 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 		if (length == 0)
 			return;
 
-		// Replace with Macintosh EOL.
-		text = text.replaceAll(CRLF, CR);
-		text = text.replace(LF, DKeyboardChar.RETURN);
-		writeString(text);
+		buffer.append(text);
+		flush();
 	}
 
 	@Override
@@ -229,13 +235,36 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	}
 
 	/**
-	 * Flush the buffers.
+	 * Flush the text buffer.
 	 */
-	protected void flush() {
+	public synchronized void flush() {
 		if (task != null) {
 			task.cancel();
-			task.run();
 			task = null;
+		}
+		final int length = buffer.length();
+		if (length == 1) {
+			char keyChar = buffer.charAt(0);
+			buffer = new StringBuilder();
+			writeChar(keyChar, 0);
+		} else if (length > 1) {
+			String text = buffer.toString();
+			buffer = new StringBuilder();
+
+			// Replace with Macintosh EOL.
+			text = text.replaceAll(CRLF, CR);
+			text = text.replace(LF, DKeyboardChar.RETURN);
+			writeString(text);
+		}
+	}
+
+	/**
+	 * Start the timer.
+	 */
+	private void startTimer() {
+		if (task == null) {
+			task = new KeyboardTask(this);
+			timer.schedule(task, TIMEOUT);
 		}
 	}
 
