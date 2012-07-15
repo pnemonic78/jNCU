@@ -216,9 +216,9 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	@Override
 	protected void done() {
 		if (state == State.Input) {
-			dialog.close();
 			DOperationDone done = new DOperationDone();
 			write(done);
+			dialog.close();
 		}
 		timer.cancel();
 		dialog.removeInputListener(this);

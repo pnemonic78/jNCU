@@ -4,10 +4,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.CDLayer;
-import net.sf.jncu.cdil.PlatformException;
-import net.sf.jncu.cdil.ServiceNotSupportedException;
+import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.cdil.mnp.EmptyPipe;
 import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
@@ -32,16 +30,9 @@ public class KeyboardInputTester implements WindowListener, KeyboardInputListene
 		tester.run();
 	}
 
-	public KeyboardInputTester() throws PlatformException, ServiceNotSupportedException, CDILNotInitializedException {
+	public KeyboardInputTester() {
 		super();
 		this.layer = CDLayer.getInstance();
-		if (portName == null)
-			this.pipe = new EmptyPipe(layer);
-		else
-			this.pipe = layer.createMNPSerial(portName, MNPSerialPort.BAUD_38400);
-		this.input = new KeyboardInput(pipe);
-		input.getDialog().addWindowListener(this);
-		input.getDialog().addInputListener(this);
 	}
 
 	public void setPortName(String portName) {
@@ -49,6 +40,25 @@ public class KeyboardInputTester implements WindowListener, KeyboardInputListene
 	}
 
 	public void run() {
+		try {
+			if (portName == null)
+				this.pipe = new EmptyPipe(layer);
+			else {
+				layer.startUp();
+				this.pipe = layer.createMNPSerial(portName, MNPSerialPort.BAUD_38400);
+			}
+			pipe.startListening();
+			while (layer.getState() == CDState.LISTENING) {
+				Thread.yield();
+			}
+			pipe.accept();
+
+			this.input = new KeyboardInput(pipe);
+			input.getDialog().addWindowListener(this);
+			input.getDialog().addInputListener(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		input.start();
 	}
 
