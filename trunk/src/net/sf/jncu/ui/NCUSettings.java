@@ -64,8 +64,8 @@ public class NCUSettings extends JDialog {
 	private JPanel tabDock = null;
 	private JLabel labelPort = null;
 	private JLabel labelSpeed = null;
-	private JComboBox<String> listPort = null;
-	private JComboBox<Integer> listSpeed = null;
+	private JComboBox/* <String> */listPort = null;
+	private JComboBox/* <Integer> */listSpeed = null;
 	private JCheckBox checkListen = null;
 	private JLabel labelFolder = null;
 	private JLabel labelFolderPath = null;
@@ -189,12 +189,12 @@ public class NCUSettings extends JDialog {
 	public void setSettings(Settings settings) {
 		this.settings = settings;
 
-		JComboBox<String> ports = getListPort();
+		JComboBox/* <String> */ports = getListPort();
 		ports.removeAllItems();
 		for (String port : settings.getPorts()) {
 			ports.addItem(port);
 		}
-		JComboBox<Integer> speed = getListSpeed();
+		JComboBox/* <Integer> */speed = getListSpeed();
 		speed.setSelectedItem(settings.getPortSpeed());
 		getCheckListen().setSelected(settings.isListen());
 
@@ -353,9 +353,9 @@ public class NCUSettings extends JDialog {
 	 * 
 	 * @return javax.swing.JComboBox
 	 */
-	private JComboBox<String> getListPort() {
+	private JComboBox/* <String> */getListPort() {
 		if (listPort == null) {
-			listPort = new JComboBox<String>();
+			listPort = new JComboBox/* <String> */();
 		}
 		return listPort;
 	}
@@ -365,9 +365,9 @@ public class NCUSettings extends JDialog {
 	 * 
 	 * @return javax.swing.JComboBox
 	 */
-	private JComboBox<Integer> getListSpeed() {
+	private JComboBox/* <Integer> */getListSpeed() {
 		if (listSpeed == null) {
-			listSpeed = new JComboBox<Integer>();
+			listSpeed = new JComboBox/* <Integer> */();
 			listSpeed.addItem(MNPSerialPort.BAUD_2400);
 			listSpeed.addItem(MNPSerialPort.BAUD_4800);
 			listSpeed.addItem(MNPSerialPort.BAUD_9600);
