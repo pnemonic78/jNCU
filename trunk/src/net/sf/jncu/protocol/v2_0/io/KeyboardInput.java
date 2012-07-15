@@ -23,6 +23,7 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.Timer;
 
 import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
@@ -34,9 +35,9 @@ import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 
 /**
- * Keyboard input for pass-through mode.
- * <br>
- * TODO wait 50ms to batch several "kbdc" as single "kbds" (unless the key is control character).
+ * Keyboard input for pass-through mode. <br>
+ * TODO wait 50ms to batch several "kbdc" as single "kbds" (unless the key is
+ * control character).
  * 
  * @author Moshe
  */
@@ -54,9 +55,13 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	}
 
 	private static final String TITLE = Toolkit.getProperty("AWT.CompositionWindowTitle", "Keyboard Input");
+	/** Wait for this long before sending queued characters. */
+	private static final long TIMEOUT = 1000;
 
 	private State state = State.None;
 	private KeyboardInputDialog dialog;
+	private KeyboardTask task;
+	private Timer timer;
 
 	/**
 	 * Constructs a new object.
@@ -68,6 +73,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 
 		state = State.Initialised;
 
+		timer = new Timer();
 		dialog = new KeyboardInputDialog();
 		dialog.addInputListener(this);
 		dialog.addWindowListener(this);
@@ -208,6 +214,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 			DOperationDone done = new DOperationDone();
 			write(done);
 		}
+		timer.cancel();
 		dialog.removeInputListener(this);
 		super.done();
 	}
@@ -219,5 +226,25 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 		if (state == State.Finished)
 			return false;
 		return super.isEnabled();
+	}
+
+	/**
+	 * Flush the buffers.
+	 */
+	protected void flush() {
+		if (task != null) {
+			task.cancel();
+			task.run();
+			task = null;
+		}
+	}
+
+	/**
+	 * Get the input dialog.
+	 * 
+	 * @return the dialog.
+	 */
+	public KeyboardInputDialog getDialog() {
+		return dialog;
 	}
 }
