@@ -24,11 +24,8 @@ public class KeyboardTask extends TimerTask {
 
 	@Override
 	public void run() {
-		// TODO write the buffer (either char or string) to sender.
-		// if (buffer.size() == 1) {
-		// input.writeChar(ke);
-		// } else
-		// input.writeString(buffer.toString());
+		// Write the buffer (either char or string) to sender.
+		input.flush();
 	}
 
 }

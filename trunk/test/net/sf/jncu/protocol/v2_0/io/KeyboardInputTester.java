@@ -83,7 +83,14 @@ public class KeyboardInputTester implements WindowListener, KeyboardInputListene
 
 	@Override
 	public void charTyped(KeyEvent ke) {
-		System.out.println("charTyped " + ke);
+		if (ke.getID() != KeyEvent.KEY_PRESSED)
+			return;
+		char keyChar = DKeyboardChar.toNewtonChar(ke.getKeyChar(), ke.getKeyCode());
+		// Ignore unknown characters.
+		if (keyChar == 0)
+			return;
+		int keyFlags = DKeyboardChar.toNewtonState(ke.getModifiers());
+		System.out.println("charTyped keyChar=" + keyChar + " keyFlags=" + keyFlags);
 	}
 
 	@Override
