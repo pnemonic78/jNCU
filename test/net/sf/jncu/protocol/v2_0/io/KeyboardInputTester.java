@@ -1,16 +1,20 @@
 package net.sf.jncu.protocol.v2_0.io;
 
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 import net.sf.jncu.cdil.mnp.EmptyPipe;
 import net.sf.jncu.cdil.mnp.MNPPipe;
+import net.sf.jncu.cdil.mnp.MNPSerialPort;
 
-public class KeyboardInputTester implements WindowListener {
+public class KeyboardInputTester implements WindowListener, KeyboardInputListener {
 
+	private String portName;
 	private CDLayer layer;
 	private MNPPipe pipe;
 	private KeyboardInput input;
@@ -22,15 +26,26 @@ public class KeyboardInputTester implements WindowListener {
 	 */
 	public static void main(String[] args) throws Exception {
 		KeyboardInputTester tester = new KeyboardInputTester();
+		if (args.length > 0) {
+			tester.setPortName(args[0]);
+		}
 		tester.run();
 	}
 
-	public KeyboardInputTester() throws PlatformException, ServiceNotSupportedException {
+	public KeyboardInputTester() throws PlatformException, ServiceNotSupportedException, CDILNotInitializedException {
 		super();
 		this.layer = CDLayer.getInstance();
-		this.pipe = new EmptyPipe(layer);
+		if (portName == null)
+			this.pipe = new EmptyPipe(layer);
+		else
+			this.pipe = layer.createMNPSerial(portName, MNPSerialPort.BAUD_38400);
 		this.input = new KeyboardInput(pipe);
 		input.getDialog().addWindowListener(this);
+		input.getDialog().addInputListener(this);
+	}
+
+	public void setPortName(String portName) {
+		this.portName = portName;
 	}
 
 	public void run() {
@@ -64,5 +79,15 @@ public class KeyboardInputTester implements WindowListener {
 
 	@Override
 	public void windowDeactivated(WindowEvent e) {
+	}
+
+	@Override
+	public void charTyped(KeyEvent ke) {
+		System.out.println("charTyped " + ke);
+	}
+
+	@Override
+	public void stringTyped(String text) {
+		System.out.println("stringTyped [" + text + "]");
 	}
 }
