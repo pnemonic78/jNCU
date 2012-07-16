@@ -5,9 +5,6 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jncu.cdil.PipeDisconnectedException;
-import net.sf.jncu.cdil.mnp.MNPPipe.MNPState;
-
 public class TraceDecodePacketLayer extends EmptyPacketLayer {
 
 	private final InputStream receivedFromNewton;
@@ -27,20 +24,5 @@ public class TraceDecodePacketLayer extends EmptyPacketLayer {
 
 	public byte[] readSent() throws EOFException, IOException {
 		return read(sentToNewton);
-	}
-
-	@Override
-	protected boolean allowAcknowledge() {
-		return false;
-	}
-
-	@Override
-	public void run() {
-		try {
-			((MNPPipe) pipe).setState(MNPState.MNP_HANDSHAKE_LR_LISTEN);
-		} catch (PipeDisconnectedException pde) {
-			pde.printStackTrace();
-		}
-		super.run();
 	}
 }
