@@ -41,9 +41,9 @@ public class KeyboardInputTester implements WindowListener, KeyboardInputListene
 
 	public void run() {
 		try {
-			if (portName == null)
+			if (portName == null) {
 				this.pipe = new EmptyPipe(layer);
-			else {
+			} else {
 				layer.startUp();
 				this.pipe = layer.createMNPSerial(portName, MNPSerialPort.BAUD_38400);
 			}
@@ -51,15 +51,18 @@ public class KeyboardInputTester implements WindowListener, KeyboardInputListene
 			while (layer.getState() == CDState.LISTENING) {
 				Thread.yield();
 			}
+			if (portName == null)
+				layer.setState(pipe, CDState.CONNECT_PENDING);
 			pipe.accept();
 
 			this.input = new KeyboardInput(pipe);
 			input.getDialog().addWindowListener(this);
 			input.getDialog().addInputListener(this);
+			input.start();
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
-		input.start();
 	}
 
 	@Override
