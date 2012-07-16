@@ -20,16 +20,17 @@
 package net.sf.jncu.protocol.v2_0.sync;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.TreeSet;
 
 import net.sf.jncu.fdil.NSOFArray;
+import net.sf.jncu.fdil.NSOFBoolean;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFImmediate;
-import net.sf.jncu.fdil.NSOFNil;
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.fdil.NSOFSymbol;
-import net.sf.jncu.fdil.NSOFTrue;
 import net.sf.jncu.newton.os.Store;
 
 /**
@@ -48,7 +49,7 @@ public class SyncOptions {
 
 	private boolean packages;
 	private boolean syncAll;
-	private final List<Store> stores = new ArrayList<Store>();
+	private final Collection<Store> stores = new TreeSet<Store>();
 
 	/**
 	 * Creates new options.
@@ -99,7 +100,7 @@ public class SyncOptions {
 	 * 
 	 * @return the list of stores.
 	 */
-	public List<Store> getStores() {
+	public Collection<Store> getStores() {
 		return stores;
 	}
 
@@ -122,9 +123,9 @@ public class SyncOptions {
 	 */
 	public NSOFFrame toFrame() {
 		NSOFFrame frame = new NSOFFrame();
-		frame.put(SLOT_PACKAGES, isPackages() ? new NSOFTrue() : new NSOFNil());
-		frame.put(SLOT_ALL, isSyncAll() ? new NSOFTrue() : new NSOFNil());
-		final List<Store> stores = getStores();
+		frame.put(SLOT_PACKAGES, isPackages() ? NSOFBoolean.TRUE : NSOFBoolean.FALSE);
+		frame.put(SLOT_ALL, isSyncAll() ? NSOFBoolean.TRUE : NSOFBoolean.FALSE);
+		final Collection<Store> stores = getStores();
 		if (stores != null) {
 			NSOFFrame[] entries = new NSOFFrame[stores.size()];
 			int i = 0;
@@ -142,7 +143,7 @@ public class SyncOptions {
 	 * @param frame
 	 *            the frame.
 	 */
-	public void decode(NSOFFrame frame) {
+	public void decodeFrame(NSOFFrame frame) {
 		NSOFObject value;
 
 		value = frame.get(SLOT_ALL);
@@ -161,7 +162,7 @@ public class SyncOptions {
 
 		value = frame.get(SLOT_STORES);
 		setStores(null);
-		if (value != null) {
+		if (!NSOFImmediate.isNil(value)) {
 			NSOFArray arr = (NSOFArray) value;
 			List<Store> stores = new ArrayList<Store>();
 			NSOFObject[] entries = arr.getValue();

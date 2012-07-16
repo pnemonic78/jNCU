@@ -86,7 +86,7 @@ public class DSyncOptions extends DockCommandFromNewtonScript<NSOFFrame> {
 		SyncOptions info = null;
 		if (frame != null) {
 			info = new SyncOptions();
-			info.decode(frame);
+			info.decodeFrame(frame);
 		}
 		setSyncInfo(info);
 	}
