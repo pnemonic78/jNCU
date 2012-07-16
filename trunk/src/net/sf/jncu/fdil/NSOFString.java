@@ -33,7 +33,7 @@ import net.sf.lang.ControlCharacter;
  * 
  * @author Moshe
  */
-public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
+public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, CharSequence {
 
 	/**
 	 * Default string class.<br>
@@ -275,5 +275,24 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString> {
 	@Override
 	public NSOFObject deepClone() throws CloneNotSupportedException {
 		return new NSOFString(getValue());
+	}
+
+	@Override
+	public int length() {
+		return (value == null) ? 0 : value.length();
+	}
+
+	@Override
+	public char charAt(int index) {
+		if (value == null)
+			throw new NullPointerException();
+		return value.charAt(index);
+	}
+
+	@Override
+	public CharSequence subSequence(int start, int end) {
+		if (value == null)
+			throw new NullPointerException();
+		return value.subSequence(start, end);
 	}
 }
