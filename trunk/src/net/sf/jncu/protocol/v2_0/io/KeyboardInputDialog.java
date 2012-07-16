@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -62,7 +63,7 @@ public class KeyboardInputDialog extends JDialog implements KeyListener {
 		SwingUtils.init();
 	}
 
-	private JLabel inputLabel;
+	private static final String TITLE = "Keyboard Passthrough";
 	private JTextArea input;
 	private JButton pasteButton;
 	private JButton cancelButton;
@@ -83,7 +84,7 @@ public class KeyboardInputDialog extends JDialog implements KeyListener {
 	 *            the owner.
 	 */
 	public KeyboardInputDialog(Frame owner) {
-		super(owner);
+		super(owner, true);
 		init();
 	}
 
@@ -94,7 +95,7 @@ public class KeyboardInputDialog extends JDialog implements KeyListener {
 	 *            the owner.
 	 */
 	public KeyboardInputDialog(Dialog owner) {
-		super(owner);
+		super(owner, true);
 		init();
 	}
 
@@ -105,47 +106,37 @@ public class KeyboardInputDialog extends JDialog implements KeyListener {
 	 *            the owner.
 	 */
 	public KeyboardInputDialog(Window owner) {
-		super(owner);
+		super(owner, ModalityType.APPLICATION_MODAL);
 		init();
 	}
 
 	private void init() {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setTitle(TITLE);
 
-		setTitle("Keyboard Passthrough");
-		final int w = 320;
-		final int h = 150;
-		setSize(w, h);
+		JPanel panelContents = new JPanel(new BorderLayout(5, 5));
+		panelContents.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		panelContents.setOpaque(false);
+		setContentPane(panelContents);
 
-		// Centre.
-		SwingUtils.centreInOwner(this);
+		JLabel inputLabel = new JLabel("Text typed:");
+		panelContents.add(inputLabel, BorderLayout.NORTH);
 
-		JPanel buttons = new JPanel();
-		FlowLayout layoutButtons = new FlowLayout(FlowLayout.TRAILING);
-		buttons.setLayout(layoutButtons);
-		buttons.add(getPasteButton());
-		buttons.add(getCancelButton());
-
-		setLayout(new BorderLayout(10, 10));
-		add(getTextLabel(), BorderLayout.NORTH);
-		add(new JScrollPane(getTextInput()), BorderLayout.CENTER);
-		add(buttons, BorderLayout.SOUTH);
-
+		panelContents.add(new JScrollPane(getTextInput()), BorderLayout.CENTER);
 		getTextInput().requestFocus();
 
-		this.addKeyListener(this);
-	}
+		JPanel panelButtons = new JPanel();
+		panelButtons.setOpaque(false);
+		FlowLayout layoutButtons = new FlowLayout(FlowLayout.TRAILING);
+		panelButtons.setLayout(layoutButtons);
+		panelButtons.add(getPasteButton());
+		panelButtons.add(getCancelButton());
+		panelContents.add(panelButtons, BorderLayout.SOUTH);
 
-	/**
-	 * Get the text label.
-	 * 
-	 * @return the text label.
-	 */
-	private JLabel getTextLabel() {
-		if (inputLabel == null) {
-			inputLabel = new JLabel("Text typed:");
-		}
-		return inputLabel;
+		setSize(320, 150);
+		SwingUtils.centreInOwner(this);
+
+		this.addKeyListener(this);
 	}
 
 	/**
