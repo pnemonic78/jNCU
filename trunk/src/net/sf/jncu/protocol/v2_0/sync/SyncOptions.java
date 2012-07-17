@@ -34,7 +34,32 @@ import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.newton.os.Store;
 
 /**
- * Which information is to be synchronised.
+ * What information is to be synchronised?
+ * <p>
+ * For example:<br>
+ * <tt>frame={<br>
+ * &nbsp;&nbsp;packages=true,<br>
+ * &nbsp;&nbsp;syncall=true,<br>
+ * &nbsp;&nbsp;stores=[<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;soups=["Calendar", "Calendar Notes", "Calls", "Cities", "Countries", "DaylightSavings", "Directory", "InBox", "Library", "MathStar:SofT", "Names", "Nebula:SofT", "NewtWorks", "Notes", "OutBox", "Packages", "passKeep:leere", "Repeat Meetings", "Repeat Notes", "Set104289611:Utilities:SBM", "Set104320876:Utilities:SBM", "System", "SystemAlarmSoup", "TermLimit", "To do", "To Do List"],<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;defaultStore=true,<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name="Internal",<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;signatures=[-23730660, 82015374, -30102884, -327307689, 117956486, 369071447, 225165878, -328896044, 496725532, 459854783, 123338611, 46314278, -441166666, -85226116, -132887324, 131798843, -359696375, -482977699, -252110557, 231200219, -77219017, 442001900, -493735094, 159604293, -236879162, 206622611],<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;kind="Internal",<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;signature=29250252,<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;info={defaultStore=true, lastrestorefromcard=-480951953}<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;},<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;soups=["Calendar", "Calendar Notes", "Eclipse:SofT", "EquSol:SofT", "Names", "NewtWorks", "Notes", "Packages", "Repeat Meetings", "Repeat Notes", "To Do List"],<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name="2MB PCMCIA",<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;signatures=[-525833886, 278844033, 159604293, 159604293, 159604293, 262277348, 159604293, 262277348, 278636274, 85896884, 506753498],<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;kind="Flash storage card",<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;signature=185942560,<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;info={defaultStore=nil}<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+ * &nbsp;&nbsp;]<br>
+ * }</tt>
  * 
  * @author moshew
  */

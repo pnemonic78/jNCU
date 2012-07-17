@@ -75,7 +75,7 @@ public class Store implements Comparable<Store> {
 	public static final NSOFSymbol SLOT_SIGNATURES = new NSOFSymbol("signatures");
 	public static final NSOFSymbol SLOT_VERSION = new NSOFSymbol("storeVersion");
 	public static final NSOFSymbol SLOT_INFO_DEFAULT = SLOT_DEFAULT;
-	public static final NSOFSymbol SLOT_INFO_LAST_RESTORE = new NSOFSymbol("lastrestorefromcard");
+	public static final NSOFSymbol SLOT_INFO_LAST_RESTORE = new NSOFSymbol("lastRestoreFromCard");
 
 	private String name;
 	private final NSOFFrame frame = new NSOFFrame();
