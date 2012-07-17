@@ -50,7 +50,7 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	/** Default large binary class. */
 	public static final NSOFSymbol CLASS_LARGE_BINARY = new NSOFSymbol("largeBinary");
 
-	public static final String COMPANDER_LZ = CompanderFactory.COMPANDER_LZ;
+	public static final String COMPANDER_LZ = CompanderFactory.COMPANDER_LZ_STORE;
 	public static final String COMPANDER_PIXELMAP = CompanderFactory.COMPANDER_PIXELMAP;
 
 	/** Data is not compressed. */

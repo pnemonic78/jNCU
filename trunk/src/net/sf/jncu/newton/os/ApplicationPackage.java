@@ -19,12 +19,17 @@
  */
 package net.sf.jncu.newton.os;
 
+import net.sf.jncu.fdil.NSOFBinaryObject;
+
 /**
  * Application package information.
  * 
  * @author moshew
  */
 public class ApplicationPackage {
+
+	private String name;
+	private NSOFBinaryObject binary;
 
 	/**
 	 * Creates a new package.
@@ -41,6 +46,34 @@ public class ApplicationPackage {
 	 */
 	public ApplicationPackage(String name) {
 		super();
+		this.name = name;
 	}
 
+	/**
+	 * Get the package name.
+	 * 
+	 * @return the name.
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Set the package binary.
+	 * 
+	 * @param binary
+	 *            the binary object.
+	 */
+	public void setBinary(NSOFBinaryObject binary) {
+		this.binary = binary;
+	}
+
+	/**
+	 * Get the package binary.
+	 * 
+	 * @return the binary object.
+	 */
+	public NSOFBinaryObject getBinary() {
+		return binary;
+	}
 }
