@@ -32,7 +32,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  * 	packages: ["pkg1", ...],
  * 	applications: ["app1", ...]}</code> <br>
  * <tt>storeType</tt> slot indicates whether the data will be restored to a card
- * (<tt>kRestoreToCard = 1</tt>) or the Newton ( <tt>kRestoreToNewton = 0</tt>).
+ * (<tt>kRestoreToCard = 1</tt>) or the Newton (<tt>kRestoreToNewton = 0</tt>).
  * 
  * <pre>
  * 'ropt'
@@ -46,6 +46,11 @@ public class DRestoreOptions extends DockCommandToNewtonScript<NSOFFrame> {
 
 	/** <tt>kDRestoreOptions</tt> */
 	public static final String COMMAND = "ropt";
+
+	/** <tt>kRestoreToNewton</tt> */
+	public static final int RESTORE_TO_NEWTON = 0;
+	/** <tt>kRestoreToCard</tt> */
+	public static final int RESTORE_TO_CARD = 1;
 
 	/**
 	 * Creates a new command.
