@@ -2,6 +2,101 @@
 <body>
 	Data restore and synchronise/synchronize.
 
+	<h2>Restore originated on Newton</h2>
+	<br />Restore uses the file browsing interface described above. After
+	the user taps the restore button, the following commands are used.
+	<h4>Examples</h4>
+	<br />After the restore button is tapped:
+	<table>
+		<tr>
+			<th>Desktop</th>
+			<th>&#x2194;</th>
+			<th>Newton</th>
+		</tr>
+		<tr>
+			<td></td>
+			<td>&#x2190;</td>
+			<td>kDRestoreFile</td>
+		</tr>
+		<tr>
+			<td>kDRes</td>
+			<td>&#x2192;</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>&#x2190;</td>
+			<td>kDGetRestoreOptions</td>
+		</tr>
+		<tr>
+			<td>kDRestoreOptions</td>
+			<td>&#x2192;</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>&#x2190;</td>
+			<td>kDRestoreOptions</td>
+		</tr>
+		<tr>
+			<td>kDSourceVersion</td>
+			<td>&#x2192;</td>
+		</tr>
+	</table>
+	<p />
+	Selective restore proceeds as a normal restore would except when it
+	wants to restore a package. In this case it does this:
+	<table>
+		<tr>
+			<th>Desktop</th>
+			<th>&#x2194;</th>
+			<th>Newton</th>
+		</tr>
+		<tr>
+			<td>kDRemovePackage</td>
+			<td>&#x2192;</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>&#x2190;</td>
+			<td>kDResult</td>
+		</tr>
+		<tr>
+			<td>kDRestorePackage</td>
+			<td>&#x2192;</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>&#x2190;</td>
+			<td>kDResult</td>
+		</tr>
+	</table>
+	<p />
+	If the user picks a full restore it proceeds like this:
+	<table>
+		<tr>
+			<th>Desktop</th>
+			<th>&#x2194;</th>
+			<th>Newton</th>
+		</tr>
+		<tr>
+			<td></td>
+			<td>&#x2190;</td>
+			<td>kDRestoreFile</td>
+		</tr>
+		<tr>
+			<td>kDRes</td>
+			<td>&#x2192;</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>&#x2190;</td>
+			<td>kDRestoreAll</td>
+		</tr>
+		<tr>
+			<td>kDSourceVersion</td>
+			<td>&#x2192;</td>
+		</tr>
+	</table>
+	<p />
 	<h2>Synchronise</h2>
 	<br />
 	<h3>Sync and Selective Sync</h3>

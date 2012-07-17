@@ -87,30 +87,12 @@ public class NSOFSoupName extends NSOFString {
 	public void flatten(OutputStream out) throws IOException {
 		final String name = getValue();
 		try {
-			// byte b[] = { /*
-			// * NewtonStreamedObjectFormat.VERSION,
-			// * NewtonStreamedObjectFormat.NSOF_STRING, 0x08,
-			// */0x00, 'A', 0x00, 'b', 0x00, 'c', 0x00, 0x00 };
-			// out.write(b);
 			byte[] buf = name.getBytes(CHARSET_UTF16);
-			// int len = buf.length;
-			// // htonl(len, out);
-			// XLong.encode(len, out);
 			// Bytes [0] and [1] are 0xFE and 0xFF
 			if (buf.length >= 2)
 				out.write(buf, 2, buf.length - 2);
 			out.write(0);
 			out.write(0);
-			// // Word align.
-			// switch (len & 3) {
-			// case 1:
-			// out.write(0);
-			// case 2:
-			// out.write(0);
-			// case 3:
-			// out.write(0);
-			// break;
-			// }
 		} catch (UnsupportedEncodingException uee) {
 			throw new IOException(uee);
 		}
