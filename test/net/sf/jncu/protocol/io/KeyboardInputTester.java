@@ -1,4 +1,4 @@
-package net.sf.jncu.protocol.v2_0.io;
+package net.sf.jncu.protocol.io;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
@@ -9,6 +9,9 @@ import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.cdil.mnp.EmptyPipe;
 import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
+import net.sf.jncu.protocol.v2_0.io.DKeyboardChar;
+import net.sf.jncu.protocol.v2_0.io.KeyboardInput;
+import net.sf.jncu.protocol.v2_0.io.KeyboardInputListener;
 
 public class KeyboardInputTester implements WindowListener, KeyboardInputListener {
 

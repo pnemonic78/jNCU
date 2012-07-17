@@ -1,4 +1,4 @@
-package net.sf.jncu.protocol.v2_0.sync;
+package net.sf.jncu.protocol.sync;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,8 @@ import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.v2_0.app.AppName;
+import net.sf.jncu.protocol.v2_0.sync.BackupDialog;
+import net.sf.jncu.protocol.v2_0.sync.SyncOptions;
 
 public class BackupDialogTester {
 
