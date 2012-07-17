@@ -34,9 +34,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.Collection;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -49,6 +49,9 @@ import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 
+import net.sf.jncu.fdil.NSOFArray;
+import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.v2_0.app.AppName;
@@ -71,8 +74,6 @@ public class BackupDialog extends JDialog {
 	private JButton buttonBackup;
 	private JList listStores;
 	private JList listInformation;
-	private JCheckBox checkPackages;
-	private SyncOptions options;
 	private final MouseListener listMouseClicked = new MouseAdapter() {
 		public void mouseClicked(MouseEvent event) {
 			JList list = (JList) event.getSource();
@@ -116,6 +117,9 @@ public class BackupDialog extends JDialog {
 			list.repaint(list.getCellBounds(index, index));
 		}
 	};
+	private final SortedMap<String, Store> stores = new TreeMap<String, Store>();
+	private final SortedMap<String, AppName> apps = new TreeMap<String, AppName>();
+	private boolean success;
 
 	/**
 	 * Creates a new dialog.
@@ -219,11 +223,6 @@ public class BackupDialog extends JDialog {
 		panelInfo.setLayout(new BorderLayout(5, 5));
 		panelInfo.setBorder(BorderFactory.createTitledBorder("Information:"));
 
-		JPanel panelInfoCenter = new JPanel();
-		panelInfoCenter.setOpaque(false);
-		panelInfo.add(panelInfoCenter, BorderLayout.CENTER);
-		panelInfoCenter.setLayout(new BorderLayout(0, 0));
-
 		listInformation = new JList();
 		listInformation.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listInformation.setVisibleRowCount(5);
@@ -231,10 +230,10 @@ public class BackupDialog extends JDialog {
 		listInformation.addMouseListener(listMouseClicked);
 		listInformation.addKeyListener(listkeyClicked);
 		JScrollPane scrollInfo = new JScrollPane(listInformation);
-		panelInfoCenter.add(scrollInfo, BorderLayout.CENTER);
+		panelInfo.add(scrollInfo, BorderLayout.CENTER);
 
 		JPanel panelInfoButtons = new JPanel();
-		panelInfoCenter.add(panelInfoButtons, BorderLayout.SOUTH);
+		panelInfo.add(panelInfoButtons, BorderLayout.SOUTH);
 		panelInfoButtons.setOpaque(false);
 		FlowLayout flowLayout_1 = (FlowLayout) panelInfoButtons.getLayout();
 		flowLayout_1.setAlignment(FlowLayout.TRAILING);
@@ -259,10 +258,6 @@ public class BackupDialog extends JDialog {
 		});
 		panelInfoButtons.add(btnInfoClearAll);
 
-		checkPackages = new JCheckBox("Include All Packages");
-		panelInfo.add(checkPackages, BorderLayout.SOUTH);
-		checkPackages.setSelected(true);
-
 		JPanel panelButtons = new JPanel();
 		panelButtons.setOpaque(false);
 		panelContents.add(panelButtons, BorderLayout.SOUTH);
@@ -273,8 +268,8 @@ public class BackupDialog extends JDialog {
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
+				success = true;
 				close();
-				// TODO Start backup...
 			}
 		});
 		panelButtons.add(buttonBackup);
@@ -284,6 +279,7 @@ public class BackupDialog extends JDialog {
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
+				success = false;
 				close();
 			}
 		});
@@ -291,55 +287,6 @@ public class BackupDialog extends JDialog {
 
 		setSize(380, 300);
 		SwingUtils.centreInOwner(this);
-	}
-
-	public static void main(String[] args) {
-		SyncOptions options = new SyncOptions();
-		options.setPackages(true);
-
-		List<Store> stores = new ArrayList<Store>();
-		stores.add(new Store("Internal"));
-		stores.add(new Store("Store #2"));
-		stores.add(new Store("Store #3"));
-		stores.add(new Store("Store #4"));
-		stores.add(new Store("Store #5"));
-		stores.add(new Store("Store #6"));
-		stores.add(new Store("Store #7"));
-		stores.add(new Store("Store #8"));
-		stores.add(new Store("Store #9"));
-		stores.add(new Store("Store #10"));
-		stores.add(new Store("Store #11"));
-		stores.add(new Store("Store #12"));
-		options.setStores(stores);
-
-		List<Soup> soups = new ArrayList<Soup>();
-		soups.add(new Soup("Soup #1"));
-		soups.add(new Soup("Soup #3"));
-		soups.add(new Soup("Soup #5"));
-		soups.add(new Soup("Soup #7"));
-		soups.add(new Soup("Soup #9"));
-		soups.add(new Soup("Soup #11"));
-		stores.get(0).setSoups(soups);
-
-		soups = new ArrayList<Soup>();
-		soups.add(new Soup("Soup #2"));
-		soups.add(new Soup("Soup #4"));
-		soups.add(new Soup("Soup #6"));
-		soups.add(new Soup("Soup #8"));
-		soups.add(new Soup("Soup #10"));
-		soups.add(new Soup("Soup #12"));
-		stores.get(1).setSoups(soups);
-
-		soups = new ArrayList<Soup>();
-		soups.add(new Soup(AppName.NAME_BACKUP));
-		soups.add(new Soup(AppName.NAME_OTHER));
-		soups.add(new Soup(AppName.NAME_PACKAGES));
-		soups.add(new Soup(AppName.NAME_SYSTEM));
-		stores.get(2).setSoups(soups);
-
-		BackupDialog dialog = new BackupDialog();
-		dialog.setSyncOptions(options);
-		dialog.setVisible(true);
 	}
 
 	/**
@@ -371,53 +318,49 @@ public class BackupDialog extends JDialog {
 	}
 
 	/**
-	 * Get the checkbox to include all packages.
+	 * Populate the list of stores.
 	 * 
-	 * @return the checkbox
+	 * @param stores
+	 *            the stores.
 	 */
-	private JCheckBox getCheckPackages() {
-		return checkPackages;
+	public void setStores(Collection<Store> stores) {
+		this.stores.clear();
+
+		if (stores == null) {
+			getListStores().removeAll();
+		} else {
+			DefaultListModel modelStores = new DefaultListModel();
+			for (Store store : stores)
+				this.stores.put(store.getName(), store);
+			for (String name : this.stores.keySet())
+				modelStores.addElement(new JCheckBox(name, true));
+			getListStores().setModel(modelStores);
+		}
+
+		pack();
+		SwingUtils.centreInOwner(this);
 	}
 
 	/**
-	 * Get the sync options.
+	 * Set the list of application names.
 	 * 
-	 * @return the options.
+	 * @param names
+	 *            the application names.
 	 */
-	public SyncOptions getSyncOptions() {
-		return options;
-	}
+	public void setApplications(Collection<AppName> names) {
+		this.apps.clear();
 
-	/**
-	 * Set the sync options.
-	 * 
-	 * @param options
-	 *            the options.
-	 */
-	public void setSyncOptions(SyncOptions options) {
-		this.options = options;
-
-		DefaultListModel modelStores = new DefaultListModel();
-		DefaultListModel modelSoups = new DefaultListModel();
-		SortedSet<Soup> soups = new TreeSet<Soup>();
-
-		for (Store store : options.getStores()) {
-			modelStores.addElement(new JCheckBox(store.getName(), true));
-			soups.addAll(store.getSoups());
+		if (names == null) {
+			getListInformation().removeAll();
+		} else {
+			for (AppName name : names)
+				this.apps.put(name.getName(), name);
+			DefaultListModel modelApps = new DefaultListModel();
+			for (String name : this.apps.keySet()) {
+				modelApps.addElement(new JCheckBox(name, true));
+			}
+			getListInformation().setModel(modelApps);
 		}
-		String soupName;
-		for (Soup soup : soups) {
-			soupName = soup.getName();
-			if (AppName.NAME_BACKUP.equals(soupName))
-				continue;
-			if (AppName.NAME_PACKAGES.equals(soupName))
-				continue;
-			modelSoups.addElement(new JCheckBox(soupName, true));
-		}
-		getListStores().setModel(modelStores);
-		getListInformation().setModel(modelSoups);
-
-		getCheckPackages().setSelected(options.isPackages());
 
 		pack();
 		SwingUtils.centreInOwner(this);
@@ -457,4 +400,71 @@ public class BackupDialog extends JDialog {
 		list.repaint();
 	}
 
+	/**
+	 * Get the sync options.
+	 * 
+	 * @return the options - {@code null} if cancelled.
+	 */
+	public SyncOptions getSyncOptions() {
+		if (!success)
+			return null;
+
+		Collection<Store> storesSelected = new ArrayList<Store>();
+		ListModel modelStores = getListStores().getModel();
+		ListModel modelApps = getListInformation().getModel();
+		int sizeStores = modelStores.getSize();
+		int sizeApps = modelApps.getSize();
+		String storeName, appName;
+		JCheckBox check;
+		Store store;
+		AppName app;
+		NSOFArray soups;
+		NSOFString soupName;
+		int countStores = 0;
+		int countApps = 0;
+		boolean packages = false;
+
+		for (int i = 0; i < sizeStores; i++) {
+			check = (JCheckBox) modelStores.getElementAt(i);
+			if (check.isSelected()) {
+				countStores++;
+				storeName = check.getText();
+				store = new Store(storeName);
+				storesSelected.add(store);
+
+				countApps = 0;
+				for (int a = 0; a < sizeApps; a++) {
+					check = (JCheckBox) modelApps.getElementAt(a);
+					if (check.isSelected()) {
+						countApps++;
+						appName = check.getText();
+
+						if (!packages && AppName.NAME_PACKAGES.equals(appName))
+							packages = true;
+
+						app = apps.get(appName);
+						soups = app.getSoups();
+						if (soups == null)
+							continue;
+						for (NSOFObject o : soups.toList()) {
+							soupName = (NSOFString) o;
+							store.getSoups().add(new Soup(soupName.getValue()));
+						}
+					}
+				}
+			}
+		}
+
+		if (countStores == 0)
+			return null;
+		if (countApps == 0)
+			return null;
+		SyncOptions options = new SyncOptions();
+		options.setStores(storesSelected);
+		options.setPackages(packages);
+		if (countApps == sizeApps)
+			options.setSyncAll(true);
+
+		return options;
+	}
 }

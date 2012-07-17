@@ -30,6 +30,7 @@ import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFImmediate;
 import net.sf.jncu.fdil.NSOFInteger;
 import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.NSOFSymbol;
 
@@ -77,7 +78,7 @@ public class Store implements Comparable<Store> {
 	public static final NSOFSymbol SLOT_INFO_LAST_RESTORE = new NSOFSymbol("lastrestorefromcard");
 
 	private String name;
-	private final NSOFFrame frame;
+	private final NSOFFrame frame = new NSOFFrame();
 	private final Collection<Soup> soups = new HashSet<Soup>();
 	private final List<ApplicationPackage> packages = new ArrayList<ApplicationPackage>();
 
@@ -89,7 +90,6 @@ public class Store implements Comparable<Store> {
 	 */
 	public Store(String name) {
 		super();
-		this.frame = new NSOFFrame();
 		setName(name);
 	}
 
@@ -99,6 +99,12 @@ public class Store implements Comparable<Store> {
 	 * @return the frame.
 	 */
 	public NSOFFrame toFrame() {
+		NSOFArray arr = new NSOFPlainArray(soups.size());
+		int i = 0;
+		for (Soup soup : soups)
+			arr.set(i++, soup.toFrame());
+		frame.put(SLOT_SOUPS, arr);
+
 		return frame;
 	}
 
@@ -168,6 +174,7 @@ public class Store implements Comparable<Store> {
 	 */
 	private void setName(String name) {
 		this.name = name;
+		frame.put(SLOT_NAME, new NSOFString(name));
 	}
 
 	/**
@@ -513,7 +520,7 @@ public class Store implements Comparable<Store> {
 
 	@Override
 	public int compareTo(Store that) {
-		int n = 0;
+		int c = 0;
 		if (this.name == null) {
 			if (that.name != null) {
 				return -1;
@@ -521,11 +528,11 @@ public class Store implements Comparable<Store> {
 		} else if (that.name == null) {
 			return 1;
 		} else {
-			n = this.name.compareTo(that.name);
+			c = this.name.compareTo(that.name);
 		}
-		if (n != 0)
-			return n;
-		n = this.getSignature() - that.getSignature();
+		if (c != 0)
+			return c;
+		c = this.getSignature() - that.getSignature();
 		return 0;
 	}
 

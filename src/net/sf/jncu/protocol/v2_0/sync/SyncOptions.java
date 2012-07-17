@@ -110,7 +110,7 @@ public class SyncOptions {
 	 * @param stores
 	 *            the list of stores.
 	 */
-	public void setStores(List<Store> stores) {
+	public void setStores(Collection<Store> stores) {
 		this.stores.clear();
 		if (stores != null)
 			this.stores.addAll(stores);
@@ -126,14 +126,11 @@ public class SyncOptions {
 		frame.put(SLOT_PACKAGES, isPackages() ? NSOFBoolean.TRUE : NSOFBoolean.FALSE);
 		frame.put(SLOT_ALL, isSyncAll() ? NSOFBoolean.TRUE : NSOFBoolean.FALSE);
 		final Collection<Store> stores = getStores();
-		if (stores != null) {
-			NSOFFrame[] entries = new NSOFFrame[stores.size()];
-			int i = 0;
-			for (Store store : stores) {
-				entries[i++] = store.toFrame();
-			}
-			frame.put(SLOT_STORES, new NSOFPlainArray(entries));
-		}
+		NSOFArray entries = new NSOFPlainArray(stores.size());
+		int i = 0;
+		for (Store store : stores)
+			entries.set(i++, store.toFrame());
+		frame.put(SLOT_STORES, entries);
 		return frame;
 	}
 

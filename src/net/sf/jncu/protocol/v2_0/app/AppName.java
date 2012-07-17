@@ -20,6 +20,7 @@
 package net.sf.jncu.protocol.v2_0.app;
 
 import net.sf.jncu.fdil.NSOFArray;
+import net.sf.jncu.fdil.NSOFBoolean;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFImmediate;
 import net.sf.jncu.fdil.NSOFObject;
@@ -32,7 +33,7 @@ import net.sf.jncu.fdil.NSOFSymbol;
  * @author mwaisberg
  * 
  */
-public class AppName extends NSOFFrame {
+public class AppName extends NSOFFrame implements Comparable<AppName> {
 
 	public static final NSOFSymbol SLOT_NAME = new NSOFSymbol("name");
 	public static final NSOFSymbol SLOT_SOUPS = new NSOFSymbol("soups");
@@ -111,6 +112,17 @@ public class AppName extends NSOFFrame {
 	}
 
 	/**
+	 * Creates a new name.
+	 * 
+	 * @param name
+	 *            the name.
+	 */
+	public AppName(String name) {
+		super();
+		setName(name);
+	}
+
+	/**
 	 * Get the application name.
 	 * 
 	 * @return the name.
@@ -123,9 +135,19 @@ public class AppName extends NSOFFrame {
 	}
 
 	/**
-	 * Get the application soups.
+	 * Set the application name.
 	 * 
-	 * @return the soups.
+	 * @param name
+	 *            the name.
+	 */
+	public void setName(String name) {
+		put(SLOT_NAME, new NSOFString(name));
+	}
+
+	/**
+	 * Get the application soup names.
+	 * 
+	 * @return the array of names.
 	 */
 	public NSOFArray getSoups() {
 		NSOFObject o = get(SLOT_SOUPS);
@@ -137,12 +159,63 @@ public class AppName extends NSOFFrame {
 	/**
 	 * Are packages installed?
 	 * 
-	 * @return true if there are packages installed.
+	 * @return {@code true} if there are packages installed.
 	 */
 	public boolean hasPackages() {
 		NSOFImmediate imm = (NSOFImmediate) get(SLOT_PACKAGES);
 		if (imm != null)
 			return imm.isTrue();
 		return false;
+	}
+
+	/**
+	 * Set installed packages.
+	 * 
+	 * @param packages
+	 *            {@code true} if there are packages installed.
+	 */
+	public void setPackages(boolean packages) {
+		put(SLOT_PACKAGES, packages ? NSOFBoolean.TRUE : NSOFBoolean.FALSE);
+	}
+
+	@Override
+	public int compareTo(AppName that) {
+		int c = 0;
+		String thisName = this.getName();
+		String thatName = that.getName();
+		if (thisName == null) {
+			if (thatName != null) {
+				return -1;
+			}
+		} else if (thatName == null) {
+			return 1;
+		} else {
+			c = thisName.compareTo(thatName);
+		}
+		if (c != 0)
+			return c;
+		NSOFArray thisSoups = this.getSoups();
+		NSOFArray thatSoups = that.getSoups();
+		if (thisSoups == null) {
+			if (thatSoups != null) {
+				return -1;
+			}
+		} else if (thatSoups == null) {
+			return 1;
+		} else {
+			c = thisSoups.getLength() - thatSoups.getLength();
+		}
+		return c;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj instanceof AppName) {
+			AppName that = (AppName) obj;
+			return compareTo(that) == 0;
+		}
+		return super.equals(obj);
 	}
 }
