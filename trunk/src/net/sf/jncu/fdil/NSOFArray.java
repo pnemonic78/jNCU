@@ -293,4 +293,13 @@ public class NSOFArray extends NSOFPointer {
 			copy.add(item.deepClone());
 		return copy;
 	}
+
+	/**
+	 * Get the list of items.
+	 * 
+	 * @return the list.
+	 */
+	public List<NSOFObject> toList() {
+		return value;
+	}
 }
