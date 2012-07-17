@@ -23,8 +23,8 @@ import net.sf.jncu.protocol.v1_0.query.DResult;
 import net.sf.jncu.protocol.v2_0.app.AppName;
 import net.sf.jncu.protocol.v2_0.app.DAppNames;
 import net.sf.jncu.protocol.v2_0.app.PackageInfo;
-import net.sf.jncu.protocol.v2_0.data.DBackupSoupDone;
 import net.sf.jncu.protocol.v2_0.session.DNewtonName;
+import net.sf.jncu.protocol.v2_0.sync.DBackupSoupDone;
 
 public class BackupDecode extends TraceDecode implements DockCommandListener {
 
