@@ -19,24 +19,33 @@
  */
 package net.sf.jncu.fdil.zip;
 
-import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * @author mwaisberg
  * 
  */
-public class ZippyStoreDecompressor extends StoreDecompressor {
+public class CallbackCompressor extends Compressor {
 
 	/**
-	 * Creates a new decompressor.
+	 * Creates new compressor.
 	 */
-	public ZippyStoreDecompressor() {
+	public CallbackCompressor() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public void writeChunk() {
+	}
+
+	public void flush() {
+	}
+
+	public void reset() {
 	}
 
 	@Override
-	protected InputStream createInflaterStream(InputStream in) {
-		// TODO implement me!
+	protected OutputStream createDeflaterStream(OutputStream out) {
+		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

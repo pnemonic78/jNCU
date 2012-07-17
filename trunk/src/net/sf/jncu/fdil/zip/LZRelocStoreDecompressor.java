@@ -19,18 +19,32 @@
  */
 package net.sf.jncu.fdil.zip;
 
+import java.io.InputStream;
+
+import net.sf.jncu.newton.os.Store;
+
 /**
  * Lempel-Ziv relocation store decompressor.
  * 
  * @author mwaisberg
  * 
  */
-public class LZRelocStoreDecompressor extends LZStoreDecompressor {
+public class LZRelocStoreDecompressor extends StoreDecompressor {
+
+	private InputStream buffer;
+	private LZDecompressor decompressor;
+	private Store store;
 
 	/**
 	 * Creates a new decompressor.
 	 */
 	public LZRelocStoreDecompressor() {
+	}
+
+	@Override
+	protected InputStream createInflaterStream(InputStream in) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -19,16 +19,28 @@
  */
 package net.sf.jncu.fdil.zip;
 
+import net.sf.jncu.newton.os.Store;
+
 /**
  * @author mwaisberg
  * 
  */
 public class StoreCompanderWrapper extends StoreCompander {
 
+	private Store store;
+	private int rootId;
+	private int chunksId;
+	private StoreDecompressor decompressor;
+	private String companderName;
+
 	/**
 	 * Creates a new compander.
+	 * 
+	 * @param name
+	 *            the compander name.
 	 */
-	public StoreCompanderWrapper() {
+	public StoreCompanderWrapper(String name) {
+		this.companderName = name;
 	}
 
 }

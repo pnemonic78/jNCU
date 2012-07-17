@@ -27,7 +27,7 @@ package net.sf.jncu.fdil.zip;
  * 
  * @author mwaisberg
  */
-public class PixelMapCompander extends Compander {
+public class PixelMapCompander extends StoreCompander {
 
 	/**
 	 * Creates a new compander.

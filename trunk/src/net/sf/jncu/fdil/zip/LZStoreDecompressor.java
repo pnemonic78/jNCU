@@ -24,7 +24,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.zip.InflaterInputStream;
+
+import net.sf.jncu.newton.os.Store;
 
 /**
  * Lempel-Ziv store decompressor.
@@ -34,6 +35,10 @@ import java.util.zip.InflaterInputStream;
  */
 public class LZStoreDecompressor extends StoreDecompressor {
 
+	private InputStream buffer;
+	private LZDecompressor decompressor;
+	private Store store;
+	
 	/**
 	 * Creates a new decompressor.
 	 */
@@ -41,7 +46,7 @@ public class LZStoreDecompressor extends StoreDecompressor {
 	}
 
 	@Override
-	protected InflaterInputStream createInflaterStream(InputStream in) {
+	protected InputStream createInflaterStream(InputStream in) {
 		return new LZStoreInputStream(in);
 	}
 

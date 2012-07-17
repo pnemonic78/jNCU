@@ -20,10 +20,9 @@
 package net.sf.jncu.fdil.zip;
 
 import java.io.InputStream;
-import java.util.zip.InflaterInputStream;
 
 /**
- * Simple store decompressor.
+ * Simple store decompressor (no compression).
  * 
  * @author mwaisberg
  * 
@@ -37,7 +36,7 @@ public class SimpleStoreDecompressor extends StoreDecompressor {
 	}
 
 	@Override
-	protected InflaterInputStream createInflaterStream(InputStream in) {
+	protected InputStream createInflaterStream(InputStream in) {
 		return new SimpleStoreInputStream(in);
 	}
 }

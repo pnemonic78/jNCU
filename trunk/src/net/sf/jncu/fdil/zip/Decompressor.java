@@ -22,7 +22,6 @@ package net.sf.jncu.fdil.zip;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.zip.InflaterInputStream;
 
 import net.sf.jncu.fdil.NSOFLargeBinary;
 
@@ -51,7 +50,7 @@ public abstract class Decompressor {
 	 *            the input stream to inflate.
 	 * @return the inflater input stream.
 	 */
-	protected abstract InflaterInputStream createInflaterStream(InputStream in);
+	protected abstract InputStream createInflaterStream(InputStream in);
 
 	/**
 	 * Decompress the input.
@@ -62,7 +61,7 @@ public abstract class Decompressor {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public InflaterInputStream decompress(InputStream in) throws IOException {
+	public InputStream decompress(InputStream in) throws IOException {
 		// Skip some header - version (usually 0x00000001).
 		in.skip(LENGTH_VERSION);
 
@@ -85,7 +84,7 @@ public abstract class Decompressor {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public InflaterInputStream decompress(byte[] b) throws IOException {
+	public InputStream decompress(byte[] b) throws IOException {
 		return decompress(new ByteArrayInputStream(b));
 	}
 
@@ -98,7 +97,7 @@ public abstract class Decompressor {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public InflaterInputStream decompress(NSOFLargeBinary blob) throws IOException {
+	public InputStream decompress(NSOFLargeBinary blob) throws IOException {
 		return decompress(blob.getValue());
 	}
 

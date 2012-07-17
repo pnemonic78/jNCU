@@ -19,24 +19,26 @@
  */
 package net.sf.jncu.fdil.zip;
 
-import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
+ * Unicode text compressor.
+ * 
  * @author mwaisberg
  * 
  */
-public class ZippyStoreDecompressor extends StoreDecompressor {
+public class UnicodeCompressor extends Compressor {
 
 	/**
-	 * Creates a new decompressor.
+	 * Creates new compressor.
 	 */
-	public ZippyStoreDecompressor() {
+	public UnicodeCompressor() {
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	protected InputStream createInflaterStream(InputStream in) {
-		// TODO implement me!
+	protected OutputStream createDeflaterStream(OutputStream out) {
+		// TODO Auto-generated method stub
 		return null;
 	}
-
 }
