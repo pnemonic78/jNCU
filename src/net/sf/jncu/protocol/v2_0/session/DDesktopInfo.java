@@ -91,7 +91,7 @@ public class DDesktopInfo extends DockCommandToNewton {
 	public static final String COMMAND = "dinf";
 
 	/** The protocol version. Must be at least 10. */
-	public static final int PROTOCOL_VERSION = 11;
+	public static final int PROTOCOL_VERSION = 10;
 
 	/**
 	 * <tt>kNBU</tt><br>
