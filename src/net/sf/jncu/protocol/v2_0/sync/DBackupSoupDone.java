@@ -17,38 +17,30 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.protocol.v2_0.data;
+package net.sf.jncu.protocol.v2_0.sync;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
 
 /**
- * This command is sent to the desktop if the user wants to do a selective
- * restore. The desktop should return a <tt>kDRestoreOptions</tt> command.
+ * This command terminates the sequence of commands sent in response to a
+ * <tt>kDBackupSoup</tt> command.
  * 
  * <pre>
- * 'grop'
+ * 'bsdn'
  * length
  * </pre>
  * 
  * @author moshew
  */
-public class DGetRestoreOptions extends DockCommandFromNewton {
+public class DBackupSoupDone extends DockCommandFromNewtonBlank {
 
-	/** <tt>kDGetRestoreOptions</tt> */
-	public static final String COMMAND = "grop";
+	/** <tt>kDBackupSoupDone</tt> */
+	public static final String COMMAND = "bsdn";
 
 	/**
 	 * Creates a new command.
 	 */
-	public DGetRestoreOptions() {
+	public DBackupSoupDone() {
 		super(COMMAND);
 	}
-
-	@Override
-	protected void decodeCommandData(InputStream data) throws IOException {
-	}
-
 }
