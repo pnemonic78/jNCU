@@ -72,16 +72,10 @@ public class ImportFile extends IconModule {
 	 */
 	public ImportFile(CDPipe<? extends CDPacket> pipe) {
 		super(TITLE, pipe);
-
+		setName("ImportFile-" + getId());
 		state = State.Initialised;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * net.sf.jncu.protocol.DockCommandListener#commandReceived(net.sf.jncu.
-	 * protocol.IDockCommandFromNewton)
-	 */
 	@Override
 	public void commandReceived(IDockCommandFromNewton command) {
 		if (state == State.Cancelled)
@@ -148,12 +142,6 @@ public class ImportFile extends IconModule {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * net.sf.jncu.protocol.DockCommandListener#commandSent(net.sf.jncu.protocol
-	 * .IDockCommandToNewton)
-	 */
 	@Override
 	public void commandSent(IDockCommandToNewton command) {
 		if (state == State.Cancelled)
