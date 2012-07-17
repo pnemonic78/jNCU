@@ -30,12 +30,12 @@ import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v1_0.sync.DLastSyncTime;
 import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.IconModule.IconModuleListener;
-import net.sf.jncu.protocol.v2_0.data.DBackupSoupDone;
 import net.sf.jncu.protocol.v2_0.data.DSendSoup;
 import net.sf.jncu.protocol.v2_0.data.DSoupNotDirty;
 import net.sf.jncu.protocol.v2_0.io.DSetStoreGetNames;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
+import net.sf.jncu.protocol.v2_0.sync.DBackupSoupDone;
 
 /**
  * Test to backup from the Newton.
