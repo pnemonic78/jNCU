@@ -19,9 +19,9 @@
  */
 package net.sf.jncu.fdil.zip;
 
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.zip.InflaterInputStream;
 
 /**
  * This class implements an input stream filter for reading files in the Simple
@@ -30,7 +30,7 @@ import java.util.zip.InflaterInputStream;
  * @author mwaisberg
  * 
  */
-public class SimpleStoreInputStream extends InflaterInputStream {
+public class SimpleStoreInputStream extends FilterInputStream {
 
 	private int pos = 0;
 	private int posSkip = 0;

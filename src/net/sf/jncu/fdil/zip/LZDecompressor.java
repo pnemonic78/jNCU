@@ -20,7 +20,6 @@
 package net.sf.jncu.fdil.zip;
 
 import java.io.InputStream;
-import java.util.zip.InflaterInputStream;
 
 /**
  * @author mwaisberg
@@ -36,9 +35,14 @@ public class LZDecompressor extends Decompressor {
 	}
 
 	@Override
-	protected InflaterInputStream createInflaterStream(InputStream in) {
+	protected InputStream createInflaterStream(InputStream in) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	protected void decompressChunk() {
+	}
+
+	protected void decompressBlock() {
+	}
 }

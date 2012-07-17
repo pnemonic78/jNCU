@@ -19,24 +19,49 @@
  */
 package net.sf.jncu.fdil.zip;
 
-import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * @author mwaisberg
  * 
  */
-public class ZippyStoreDecompressor extends StoreDecompressor {
+public class LZCompressor extends Compressor {
+
+	private class Node {
+		short start; // +00
+		short level; // +02
+		short length; // +04
+		Node child; // +08
+		Node parent; // +0C
+		Node sibling; // +10
+	}
 
 	/**
-	 * Creates a new decompressor.
+	 * Creates new compressor.
 	 */
-	public ZippyStoreDecompressor() {
+	public LZCompressor() {
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	protected InputStream createInflaterStream(InputStream in) {
-		// TODO implement me!
+	protected OutputStream createDeflaterStream(OutputStream out) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
+	private void setHeader() {
+	}
+
+	private int headerSize() {
+		return 0;
+	}
+
+	private void compressChunk() {
+	}
+
+	private void compressBlock() {
+	}
+
+	private void finish() {
+	}
 }

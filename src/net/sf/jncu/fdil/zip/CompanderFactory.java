@@ -35,7 +35,7 @@ public class CompanderFactory {
 	/**
 	 * Specifies the use of the Lempel-Ziv compressor-expander.
 	 */
-	public static final String COMPANDER_LZ = "TLZStoreCompander";
+	public static final String COMPANDER_LZ_STORE = "TLZStoreCompander";
 	/**
 	 * Specifies the use of a compander specialized for pixel map data. (A
 	 * bitmap is a pixel map having a bit depth of 1.) This compander assumes
@@ -47,6 +47,7 @@ public class CompanderFactory {
 
 	private static CompanderFactory instance;
 	private static final Map<String, Class<? extends Compander>> registryCompanders = new HashMap<String, Class<? extends Compander>>();
+	private static final Map<String, Class<? extends Compressor>> registryCompressors = new HashMap<String, Class<? extends Compressor>>();
 	private static final Map<String, Class<? extends Decompressor>> registryDecompressors = new HashMap<String, Class<? extends Decompressor>>();
 
 	/**
@@ -61,28 +62,43 @@ public class CompanderFactory {
 	 */
 	private void register() {
 		registerCompanders();
+		registerCompressors();
 		registerDecompressors();
-
 	}
 
 	/**
 	 * Register the companders.
 	 */
 	private void registerCompanders() {
-		registryCompanders.put(COMPANDER_LZ, LZStoreCompander.class);
+		registryCompanders.put(COMPANDER_LZ_STORE, LZStoreCompander.class);
 		registryCompanders.put(COMPANDER_PIXELMAP, PixelMapCompander.class);
 		registryCompanders.put("TSimpleStoreCompander", SimpleStoreCompander.class);
 		registryCompanders.put("TStoreCompanderWrapper", StoreCompanderWrapper.class);
 	}
 
 	/**
+	 * Register the compressors.
+	 */
+	private void registerCompressors() {
+		registryCompressors.put("TCallbackCompressor", CallbackCompressor.class);
+		registryCompressors.put("TLZCompressor", LZCompressor.class);
+		registryCompressors.put("TUnicodeCompressor", UnicodeCompressor.class);
+	}
+
+	/**
 	 * Register the decompressors.
 	 */
 	private void registerDecompressors() {
+		registryDecompressors.put("TArithmeticDecompressor", ArithmeticDecompressor.class);
+		registryDecompressors.put("TCallbackDecompressor", CallbackDecompressor.class);
+		registryDecompressors.put("TLZDecompressor", LZDecompressor.class);
 		registryDecompressors.put("TLZRelocStoreDecompressor", LZRelocStoreDecompressor.class);
 		registryDecompressors.put("TLZStoreDecompressor", LZStoreDecompressor.class);
+		registryDecompressors.put("TObjTextDecompressor", ObjTextDecompressor.class);
 		registryDecompressors.put("TSimpleRelocStoreDecompressor", SimpleRelocStoreDecompressor.class);
 		registryDecompressors.put("TSimpleStoreDecompressor", SimpleStoreDecompressor.class);
+		registryDecompressors.put("TUnicodeDecompressor", UnicodeDecompressor.class);
+		registryDecompressors.put("TZippyDecompressor", ZippyDecompressor.class);
 		registryDecompressors.put("TZippyRelocStoreDecompressor", ZippyRelocStoreDecompressor.class);
 		registryDecompressors.put("TZippyStoreDecompressor", ZippyStoreDecompressor.class);
 	}
@@ -129,6 +145,38 @@ public class CompanderFactory {
 	 */
 	public Compander createCompander(NSOFLargeBinary blob) {
 		return createCompander(blob.getCompanderName());
+	}
+
+	/**
+	 * Creates a compressor.
+	 * 
+	 * @param name
+	 *            the compressor name.
+	 * @return the new compressor - {@code null} otherwise.
+	 */
+	public Compressor createCompressor(String name) {
+		Class<? extends Compressor> clazz = registryCompressors.get(name);
+		if (clazz == null)
+			return null;
+		try {
+			return clazz.newInstance();
+		} catch (InstantiationException ie) {
+			ie.printStackTrace();
+		} catch (IllegalAccessException iae) {
+			iae.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * Creates a compressor.
+	 * 
+	 * @param blob
+	 *            the BLOB.
+	 * @return the new compressor.
+	 */
+	public Compressor createCompressor(NSOFLargeBinary blob) {
+		return createCompressor(blob.getCompanderName());
 	}
 
 	/**

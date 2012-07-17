@@ -25,18 +25,24 @@ import java.io.InputStream;
  * @author mwaisberg
  * 
  */
-public class ZippyStoreDecompressor extends StoreDecompressor {
+public class CallbackDecompressor extends Decompressor {
 
 	/**
-	 * Creates a new decompressor.
+	 * Creates new decompressor.
 	 */
-	public ZippyStoreDecompressor() {
+	public CallbackDecompressor() {
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected InputStream createInflaterStream(InputStream in) {
-		// TODO implement me!
+		// TODO Auto-generated method stub
 		return null;
 	}
 
+	public void readChunk() {
+	}
+
+	public void reset() {
+	}
 }

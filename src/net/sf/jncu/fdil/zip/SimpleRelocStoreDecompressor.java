@@ -19,16 +19,23 @@
  */
 package net.sf.jncu.fdil.zip;
 
+import java.io.InputStream;
+
 /**
  * @author mwaisberg
  * 
  */
-public class SimpleRelocStoreDecompressor extends SimpleStoreDecompressor {
+public class SimpleRelocStoreDecompressor extends StoreDecompressor {
 
 	/**
 	 * Creates a new decompressor.
 	 */
 	public SimpleRelocStoreDecompressor() {
+	}
+
+	@Override
+	protected InputStream createInflaterStream(InputStream in) {
+		return new SimpleStoreInputStream(in);
 	}
 
 }

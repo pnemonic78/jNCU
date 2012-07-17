@@ -19,12 +19,24 @@
  */
 package net.sf.jncu.fdil.zip;
 
+import java.io.InputStream;
+
+import net.sf.jncu.newton.os.Store;
+
 /**
  * Lempel-Ziv compressor-expander (compander).
  * 
  * @author mwaisberg
  */
 public class LZStoreCompander extends StoreCompander {
+
+	private InputStream buffer;
+	private Decompressor decompressor;
+	private Compressor compressor;
+	private Store store;
+	private int rootId;
+	private int chunksId;
+	private boolean allocated;
 
 	/**
 	 * Creates a new compander.

@@ -19,8 +19,8 @@
  */
 package net.sf.jncu.fdil.zip;
 
+import java.io.FilterInputStream;
 import java.io.InputStream;
-import java.util.zip.InflaterInputStream;
 
 /**
  * This class implements an input stream filter for reading files in the
@@ -29,7 +29,7 @@ import java.util.zip.InflaterInputStream;
  * @author mwaisberg
  * 
  */
-public class LZStoreInputStream extends InflaterInputStream {
+public class LZStoreInputStream extends FilterInputStream {
 
 	/**
 	 * Creates a new input stream.
