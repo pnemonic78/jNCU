@@ -48,28 +48,49 @@ import net.sf.jncu.newton.os.Store;
  */
 public class ArchiveReader {
 
-	private final File file;
-
 	/**
 	 * Creates a new archive reader.
-	 * 
-	 * @param file
-	 *            the source file.
 	 */
-	public ArchiveReader(File file) {
-		this.file = file;
+	public ArchiveReader() {
 	}
 
 	/**
 	 * Reads the archive from the file.
 	 * 
+	 * @param file
+	 *            the source file.
 	 * @return the archive.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public Archive read() throws IOException {
+	public Archive read(File file) throws IOException {
+		Archive archive = null;
 		InputStream fin = null;
-		ZipInputStream in = null;
+		try {
+			fin = new BufferedInputStream(new FileInputStream(file));
+			archive = read(fin);
+		} finally {
+			if (fin != null) {
+				try {
+					fin.close();
+				} catch (Exception e) {
+				}
+			}
+		}
+		return archive;
+	}
+
+	/**
+	 * Reads the archive.
+	 * 
+	 * @param in
+	 *            the input.
+	 * @return the archive.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	public Archive read(InputStream in) throws IOException {
+		ZipInputStream zin = null;
 		Archive archive = new Archive();
 		ZipEntry entry;
 		String entryName;
@@ -84,11 +105,10 @@ public class ArchiveReader {
 		String pkgName;
 
 		try {
-			fin = new BufferedInputStream(new FileInputStream(file));
-			in = new ZipInputStream(fin);
+			zin = new ZipInputStream(in);
 
 			while (true) {
-				entry = in.getNextEntry();
+				entry = zin.getNextEntry();
 				if (entry == null)
 					break;
 				entryName = entry.getName();
@@ -107,7 +127,7 @@ public class ArchiveReader {
 
 				if (path.length == 1) {
 					if (Archive.ENTRY_DEVICE.equals(path[0])) {
-						readDevice(archive, in, entry);
+						readDevice(archive, zin, entry);
 						continue;
 					}
 				} else if (path.length >= 3) {
@@ -124,7 +144,7 @@ public class ArchiveReader {
 							if (Archive.ENTRY_PACKAGES.equals(path[2])) {
 								pkgName = path[3];
 								pkg = new ApplicationPackage(pkgName);
-								readPackage(archive, in, entry, pkg);
+								readPackage(archive, zin, entry, pkg);
 								continue;
 							}
 
@@ -138,32 +158,26 @@ public class ArchiveReader {
 									}
 
 									if (Archive.ENTRY_SOUP.equals(path[4])) {
-										readSoup(archive, in, entry, soup);
+										readSoup(archive, zin, entry, soup);
 										continue;
 									}
 									if (Archive.ENTRY_ENTRIES.equals(path[4])) {
-										readSoupEntries(archive, in, entry, soup);
+										readSoupEntries(archive, zin, entry, soup);
 										continue;
 									}
 								}
 							}
 						} else if (Archive.ENTRY_STORE.equals(path[2])) {
-							readStore(archive, in, entry, store);
+							readStore(archive, zin, entry, store);
 							continue;
 						}
 					}
 				}
 			}
 		} finally {
-			if (fin != null) {
+			if (zin != null) {
 				try {
-					fin.close();
-				} catch (Exception e) {
-				}
-			}
-			if (in != null) {
-				try {
-					in.close();
+					zin.close();
 				} catch (Exception e) {
 				}
 			}
@@ -226,7 +240,7 @@ public class ArchiveReader {
 	protected void readStore(Archive archive, ZipInputStream in, ZipEntry entry, Store store) throws IOException {
 		NSOFDecoder decoder = new NSOFDecoder();
 		NSOFFrame frame = (NSOFFrame) decoder.inflate(in);
-		store.decodeFrame(frame);
+		store.fromFrame(frame);
 	}
 
 	/**
@@ -264,7 +278,7 @@ public class ArchiveReader {
 	protected void readSoup(Archive archive, ZipInputStream in, ZipEntry entry, Soup soup) throws IOException {
 		NSOFDecoder decoder = new NSOFDecoder();
 		NSOFFrame frame = (NSOFFrame) decoder.inflate(in);
-		soup.decodeFrame(frame);
+		soup.fromFrame(frame);
 	}
 
 	/**

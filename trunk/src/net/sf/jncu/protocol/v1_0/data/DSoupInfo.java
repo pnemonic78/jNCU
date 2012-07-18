@@ -82,7 +82,7 @@ public class DSoupInfo extends DockCommandFromNewtonScript<NSOFFrame> {
 			soup = getSoup();
 			if (soup == null)
 				soup = new Soup(null);
-			soup.decodeFrame(frame);
+			soup.fromFrame(frame);
 		}
 		setSoup(soup);
 	}

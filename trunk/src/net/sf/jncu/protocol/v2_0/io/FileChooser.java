@@ -83,7 +83,7 @@ public abstract class FileChooser extends IconModule {
 	public static final NSOFSymbol SYNC_FILES = DRequestToBrowse.SYNC_FILES;
 
 	/** Property key for default path. */
-	protected static final String KEY_PATH = "FileChooser.path";
+	protected static final String KEY_PATH = "jncu.FileChooser.path";
 
 	private static enum State {
 		None, Initialised, Browsing, Cancelled, Selected, Finished

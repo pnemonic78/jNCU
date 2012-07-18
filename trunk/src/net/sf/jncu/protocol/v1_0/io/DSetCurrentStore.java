@@ -74,8 +74,10 @@ public class DSetCurrentStore extends DockCommandToNewton {
 		NSOFFrame storeFrame = store.toFrame();
 		NSOFFrame frame = new NSOFFrame();
 		frame.put(Store.SLOT_NAME, storeFrame.get(Store.SLOT_NAME));
-		frame.put(Store.SLOT_KIND, storeFrame.get(Store.SLOT_KIND));
-		frame.put(Store.SLOT_SIGNATURE, storeFrame.get(Store.SLOT_SIGNATURE));
+		if (storeFrame.hasSlot(Store.SLOT_KIND))
+			frame.put(Store.SLOT_KIND, storeFrame.get(Store.SLOT_KIND));
+		if (storeFrame.hasSlot(Store.SLOT_SIGNATURE))
+			frame.put(Store.SLOT_SIGNATURE, storeFrame.get(Store.SLOT_SIGNATURE));
 
 		NSOFEncoder encoder = new NSOFEncoder();
 		encoder.flatten(frame, data);

@@ -133,4 +133,14 @@ public class Archive {
 		if (stores != null)
 			this.stores.addAll(stores);
 	}
+
+	/**
+	 * Add the store.
+	 * 
+	 * @param store
+	 *            the store.
+	 */
+	public void addStore(Store store) {
+		this.stores.add(store);
+	}
 }

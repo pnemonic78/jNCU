@@ -46,16 +46,10 @@ import net.sf.jncu.newton.os.Store;
  */
 public class ArchiveWriter {
 
-	private final File file;
-
 	/**
 	 * Creates a new archive writer.
-	 * 
-	 * @param file
-	 *            the destination file.
 	 */
-	public ArchiveWriter(File file) {
-		this.file = file;
+	public ArchiveWriter() {
 	}
 
 	/**
@@ -63,30 +57,26 @@ public class ArchiveWriter {
 	 * 
 	 * @param archive
 	 *            the archive to write.
+	 * @param file
+	 *            the destination file.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public void write(Archive archive) throws IOException {
+	public void write(Archive archive, File file) throws IOException {
 		File parent = file.getParentFile();
 		File tmp;
 		OutputStream fout = null;
-		ZipOutputStream out = null;
 
 		try {
 			parent.mkdirs();
 			tmp = File.createTempFile("jncu", null, parent);
 			tmp.deleteOnExit();
 			fout = new BufferedOutputStream(new FileOutputStream(tmp));
-			out = new ZipOutputStream(fout);
 
-			writeDevice(archive, out);
-			writeStores(archive, out);
+			write(archive, fout);
 
-			out.finish();
-			out.close();
+			fout.close();
 			fout = null;
-			out = null;
-
 			tmp.renameTo(file);
 		} finally {
 			if (fout != null) {
@@ -95,9 +85,35 @@ public class ArchiveWriter {
 				} catch (Exception e) {
 				}
 			}
-			if (out != null) {
+		}
+	}
+
+	/**
+	 * Write the archive.
+	 * 
+	 * @param archive
+	 *            the archive to write.
+	 * @param out
+	 *            the output.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	public void write(Archive archive, OutputStream out) throws IOException {
+		ZipOutputStream zout = null;
+
+		try {
+			zout = new ZipOutputStream(out);
+
+			writeDevice(archive, zout);
+			writeStores(archive, zout);
+
+			zout.finish();
+			zout.close();
+			zout = null;
+		} finally {
+			if (zout != null) {
 				try {
-					out.close();
+					zout.close();
 				} catch (Exception e) {
 				}
 			}

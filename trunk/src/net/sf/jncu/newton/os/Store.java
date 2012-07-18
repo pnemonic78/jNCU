@@ -114,7 +114,7 @@ public class Store implements Comparable<Store> {
 	 * @param frame
 	 *            the frame.
 	 */
-	public void decodeFrame(NSOFFrame frame) {
+	public void fromFrame(NSOFFrame frame) {
 		NSOFObject value;
 
 		this.frame.clear();
@@ -411,6 +411,16 @@ public class Store implements Comparable<Store> {
 	}
 
 	/**
+	 * Add a soup.
+	 * 
+	 * @param soup
+	 *            the soup.
+	 */
+	public void addSoup(Soup soup) {
+		this.soups.add(soup);
+	}
+
+	/**
 	 * Get the soup signatures.
 	 * 
 	 * @return the signatures.
@@ -510,7 +520,7 @@ public class Store implements Comparable<Store> {
 
 	@Override
 	public String toString() {
-		return frame.toString();
+		return toFrame().toString();
 	}
 
 	@Override

@@ -238,15 +238,13 @@ public class Soup implements Comparable<Soup> {
 	 * @param frame
 	 *            the frame.
 	 */
-	public void decodeFrame(NSOFFrame frame) {
+	public void fromFrame(NSOFFrame frame) {
 		setInformation(frame);
 
 		if (this.name == null) {
 			NSOFObject value = frame.get(SLOT_NAME);
 			if (NSOFImmediate.isNil(value)) {
-				NSOFFrame soupDef = (NSOFFrame) frame.get(SLOT_SOUP_DEF);
-				if (soupDef != null)
-					value = soupDef.get(SLOT_NAME);
+				value = getDefinition().get(SLOT_NAME);
 			}
 			if (!NSOFImmediate.isNil(value)) {
 				NSOFString s = (NSOFString) value;
@@ -289,11 +287,11 @@ public class Soup implements Comparable<Soup> {
 	 * @return the definition.
 	 */
 	public NSOFFrame getDefinition() {
-		NSOFFrame soupDef = (NSOFFrame) getInformation().get(SLOT_SOUP_DEF);
-		if (soupDef == null) {
-			soupDef = new NSOFFrame();
-		}
-		return soupDef;
+		NSOFObject value = getInformation().get(SLOT_SOUP_DEF);
+		if (NSOFImmediate.isNil(value))
+			return new NSOFFrame();
+
+		return (NSOFFrame) value;
 	}
 
 	@Override
@@ -333,5 +331,20 @@ public class Soup implements Comparable<Soup> {
 			return compareTo(that) == 0;
 		}
 		return super.equals(obj);
+	}
+
+	/**
+	 * Copy the soup.
+	 * 
+	 * @param that
+	 *            the source soup.
+	 */
+	public void fromSoup(Soup that) {
+		this.setName(null);
+		try {
+			fromFrame((NSOFFrame) that.toFrame().deepClone());
+		} catch (CloneNotSupportedException e) {
+			fromFrame(that.toFrame());
+		}
 	}
 }

@@ -10,26 +10,43 @@ import net.sf.jncu.cdil.mnp.MNPPacketListener;
 import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
 import net.sf.jncu.cdil.mnp.PacketLogger;
+import net.sf.jncu.fdil.NSOFImmediate;
+import net.sf.jncu.fdil.NSOFNil;
+import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.newton.os.Soup;
+import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
-import net.sf.jncu.protocol.v1_0.app.DGetPackageIDs;
 import net.sf.jncu.protocol.v1_0.app.DPackageIDList;
+import net.sf.jncu.protocol.v1_0.data.DEntry;
+import net.sf.jncu.protocol.v1_0.data.DGetSoupIDs;
+import net.sf.jncu.protocol.v1_0.data.DReturnEntry;
+import net.sf.jncu.protocol.v1_0.data.DSetCurrentSoup;
+import net.sf.jncu.protocol.v1_0.data.DSoupIDs;
+import net.sf.jncu.protocol.v1_0.data.DSoupNames;
+import net.sf.jncu.protocol.v1_0.io.DGetStoreNames;
+import net.sf.jncu.protocol.v1_0.io.DSetCurrentStore;
 import net.sf.jncu.protocol.v1_0.io.DStoreNames;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
+import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v1_0.sync.DCurrentTime;
+import net.sf.jncu.protocol.v1_0.sync.DLastSyncTime;
 import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.IconModule.IconModuleListener;
 import net.sf.jncu.protocol.v2_0.app.AppName;
 import net.sf.jncu.protocol.v2_0.app.DAppNames;
+import net.sf.jncu.protocol.v2_0.app.DGetAppNames;
 import net.sf.jncu.protocol.v2_0.app.DPackageInfo;
 import net.sf.jncu.protocol.v2_0.app.PackageInfo;
-import net.sf.jncu.protocol.v2_0.io.DSetStoreToDefault;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.jncu.protocol.v2_0.session.DUnknownCommand;
+import net.sf.jncu.protocol.v2_0.sync.DRequestToBackup;
+import net.sf.jncu.protocol.v2_0.sync.DSyncOptions;
+import net.sf.jncu.protocol.v2_0.sync.SyncOptions;
 
 /**
  * Test to backup from the Newton.
@@ -46,9 +63,12 @@ public class PackagesTester implements IconModuleListener, MNPPacketListener, Do
 	private Integer result;
 	private List<Store> stores;
 	private Store store;
+	private List<Soup> soups;
+	private Soup soup;
 	private List<AppName> names;
 	private List<PackageInfo> pkgInfo;
 	private Integer time;
+	private List<Integer> soupIds;
 
 	public PackagesTester() {
 		super();
@@ -60,7 +80,7 @@ public class PackagesTester implements IconModuleListener, MNPPacketListener, Do
 	 * @param args
 	 *            the array of arguments.
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		String[] argv = { "/dev/ttyUSB0", "/tmp/COM8", "38400", "./trace/trace.txt" };
 		CommTrace.main(argv);
 
@@ -114,45 +134,85 @@ public class PackagesTester implements IconModuleListener, MNPPacketListener, Do
 		// result = null;
 		// DRequestToSync dRequestToSync = new DRequestToSync();
 		// pipe.write(dRequestToSync);
-		// Thread.sleep(2000);
-		// // while (running && (time == null) && (result == null))
-		// // Thread.yield();
-
-		// result = null;
-		// stores = null;
-		// DGetStoreNames dGetStoreNames = new DGetStoreNames();
-		// pipe.write(dGetStoreNames);
 		// Thread.sleep(1000);
-		// while (running && (result == null) && (stores == null))
+		// while (running && (result == null))
 		// Thread.yield();
-		// if (stores == null) {
-		// exit();
-		// return;
-		// }
+		//
+		// result = null;
+		// sync = null;
+		// DGetSyncOptions dGetSyncOptions = new DGetSyncOptions();
+		// pipe.write(dGetSyncOptions);
+		// Thread.sleep(1000);
+		// while (running && (sync == null))
+		// Thread.yield();
 
 		result = null;
-		DSetStoreToDefault dSetStoreToDefault = new DSetStoreToDefault();
-		pipe.write(dSetStoreToDefault);
+		store = null;
+		DGetStoreNames dGetStoreNames = new DGetStoreNames();
+		pipe.write(dGetStoreNames);
+		Thread.sleep(1000);
+		while (running && (store == null))
+			Thread.yield();
+
+		result = null;
+		DSetCurrentStore dSetCurrentStore = new DSetCurrentStore();
+		dSetCurrentStore.setStore(store);
+		pipe.write(dSetCurrentStore);
 		Thread.sleep(1000);
 		while (running && (result == null))
 			Thread.yield();
 
-		// time = null;
-		// dLastSyncTime = new DLastSyncTime();
-		// pipe.write(dLastSyncTime);
+		result = null;
+		time = null;
+		DLastSyncTime dLastSyncTime = new DLastSyncTime();
+		pipe.write(dLastSyncTime);
+		Thread.sleep(1000);
+		while (running && (time == null))
+			Thread.yield();
+
+		// DSetCurrentSoup dSetCurrentSoup = new DSetCurrentSoup();
+		// dSetCurrentSoup.setName("Calls");
+		// pipe.write(dSetCurrentSoup);
 		// Thread.sleep(1000);
-		// // while (running && (time == null))
-		// // Thread.yield();
+		// DGetSoupIDs dGetSoupIDs = new DGetSoupIDs();
+		// pipe.write(dGetSoupIDs);
+		// Thread.sleep(1000);
 
 		// DONE
-		// result = null;
-		// names = null;
-		// DGetAppNames dGetAppNames = new DGetAppNames();
-		// dGetAppNames.setWhat(DGetAppNames.CURRENT_STORE_NAMES);
-		// pipe.write(dGetAppNames);
-		// Thread.sleep(1000);
-		// while (running && (result == null) && (names == null))
-		// Thread.yield();
+		result = null;
+		names = null;
+		soup = null;
+		DGetAppNames dGetAppNames = new DGetAppNames();
+		dGetAppNames.setWhat(DGetAppNames.CURRENT_STORE_NAMES_SOUPS);
+		pipe.write(dGetAppNames);
+		Thread.sleep(1000);
+		while (running && (result == null) && (soup == null))
+			Thread.yield();
+
+		result = null;
+		DSetCurrentSoup dSetCurrentSoup = new DSetCurrentSoup();
+		dSetCurrentSoup.setSoup(soup);
+		pipe.write(dSetCurrentSoup);
+		Thread.sleep(1000);
+		while (running && (result == null))
+			Thread.yield();
+
+		result = null;
+		soupIds = null;
+		DGetSoupIDs dGetSoupIDs = new DGetSoupIDs();
+		pipe.write(dGetSoupIDs);
+		Thread.sleep(1000);
+		while (running && (result == null) && (soupIds == null))
+			Thread.yield();
+
+		for (int id : soupIds) {
+			DReturnEntry dReturnEntry = new DReturnEntry();
+			dReturnEntry.setId(id);
+			pipe.write(dReturnEntry);
+		}
+		Thread.sleep(1000);
+		while (running && (soup.getEntries().size() < soupIds.size()))
+			Thread.yield();
 
 		// DONE
 		// result = null;
@@ -165,11 +225,11 @@ public class PackagesTester implements IconModuleListener, MNPPacketListener, Do
 		// Thread.yield();
 
 		// UNKNOWN
-		DGetPackageIDs dGetPackageIDs = new DGetPackageIDs();
-		pipe.write(dGetPackageIDs);
-		Thread.sleep(1000);
-		// while (running && (result == null))
-		// Thread.yield();
+		// DGetPackageIDs dGetPackageIDs = new DGetPackageIDs();
+		// pipe.write(dGetPackageIDs);
+		// Thread.sleep(1000);
+		// // while (running && (result == null))
+		// // Thread.yield();
 
 		// UNKNOWN
 		// result = null;
@@ -202,15 +262,22 @@ public class PackagesTester implements IconModuleListener, MNPPacketListener, Do
 	}
 
 	private void exit() throws Exception {
+		running = false;
+
 		if (pipe.isConnected()) {
 			DOperationDone dOperationDone = new DOperationDone();
 			pipe.write(dOperationDone);
 			Thread.sleep(2000);
 		}
 		if (pipe.isConnected()) {
+			DOperationCanceled dOperationCanceled = new DOperationCanceled();
+			pipe.write(dOperationCanceled);
+			Thread.sleep(2000);
+		}
+		if (pipe.isConnected()) {
 			DDisconnect dDisconnect = new DDisconnect();
 			pipe.write(dDisconnect);
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 		}
 	}
 
@@ -267,6 +334,8 @@ public class PackagesTester implements IconModuleListener, MNPPacketListener, Do
 
 		if (DDisconnect.COMMAND.equals(cmd)) {
 			running = false;
+		} else if (DOperationCanceled.COMMAND.equals(cmd)) {
+			running = false;
 		} else if (DOperationCanceled2.COMMAND.equals(cmd)) {
 			running = false;
 		} else if (net.sf.jncu.protocol.v1_0.session.DOperationCanceled.COMMAND.equals(cmd)) {
@@ -289,6 +358,12 @@ public class PackagesTester implements IconModuleListener, MNPPacketListener, Do
 		} else if (DAppNames.COMMAND.equals(cmd)) {
 			DAppNames dAppNames = (DAppNames) command;
 			names = dAppNames.getNames();
+			for (AppName name : names) {
+				if (name.hasPackages()) {
+					soup = new Soup(((NSOFString) name.getSoups().get(0)).getValue());
+					break;
+				}
+			}
 		} else if (DPackageInfo.COMMAND.equals(cmd)) {
 			DPackageInfo dPackageInfo = (DPackageInfo) command;
 			pkgInfo = dPackageInfo.getPackages();
@@ -308,6 +383,16 @@ public class PackagesTester implements IconModuleListener, MNPPacketListener, Do
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else if (DSoupNames.COMMAND.equals(cmd)) {
+			DSoupNames dSoupNames = (DSoupNames) command;
+			soups = dSoupNames.getSoups();
+		} else if (DSoupIDs.COMMAND.equals(cmd)) {
+			DSoupIDs dSoupIDs = (DSoupIDs) command;
+			soupIds = dSoupIDs.getIDs();
+		} else if (DEntry.COMMAND.equals(cmd)) {
+			DEntry dEntry = (DEntry) command;
+			SoupEntry entry = dEntry.getEntry();
+			soup.addEntry(entry);
 		}
 	}
 

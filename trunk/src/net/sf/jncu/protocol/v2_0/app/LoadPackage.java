@@ -47,7 +47,6 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 	private static final String TITLE = "Load Package";
 
 	private File file;
-	private Loader loader;
 	private State state = State.None;
 
 	/**
@@ -81,7 +80,7 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 		if (DOperationCanceled2.COMMAND.equals(cmd)) {
 			// TODO Stop sending the package command.
 			// pipe.cancel(load);
-			// loader.kill();
+			// interrupt();
 		} else if (DResult.COMMAND.equals(cmd)) {
 			DResult result = (DResult) command;
 			int code = result.getErrorCode();
@@ -136,8 +135,7 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 			DRequestToInstall req = new DRequestToInstall();
 			write(req);
 		} else if (state == State.Loading) {
-			loader = new Loader();
-			loader.start();
+			this.start();
 		}
 	}
 
@@ -145,19 +143,10 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 	 * Send the file contents in a non-blocking thread so that the command
 	 * receivers can continue to function.
 	 */
-	private class Loader extends Thread {
-
-		public Loader() {
-			super();
-			setName("Loader-" + getId());
-		}
-
-		@Override
-		public void run() {
-			DLoadPackage load = new DLoadPackage();
-			load.setFile(file);
-			write(load);
-		}
+	public void run() {
+		DLoadPackage load = new DLoadPackage();
+		load.setFile(file);
+		write(load);
 	}
 
 	@Override

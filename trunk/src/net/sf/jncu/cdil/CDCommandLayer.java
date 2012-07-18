@@ -292,14 +292,17 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 									offset = 0;
 								}
 								count = in.read(data, offset, Math.min(available, length - offset));
-								if (count >= 0) {
+								if (count > 0) {
 									offset += count;
 									fireCommandReceiving(cmdFromNewton, offset, length);
 								}
 							}
 							if (((offset == 0) && (available >= length)) || (offset == length)) {
-								if (data != null)
+								if (data != null) {
+									if (offset < length)
+										in.read(data, offset, length - offset);
 									v.add(new ByteArrayInputStream(data));
+								}
 								v.add(in);
 								in = new SequenceInputStream(v.elements());
 								cmdFromNewton.decode(in);

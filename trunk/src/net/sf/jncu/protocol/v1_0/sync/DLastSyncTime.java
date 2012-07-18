@@ -42,7 +42,18 @@ public class DLastSyncTime extends DockCommandToNewtonLong {
 	 * Creates a new command.
 	 */
 	public DLastSyncTime() {
+		this(0);
+	}
+
+	/**
+	 * Creates a new command.
+	 * 
+	 * @param time
+	 *            the time in milliseconds.
+	 */
+	public DLastSyncTime(long time) {
 		super(COMMAND);
+		setLastSyncTime(time);
 	}
 
 	/**
