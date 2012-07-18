@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.util.Random;
 
 import net.sf.jncu.fdil.NSOFArray;
+import net.sf.jncu.fdil.NSOFBoolean;
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFInteger;
@@ -215,6 +216,7 @@ public class DDesktopInfo extends DockCommandToNewton {
 			app.put("id", new NSOFInteger(NCU));
 			app.put("name", new NSOFString("Newton Connection Utilities"));
 			app.put("version", new NSOFInteger(1));
+			app.put("doesAuto", NSOFBoolean.TRUE);
 
 			this.desktopApps = new NSOFPlainArray(1);
 			desktopApps.set(0, app);

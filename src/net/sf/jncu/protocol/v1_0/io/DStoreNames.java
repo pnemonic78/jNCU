@@ -76,7 +76,7 @@ public class DStoreNames extends DockCommandFromNewton {
 		setStores(null);
 		for (NSOFObject o : arr.getValue()) {
 			store = new Store(null);
-			store.decodeFrame((NSOFFrame) o);
+			store.fromFrame((NSOFFrame) o);
 			addStore(store);
 		}
 	}

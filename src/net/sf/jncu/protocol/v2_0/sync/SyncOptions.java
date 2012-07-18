@@ -191,7 +191,7 @@ public class SyncOptions {
 			Store store;
 			for (NSOFObject entry : entries) {
 				store = new Store(null);
-				store.decodeFrame((NSOFFrame) entry);
+				store.fromFrame((NSOFFrame) entry);
 			}
 			setStores(stores);
 		}

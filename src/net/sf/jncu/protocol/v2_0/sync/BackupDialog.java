@@ -448,7 +448,7 @@ public class BackupDialog extends JDialog {
 							continue;
 						for (NSOFObject o : soups.toList()) {
 							soupName = (NSOFString) o;
-							store.getSoups().add(new Soup(soupName.getValue()));
+							store.addSoup(new Soup(soupName.getValue()));
 						}
 					}
 				}

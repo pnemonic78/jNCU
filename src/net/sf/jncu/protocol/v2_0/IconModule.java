@@ -151,6 +151,7 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 			progressMonitor.close();
 			progressMonitor = null;
 		}
+		interrupt();
 	}
 
 	/**
@@ -159,7 +160,7 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	 * @return {@code true} if enabled.
 	 */
 	protected boolean isEnabled() {
-		return true;
+		return !isInterrupted();
 	}
 
 	@Override
@@ -291,5 +292,19 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 				progressMonitor.close();
 			progressMonitor = null;
 		}
+	}
+
+	/**
+	 * Cancel the operation.
+	 */
+	public void cancel() {
+		DOperationCanceled cancel = new DOperationCanceled();
+		write(cancel);
+		try {
+			// Enough time to send the cancel and receive an acknowledge.
+			sleep(2000);
+		} catch (InterruptedException e) {
+		}
+		done();
 	}
 }

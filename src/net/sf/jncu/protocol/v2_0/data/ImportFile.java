@@ -78,10 +78,10 @@ public class ImportFile extends IconModule {
 
 	@Override
 	public void commandReceived(IDockCommandFromNewton command) {
-		if (state == State.Cancelled)
+		if (!isEnabled())
 			return;
-		if (state == State.Finished)
-			return;
+
+		super.commandReceived(command);
 
 		String cmd = command.getCommand();
 
@@ -118,7 +118,7 @@ public class ImportFile extends IconModule {
 
 					}
 				} else {
-					commandEOF();
+					done();
 					state = State.Cancelled;
 					showError(result.getError().getMessage() + "\nCode: " + code);
 				}
@@ -144,10 +144,10 @@ public class ImportFile extends IconModule {
 
 	@Override
 	public void commandSent(IDockCommandToNewton command) {
-		if (state == State.Cancelled)
+		if (!isEnabled())
 			return;
-		if (state == State.Finished)
-			return;
+
+		super.commandSent(command);
 
 		String cmd = command.getCommand();
 
@@ -168,10 +168,8 @@ public class ImportFile extends IconModule {
 			DOperationDone done = new DOperationDone();
 			write(done);
 		} else if (DOperationDone.COMMAND.equals(cmd)) {
-			commandEOF();
 			state = State.Finished;
 		} else if (DOperationCanceledAck.COMMAND.equals(cmd)) {
-			commandEOF();
 			state = State.Cancelled;
 		}
 	}
@@ -184,7 +182,11 @@ public class ImportFile extends IconModule {
 	 */
 	public void importFile(File file) {
 		this.file = file;
+		this.start();
+	}
 
+	@Override
+	public void run() {
 		if (state == State.Initialised) {
 			translators = TranslatorFactory.getInstance().getTranslatorsByFile(file);
 			if ((translators == null) || translators.isEmpty()) {

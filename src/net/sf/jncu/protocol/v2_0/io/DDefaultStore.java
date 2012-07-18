@@ -89,7 +89,7 @@ public class DDefaultStore extends DockCommandFromNewton {
 	 */
 	protected void setStore(NSOFFrame frame) {
 		Store store = new Store(null);
-		store.decodeFrame(frame);
+		store.fromFrame(frame);
 		setStore(store);
 	}
 

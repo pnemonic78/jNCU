@@ -71,7 +71,6 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	public KeyboardInput(CDPipe<? extends CDPacket> pipe) {
 		super(TITLE, pipe);
 		setName("KeyboardInput-" + getId());
-		pipe.addCommandListener(this);
 
 		state = State.Initialised;
 
