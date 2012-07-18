@@ -348,6 +348,7 @@ public class BackupModule extends IconModule {
 			}
 		}
 		this.store = store;
+		this.soup = null;
 
 		state = State.BACKUP_STORE;
 
