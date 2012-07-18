@@ -58,7 +58,6 @@ import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
  * Backup module.
  * 
  * @author mwaisberg
- * 
  */
 public class BackupModule extends IconModule {
 
@@ -173,7 +172,7 @@ public class BackupModule extends IconModule {
 		} else if (DCurrentTime.COMMAND.equals(cmd)) {
 			switch (state) {
 			case OPTIONS:
-				state = State.BACKUP;
+				BackupModule.this.start();
 				break;
 			}
 		} else if (DSoupNames.COMMAND.equals(cmd)) {
@@ -260,7 +259,9 @@ public class BackupModule extends IconModule {
 					cancel();
 				} else {
 					state = BackupModule.State.OPTIONS;
-					BackupModule.this.start();
+
+					DLastSyncTime time = new DLastSyncTime();
+					write(time);
 				}
 			}
 		}.start();
@@ -298,15 +299,7 @@ public class BackupModule extends IconModule {
 	 */
 	@Override
 	public void run() {
-		if (state != State.OPTIONS)
-			throw new BadPipeStateException("bad state " + state);
-
-		DLastSyncTime time = new DLastSyncTime();
-		write(time);
-
-		while ((state != State.BACKUP) && isEnabled())
-			yield();
-
+		state = State.BACKUP;
 		backupStores();
 	}
 
