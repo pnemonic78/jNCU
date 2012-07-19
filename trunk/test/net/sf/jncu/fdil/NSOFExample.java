@@ -204,11 +204,11 @@ public class NSOFExample extends SFTestCase {
 			(byte) 0xb4, 0x00, 0x00 };
 
 	/**
-	 * Test strings.
+	 * Test infinite recursion of a frame with an array with the same frame.
 	 * 
 	 * @throws Exception
 	 */
-	public void testString() throws Exception {
+	public void testInfiniteRecursion() throws Exception {
 		assertNotNull(REPEAT_ENTRY_33);
 		assertEquals(IDockCommand.COMMAND_HEADER_LENGTH + 442 + 2, REPEAT_ENTRY_33.length);
 
@@ -245,10 +245,6 @@ public class NSOFExample extends SFTestCase {
 	}
 
 	protected void print(NSOFArray array, int level) {
-		String indent = "";
-		for (int i = 0; i < level; i++)
-			indent += "\t";
-		System.out.print(indent);
 		System.out.println("[]");
 	}
 
@@ -257,10 +253,6 @@ public class NSOFExample extends SFTestCase {
 			print((NSOFArray) object, level);
 			return;
 		}
-		String indent = "";
-		for (int i = 0; i < level; i++)
-			indent += "\t";
-		System.out.print(indent);
 		System.out.println(object.toString());
 	}
 }
