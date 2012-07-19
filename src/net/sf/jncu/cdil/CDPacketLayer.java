@@ -29,6 +29,8 @@ import java.util.Collection;
 import java.util.Timer;
 import java.util.concurrent.TimeoutException;
 
+import net.sf.util.zip.ChecksumException;
+
 /**
  * CD packet layer.
  * 
@@ -396,12 +398,14 @@ public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 				listen();
 			} catch (EOFException eofe) {
 				firePacketEOF();
+			} catch (ChecksumException ce) {
+				ce.printStackTrace();
 			} catch (IOException ioe) {
 				if (isConnected()) {
 					ioe.printStackTrace();
 				}
 			}
-		} while (running && isAlive() && !isInterrupted() && isConnected());
+		} while (running && !isInterrupted() && isConnected());
 		running = false;
 	}
 

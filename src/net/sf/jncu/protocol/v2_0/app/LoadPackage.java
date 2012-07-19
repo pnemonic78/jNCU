@@ -90,8 +90,7 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 					state = State.Loading;
 					loadPackage(file);
 				} else if (state == State.Loaded) {
-					DOperationDone done = new DOperationDone();
-					write(done);
+					writeDone();
 				}
 			} else {
 				done();

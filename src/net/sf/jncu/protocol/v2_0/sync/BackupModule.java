@@ -62,8 +62,6 @@ import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
  */
 public class BackupModule extends IconModule {
 
-	private final boolean DEBUG = true;
-
 	protected enum State {
 		NONE,
 		/** Request from the Newton that we want to backup. */
@@ -318,8 +316,6 @@ public class BackupModule extends IconModule {
 	 */
 	@Override
 	public void run() {
-		if (DEBUG)
-			System.out.println("@@@ run state=" + state);
 		if (!isEnabled())
 			return;
 		if (state != State.OPTIONS)
@@ -346,8 +342,6 @@ public class BackupModule extends IconModule {
 	 * Backup the selected stores.
 	 */
 	protected void backupStores() {
-		if (DEBUG)
-			System.out.println("@@@ backupStores state=" + state);
 		if (!isEnabled())
 			return;
 		if (state != State.BACKUP)
@@ -381,8 +375,6 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	protected void backupNextStore() throws BadPipeStateException {
-		if (DEBUG)
-			System.out.println("@@@ backupNextStore state=" + state);
 		if (!isEnabled())
 			return;
 		if (state != State.BACKUP)
@@ -413,10 +405,6 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	protected void backupSoups(Store store) throws BadPipeStateException {
-		if (DEBUG) {
-			System.out.println("@@@ backupSoups state=" + state);
-			System.out.println("@@@ backupSoups state=" + state + " store=" + store);
-		}
 		if (!isEnabled())
 			return;
 		if (state != State.BACKUP_STORE)
@@ -431,8 +419,10 @@ public class BackupModule extends IconModule {
 				break;
 			}
 		}
-		if ((soupsOptions == null) || soupsOptions.isEmpty())
+		if ((soupsOptions == null) || soupsOptions.isEmpty()) {
+			done();
 			return;
+		}
 
 		// Populate the list of soups (for the current store) to backup.
 		Collection<Soup> soupsToBackup = new ArrayList<Soup>();
@@ -445,8 +435,11 @@ public class BackupModule extends IconModule {
 				}
 			}
 		}
-		if (soupsToBackup.isEmpty())
+		if (soupsToBackup.isEmpty()) {
+			state = State.BACKUP;
+			backupNextStore();
 			return;
+		}
 
 		this.state = State.BACKUP_SOUPS;
 		this.soupsIter = soupsToBackup.iterator();
@@ -460,10 +453,6 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	protected void backupNextSoup() throws BadPipeStateException {
-		if (DEBUG) {
-			System.out.println("@@@ backupNextSoup state=" + state);
-			System.out.println("@@@ backupNextSoup state=" + state + " store=" + store);
-		}
 		if (!isEnabled())
 			return;
 		if (state != State.BACKUP_SOUPS)
@@ -485,14 +474,13 @@ public class BackupModule extends IconModule {
 	}
 
 	/**
-	 * Write the archive.
+	 * Write the archive.<BR>
+	 * TODO append the file as we receive entries.
 	 * 
 	 * @throws BadPipeStateException
 	 *             if invalid state.
 	 */
 	protected void writeArchive() throws BadPipeStateException {
-		if (DEBUG)
-			System.out.println("@@@ writeArchive state=" + state);
 		if (!isEnabled())
 			return;
 		if (state != State.BACKUP)
@@ -510,8 +498,6 @@ public class BackupModule extends IconModule {
 	 * Write the archive - implementation.
 	 */
 	private void writeArchiveImpl() {
-		if (DEBUG)
-			System.out.println("@@@ writeArchiveImpl");
 		ArchiveWriter writer = new ArchiveWriter();
 		try {
 			// In case writing to the file takes forever.
@@ -520,8 +506,7 @@ public class BackupModule extends IconModule {
 			pipe.stopPing();
 
 			// Success!
-			DOperationDone done = new DOperationDone();
-			write(done);
+			writeDone();
 		} catch (IOException e) {
 			e.printStackTrace();
 			cancel();

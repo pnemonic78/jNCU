@@ -107,11 +107,14 @@ public class SwingUtils {
 		int oh = 0;
 		Window owner = window.getOwner();
 		if (owner != null) {
-			ox = owner.getX();
-			oy = owner.getY();
-			ow = owner.getWidth();
-			oh = owner.getHeight();
-			if ((ow == 0) && (oh == 0))
+			if (owner.isShowing()) {
+				ox = owner.getX();
+				oy = owner.getY();
+				ow = owner.getWidth();
+				oh = owner.getHeight();
+				if ((ow == 0) && (oh == 0))
+					owner = null;
+			} else
 				owner = null;
 		}
 		if (owner == null) {
@@ -126,8 +129,8 @@ public class SwingUtils {
 			ow = dm.getWidth();
 			oh = dm.getHeight();
 		}
-		int x = (ox + (ow / 2)) - (w / 2);
-		int y = (oy + (oh / 2)) - (h / 2);
+		int x = Math.max(0, (ox + (ow / 2)) - (w / 2));
+		int y = Math.max(0, (oy + (oh / 2)) - (h / 2));
 		window.setLocation(x, y);
 	}
 
