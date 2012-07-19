@@ -90,7 +90,7 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 		boolean resend = true;
 		int sequenceToAcknowledge;
 
-		while (running && isAlive() && !isInterrupted()) {
+		while (running && !isInterrupted()) {
 			try {
 				next = queueSend.take();
 			} catch (InterruptedException ie) {
@@ -144,7 +144,7 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 
 					resend &= running;
 					resend &= allowSend;
-					resend &= isAlive() && !isInterrupted();
+					resend &= !isInterrupted();
 					if (resend) {
 						retry--;
 						if (retry < 0) {

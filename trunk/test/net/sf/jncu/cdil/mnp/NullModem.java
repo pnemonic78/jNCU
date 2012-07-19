@@ -95,7 +95,7 @@ public class NullModem extends SFTestCase {
 						break;
 					}
 					logRead(b);
-				} while (running && isAlive() && !isInterrupted());
+				} while (running && !isInterrupted());
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
 			}

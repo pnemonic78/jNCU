@@ -222,7 +222,7 @@ public class CommTrace {
 			int b;
 
 			try {
-				while (running && isAlive() && !isInterrupted()) {
+				while (running && !isInterrupted()) {
 					in = portSource.getInputStream();
 					out = portSink.getOutputStream();
 					avail = in.available();

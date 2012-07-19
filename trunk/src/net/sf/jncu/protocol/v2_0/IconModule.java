@@ -155,6 +155,14 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	}
 
 	/**
+	 * Module sends notification to Newton to finish.
+	 */
+	protected void writeDone() {
+		DOperationDone done = new DOperationDone();
+		write(done);
+	}
+
+	/**
 	 * Is the module enabled and active?
 	 * 
 	 * @return {@code true} if enabled.
