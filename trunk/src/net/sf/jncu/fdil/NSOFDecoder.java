@@ -23,7 +23,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidObjectException;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 import net.sf.jncu.fdil.contrib.NSOFInstructions;
@@ -37,7 +37,7 @@ import net.sf.jncu.fdil.contrib.NSOFRawBitmap;
  */
 public class NSOFDecoder {
 
-	private final Map<NSOFPrecedent, Precedent> precedents = new Hashtable<NSOFPrecedent, Precedent>();
+	private final Map<NSOFPrecedent, Precedent> precedents = new HashMap<NSOFPrecedent, Precedent>();
 
 	/** {@code 0} is a legal ID. */
 	private int idMax = 0;
@@ -84,9 +84,9 @@ public class NSOFDecoder {
 			versioned = true;
 		}
 		int dataType = in.read();
-		if (dataType == -1) {
+		if (dataType == -1)
 			throw new EOFException();
-		}
+
 		NSOFObject object = null;
 		NSOFObject object2 = null;
 
@@ -142,13 +142,13 @@ public class NSOFDecoder {
 		}
 		object.inflate(in, this);
 		object2 = postInflate(object, dataType);
-		object = object2;
 
 		// Replace the old precedent.
-		if ((id != null) && (object2 instanceof Precedent)) {
+		if ((id != null) && (object != object2) && (object2 instanceof Precedent)) {
 			Precedent p = (Precedent) object2;
 			precedents.put(id, p);
 		}
+		object = object2;
 
 		return object;
 	}
@@ -171,7 +171,11 @@ public class NSOFDecoder {
 		case NewtonStreamedObjectFormat.NSOF_PRECEDENT:
 			NSOFPrecedent id = (NSOFPrecedent) object;
 			Precedent p = precedents.get(id);
-			object = (NSOFObject) p;
+			// Avoid recursion of containers.
+			if (p instanceof NSOFCollection)
+				object = new NSOFPrecedent(id.getId(), p);
+			else
+				object = (NSOFObject) p;
 			break;
 		case NewtonStreamedObjectFormat.NSOF_BINARY:
 			NSOFBinaryObject bin = (NSOFBinaryObject) object;

@@ -47,6 +47,7 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 
 	private int id;
 	private boolean idSet;
+	private Precedent referent;
 
 	/**
 	 * Constructs a new precedent.
@@ -65,6 +66,19 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 	public NSOFPrecedent(int id) {
 		this();
 		setId(id);
+	}
+
+	/**
+	 * Constructs a new precedent.
+	 * 
+	 * @param id
+	 *            the id.
+	 * @param referent
+	 *            the referent object.
+	 */
+	public NSOFPrecedent(int id, Precedent referent) {
+		this(id);
+		this.referent = referent;
 	}
 
 	@Override
@@ -129,12 +143,17 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 	}
 
 	@Override
-	public Object clone() throws CloneNotSupportedException {
-		throw new CloneNotSupportedException();
+	public NSOFObject deepClone() throws CloneNotSupportedException {
+		return new NSOFPrecedent(id, referent);
 	}
 
-	@Override
-	public NSOFObject deepClone() throws CloneNotSupportedException {
-		throw new CloneNotSupportedException();
+	/**
+	 * Get the referent object that this precedent id refers to.
+	 * 
+	 * @return the precedent object.
+	 */
+	public Precedent getReferent() {
+		return referent;
 	}
+
 }

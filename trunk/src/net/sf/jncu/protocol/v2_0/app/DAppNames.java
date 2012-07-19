@@ -77,7 +77,7 @@ public class DAppNames extends DockCommandFromNewton {
 		NSOFObject o = decoder.inflate(data);
 		if (!NSOFImmediate.isNil(o)) {
 			NSOFArray arr = (NSOFArray) o;
-			int size = arr.getLength();
+			int size = arr.length();
 			AppName name;
 			for (int i = 0; i < size; i++) {
 				name = new AppName((NSOFFrame) arr.get(i));

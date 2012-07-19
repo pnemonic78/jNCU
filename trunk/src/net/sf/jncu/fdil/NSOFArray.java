@@ -37,7 +37,7 @@ import java.util.List;
  * 
  * @author Moshe
  */
-public class NSOFArray extends NSOFPointer {
+public class NSOFArray extends NSOFPointer implements NSOFCollection {
 
 	/**
 	 * Default array class.<br>
@@ -140,7 +140,7 @@ public class NSOFArray extends NSOFPointer {
 	 * @return the value
 	 */
 	public NSOFObject[] getValue() {
-		NSOFObject[] arr = new NSOFObject[getLength()];
+		NSOFObject[] arr = new NSOFObject[length()];
 		if (value != null)
 			arr = value.toArray(arr);
 		return arr;
@@ -179,7 +179,7 @@ public class NSOFArray extends NSOFPointer {
 	 * 
 	 * @return the number of slots.
 	 */
-	public int getLength() {
+	public int length() {
 		return value.size();
 	}
 
@@ -288,7 +288,7 @@ public class NSOFArray extends NSOFPointer {
 
 	@Override
 	public NSOFObject deepClone() throws CloneNotSupportedException {
-		NSOFArray copy = new NSOFArray(this.getLength());
+		NSOFArray copy = new NSOFArray(this.length());
 		for (NSOFObject item : this.value)
 			copy.add(item.deepClone());
 		return copy;

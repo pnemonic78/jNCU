@@ -173,7 +173,7 @@ public class Soup implements Comparable<Soup> {
 			indexes = new NSOFPlainArray();
 		this.indexes.clear();
 
-		int size = indexes.getLength();
+		int size = indexes.length();
 		SoupIndex index;
 		NSOFObject o;
 

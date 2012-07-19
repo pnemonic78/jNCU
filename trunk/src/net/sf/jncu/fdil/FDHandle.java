@@ -279,7 +279,7 @@ public class FDHandle extends Object implements Comparable<FDHandle>, FDConstant
 			return 4;
 		}
 		if (obj instanceof NSOFArray) {
-			return ((NSOFArray) obj).getLength();
+			return ((NSOFArray) obj).length();
 		}
 		if (obj instanceof NSOFFrame) {
 			return ((NSOFFrame) obj).size();

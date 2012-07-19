@@ -72,7 +72,7 @@ public class NSOFLiterals extends NSOFArray {
 	@Override
 	public NSOFObject deepClone() throws CloneNotSupportedException {
 		NSOFLiterals copy = new NSOFLiterals();
-		int length = this.getLength();
+		int length = this.length();
 		for (int i = 0; i < length; i++)
 			copy.add(this.get(i).deepClone());
 		return copy;

@@ -203,7 +203,7 @@ public class AppName extends NSOFFrame implements Comparable<AppName> {
 		} else if (thatSoups == null) {
 			return 1;
 		} else {
-			c = thisSoups.getLength() - thatSoups.getLength();
+			c = thisSoups.length() - thatSoups.length();
 		}
 		return c;
 	}
