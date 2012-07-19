@@ -148,7 +148,7 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 	}
 
 	/**
-	 * Get the referent object that this precedent id refers to.
+	 * Get the object that this precedent id refers to.
 	 * 
 	 * @return the precedent object.
 	 */
@@ -156,4 +156,15 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 		return referent;
 	}
 
+	/**
+	 * Set the object that this precedent id refers to.
+	 * 
+	 * @param referent
+	 *            the precedent object.
+	 */
+	public void setReferent(Precedent referent) {
+		if (this.referent != null)
+			throw new IllegalArgumentException("referent alreadt set");
+		this.referent = referent;
+	}
 }

@@ -172,9 +172,11 @@ public class NSOFDecoder {
 			NSOFPrecedent id = (NSOFPrecedent) object;
 			Precedent p = precedents.get(id);
 			// Avoid recursion of containers.
-			if (p instanceof NSOFCollection)
-				object = new NSOFPrecedent(id.getId(), p);
-			else
+			if (p instanceof NSOFCollection) {
+				if (id.getReferent() == null)
+					id.setReferent(p);
+				object = id;
+			} else
 				object = (NSOFObject) p;
 			break;
 		case NewtonStreamedObjectFormat.NSOF_BINARY:
