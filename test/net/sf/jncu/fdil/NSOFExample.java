@@ -209,50 +209,40 @@ public class NSOFExample extends SFTestCase {
 	 * @throws Exception
 	 */
 	public void testInfiniteRecursion() throws Exception {
+		final int length = 442;
+
 		assertNotNull(REPEAT_ENTRY_33);
-		assertEquals(IDockCommand.COMMAND_HEADER_LENGTH + 442 + 2, REPEAT_ENTRY_33.length);
+		assertEquals(IDockCommand.COMMAND_HEADER_LENGTH + length + 2, REPEAT_ENTRY_33.length);
 
 		DockCommandFactory factory = DockCommandFactory.getInstance();
 		assertNotNull(factory);
 		IDockCommand cmd = factory.deserializeCommand(REPEAT_ENTRY_33);
 		assertNotNull(cmd);
-		assertEquals(442, cmd.getLength());
+		assertEquals(length, cmd.getLength());
 		assertTrue(cmd instanceof DEntry);
 		DEntry entry = (DEntry) cmd;
-		print(entry.getResult(), 0);
+		NSOFFrame frame = entry.getResult();
+		assertNotNull(frame);
+
+		int hash = cmd.hashCode();
+		assertFalse(hash == 0);
+
+		hash = frame.hashCode();
+		assertFalse(hash == 0);
+
 		String s = cmd.toString();
+		System.out.println(s);
 		assertNotNull(s);
 		assertFalse(s.length() == 0);
-	}
 
-	protected void print(NSOFFrame frame, int level) {
-		String indent = "";
-		for (int i = 0; i < level; i++)
-			indent += "\t";
-		String indent1 = indent + "\t";
-		System.out.print(indent);
-		System.out.println('{');
-		NSOFObject value;
-		for (NSOFSymbol key : frame.getKeys()) {
-			System.out.print(indent1);
-			value = frame.get(key);
-			System.out.print(key.getValue());
-			System.out.print('=');
-			print(value, level + 1);
-		}
-		System.out.print(indent);
-		System.out.println('}');
-	}
+		byte[] nsofEntry = new byte[442];
+		System.arraycopy(REPEAT_ENTRY_33, IDockCommand.COMMAND_HEADER_LENGTH, nsofEntry, 0, length);
 
-	protected void print(NSOFArray array, int level) {
-		System.out.println("[]");
-	}
-
-	protected void print(NSOFObject object, int level) {
-		if (object instanceof NSOFArray) {
-			print((NSOFArray) object, level);
-			return;
-		}
-		System.out.println(object.toString());
+		NSOFEncoder encoder = new NSOFEncoder();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		encoder.flatten(frame, out);
+		byte[] b = out.toByteArray();
+		assertNotNull(b);
+		assertEquals(nsofEntry, b);
 	}
 }

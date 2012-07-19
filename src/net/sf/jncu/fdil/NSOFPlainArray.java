@@ -105,7 +105,7 @@ public class NSOFPlainArray extends NSOFArray {
 	@Override
 	public NSOFObject deepClone() throws CloneNotSupportedException {
 		NSOFPlainArray copy = new NSOFPlainArray();
-		int length = this.getLength();
+		int length = this.length();
 		for (int i = 0; i < length; i++)
 			copy.add(this.get(i).deepClone());
 		return copy;

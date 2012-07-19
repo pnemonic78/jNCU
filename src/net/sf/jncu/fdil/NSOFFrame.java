@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,7 +39,7 @@ import java.util.Set;
  * 
  * @author Moshe
  */
-public class NSOFFrame extends NSOFPointer {
+public class NSOFFrame extends NSOFPointer implements NSOFCollection {
 
 	/**
 	 * Default frame class.<br>
@@ -47,7 +47,7 @@ public class NSOFFrame extends NSOFPointer {
 	 */
 	public static final NSOFSymbol CLASS_FRAME = new NSOFSymbol("frame");
 
-	private final Map<NSOFSymbol, NSOFObject> slots = new HashMap<NSOFSymbol, NSOFObject>();
+	private final Map<NSOFSymbol, NSOFObject> slots = new LinkedHashMap<NSOFSymbol, NSOFObject>();
 
 	/**
 	 * Constructs a new frame.
@@ -227,7 +227,11 @@ public class NSOFFrame extends NSOFPointer {
 			value = slots.get(key);
 			sb.append(key.getValue());
 			sb.append('=');
-			sb.append(value.toString());
+			if (value instanceof NSOFArray) {
+				int size = ((NSOFArray) value).length();
+				sb.append("[" + size + (size == 1 ? " Element" : " Elements") + "]");
+			} else
+				sb.append(value.toString());
 			i++;
 		}
 		sb.append('}');
@@ -300,5 +304,14 @@ public class NSOFFrame extends NSOFPointer {
 	 */
 	public void putAll(NSOFFrame frame) {
 		this.slots.putAll(frame.slots);
+	}
+
+	/**
+	 * Get the slots keys.
+	 * 
+	 * @return the set of keys.
+	 */
+	public Set<NSOFSymbol> getKeys() {
+		return slots.keySet();
 	}
 }

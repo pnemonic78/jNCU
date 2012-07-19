@@ -602,7 +602,7 @@ public class FDILibrary implements FDConstants {
 		if (o == null)
 			return 0;
 		if (o instanceof NSOFArray)
-			return ((NSOFArray) o).getLength();
+			return ((NSOFArray) o).length();
 		if (o instanceof NSOFBinaryObject) {
 			NSOFBinaryObject b = (NSOFBinaryObject) o;
 			byte[] val = b.getValue();
@@ -1803,7 +1803,7 @@ public class FDILibrary implements FDConstants {
 		if (!isArray(array))
 			throw new ExpectedArrayException();
 		NSOFArray arr = (NSOFArray) handles.get(array);
-		if (pos > arr.getLength())
+		if (pos > arr.length())
 			throw new ValueOutOfRangeException();
 		return handles.create(arr.get(pos));
 	}
@@ -2241,7 +2241,7 @@ public class FDILibrary implements FDConstants {
 			throw new PointerObjectIsFreeException();
 		if (p instanceof NSOFArray) {
 			NSOFArray a = (NSOFArray) p;
-			int length = a.getLength();
+			int length = a.length();
 			NSOFObject item;
 			for (int i = 0; i < length; i++) {
 				item = a.remove(0);

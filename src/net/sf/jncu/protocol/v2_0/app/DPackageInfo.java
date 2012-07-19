@@ -82,7 +82,7 @@ public class DPackageInfo extends DockCommandFromNewton {
 		NSOFObject o = decoder.inflate(data);
 		if (!NSOFImmediate.isNil(o)) {
 			NSOFArray arr = (NSOFArray) o;
-			int size = arr.getLength();
+			int size = arr.length();
 			PackageInfo pkg;
 			for (int i = 0; i < size; i++) {
 				pkg = new PackageInfo((NSOFFrame) arr.get(i));

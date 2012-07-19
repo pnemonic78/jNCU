@@ -65,7 +65,7 @@ public class DIndexDescription extends DockCommandFromNewton {
 
 		if (!NSOFImmediate.isNil(o)) {
 			NSOFArray arr = (NSOFArray) o;
-			int size = arr.getLength();
+			int size = arr.length();
 			SoupIndex index;
 			NSOFFrame frame;
 

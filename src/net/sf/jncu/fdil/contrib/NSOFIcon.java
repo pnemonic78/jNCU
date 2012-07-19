@@ -326,7 +326,7 @@ public class NSOFIcon extends NSOFFrame {
 				return frame;
 		} else if (colorData instanceof NSOFArray) {
 			NSOFArray arr = (NSOFArray) colorData;
-			int length = arr.getLength();
+			int length = arr.length();
 			for (int i = 0; i < length; i++) {
 				frame = (NSOFFrame) arr.get(i);
 				depth = (NSOFImmediate) frame.get(SLOT_BIT_DEPTH);
@@ -385,7 +385,7 @@ public class NSOFIcon extends NSOFFrame {
 			}
 		} else if (colorData instanceof NSOFArray) {
 			arr = (NSOFArray) colorData;
-			int length = arr.getLength();
+			int length = arr.length();
 			int insertAt = length;
 			for (int i = 0; i < length; i++) {
 				frame = (NSOFFrame) arr.get(i);

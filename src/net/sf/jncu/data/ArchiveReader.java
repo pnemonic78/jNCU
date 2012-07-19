@@ -300,7 +300,7 @@ public class ArchiveReader {
 		NSOFArray arr = (NSOFArray) decoder.inflate(in);
 
 		List<SoupEntry> entries = new ArrayList<SoupEntry>();
-		int size = arr.getLength();
+		int size = arr.length();
 		NSOFFrame frame;
 		for (int i = 0; i < size; i++) {
 			frame = (NSOFFrame) arr.get(i);

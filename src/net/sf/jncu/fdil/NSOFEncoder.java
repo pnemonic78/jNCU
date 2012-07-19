@@ -23,7 +23,7 @@ import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public class NSOFEncoder {
 
-	private final Map<Precedent, NSOFPrecedent> precedents = new Hashtable<Precedent, NSOFPrecedent>();
+	private final Map<Precedent, NSOFPrecedent> precedents = new HashMap<Precedent, NSOFPrecedent>();
 
 	/** {@code 0} is a legal ID. */
 	private int idMax = 0;
@@ -96,6 +96,12 @@ public class NSOFEncoder {
 		if (object == null) {
 			NewtonStreamedObjectFormat.htonl(0, out);
 		} else {
+			if (object instanceof NSOFPrecedent) {
+				NSOFPrecedent id = (NSOFPrecedent) object;
+				Precedent p = id.getReferent();
+				if (p != null)
+					object = (NSOFObject) p;
+			}
 			if (precedentsUse && (object instanceof Precedent)) {
 				Precedent p = (Precedent) object;
 				NSOFPrecedent id = precedents.get(p);
