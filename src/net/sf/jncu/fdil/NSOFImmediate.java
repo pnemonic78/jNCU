@@ -68,9 +68,20 @@ public class NSOFImmediate extends NSOFObject {
 	 *            the type.
 	 */
 	public NSOFImmediate(int value, int type) {
+		this(type);
+		setValue(value);
+	}
+
+	/**
+	 * Constructs a new immediate. The value must be set later in
+	 * {@link #inflate(InputStream, NSOFDecoder)}
+	 * 
+	 * @param type
+	 *            the type.
+	 */
+	protected NSOFImmediate(int type) {
 		super();
 		setObjectClass(CLASS_IMMEDIATE);
-		setValue(value);
 		setType(type);
 	}
 

@@ -10,8 +10,6 @@ import net.sf.jncu.cdil.mnp.MNPPacketListener;
 import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
 import net.sf.jncu.cdil.mnp.PacketLogger;
-import net.sf.jncu.fdil.NSOFImmediate;
-import net.sf.jncu.fdil.NSOFNil;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.SoupEntry;
@@ -44,9 +42,6 @@ import net.sf.jncu.protocol.v2_0.app.PackageInfo;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.jncu.protocol.v2_0.session.DUnknownCommand;
-import net.sf.jncu.protocol.v2_0.sync.DRequestToBackup;
-import net.sf.jncu.protocol.v2_0.sync.DSyncOptions;
-import net.sf.jncu.protocol.v2_0.sync.SyncOptions;
 
 /**
  * Test to backup from the Newton.
