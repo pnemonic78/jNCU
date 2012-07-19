@@ -66,14 +66,14 @@ public class NSOFUnicodeCharacter extends NSOFCharacter {
 
 	@Override
 	public void inflate(InputStream in, NSOFDecoder decoder) throws IOException {
-		setValue('\u0000');
 		// High byte of character code (byte)
 		int hi = in.read();
+		if (hi == -1)
+			throw new EOFException();
 		// Low byte of character code (byte)
 		int lo = in.read();
-		if ((hi == -1) || (lo == -1)) {
+		if (lo == -1)
 			throw new EOFException();
-		}
 		int c = ((hi & 0xFF) << 8) | ((lo & 0xFF) << 0);
 		setValue((char) c);
 	}

@@ -19,6 +19,7 @@ import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.jncu.protocol.v2_0.sync.BackupModule;
 import net.sf.jncu.protocol.v2_0.sync.DGetSyncOptions;
 import net.sf.jncu.protocol.v2_0.sync.DRequestToSync;
+import net.sf.jncu.protocol.v2_0.sync.DSynchronize;
 
 /**
  * Test to backup from the Newton.
@@ -109,12 +110,12 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 		// pipe.write(dGetPatches);
 		// Thread.sleep(2000);
 
-		Thread.sleep(30000);
+		// Thread.sleep(30000);
 		// backup.cancel();
 		// exit();
 
 		while (running)
-			Thread.yield();
+			Thread.sleep(5000);
 	}
 
 	private void exit() {
@@ -189,6 +190,14 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 		if (DDisconnect.COMMAND.equals(cmd)) {
 			running = false;
 		} else if (DRequestToSync.COMMAND.equals(cmd)) {
+			DGetSyncOptions dGetSyncOptions = new DGetSyncOptions();
+			try {
+				pipe.write(dGetSyncOptions);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			// TODO backup = new BackupModule(pipe, true);
+		} else if (DSynchronize.COMMAND.equals(cmd)) {
 			DGetSyncOptions dGetSyncOptions = new DGetSyncOptions();
 			try {
 				pipe.write(dGetSyncOptions);

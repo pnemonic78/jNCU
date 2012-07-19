@@ -168,8 +168,8 @@ public class TraceDecode {
 			pipe.startListening();
 			runReceived = true;
 		}
-		
-		public MNPPipe getPipe(){
+
+		public MNPPipe getPipe() {
 			return pipe;
 		}
 
@@ -344,5 +344,4 @@ public class TraceDecode {
 			return progress;
 		}
 	}
-
 }

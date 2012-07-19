@@ -41,7 +41,7 @@ public class NSOFCharacter extends NSOFImmediate {
 	 * Constructs a new character.
 	 */
 	public NSOFCharacter() {
-		this('\u0000');
+		super('\u0000');
 	}
 
 	/**
