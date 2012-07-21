@@ -133,8 +133,9 @@ public class BackupDecode extends TraceDecode implements DockCommandListener {
 			if (pkgRef != NSOFNil.NIL) {
 				NSOFLargeBinary bin = (NSOFLargeBinary) pkgRef;
 				System.out.println(bin + " len=" + bin.getValue().length);
-				String companderName = bin.isCompressed() ? bin.getCompanderName() : "pkg";
-				byte[] ca = bin.getCompanderArguments();
+				// String companderName = bin.isCompressed() ?
+				// bin.getCompanderName() : "pkg";
+				// byte[] ca = bin.getCompanderArguments();
 				try {
 					String name = ((NSOFString) entry.get("packageName")).getValue();
 					ApplicationPackage pkg = new ApplicationPackage(name);
@@ -218,9 +219,9 @@ public class BackupDecode extends TraceDecode implements DockCommandListener {
 			return;
 		String dir = System.getProperty("user.dir");
 		File f = new File(dir, "Backups/backup.zip");
-		ArchiveWriter writer = new ArchiveWriter();
+		ArchiveWriter writer = new ArchiveWriter(f);
 		try {
-			writer.write(archive, f);
+			writer.write(archive);
 			done = true;
 			System.out.println("archive saved to " + f);
 			if (!Boolean.getBoolean("debug")) {

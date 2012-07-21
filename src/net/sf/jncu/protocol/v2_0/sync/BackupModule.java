@@ -90,6 +90,7 @@ public class BackupModule extends IconModule {
 	private BackupDialog dialog;
 	private SyncOptions options;
 	private File file;
+	@Deprecated
 	private Archive archive;
 	private Collection<Store> stores;
 	private Collection<AppName> appNames;
@@ -498,11 +499,11 @@ public class BackupModule extends IconModule {
 	 * Write the archive - implementation.
 	 */
 	private void writeArchiveImpl() {
-		ArchiveWriter writer = new ArchiveWriter();
+		ArchiveWriter writer = new ArchiveWriter(file);
 		try {
 			// In case writing to the file takes forever.
 			pipe.ping();
-			writer.write(archive, file);
+			writer.write(archive);
 			pipe.stopPing();
 
 			// Success!
