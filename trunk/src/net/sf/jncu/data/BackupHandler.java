@@ -32,7 +32,7 @@ import net.sf.jncu.newton.os.Store;
  * 
  * @author Moshe
  */
-public interface BackupListener {
+public interface BackupHandler {
 
 	/**
 	 * Receive notification of the beginning of the backup archive.

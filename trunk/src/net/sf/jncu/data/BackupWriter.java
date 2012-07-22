@@ -44,7 +44,7 @@ import net.sf.jncu.newton.os.Store;
  * 
  * @author mwaisberg
  */
-public class BackupWriter implements BackupListener {
+public class BackupWriter implements BackupHandler {
 
 	private File file;
 	private File temp;
