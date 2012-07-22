@@ -86,7 +86,7 @@ public class ArchiveWriter extends BackupWriter {
 	 *             if an I/O error occurs.
 	 */
 	protected void writeStore(Archive archive, Store store) throws IOException {
-		startStore(store);
+		startStore(store.getName());
 
 		writePackages(archive, store);
 		writeSoups(archive, store);
@@ -123,8 +123,8 @@ public class ArchiveWriter extends BackupWriter {
 	 *             if an I/O error occurs.
 	 */
 	protected void writePackage(Archive archive, Store store, ApplicationPackage pkg) throws IOException {
-		startPackage(store, pkg);
-		endPackage(store, pkg);
+		startPackage(store.getName(), pkg.getName());
+		endPackage(store.getName(), pkg);
 	}
 
 	/**
@@ -158,14 +158,16 @@ public class ArchiveWriter extends BackupWriter {
 	 *             if an I/O error occurs.
 	 */
 	protected void writeSoup(Archive archive, Store store, Soup soup) throws IOException {
-		startSoup(store, soup);
+		String storeName = store.getName();
+		String soupName = soup.getName();
+
+		startSoup(storeName, soupName);
 
 		for (SoupEntry entry : soup.getEntries()) {
-			startSoupEntry(store, soup, entry);
-			endSoupEntry(store, soup, entry);
+			soupEntry(storeName, soup, entry);
 		}
 
-		endSoup(store, soup);
+		endSoup(storeName, soup);
 	}
 
 }

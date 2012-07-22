@@ -22,18 +22,9 @@ package net.sf.jncu.data;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
-import net.sf.jncu.fdil.NSOFArray;
-import net.sf.jncu.fdil.NSOFDecoder;
-import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.newton.os.ApplicationPackage;
 import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.newton.os.Soup;
@@ -46,266 +37,111 @@ import net.sf.jncu.newton.os.Store;
  * @author mwaisberg
  * 
  */
-public class ArchiveReader {
+public class ArchiveReader implements BackupHandler {
+
+	private Archive archive;
+	private InputStream in;
 
 	/**
 	 * Creates a new archive reader.
-	 */
-	public ArchiveReader() {
-	}
-
-	/**
-	 * Reads the archive from the file.
 	 * 
 	 * @param file
 	 *            the source file.
-	 * @return the archive.
-	 * @throws IOException
+	 * @throws FileNotFoundException
 	 *             if an I/O error occurs.
 	 */
-	public Archive read(File file) throws IOException {
-		Archive archive = null;
-		InputStream fin = null;
-		try {
-			fin = new BufferedInputStream(new FileInputStream(file));
-			archive = read(fin);
-		} finally {
-			if (fin != null) {
-				try {
-					fin.close();
-				} catch (Exception e) {
-				}
-			}
-		}
-		return archive;
+	public ArchiveReader(File file) throws FileNotFoundException {
+		this.in = new BufferedInputStream(new FileInputStream(file));
+	}
+
+	/**
+	 * Creates a new archive reader.
+	 * 
+	 * @param in
+	 *            the source input.
+	 */
+	public ArchiveReader(InputStream in) {
+		this.in = in;
 	}
 
 	/**
 	 * Reads the archive.
 	 * 
-	 * @param in
-	 *            the input.
-	 * @return the archive.
-	 * @throws IOException
-	 *             if an I/O error occurs.
+	 * @return the archive - {@code null} otherwise.
+	 * @throws BackupException
+	 *             if a backup error occurs.
 	 */
-	public Archive read(InputStream in) throws IOException {
-		ZipInputStream zin = null;
-		Archive archive = new Archive();
-		ZipEntry entry;
-		String entryName;
-		String[] path = null;
-		Map<String, Store> stores = new HashMap<String, Store>();
-		Store store = null;
-		ApplicationPackage pkg = null;
-		Soup soup = null;
-		boolean isDirectory;
-		String storeName;
-		String soupName;
-		String pkgName;
-
-		try {
-			zin = new ZipInputStream(in);
-
-			while (true) {
-				entry = zin.getNextEntry();
-				if (entry == null)
-					break;
-				entryName = entry.getName();
-				isDirectory = entryName.endsWith(Archive.DIRECTORY);
-				if (isDirectory)
-					continue;
-				path = entryName.split(Archive.DIRECTORY);
-				if (path.length == 0)
-					continue;
-
-				store = null;
-				pkg = null;
-				soup = null;
-				storeName = null;
-				soupName = null;
-
-				if (path.length == 1) {
-					if (Archive.ENTRY_DEVICE.equals(path[0])) {
-						readDevice(archive, zin, entry);
-						continue;
-					}
-				} else if (path.length >= 3) {
-					if (Archive.ENTRY_STORES.equals(path[0])) {
-						storeName = path[1];
-						store = stores.get(storeName);
-						if (store == null) {
-							store = new Store(storeName);
-							stores.put(storeName, store);
-							archive.getStores().add(store);
-						}
-
-						if (path.length >= 4) {
-							if (Archive.ENTRY_PACKAGES.equals(path[2])) {
-								pkgName = path[3];
-								pkg = new ApplicationPackage(pkgName);
-								readPackage(archive, zin, entry, pkg);
-								continue;
-							}
-
-							if (path.length >= 5) {
-								if (Archive.ENTRY_SOUPS.equals(path[2]) && (store != null)) {
-									soupName = path[3];
-									soup = store.findSoup(soupName);
-									if (soup == null) {
-										soup = new Soup(soupName);
-										store.getSoups().add(soup);
-									}
-
-									if (Archive.ENTRY_SOUP.equals(path[4])) {
-										readSoup(archive, zin, entry, soup);
-										continue;
-									}
-									if (Archive.ENTRY_ENTRIES.equals(path[4])) {
-										readSoupEntries(archive, zin, entry, soup);
-										continue;
-									}
-								}
-							}
-						} else if (Archive.ENTRY_STORE.equals(path[2])) {
-							readStore(archive, zin, entry, store);
-							continue;
-						}
-					}
-				}
-			}
-		} finally {
-			if (zin != null) {
-				try {
-					zin.close();
-				} catch (Exception e) {
-				}
-			}
-		}
-
+	public Archive read() throws BackupException {
+		this.archive = null;
+		BackupReader reader = new BackupReader();
+		reader.read(in, this);
 		return archive;
 	}
 
-	/**
-	 * Read the device information.
-	 * 
-	 * @param archive
-	 *            the archive to read.
-	 * @param in
-	 *            the input.
-	 * @param entry
-	 *            the entry.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
-	protected void readDevice(Archive archive, ZipInputStream in, ZipEntry entry) throws IOException {
-		NSOFDecoder decoder = new NSOFDecoder();
-		NSOFFrame frame = (NSOFFrame) decoder.inflate(in);
+	@Override
+	public void startBackup() throws BackupException {
+		this.archive = new Archive();
+	}
 
-		NewtonInfo info = new NewtonInfo();
-		info.fromFrame(frame);
+	@Override
+	public void endBackup() throws BackupException {
+	}
 
+	@Override
+	public void deviceInformation(NewtonInfo info) throws BackupException {
 		archive.setDeviceInfo(info);
 	}
 
-	/**
-	 * Read the stores.
-	 * 
-	 * @param archive
-	 *            the archive to read.
-	 * @param in
-	 *            the input.
-	 * @param entry
-	 *            the entry.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
-	protected void readStores(Archive archive, ZipInputStream in, ZipEntry entry) throws IOException {
+	@Override
+	public void startStore(String storeName) throws BackupException {
+		Store store = new Store(storeName);
+		archive.addStore(store);
 	}
 
-	/**
-	 * Read a store.
-	 * 
-	 * @param archive
-	 *            the archive to read.
-	 * @param in
-	 *            the input.
-	 * @param entry
-	 *            the entry.
-	 * @param store
-	 *            the store to populate.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
-	protected void readStore(Archive archive, ZipInputStream in, ZipEntry entry, Store store) throws IOException {
-		NSOFDecoder decoder = new NSOFDecoder();
-		NSOFFrame frame = (NSOFFrame) decoder.inflate(in);
-		store.fromFrame(frame);
+	@Override
+	public void storeDefinition(Store store) throws BackupException {
+		Store storeArchive = archive.findStore(store.getName());
+		storeArchive.fromFrame(store.toFrame());
 	}
 
-	/**
-	 * Read a package.
-	 * 
-	 * @param archive
-	 *            the archive to read.
-	 * @param in
-	 *            the input.
-	 * @param entry
-	 *            the entry.
-	 * @param pkg
-	 *            the package to populate.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
-	protected void readPackage(Archive archive, ZipInputStream in, ZipEntry entry, ApplicationPackage pkg) throws IOException {
-		// TODO implement me!
+	@Override
+	public void endStore(Store store) throws BackupException {
 	}
 
-	/**
-	 * Read a soup.
-	 * 
-	 * @param archive
-	 *            the archive to read.
-	 * @param in
-	 *            the input.
-	 * @param entry
-	 *            the entry.
-	 * @param soup
-	 *            the soup to populate.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
-	protected void readSoup(Archive archive, ZipInputStream in, ZipEntry entry, Soup soup) throws IOException {
-		NSOFDecoder decoder = new NSOFDecoder();
-		NSOFFrame frame = (NSOFFrame) decoder.inflate(in);
-		soup.fromFrame(frame);
+	@Override
+	public void startPackage(String storeName, String pkgName) throws BackupException {
 	}
 
-	/**
-	 * Read soup entries.
-	 * 
-	 * @param archive
-	 *            the archive to read.
-	 * @param in
-	 *            the input.
-	 * @param entry
-	 *            the entry.
-	 * @param soup
-	 *            the soup to populate.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
-	protected void readSoupEntries(Archive archive, ZipInputStream in, ZipEntry entry, Soup soup) throws IOException {
-		NSOFDecoder decoder = new NSOFDecoder();
-		NSOFArray arr = (NSOFArray) decoder.inflate(in);
+	@Override
+	public void endPackage(String storeName, ApplicationPackage pkg) throws BackupException {
+		Store store = archive.findStore(storeName);
+		store.addPackage(pkg);
+	}
 
-		List<SoupEntry> entries = new ArrayList<SoupEntry>();
-		int size = arr.length();
-		NSOFFrame frame;
-		for (int i = 0; i < size; i++) {
-			frame = (NSOFFrame) arr.get(i);
-			entries.add(new SoupEntry(frame));
-		}
-		soup.setEntries(entries);
+	@Override
+	public void startSoup(String storeName, String soupName) throws BackupException {
+		Store store = archive.findStore(storeName);
+		Soup soup = new Soup(soupName);
+		store.addSoup(soup);
+	}
+
+	@Override
+	public void soupDefinition(String storeName, Soup soup) throws BackupException {
+		Store store = archive.findStore(storeName);
+		Soup soupArchive = store.findSoup(soup.getName());
+		soupArchive.fromFrame(soup.toFrame());
+	}
+
+	@Override
+	public void endSoup(String storeName, Soup soup) throws BackupException {
+	}
+
+	@Override
+	public void soupEntry(String storeName, Soup soup, SoupEntry entry) throws BackupException {
+		Store store = archive.findStore(storeName);
+		Soup soupArchive = store.findSoup(soup.getName(), soup.getSignature());
+		if (soupArchive != soup)
+			throw new BackupException("soup is orphan");
+		soup.addEntry(entry);
 	}
 }

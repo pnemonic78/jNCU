@@ -129,8 +129,13 @@ public class Store implements Comparable<Store> {
 			Soup soup;
 			String name;
 			for (NSOFObject entry : entries) {
-				name = ((NSOFString) entry).getValue();
-				soup = new Soup(name);
+				if (entry instanceof NSOFString) {
+					name = ((NSOFString) entry).getValue();
+					soup = new Soup(name);
+				} else {
+					soup = new Soup(null);
+					soup.fromFrame((NSOFFrame) entry);
+				}
 				soups.add(soup);
 			}
 			setSoups(soups);
@@ -479,6 +484,16 @@ public class Store implements Comparable<Store> {
 		this.packages.clear();
 		if (packages != null)
 			this.packages.addAll(packages);
+	}
+
+	/**
+	 * Add a package.
+	 * 
+	 * @param pkg
+	 *            the package.
+	 */
+	public void addPackage(ApplicationPackage pkg) {
+		this.packages.add(pkg);
 	}
 
 	/**

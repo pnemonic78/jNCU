@@ -84,12 +84,13 @@ public class BackupDecode extends TraceDecode implements DockCommandListener {
 	}
 
 	protected static void unzip(String[] args) throws Exception {
-		String dir = System.getProperty("user.dir");
-		File f = new File(dir, "Backups/backup.zip");
+		String dir = System.getProperty("user.home");
+		dir = dir + File.separator + "jNCU/Backups";
+		File f = new File(dir, args[0]);
 		ArchiveReader reader;
 		Archive archive = null;
-		reader = new ArchiveReader();
-		archive = reader.read(f);
+		reader = new ArchiveReader(f);
+		archive = reader.read();
 		System.out.println("archive read from " + f);
 		System.out.println("archive=" + archive);
 	}

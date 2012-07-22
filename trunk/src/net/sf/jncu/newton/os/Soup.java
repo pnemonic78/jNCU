@@ -278,7 +278,8 @@ public class Soup implements Comparable<Soup> {
 				setIndexes((NSOFArray) value);
 			}
 		}
-		this.info.put(SLOT_NAME, new NSOFString(name));
+		if (name != null)
+			this.info.put(SLOT_NAME, new NSOFString(name));
 	}
 
 	/**
