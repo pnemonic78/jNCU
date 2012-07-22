@@ -49,8 +49,8 @@ public class BackupWriter implements BackupHandler {
 	private File file;
 	private File temp;
 	private ZipOutputStream out;
-	private Store storeWriting;
-	private Soup soupWriting;
+	private String storeWriting;
+	private String soupWriting;
 
 	/**
 	 * Creates a new archive writer.
@@ -161,67 +161,82 @@ public class BackupWriter implements BackupHandler {
 	}
 
 	@Override
-	public void startStore(Store store) throws BackupException {
+	public void startStore(String storeName) throws BackupException {
 		// Keep track of the current store for orphaned soups.
 		if (storeWriting != null)
 			throw new BackupException("store already started");
-		this.storeWriting = store;
+		this.storeWriting = storeName;
 		this.soupWriting = null;
 
 		String name = Archive.ENTRY_STORES + Archive.DIRECTORY;
-		name = name + store.getName() + Archive.DIRECTORY;
+		name = name + storeName + Archive.DIRECTORY;
 		putEntry(name);
+	}
 
-		putEntry(name + Archive.ENTRY_STORE);
+	@Override
+	public void storeDefinition(Store store) throws BackupException {
+		String name = Archive.ENTRY_STORES + Archive.DIRECTORY;
+		name = name + store.getName() + Archive.DIRECTORY;
+		name = name + Archive.ENTRY_STORE;
+		putEntry(name);
 		flatten(store.toFrame());
 	}
 
 	@Override
 	public void endStore(Store store) throws BackupException {
-		if (storeWriting != store)
+		if (!storeWriting.equals(store.getName()))
 			throw new BackupException("wrong store");
 		this.storeWriting = null;
 		this.soupWriting = null;
 	}
 
 	@Override
-	public void startPackage(Store store, ApplicationPackage pkg) throws BackupException {
+	public void startPackage(String storeName, String pkgName) throws BackupException {
 	}
 
 	@Override
-	public void endPackage(Store store, ApplicationPackage pkg) throws BackupException {
+	public void endPackage(String storeName, ApplicationPackage pkg) throws BackupException {
 	}
 
 	@Override
-	public void startSoup(Store store, Soup soup) throws BackupException {
+	public void startSoup(String storeName, String soupName) throws BackupException {
 		// Keep track of the current soup for orphaned entries.
-		if (storeWriting != store)
+		if (!storeWriting.equals(storeName))
 			throw new BackupException("wrong store");
 		if (soupWriting != null)
 			throw new BackupException("soup already started");
-		this.soupWriting = soup;
+		this.soupWriting = soupName;
 
 		String name = Archive.ENTRY_STORES + Archive.DIRECTORY;
-		name = name + store.getName() + Archive.DIRECTORY;
+		name = name + storeName + Archive.DIRECTORY;
 		name = name + Archive.ENTRY_SOUPS + Archive.DIRECTORY;
-		name = name + soup.getName() + Archive.DIRECTORY;
+		name = name + soupName + Archive.DIRECTORY;
 		putEntry(name);
 
-		putEntry(name + Archive.ENTRY_SOUP);
+	}
+
+	@Override
+	public void soupDefinition(String storeName, Soup soup) throws BackupException {
+		String name = Archive.ENTRY_STORES + Archive.DIRECTORY;
+		name = name + storeName + Archive.DIRECTORY;
+		name = name + Archive.ENTRY_SOUPS + Archive.DIRECTORY;
+		name = name + soup.getName() + Archive.DIRECTORY;
+		name = name + Archive.ENTRY_SOUP;
+		putEntry(name);
 		flatten(soup.toFrame());
 	}
 
 	@Override
-	public void endSoup(Store store, Soup soup) throws BackupException {
-		if (storeWriting != store)
+	public void endSoup(String storeName, Soup soup) throws BackupException {
+		if (!storeWriting.equals(storeName))
 			throw new BackupException("wrong store");
-		if (soupWriting != soup)
+		if (!soupWriting.equals(soup.getName()))
 			throw new BackupException("wrong soup");
 		this.soupWriting = null;
 
 		// Write the soup entries.
 		String name = Archive.ENTRY_STORES + Archive.DIRECTORY;
-		name = name + store.getName() + Archive.DIRECTORY;
+		name = name + storeName + Archive.DIRECTORY;
 		name = name + Archive.ENTRY_SOUPS + Archive.DIRECTORY;
 		name = name + soup.getName() + Archive.DIRECTORY;
 		name = name + Archive.ENTRY_ENTRIES;
@@ -236,14 +251,10 @@ public class BackupWriter implements BackupHandler {
 	}
 
 	@Override
-	public void startSoupEntry(Store store, Soup soup, SoupEntry entry) throws BackupException {
-	}
-
-	@Override
-	public void endSoupEntry(Store store, Soup soup, SoupEntry entry) throws BackupException {
-		if (storeWriting != store)
+	public void soupEntry(String storeName, Soup soup, SoupEntry entry) throws BackupException {
+		if (!storeWriting.equals(storeName))
 			throw new BackupException("wrong store");
-		if (soupWriting != soup)
+		if (!soupWriting.equals(soup.getName()))
 			throw new BackupException("wrong soup");
 
 		// Cache the soup entry.

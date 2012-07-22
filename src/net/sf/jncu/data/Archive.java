@@ -20,7 +20,8 @@
 package net.sf.jncu.data;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.newton.os.Store;
@@ -86,7 +87,7 @@ public class Archive {
 	public static final String ENTRY_ENTRIES = "entries";
 
 	private NewtonInfo deviceInfo;
-	private final Collection<Store> stores = new HashSet<Store>();
+	private final Map<String, Store> stores = new HashMap<String, Store>();
 
 	/**
 	 * Creates a new archive.
@@ -119,7 +120,7 @@ public class Archive {
 	 * @return the list of stores.
 	 */
 	public Collection<Store> getStores() {
-		return stores;
+		return stores.values();
 	}
 
 	/**
@@ -130,8 +131,10 @@ public class Archive {
 	 */
 	public void setStores(Collection<Store> stores) {
 		this.stores.clear();
-		if (stores != null)
-			this.stores.addAll(stores);
+		if (stores != null) {
+			for (Store store : stores)
+				addStore(store);
+		}
 	}
 
 	/**
@@ -141,6 +144,17 @@ public class Archive {
 	 *            the store.
 	 */
 	public void addStore(Store store) {
-		this.stores.add(store);
+		this.stores.put(store.getName(), store);
+	}
+
+	/**
+	 * Find the store.
+	 * 
+	 * @param name
+	 *            the store name.
+	 * @return the store - {@code null} otherwise.
+	 */
+	public Store findStore(String name) {
+		return stores.get(name);
 	}
 }
