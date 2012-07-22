@@ -28,8 +28,9 @@ import java.util.Iterator;
 import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
-import net.sf.jncu.data.Archive;
-import net.sf.jncu.data.ArchiveWriter;
+import net.sf.jncu.data.BackupException;
+import net.sf.jncu.data.BackupHandler;
+import net.sf.jncu.data.BackupWriter;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
@@ -89,9 +90,7 @@ public class BackupModule extends IconModule {
 	private State state = State.NONE;
 	private BackupDialog dialog;
 	private SyncOptions options;
-	private File file;
-	@Deprecated
-	private Archive archive;
+	private BackupHandler writer;
 	private Collection<Store> stores;
 	private Collection<AppName> appNames;
 	private Store store;
@@ -110,8 +109,6 @@ public class BackupModule extends IconModule {
 	public BackupModule(CDPipe<? extends CDPacket> pipe, boolean requested) {
 		super(TITLE, pipe);
 		setName("BackupModule-" + getId());
-		this.archive = new Archive();
-		archive.setDeviceInfo(DockingProtocol.getNewtonInfo());
 
 		state = State.INITIALISED;
 
@@ -157,7 +154,6 @@ public class BackupModule extends IconModule {
 		} else if (DStoreNames.COMMAND.equals(cmd)) {
 			DStoreNames storeNames = (DStoreNames) command;
 			stores = storeNames.getStores();
-			archive.setStores(stores);
 
 			// In order to show the dialog, we need to populate it with
 			// stores and applications.
@@ -296,7 +292,8 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	public void backup(File file) throws IOException, BadPipeStateException {
-		this.file = file;
+		this.writer = new BackupWriter(file);
+		writer.deviceInformation(DockingProtocol.getNewtonInfo());
 
 		switch (state) {
 		case INITIALISED:
@@ -383,7 +380,7 @@ public class BackupModule extends IconModule {
 
 		// No mores stores?
 		if (!storesIter.hasNext()) {
-			writeArchive();
+			// TODO writeArchive();
 			return;
 		}
 		this.store = storesIter.next();
@@ -480,37 +477,16 @@ public class BackupModule extends IconModule {
 	 * 
 	 * @throws BadPipeStateException
 	 *             if invalid state.
+	 * @throws BackupException
+	 *             if backup failed.
 	 */
-	protected void writeArchive() throws BadPipeStateException {
+	protected void writeArchive() throws BadPipeStateException, BackupException {
 		if (!isEnabled())
 			return;
 		if (state != State.BACKUP)
 			throw new BadPipeStateException("bad state " + state);
 
 		// Don't block the commandReceived call.
-		new Thread() {
-			public void run() {
-				writeArchiveImpl();
-			}
-		}.start();
-	}
-
-	/**
-	 * Write the archive - implementation.
-	 */
-	private void writeArchiveImpl() {
-		ArchiveWriter writer = new ArchiveWriter(file);
-		try {
-			// In case writing to the file takes forever.
-			pipe.ping();
-			writer.write(archive);
-			pipe.stopPing();
-
-			// Success!
-			writeDone();
-		} catch (IOException e) {
-			e.printStackTrace();
-			cancel();
-		}
+		writer.endBackup();
 	}
 }
