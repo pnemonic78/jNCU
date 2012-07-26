@@ -88,7 +88,7 @@ public class NSOFDecoder {
 			throw new EOFException();
 
 		NSOFObject object = null;
-		NSOFObject object2 = null;
+		NSOFObject object2;
 
 		switch (dataType) {
 		case NewtonStreamedObjectFormat.NSOF_ARRAY:
@@ -148,9 +148,8 @@ public class NSOFDecoder {
 			Precedent p = (Precedent) object2;
 			precedents.put(id, p);
 		}
-		object = object2;
 
-		return object;
+		return object2;
 	}
 
 	/**
