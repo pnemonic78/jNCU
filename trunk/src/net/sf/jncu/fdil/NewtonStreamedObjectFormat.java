@@ -124,7 +124,7 @@ public abstract class NewtonStreamedObjectFormat {
 	 * @throws IOException
 	 *             if read past buffer.
 	 */
-	protected static int ntohl(InputStream in) throws IOException {
+	public static int ntohl(InputStream in) throws IOException {
 		int n24 = (in.read() & 0xFF) << 24;
 		int n16 = (in.read() & 0xFF) << 16;
 		int n08 = (in.read() & 0xFF) << 8;
@@ -144,7 +144,7 @@ public abstract class NewtonStreamedObjectFormat {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected static void htonl(int n, OutputStream out) throws IOException {
+	public static void htonl(int n, OutputStream out) throws IOException {
 		out.write((n >> 24) & 0xFF);
 		out.write((n >> 16) & 0xFF);
 		out.write((n >> 8) & 0xFF);
@@ -162,7 +162,7 @@ public abstract class NewtonStreamedObjectFormat {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected static void htonl(long n, OutputStream out) throws IOException {
+	public static void htonl(long n, OutputStream out) throws IOException {
 		htonl((int) ((n >> 32) & 0xFFFFFFFFL), out);
 		htonl((int) ((n >> 0) & 0xFFFFFFFFL), out);
 	}
@@ -177,7 +177,7 @@ public abstract class NewtonStreamedObjectFormat {
 	 * @throws IOException
 	 *             if read past buffer.
 	 */
-	protected static int ntohs(InputStream in) throws IOException {
+	public static int ntohs(InputStream in) throws IOException {
 		int n08 = (in.read() & 0xFF) << 8;
 		int n00 = (in.read() & 0xFF) << 0;
 
@@ -195,7 +195,7 @@ public abstract class NewtonStreamedObjectFormat {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected static void htons(short n, OutputStream out) throws IOException {
+	public static void htons(short n, OutputStream out) throws IOException {
 		out.write((n >> 8) & 0xFF);
 		out.write((n >> 0) & 0xFF);
 	}
@@ -211,7 +211,7 @@ public abstract class NewtonStreamedObjectFormat {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	protected static void htons(int n, OutputStream out) throws IOException {
+	public static void htons(int n, OutputStream out) throws IOException {
 		out.write((n >> 8) & 0xFF);
 		out.write((n >> 0) & 0xFF);
 	}
