@@ -214,6 +214,8 @@ public class NSOFSymbol extends NSOFString {
 	 * @return the superclass - {@code null} otherwise.
 	 */
 	public static NSOFSymbol getInheritance(NSOFSymbol clazz) {
+		if (clazz.getValue().startsWith("string."))
+			return CLASS_STRING;
 		return classes.get(clazz);
 	}
 

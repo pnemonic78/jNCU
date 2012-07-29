@@ -101,22 +101,51 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 
 	@Override
 	public void flatten(OutputStream out, NSOFEncoder encoder) throws IOException {
-		out.write(NSOF_STRING);
-		String s = getValue();
-		if (s == null) {
-			// Number of bytes in string (xlong)
-			XLong.encode(0, out);
+		NSOFSymbol nsClass = getObjectClass();
+		if (CLASS_STRING.equals(nsClass)) {
+			out.write(NSOF_STRING);
+			String s = getValue();
+			if (s == null) {
+				// Number of bytes in string (xlong)
+				XLong.encode(0, out);
+			} else {
+				byte[] buf = s.getBytes(CHARSET_UTF16);
+				// Number of bytes in string (xlong)
+				// 2-bytes per character + null-terminated
+				XLong.encode(buf.length, out);
+
+				// String (halfwords)
+				// Bytes [0] and [1] are 0xFE and 0xFF
+				if (buf.length >= 2)
+					out.write(buf, 2, buf.length - 2);
+				out.write(0);
+				out.write(0);
+			}
 		} else {
-			byte[] buf = s.getBytes(CHARSET_UTF16);
-			// Number of bytes in string (xlong)
-			// 2-bytes per character + null-terminated
-			XLong.encode(buf.length, out);
-			// String (halfwords)
-			// Bytes [0] and [1] are 0xFE and 0xFF
-			if (buf.length >= 2)
-				out.write(buf, 2, buf.length - 2);
-			out.write(0);
-			out.write(0);
+			out.write(NSOF_BINARY);
+			String s = getValue();
+			if (s == null) {
+				// Number of bytes of data (xlong)
+				XLong.encode(0, out);
+
+				// Class (object)
+				encoder.flatten(nsClass, out);
+			} else {
+				byte[] buf = s.getBytes(CHARSET_UTF16);
+				// Number of bytes of data (xlong)
+				// 2-bytes per character + null-terminated
+				XLong.encode(buf.length, out);
+
+				// Class (object)
+				encoder.flatten(nsClass, out);
+
+				// Data
+				// Bytes [0] and [1] are 0xFE and 0xFF
+				if (buf.length >= 2)
+					out.write(buf, 2, buf.length - 2);
+				out.write(0);
+				out.write(0);
+			}
 		}
 	}
 
