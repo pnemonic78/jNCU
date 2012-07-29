@@ -192,6 +192,22 @@ public class NSOFDecoder {
 				object = new NSOFRawBitmap(bin);
 			} else if (NSOFReal.CLASS_REAL.equals(nsClass)) {
 				object = new NSOFReal(bin);
+			} else {
+				NSOFSymbol childClass = nsClass;
+				NSOFSymbol parentClass = NSOFSymbol.getInheritance(childClass);
+				if (parentClass != null) {
+					do {
+						childClass = parentClass;
+						parentClass = NSOFSymbol.getInheritance(childClass);
+					} while (parentClass != null);
+
+					if (NSOFString.CLASS_STRING.equals(childClass)) {
+						byte[] b = bin.getValue();
+						String s = new String(b, 0, b.length - 2, NSOFString.CHARSET_UTF16);
+						object = new NSOFString(s);
+						object.setObjectClass(nsClass);
+					}
+				}
 			}
 			break;
 		case NewtonStreamedObjectFormat.NSOF_ARRAY:
