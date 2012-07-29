@@ -22,10 +22,7 @@ package net.sf.jncu.protocol.v1_0.data;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFFrame;
-import net.sf.jncu.fdil.NSOFImmediate;
-import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 
@@ -74,11 +71,10 @@ public class DSoupInfo extends DockCommandFromNewtonScript<NSOFFrame> {
 
 	@Override
 	protected void decodeCommandData(InputStream data) throws IOException {
+		super.decodeCommandData(data);
 		Soup soup = null;
-		NSOFDecoder decoder = new NSOFDecoder();
-		NSOFObject o = decoder.inflate(data);
-		if (!NSOFImmediate.isNil(o)) {
-			NSOFFrame frame = (NSOFFrame) o;
+		NSOFFrame frame = getResult();
+		if (frame != null) {
 			soup = getSoup();
 			if (soup == null)
 				soup = new Soup(null);

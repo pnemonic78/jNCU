@@ -163,6 +163,14 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	}
 
 	/**
+	 * Module sends notification to Newton to cancel.
+	 */
+	protected void writeCancel() {
+		DOperationCanceled cancel = new DOperationCanceled();
+		write(cancel);
+	}
+
+	/**
 	 * Is the module enabled and active?
 	 * 
 	 * @return {@code true} if enabled.
@@ -177,9 +185,11 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 			return;
 		progressCommandFrom = command;
 		ProgressMonitor monitor = getProgress();
-		monitor.setMaximum(total);
-		monitor.setProgress(progress);
-		monitor.setNote(String.format("Receiving %d%%", (progress * 100) / total));
+		if (monitor != null) {
+			monitor.setMaximum(total);
+			monitor.setProgress(progress);
+			monitor.setNote(String.format("Receiving %d%%", (progress * 100) / total));
+		}
 	}
 
 	@Override
@@ -205,9 +215,11 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 			return;
 		progressCommandTo = command;
 		ProgressMonitor monitor = getProgress();
-		monitor.setMaximum(total);
-		monitor.setProgress(progress);
-		monitor.setNote(String.format("Sending %d%%", (progress * 100) / total));
+		if (monitor != null) {
+			monitor.setMaximum(total);
+			monitor.setProgress(progress);
+			monitor.setNote(String.format("Sending %d%%", (progress * 100) / total));
+		}
 	}
 
 	@Override

@@ -21,9 +21,11 @@ package net.sf.jncu.protocol.v2_0.sync;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.TreeSet;
+
+import javax.swing.ProgressMonitor;
 
 import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDPacket;
@@ -32,6 +34,7 @@ import net.sf.jncu.data.BackupException;
 import net.sf.jncu.data.BackupHandler;
 import net.sf.jncu.data.BackupWriter;
 import net.sf.jncu.newton.os.Soup;
+import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
@@ -159,6 +162,7 @@ public class BackupModule extends IconModule {
 			// stores and applications.
 			switch (state) {
 			case INITIALISED:
+				// DGetAppNames -> DAppNames -> dialog
 				DGetAppNames getApps = new DGetAppNames();
 				getApps.setWhat(DGetAppNames.ALL_STORES_NAMES_SOUPS);
 				write(getApps);
@@ -180,31 +184,57 @@ public class BackupModule extends IconModule {
 			}
 		} else if (DSoupNames.COMMAND.equals(cmd)) {
 			DSoupNames soupNames = (DSoupNames) command;
-			store.setSoups(soupNames.getSoups());
+			if (store != null) {
+				store.setSoups(soupNames.getSoups());
 
-			if (state == State.BACKUP_STORE) {
-				backupSoups(store);
+				if (state == State.BACKUP_STORE) {
+					backupSoups(store);
+				}
 			}
 		} else if (DSoupInfo.COMMAND.equals(cmd)) {
 			DSoupInfo info = (DSoupInfo) command;
-			if (soup == null)
-				this.soup = info.getSoup();
-			else
-				this.soup.fromSoup(info.getSoup());
+			Soup infoSoup = info.getSoup();
+			if ((soup == null) || (state != State.BACKUP_SOUP)) {
+				this.soup = infoSoup;
+			} else {
+				if (Boolean.getBoolean("debug")) {
+					String thisName = this.soup.getName();
+					String thatName = info.getSoup().getName();
+					if ((thisName == null) || ((thatName != null) && !thisName.equals(thatName))) {
+						System.err.println("Expected name [" + thisName + "], but was [" + thatName + "]");
+						System.exit(1);
+					}
+					int thisSig = this.soup.getSignature();
+					int thatSig = info.getSoup().getSignature();
+					if ((thisSig != 0) && (thatSig != 0) && (thisSig != thatSig)) {
+						System.err.println("Expected signature " + thisSig + ", but was " + thatSig);
+						System.exit(1);
+					}
+				}
+				this.soup.fromSoup(infoSoup);
+			}
 
 			if (state == State.BACKUP_SOUP) {
-				DSendSoup getEntries = new DSendSoup();
-				write(getEntries);
+				backupSoupInfo();
 			}
 		} else if (DEntry.COMMAND.equals(cmd)) {
 			if (state == State.BACKUP_SOUP) {
 				DEntry entry = (DEntry) command;
-				soup.addEntry(entry.getEntry());
+				SoupEntry soupEntry = entry.getEntry();
+
+				try {
+					writer.soupEntry(store.getName(), soup, soupEntry);
+				} catch (BackupException e) {
+					e.printStackTrace();
+					writeCancel();
+					return;
+				}
 			}
 		} else if (DBackupSoupDone.COMMAND.equals(cmd)) {
 			if (state == State.BACKUP_SOUP) {
-				state = State.BACKUP_SOUPS;
-				backupNextSoup();
+				backupSoupDone();
+			} else {
+				this.soup = null;
 			}
 		} else if (DSyncOptions.COMMAND.equals(cmd)) {
 			DSyncOptions sync = (DSyncOptions) command;
@@ -274,6 +304,7 @@ public class BackupModule extends IconModule {
 				} else {
 					state = BackupModule.State.OPTIONS;
 
+					// DLastSyncTime -> DCurrentTime
 					DLastSyncTime time = new DLastSyncTime();
 					write(time);
 				}
@@ -293,6 +324,8 @@ public class BackupModule extends IconModule {
 	 */
 	public void backup(File file) throws IOException, BadPipeStateException {
 		this.writer = new BackupWriter(file);
+		writer.startBackup();
+		writer.modified(System.currentTimeMillis());
 		writer.deviceInformation(DockingProtocol.getNewtonInfo());
 
 		switch (state) {
@@ -301,6 +334,7 @@ public class BackupModule extends IconModule {
 			write(req);
 			break;
 		case GET_OPTIONS:
+			// DGetSyncOptions -> DSyncOptions
 			DGetSyncOptions get = new DGetSyncOptions();
 			write(get);
 			break;
@@ -328,7 +362,7 @@ public class BackupModule extends IconModule {
 		this.soup = null;
 
 		if (stores == null) {
-			// DGetStoreNames-> DStoreNames
+			// DGetStoreNames -> DStoreNames
 			DGetStoreNames getStores = new DGetStoreNames();
 			write(getStores);
 		} else {
@@ -338,15 +372,20 @@ public class BackupModule extends IconModule {
 
 	/**
 	 * Backup the selected stores.
+	 * 
+	 * @throws BadPipeStateException
+	 *             if invalid state.
 	 */
-	protected void backupStores() {
+	protected void backupStores() throws BadPipeStateException {
+		if (writer == null)
+			return;
 		if (!isEnabled())
 			return;
 		if (state != State.BACKUP)
 			throw new BadPipeStateException("bad state " + state);
 
 		// Populate the list of stores to backup.
-		Collection<Store> storesToBackup = new ArrayList<Store>();
+		Collection<Store> storesToBackup = new TreeSet<Store>();
 		String storeName;
 		for (Store storeSelected : options.getStores()) {
 			storeName = storeSelected.getName();
@@ -373,20 +412,44 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	protected void backupNextStore() throws BadPipeStateException {
+		if (writer == null)
+			return;
 		if (!isEnabled())
 			return;
 		if (state != State.BACKUP)
 			throw new BadPipeStateException("bad state " + state);
 
+		if (this.store != null) {
+			try {
+				writer.endStore(store);
+			} catch (BackupException e) {
+				e.printStackTrace();
+				writeCancel();
+				return;
+			}
+		}
 		// No mores stores?
 		if (!storesIter.hasNext()) {
-			// TODO writeArchive();
+			try {
+				writer.endBackup();
+				writeDone();
+			} catch (BackupException e) {
+				e.printStackTrace();
+			}
 			return;
 		}
 		this.store = storesIter.next();
 		this.soupsIter = null;
 		this.soup = null;
 		this.state = State.BACKUP_STORE;
+
+		try {
+			writer.startStore(store.getName());
+		} catch (BackupException e) {
+			e.printStackTrace();
+			writeCancel();
+			return;
+		}
 
 		// DSetStoreGetNames -> DSoupNames
 		DSetStoreGetNames setStore = new DSetStoreGetNames();
@@ -403,6 +466,8 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	protected void backupSoups(Store store) throws BadPipeStateException {
+		if (writer == null)
+			return;
 		if (!isEnabled())
 			return;
 		if (state != State.BACKUP_STORE)
@@ -418,12 +483,12 @@ public class BackupModule extends IconModule {
 			}
 		}
 		if ((soupsOptions == null) || soupsOptions.isEmpty()) {
-			done();
+			writeDone();
 			return;
 		}
 
 		// Populate the list of soups (for the current store) to backup.
-		Collection<Soup> soupsToBackup = new ArrayList<Soup>();
+		Collection<Soup> soupsToBackup = new TreeSet<Soup>();
 		String soupName;
 		for (Soup soupOptions : soupsOptions) {
 			soupName = soupOptions.getName();
@@ -451,6 +516,8 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	protected void backupNextSoup() throws BadPipeStateException {
+		if (writer == null)
+			return;
 		if (!isEnabled())
 			return;
 		if (state != State.BACKUP_SOUPS)
@@ -472,21 +539,60 @@ public class BackupModule extends IconModule {
 	}
 
 	/**
-	 * Write the archive.<BR>
-	 * TODO append the file as we receive entries.
+	 * Backup the soup information.
 	 * 
 	 * @throws BadPipeStateException
 	 *             if invalid state.
-	 * @throws BackupException
-	 *             if backup failed.
 	 */
-	protected void writeArchive() throws BadPipeStateException, BackupException {
+	protected void backupSoupInfo() throws BadPipeStateException {
+		if (writer == null)
+			return;
 		if (!isEnabled())
 			return;
-		if (state != State.BACKUP)
+		if (state != State.BACKUP_SOUP)
 			throw new BadPipeStateException("bad state " + state);
 
-		// Don't block the commandReceived call.
-		writer.endBackup();
+		try {
+			writer.startSoup(store.getName(), soup.getName());
+			writer.soupDefinition(store.getName(), soup);
+		} catch (BackupException e) {
+			e.printStackTrace();
+			writeCancel();
+			return;
+		}
+
+		// DSendSoup -> DEntry* -> DBackupSoupDone
+		DSendSoup getEntries = new DSendSoup();
+		write(getEntries);
+	}
+
+	/**
+	 * Backing up the soup is finished.
+	 * 
+	 * @throws BadPipeStateException
+	 *             if invalid state.
+	 */
+	protected void backupSoupDone() throws BadPipeStateException {
+		if (writer == null)
+			return;
+		if (!isEnabled())
+			return;
+		if (state != State.BACKUP_SOUP)
+			throw new BadPipeStateException("bad state " + state);
+
+		try {
+			writer.endSoup(store.getName(), soup);
+		} catch (BackupException e) {
+			e.printStackTrace();
+			writeCancel();
+			return;
+		}
+		state = State.BACKUP_SOUPS;
+		backupNextSoup();
+	}
+
+	@Override
+	protected ProgressMonitor getProgress() {
+		return null;// Never show the progress.
 	}
 }

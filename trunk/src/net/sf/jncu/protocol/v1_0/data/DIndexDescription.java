@@ -72,7 +72,7 @@ public class DIndexDescription extends DockCommandFromNewton {
 			for (int i = 0; i < size; i++) {
 				frame = (NSOFFrame) arr.get(i);
 				index = new SoupIndex();
-				index.decodeFrame(frame);
+				index.fromFrame(frame);
 				indexes.add(index);
 			}
 		}
