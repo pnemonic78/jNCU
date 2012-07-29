@@ -88,6 +88,11 @@ public class ArchiveReader implements BackupHandler {
 	}
 
 	@Override
+	public void modified(long time) throws BackupException {
+		archive.setModified(time);
+	}
+
+	@Override
 	public void deviceInformation(NewtonInfo info) throws BackupException {
 		archive.setDeviceInfo(info);
 	}

@@ -32,6 +32,7 @@ import net.sf.jncu.newton.os.Store;
  * <p>
  * The contents of a jNCU archive typically have the following structure:
  * <ul>
+ * <li><tt>modified</tt></li>
  * <li><tt>device</tt></li>
  * <li><tt>stores</tt>
  * <ul>
@@ -71,6 +72,8 @@ public class Archive {
 	/** Character to mark entry as directory or folder. */
 	protected static final String DIRECTORY = "/";
 
+	/** Entry name for the time stamp. */
+	public static final String ENTRY_MODIFIED = "modified";
 	/** Entry name for the device information. */
 	public static final String ENTRY_DEVICE = "device";
 	/** Entry name for the stores folder. */
@@ -86,6 +89,7 @@ public class Archive {
 	/** Entry name for the entries database. */
 	public static final String ENTRY_ENTRIES = "entries";
 
+	private long modified = System.currentTimeMillis();
 	private NewtonInfo deviceInfo;
 	private final Map<String, Store> stores = new HashMap<String, Store>();
 
@@ -96,9 +100,30 @@ public class Archive {
 	}
 
 	/**
+	 * Get the modified time stamp.<br>
+	 * Equivalent to "last sync time".
+	 * 
+	 * @return the time in milliseconds.
+	 */
+	public long getModified() {
+		return modified;
+	}
+
+	/**
+	 * Set the modified time stamp.<br>
+	 * Equivalent to "last sync time".
+	 * 
+	 * @param modified
+	 *            the time in milliseconds.
+	 */
+	public void setModified(long modified) {
+		this.modified = modified;
+	}
+
+	/**
 	 * Get the device information.
 	 * 
-	 * @return the the information.
+	 * @return the information.
 	 */
 	public NewtonInfo getDeviceInfo() {
 		return deviceInfo;

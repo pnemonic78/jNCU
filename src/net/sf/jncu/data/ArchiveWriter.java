@@ -67,6 +67,7 @@ public class ArchiveWriter extends BackupWriter {
 	public void write(Archive archive) throws IOException {
 		startBackup();
 
+		modified(archive.getModified());
 		deviceInformation(archive.getDeviceInfo());
 		for (Store store : archive.getStores()) {
 			writeStore(archive, store);
@@ -170,4 +171,13 @@ public class ArchiveWriter extends BackupWriter {
 		endSoup(storeName, soup);
 	}
 
+	@Override
+	protected boolean allowClearStore() {
+		return false;
+	}
+
+	@Override
+	protected boolean allowClearSoup() {
+		return false;
+	}
 }

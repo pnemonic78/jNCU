@@ -33,6 +33,7 @@ import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFPlainArray;
+import net.sf.jncu.fdil.NewtonStreamedObjectFormat;
 import net.sf.jncu.newton.os.ApplicationPackage;
 import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.newton.os.Soup;
@@ -90,6 +91,7 @@ public class BackupWriter implements BackupHandler {
 		ZipEntry entry = new ZipEntry(entryName);
 		try {
 			out.putNextEntry(entry);
+			out.flush();
 		} catch (IOException e) {
 			throw new BackupException(e);
 		}
@@ -107,6 +109,7 @@ public class BackupWriter implements BackupHandler {
 		NSOFEncoder encoder = new NSOFEncoder();
 		try {
 			encoder.flatten(object, out);
+			out.flush();
 		} catch (IOException e) {
 			throw new BackupException(e);
 		}
@@ -153,6 +156,17 @@ public class BackupWriter implements BackupHandler {
 	}
 
 	@Override
+	public void modified(long time) throws BackupException {
+		String name = Archive.ENTRY_MODIFIED;
+		putEntry(name);
+		try {
+			NewtonStreamedObjectFormat.htonl(System.currentTimeMillis(), out);
+		} catch (IOException e) {
+			throw new BackupException(e);
+		}
+	}
+
+	@Override
 	public void deviceInformation(NewtonInfo info) throws BackupException {
 		if (info == null)
 			return;
@@ -188,6 +202,21 @@ public class BackupWriter implements BackupHandler {
 			throw new BackupException("wrong store");
 		this.storeWriting = null;
 		this.soupWriting = null;
+
+		// Free up some memory heap.
+		if (allowClearStore()) {
+			store.setPackages(null);
+			store.setSoups(null);
+		}
+	}
+
+	/**
+	 * Allow the store to be cleared?
+	 * 
+	 * @return allow?
+	 */
+	protected boolean allowClearStore() {
+		return true;
 	}
 
 	@Override
@@ -212,7 +241,6 @@ public class BackupWriter implements BackupHandler {
 		name = name + Archive.ENTRY_SOUPS + Archive.DIRECTORY;
 		name = name + soupName + Archive.DIRECTORY;
 		putEntry(name);
-
 	}
 
 	@Override
@@ -248,6 +276,20 @@ public class BackupWriter implements BackupHandler {
 		for (SoupEntry item : entries)
 			arr.set(i++, item);
 		flatten(arr);
+
+		// Free up some memory heap.
+		if (allowClearSoup()) {
+			soup.setEntries(null);
+		}
+	}
+
+	/**
+	 * Allow the soup to be cleared?
+	 * 
+	 * @return allow?
+	 */
+	protected boolean allowClearSoup() {
+		return true;
 	}
 
 	@Override
