@@ -138,6 +138,7 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 							}
 						} catch (IOException ioe) {
 							ioe.printStackTrace();
+							packetEOF();
 						}
 					}
 					allowSend = (pipe == null) || pipe.allowSend();

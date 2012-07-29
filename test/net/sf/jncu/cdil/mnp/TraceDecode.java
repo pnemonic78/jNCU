@@ -245,9 +245,11 @@ public class TraceDecode {
 		public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
 			System.out.println(DIRECTION_IN + "\tcmd rcv:" + command + " " + progress + "/" + total);
 			ProgressMonitor monitor = getProgress();
-			monitor.setMaximum(total);
-			monitor.setProgress(progress);
-			monitor.setNote(String.format("Receiving %d%%\u2026", (progress * 100) / total));
+			if (monitor != null) {
+				monitor.setMaximum(total);
+				monitor.setProgress(progress);
+				monitor.setNote(String.format("Receiving %d%%\u2026", (progress * 100) / total));
+			}
 		}
 
 		@Override
@@ -259,9 +261,11 @@ public class TraceDecode {
 		public void commandSending(IDockCommandToNewton command, int progress, int total) {
 			System.out.println(DIRECTION_OUT + "\tcmd snd:" + command + " " + progress + "/" + total);
 			ProgressMonitor monitor = getProgress();
-			monitor.setMaximum(total);
-			monitor.setProgress(progress);
-			monitor.setNote(String.format("Sending %d%%\u2026", (progress * 100) / total));
+			if (monitor != null) {
+				monitor.setMaximum(total);
+				monitor.setProgress(progress);
+				monitor.setNote(String.format("Sending %d%%\u2026", (progress * 100) / total));
+			}
 		}
 
 		@Override
@@ -276,15 +280,20 @@ public class TraceDecode {
 		}
 
 		private void processPacket(char direction, MNPPacket packet) {
-			if (packet instanceof MNPLinkAcknowledgementPacket) {
+			switch (packet.getType()) {
+			case MNPPacket.LA:
 				processLA(direction, (MNPLinkAcknowledgementPacket) packet);
-			} else if (packet instanceof MNPLinkDisconnectPacket) {
+				break;
+			case MNPPacket.LD:
 				processLD(direction, (MNPLinkDisconnectPacket) packet);
-			} else if (packet instanceof MNPLinkRequestPacket) {
+				break;
+			case MNPPacket.LR:
 				processLR(direction, (MNPLinkRequestPacket) packet);
-			} else if (packet instanceof MNPLinkTransferPacket) {
+				break;
+			case MNPPacket.LT:
 				processLT(direction, (MNPLinkTransferPacket) packet);
-			} else {
+				break;
+			default:
 				throw new ClassCastException("unknown packet type");
 			}
 		}
