@@ -13,9 +13,9 @@ import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
+import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.IconModule.IconModuleListener;
-import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.jncu.protocol.v2_0.sync.BackupModule;
 import net.sf.jncu.protocol.v2_0.sync.DGetSyncOptions;
 import net.sf.jncu.protocol.v2_0.sync.DRequestToSync;
@@ -118,12 +118,12 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 			Thread.sleep(5000);
 	}
 
-	private void exit() {
+	private void exit(boolean cancel) {
 		running = false;
 		try {
-			if (pipe.isConnected()) {
-				DOperationDone dOperationDone = new DOperationDone();
-				pipe.write(dOperationDone);
+			if (cancel && pipe.isConnected()) {
+				DOperationCanceled dOperationCanceled = new DOperationCanceled();
+				pipe.write(dOperationCanceled);
 				Thread.sleep(1000);
 			}
 			if (pipe.isConnected()) {
@@ -149,13 +149,13 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 	@Override
 	public void successModule(IconModule module) {
 		System.out.println("successModule module=" + module);
-		exit();
+		exit(false);
 	}
 
 	@Override
 	public void cancelModule(IconModule module) {
 		System.out.println("cancelModule module=" + module);
-		exit();
+		exit(false);
 	}
 
 	@Override
