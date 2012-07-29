@@ -53,7 +53,7 @@ public class SoupIndex {
 	 * @param frame
 	 *            the frame.
 	 */
-	public void decodeFrame(NSOFFrame frame) {
+	public void fromFrame(NSOFFrame frame) {
 		this.frame.putAll(frame);
 	}
 

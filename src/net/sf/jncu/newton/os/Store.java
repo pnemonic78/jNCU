@@ -22,7 +22,6 @@ package net.sf.jncu.newton.os;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.TreeSet;
 
 import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFBoolean;
@@ -79,7 +78,7 @@ public class Store implements Comparable<Store> {
 
 	private String name;
 	private final NSOFFrame frame = new NSOFFrame();
-	private final Collection<Soup> soups = new TreeSet<Soup>();
+	private final Collection<Soup> soups = new ArrayList<Soup>();
 	private final List<ApplicationPackage> packages = new ArrayList<ApplicationPackage>();
 
 	/**

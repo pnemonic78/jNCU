@@ -76,7 +76,6 @@ public class Soup implements Comparable<Soup> {
 	private String name;
 	private final NSOFFrame info;
 	private final Collection<SoupEntry> entries = new TreeSet<SoupEntry>();
-	private final List<SoupIndex> indexes = new ArrayList<SoupIndex>();
 
 	/**
 	 * Creates a new soup.
@@ -85,9 +84,22 @@ public class Soup implements Comparable<Soup> {
 	 *            the soup name.
 	 */
 	public Soup(String name) {
+		this(name, 0);
+	}
+
+	/**
+	 * Creates a new soup.
+	 * 
+	 * @param name
+	 *            the soup name.
+	 * @param signature
+	 *            the signature.
+	 */
+	public Soup(String name, int signature) {
 		super();
 		this.info = new NSOFFrame();
 		setName(name);
+		setSignature(signature);
 	}
 
 	/**
@@ -119,7 +131,7 @@ public class Soup implements Comparable<Soup> {
 		NSOFObject value = getInformation().get(SLOT_SIGNATURE);
 		if (!NSOFImmediate.isNil(value)) {
 			NSOFImmediate imm = (NSOFImmediate) value;
-			setSignature(imm.getValue());
+			return imm.getValue();
 		}
 		return 0;
 	}
@@ -137,9 +149,24 @@ public class Soup implements Comparable<Soup> {
 	/**
 	 * Get the indexes description.
 	 * 
-	 * @return the array of indexes.
+	 * @return the list of indexes.
 	 */
 	public List<SoupIndex> getIndexes() {
+		NSOFObject o = getDefinition().get(SLOT_INDEXES);
+		if (NSOFImmediate.isNil(o))
+			return null;
+
+		List<SoupIndex> indexes = new ArrayList<SoupIndex>();
+		NSOFArray arr = (NSOFArray) o;
+		int size = arr.length();
+		SoupIndex index;
+		for (int i = 0; i < size; i++) {
+			index = new SoupIndex();
+			o = arr.get(i);
+			if (!NSOFImmediate.isNil(o))
+				index.fromFrame((NSOFFrame) o);
+			indexes.add(index);
+		}
 		return indexes;
 	}
 
@@ -147,7 +174,7 @@ public class Soup implements Comparable<Soup> {
 	 * Set the indexes description.
 	 * 
 	 * @param indexes
-	 *            the array of indexes.
+	 *            the list of indexes.
 	 */
 	public void setIndexes(List<SoupIndex> indexes) {
 		int size = (indexes == null) ? 0 : indexes.size();
@@ -171,21 +198,6 @@ public class Soup implements Comparable<Soup> {
 	public void setIndexes(NSOFArray indexes) {
 		if (indexes == null)
 			indexes = new NSOFPlainArray();
-		this.indexes.clear();
-
-		int size = indexes.length();
-		SoupIndex index;
-		NSOFObject o;
-
-		for (int i = 0; i < size; i++) {
-			o = indexes.get(i);
-			if (!NSOFImmediate.isNil(o)) {
-				index = new SoupIndex();
-				index.decodeFrame((NSOFFrame) o);
-				this.indexes.add(index);
-			}
-		}
-
 		getDefinition().put(SLOT_INDEXES, indexes);
 	}
 
@@ -341,11 +353,17 @@ public class Soup implements Comparable<Soup> {
 	 *            the source soup.
 	 */
 	public void fromSoup(Soup that) {
-		this.setName(null);
+		String nameOld = getName();
+		int signatureOld = getSignature();
+		setName(null);
 		try {
 			fromFrame((NSOFFrame) that.toFrame().deepClone());
 		} catch (CloneNotSupportedException e) {
 			fromFrame(that.toFrame());
 		}
+		if (getName() == null)
+			setName(nameOld);
+		if (getSignature() == 0)
+			setSignature(signatureOld);
 	}
 }
