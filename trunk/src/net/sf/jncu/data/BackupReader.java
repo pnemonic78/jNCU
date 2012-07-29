@@ -30,6 +30,7 @@ import java.util.zip.ZipInputStream;
 import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.fdil.NewtonStreamedObjectFormat;
 import net.sf.jncu.newton.os.ApplicationPackage;
 import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.newton.os.Soup;
@@ -43,6 +44,8 @@ import net.sf.jncu.newton.os.Store;
  */
 public class BackupReader {
 
+	/** Index of the modified time stamp. */
+	protected static final int MODIFED = 0;
 	/** Index of the device information. */
 	protected static final int DEVICE = 0;
 	/** Index of the stores folder. */
@@ -151,6 +154,14 @@ public class BackupReader {
 						}
 						continue;
 					}
+					if (Archive.ENTRY_MODIFIED.equals(path[MODIFED])) {
+						try {
+							readModified(handler, zin);
+						} catch (IOException e) {
+							throw new BackupException(e);
+						}
+						continue;
+					}
 				} else if (path.length == 2) {
 					soupName = null;
 					soup = null;
@@ -253,6 +264,24 @@ public class BackupReader {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Read the modified time stamp.
+	 * 
+	 * @param handler
+	 *            the handler.
+	 * @param in
+	 *            the input.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	protected void readModified(BackupHandler handler, ZipInputStream in) throws IOException {
+		long hi = NewtonStreamedObjectFormat.ntohl(in) & 0xFFFFFFFFL;
+		long lo = NewtonStreamedObjectFormat.ntohl(in) & 0xFFFFFFFFL;
+		long time = (hi << 32) | lo;
+
+		handler.modified(time);
 	}
 
 	/**

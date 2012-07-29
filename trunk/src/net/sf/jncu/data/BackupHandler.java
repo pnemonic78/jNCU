@@ -51,6 +51,16 @@ public interface BackupHandler {
 	public void endBackup() throws BackupException;
 
 	/**
+	 * Receive notification of modified time stamp.
+	 * 
+	 * @param time
+	 *            the time in milliseconds.
+	 * @throws BackupException
+	 *             if a backup error occurs.
+	 */
+	public void modified(long time) throws BackupException;
+
+	/**
 	 * Receive notification of device information.
 	 * 
 	 * @param info
