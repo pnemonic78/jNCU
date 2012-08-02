@@ -2511,7 +2511,7 @@ public class FDILibrary implements FDConstants {
 		if (prefix1.equals(prefix2))
 			return true;
 
-		NSOFSymbol inheritance = NSOFSymbol.getInheritance(oClass);
+		NSOFSymbol inheritance = NSOFString.getInheritance(oClass);
 		if (inheritance != null) {
 			return inheritance.equals(oSuperclass);
 		}

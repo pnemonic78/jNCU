@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Newton Streamed Object Format - Symbol.
@@ -45,44 +43,6 @@ public class NSOFSymbol extends NSOFString {
 
 	/** Default symbol class. */
 	public static final NSOFSymbol CLASS_SYMBOL = new NSOFSymbol("symbol");
-
-	public static final NSOFSymbol CLASS_ADDRESS = new NSOFSymbol("address");
-	public static final NSOFSymbol CLASS_COMPANY = new NSOFSymbol("company");
-	public static final NSOFSymbol CLASS_NAME = new NSOFSymbol("name");
-	public static final NSOFSymbol CLASS_TITLE = new NSOFSymbol("title");
-	public static final NSOFSymbol CLASS_PHONE = new NSOFSymbol("phone");
-	public static final NSOFSymbol CLASS_PHONE_HOME = new NSOFSymbol("homePhone");
-	public static final NSOFSymbol CLASS_PHONE_WORK = new NSOFSymbol("workPhone");
-	public static final NSOFSymbol CLASS_PHONE_FAX = new NSOFSymbol("faxPhone");
-	public static final NSOFSymbol CLASS_PHONE_OTHER = new NSOFSymbol("otherPhone");
-	public static final NSOFSymbol CLASS_PHONE_CAR = new NSOFSymbol("carPhone");
-	public static final NSOFSymbol CLASS_PHONE_BEEPER = new NSOFSymbol("beeperPhone");
-	public static final NSOFSymbol CLASS_PHONE_MOBILE = new NSOFSymbol("mobilePhone");
-	public static final NSOFSymbol CLASS_PHONE_HOME_FAX = new NSOFSymbol("homeFaxPhone");
-
-	private static final Map<NSOFSymbol, NSOFSymbol> classes = new TreeMap<NSOFSymbol, NSOFSymbol>();
-
-	static {
-		// For compatibility with the version of NewtonScript found on Newton
-		// 1.x OS devices, the following classes are considered subclasses of
-		// "string"
-		setInheritance(CLASS_ADDRESS, CLASS_STRING);
-		setInheritance(CLASS_COMPANY, CLASS_STRING);
-		setInheritance(CLASS_NAME, CLASS_STRING);
-		setInheritance(CLASS_TITLE, CLASS_STRING);
-		setInheritance(CLASS_PHONE, CLASS_STRING);
-
-		// Furthermore the following classes are considered subclasses of
-		// "phone"
-		setInheritance(CLASS_PHONE_HOME, CLASS_PHONE);
-		setInheritance(CLASS_PHONE_WORK, CLASS_PHONE);
-		setInheritance(CLASS_PHONE_FAX, CLASS_PHONE);
-		setInheritance(CLASS_PHONE_OTHER, CLASS_PHONE);
-		setInheritance(CLASS_PHONE_CAR, CLASS_PHONE);
-		setInheritance(CLASS_PHONE_BEEPER, CLASS_PHONE);
-		setInheritance(CLASS_PHONE_MOBILE, CLASS_PHONE);
-		setInheritance(CLASS_PHONE_HOME_FAX, CLASS_PHONE);
-	}
 
 	private String valueLower;
 
@@ -173,52 +133,6 @@ public class NSOFSymbol extends NSOFString {
 		return new NSOFSymbol(getValue());
 	}
 
-	/**
-	 * Get the inheritances.
-	 * 
-	 * @return the inheritances.
-	 */
-	public static Map<NSOFSymbol, NSOFSymbol> getInheritances() {
-		return classes;
-	}
-
-	/**
-	 * Set the inheritances.
-	 * 
-	 * @param inheritances
-	 *            the inheritances.
-	 */
-	public static void setInheritances(Map<NSOFSymbol, NSOFSymbol> inheritances) {
-		classes.clear();
-		if (inheritances != null)
-			classes.putAll(inheritances);
-	}
-
-	/**
-	 * Set an inheritance.
-	 * 
-	 * @param clazz
-	 *            the class.
-	 * @param superclass
-	 *            the superclass.
-	 */
-	public static void setInheritance(NSOFSymbol clazz, NSOFSymbol superclass) {
-		classes.put(clazz, superclass);
-	}
-
-	/**
-	 * Get the inheritance.
-	 * 
-	 * @param clazz
-	 *            the class.
-	 * @return the superclass - {@code null} otherwise.
-	 */
-	public static NSOFSymbol getInheritance(NSOFSymbol clazz) {
-		if (clazz.getValue().startsWith("string."))
-			return CLASS_STRING;
-		return classes.get(clazz);
-	}
-
 	@Override
 	public String toString() {
 		if (toString == null) {
@@ -230,7 +144,7 @@ public class NSOFSymbol extends NSOFString {
 				int len = value.length();
 				char c;
 				boolean colon = false;
-				boolean dot = false;
+				// boolean dot = false;
 
 				for (int i = 0; i < len; i++) {
 					c = value.charAt(i);
@@ -241,11 +155,11 @@ public class NSOFSymbol extends NSOFString {
 						throw new IllegalCharInSymbolException(c);
 					if (c == ':')
 						colon = true;
-					else if (c == '.')
-						dot = true;
+					// else if (c == '.')
+					// dot = true;
 					buf.append(c);
 				}
-				if (colon || dot) {
+				if (colon) {
 					buf.insert(0, '|');
 					buf.append('|');
 				}
