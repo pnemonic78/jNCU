@@ -68,11 +68,15 @@ public class NSOFSymbol extends NSOFString {
 	@Override
 	public void inflate(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Number of characters in name (xlong)
-		int len = XLong.decodeValue(in);
+		int numChars = XLong.decodeValue(in);
 		// Name (bytes)
-		byte[] name = new byte[len];
-		readAll(in, name);
-		setValue(new String(name, CHARSET_MAC));
+		if (numChars == 0) {
+			setValue("");
+		} else {
+			byte[] name = new byte[numChars];
+			readAll(in, name);
+			setValue(new String(name, CHARSET_MAC));
+		}
 	}
 
 	@Override

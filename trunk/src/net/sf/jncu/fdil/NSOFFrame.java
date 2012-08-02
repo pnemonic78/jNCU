@@ -77,8 +77,10 @@ public class NSOFFrame extends NSOFPointer implements NSOFCollection {
 		}
 
 		// Slot values in ascending order (objects)
+		NSOFObject slot;
 		for (int i = 0; i < length; i++) {
-			put(symbols[i], decoder.inflate(in));
+			slot = decoder.inflate(in);
+			put(symbols[i], slot);
 		}
 	}
 

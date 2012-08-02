@@ -130,13 +130,17 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 	public void inflate(InputStream in, NSOFDecoder decoder) throws IOException {
 		// Number of bytes in string (xlong)
 		int numBytes = XLong.decodeValue(in);
-		// String (halfwords)
-		byte[] buf = new byte[numBytes];
-		readAll(in, buf);
-		// Trim?
-		while ((numBytes >= 2) && (buf[numBytes - 2] == 0) && (buf[numBytes - 1] == 0))
-			numBytes -= 2;
-		setValue(new String(buf, 0, numBytes, CHARSET_UTF16));
+		if (numBytes == 0) {
+			setValue("");
+		} else {
+			// String (halfwords)
+			byte[] buf = new byte[numBytes];
+			readAll(in, buf);
+			// Trim?
+			while ((numBytes >= 2) && (buf[numBytes - 2] == 0) && (buf[numBytes - 1] == 0))
+				numBytes -= 2;
+			setValue(new String(buf, 0, numBytes, CHARSET_UTF16));
+		}
 	}
 
 	@Override
@@ -145,7 +149,7 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 		if (CLASS_STRING.equals(nsClass)) {
 			out.write(NSOF_STRING);
 			String s = getValue();
-			if (s == null) {
+			if ((s == null) || (s.length() == 0)) {
 				// Number of bytes in string (xlong)
 				XLong.encode(0, out);
 			} else {
@@ -164,7 +168,7 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 		} else {
 			out.write(NSOF_BINARY);
 			String s = getValue();
-			if (s == null) {
+			if ((s == null) || (s.length() == 0)) {
 				// Number of bytes of data (xlong)
 				XLong.encode(0, out);
 
