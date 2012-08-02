@@ -359,6 +359,7 @@ public class BackupReader {
 	 *             if an I/O error occurs.
 	 */
 	protected void readSoupEntries(BackupHandler handler, ZipInputStream in, Store store, Soup soup) throws IOException {
+		final String storeName = store.getName();
 		NSOFDecoder decoder = new NSOFDecoder();
 		NSOFArray arr = (NSOFArray) decoder.inflate(in);
 
@@ -368,7 +369,7 @@ public class BackupReader {
 		for (int i = 0; i < size; i++) {
 			frame = (NSOFFrame) arr.get(i);
 			entry = new SoupEntry(frame);
-			handler.soupEntry(store.getName(), soup, entry);
+			handler.soupEntry(storeName, soup, entry);
 		}
 	}
 }

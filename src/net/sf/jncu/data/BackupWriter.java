@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -151,6 +152,7 @@ public class BackupWriter implements BackupHandler {
 		}
 
 		if (file != null) {
+			file.delete();
 			temp.renameTo(file);
 		}
 	}
@@ -270,7 +272,8 @@ public class BackupWriter implements BackupHandler {
 		name = name + Archive.ENTRY_ENTRIES;
 		putEntry(name);
 
-		Collection<SoupEntry> entries = soup.getEntries();
+		// Copy the list to avoid concurrency problems.
+		final Collection<SoupEntry> entries = new ArrayList<SoupEntry>(soup.getEntries());
 		NSOFArray arr = new NSOFPlainArray(entries.size());
 		int i = 0;
 		for (SoupEntry item : entries)

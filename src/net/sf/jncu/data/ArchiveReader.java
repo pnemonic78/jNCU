@@ -145,8 +145,11 @@ public class ArchiveReader implements BackupHandler {
 	public void soupEntry(String storeName, Soup soup, SoupEntry entry) throws BackupException {
 		Store store = archive.findStore(storeName);
 		Soup soupArchive = store.findSoup(soup.getName(), soup.getSignature());
-		if (soupArchive != soup)
-			throw new BackupException("soup is orphan");
-		soup.addEntry(entry);
+		if (soupArchive == null) {
+			soupArchive = store.findSoup(soup.getName());
+			if (soupArchive == null)
+				throw new BackupException("soup is orphan");
+		}
+		soupArchive.addEntry(entry);
 	}
 }
