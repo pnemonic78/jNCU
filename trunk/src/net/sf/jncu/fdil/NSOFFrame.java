@@ -109,6 +109,8 @@ public class NSOFFrame extends NSOFPointer implements NSOFCollection {
 
 	@Override
 	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
 		if (obj instanceof NSOFFrame) {
 			return this.slots.equals(((NSOFFrame) obj).slots);
 		}

@@ -123,6 +123,8 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 
 	@Override
 	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
 		if (obj instanceof NSOFPrecedent) {
 			return compareTo((NSOFPrecedent) obj) == 0;
 		}
