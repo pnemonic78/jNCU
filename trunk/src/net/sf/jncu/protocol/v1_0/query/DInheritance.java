@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.TreeMap;
 
+import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 
@@ -100,7 +101,7 @@ public class DInheritance extends DockCommandFromNewton {
 		classes.clear();
 		if (inheritances != null)
 			classes.putAll(inheritances);
-		NSOFSymbol.setInheritances(inheritances);
+		NSOFString.setInheritances(inheritances);
 	}
 
 	/**
@@ -113,7 +114,7 @@ public class DInheritance extends DockCommandFromNewton {
 	 */
 	protected void setInheritance(NSOFSymbol clazz, NSOFSymbol superclass) {
 		classes.put(clazz, superclass);
-		NSOFSymbol.setInheritance(clazz, superclass);
+		NSOFString.setInheritance(clazz, superclass);
 	}
 
 	/**

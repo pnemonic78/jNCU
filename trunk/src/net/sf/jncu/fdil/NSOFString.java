@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
+import java.util.TreeMap;
 
 import net.sf.lang.ControlCharacter;
 
@@ -40,6 +42,20 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 	 * <tt>kFD_SymString</tt>
 	 */
 	public static final NSOFSymbol CLASS_STRING = new NSOFSymbol("string");
+
+	public static final NSOFSymbol CLASS_ADDRESS = new NSOFSymbol("address");
+	public static final NSOFSymbol CLASS_COMPANY = new NSOFSymbol("company");
+	public static final NSOFSymbol CLASS_NAME = new NSOFSymbol("name");
+	public static final NSOFSymbol CLASS_TITLE = new NSOFSymbol("title");
+	public static final NSOFSymbol CLASS_PHONE = new NSOFSymbol("phone");
+	public static final NSOFSymbol CLASS_PHONE_HOME = new NSOFSymbol("homePhone");
+	public static final NSOFSymbol CLASS_PHONE_WORK = new NSOFSymbol("workPhone");
+	public static final NSOFSymbol CLASS_PHONE_FAX = new NSOFSymbol("faxPhone");
+	public static final NSOFSymbol CLASS_PHONE_OTHER = new NSOFSymbol("otherPhone");
+	public static final NSOFSymbol CLASS_PHONE_CAR = new NSOFSymbol("carPhone");
+	public static final NSOFSymbol CLASS_PHONE_BEEPER = new NSOFSymbol("beeperPhone");
+	public static final NSOFSymbol CLASS_PHONE_MOBILE = new NSOFSymbol("mobilePhone");
+	public static final NSOFSymbol CLASS_PHONE_HOME_FAX = new NSOFSymbol("homeFaxPhone");
 
 	/** 8-bit ASCII character encoding. */
 	public static final String CHARSET_ASCII = "ASCII";
@@ -62,6 +78,30 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 	protected static final char INK8 = ControlCharacter.SUB;
 
 	protected static final char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+
+	private static final Map<NSOFSymbol, NSOFSymbol> classes = new TreeMap<NSOFSymbol, NSOFSymbol>();
+
+	static {
+		// For compatibility with the version of NewtonScript found on Newton
+		// 1.x OS devices, the following classes are considered subclasses of
+		// "string"
+		setInheritance(CLASS_ADDRESS, CLASS_STRING);
+		setInheritance(CLASS_COMPANY, CLASS_STRING);
+		setInheritance(CLASS_NAME, CLASS_STRING);
+		setInheritance(CLASS_TITLE, CLASS_STRING);
+		setInheritance(CLASS_PHONE, CLASS_STRING);
+
+		// Furthermore the following classes are considered subclasses of
+		// "phone"
+		setInheritance(CLASS_PHONE_HOME, CLASS_PHONE);
+		setInheritance(CLASS_PHONE_WORK, CLASS_PHONE);
+		setInheritance(CLASS_PHONE_FAX, CLASS_PHONE);
+		setInheritance(CLASS_PHONE_OTHER, CLASS_PHONE);
+		setInheritance(CLASS_PHONE_CAR, CLASS_PHONE);
+		setInheritance(CLASS_PHONE_BEEPER, CLASS_PHONE);
+		setInheritance(CLASS_PHONE_MOBILE, CLASS_PHONE);
+		setInheritance(CLASS_PHONE_HOME_FAX, CLASS_PHONE);
+	}
 
 	private String value;
 	protected boolean valueSet;
@@ -323,5 +363,51 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 		if (value == null)
 			throw new NullPointerException();
 		return value.subSequence(start, end);
+	}
+
+	/**
+	 * Get the inheritances.
+	 * 
+	 * @return the inheritances.
+	 */
+	public static Map<NSOFSymbol, NSOFSymbol> getInheritances() {
+		return classes;
+	}
+
+	/**
+	 * Set the inheritances.
+	 * 
+	 * @param inheritances
+	 *            the inheritances.
+	 */
+	public static void setInheritances(Map<NSOFSymbol, NSOFSymbol> inheritances) {
+		classes.clear();
+		if (inheritances != null)
+			classes.putAll(inheritances);
+	}
+
+	/**
+	 * Set an inheritance.
+	 * 
+	 * @param clazz
+	 *            the class.
+	 * @param superclass
+	 *            the superclass.
+	 */
+	public static void setInheritance(NSOFSymbol clazz, NSOFSymbol superclass) {
+		classes.put(clazz, superclass);
+	}
+
+	/**
+	 * Get the inheritance.
+	 * 
+	 * @param clazz
+	 *            the class.
+	 * @return the superclass - {@code null} otherwise.
+	 */
+	public static NSOFSymbol getInheritance(NSOFSymbol clazz) {
+		if (clazz.getValue().startsWith("string."))
+			return CLASS_STRING;
+		return classes.get(clazz);
 	}
 }
