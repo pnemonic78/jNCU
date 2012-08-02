@@ -91,6 +91,8 @@ public class NSOFArray extends NSOFPointer implements NSOFCollection {
 
 	@Override
 	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
 		if (obj instanceof NSOFArray) {
 			NSOFArray that = (NSOFArray) obj;
 			int thisLength = this.length();

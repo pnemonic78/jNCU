@@ -319,6 +319,8 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 
 	@Override
 	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
 		if (obj instanceof NSOFString) {
 			return compareTo((NSOFString) obj) == 0;
 		}

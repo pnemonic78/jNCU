@@ -254,6 +254,8 @@ public class NSOFSmallRect extends NSOFFrame {
 
 	@Override
 	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
 		if (obj instanceof NSOFSmallRect) {
 			NSOFSmallRect that = (NSOFSmallRect) obj;
 			return (this.getBottom() == that.getBottom()) && (this.getLeft() == that.getLeft()) && (this.getRight() == that.getRight()) && (this.getTop() == that.getTop());
