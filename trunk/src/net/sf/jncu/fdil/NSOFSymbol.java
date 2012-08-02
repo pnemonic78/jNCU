@@ -85,9 +85,12 @@ public class NSOFSymbol extends NSOFString {
 
 		String name = getValue();
 		// Number of characters in name (xlong)
-		XLong.encode(name.length(), out);
-		// Name (bytes)
-		out.write(name.getBytes(CHARSET_MAC));
+		int numChars = (name == null) ? 0 : name.length();
+		XLong.encode(numChars, out);
+		if (numChars > 0) {
+			// Name (bytes)
+			out.write(name.getBytes(CHARSET_MAC));
+		}
 	}
 
 	@Override
