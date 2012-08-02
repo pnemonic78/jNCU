@@ -94,26 +94,26 @@ public class NSOFEncoder {
 	 */
 	protected void flattenImpl(NSOFObject object, OutputStream out) throws IOException {
 		if (object == null) {
-			NewtonStreamedObjectFormat.htonl(0, out);
-		} else {
-			if (object instanceof NSOFPrecedent) {
-				NSOFPrecedent id = (NSOFPrecedent) object;
-				Precedent p = id.getReferent();
-				if (p != null)
-					object = (NSOFObject) p;
-			}
-			if (precedentsUse && (object instanceof Precedent)) {
-				Precedent p = (Precedent) object;
-				NSOFPrecedent id = precedents.get(p);
-				if (id == null) {
-					id = new NSOFPrecedent(this.idMax++);
-					precedents.put(p, id);
-				} else {
-					object = id;
-				}
-			}
-			object.flatten(out, this);
+			// NewtonStreamedObjectFormat.htonl(0, out);
+			object = NSOFNil.NIL;
 		}
+		if (object instanceof NSOFPrecedent) {
+			NSOFPrecedent id = (NSOFPrecedent) object;
+			Precedent p = id.getReferent();
+			if (p != null)
+				object = (NSOFObject) p;
+		}
+		if (precedentsUse && (object instanceof Precedent)) {
+			Precedent p = (Precedent) object;
+			NSOFPrecedent id = precedents.get(p);
+			if (id == null) {
+				id = new NSOFPrecedent(this.idMax++);
+				precedents.put(p, id);
+			} else {
+				object = id;
+			}
+		}
+		object.flatten(out, this);
 	}
 
 	/**
