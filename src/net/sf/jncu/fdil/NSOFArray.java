@@ -92,7 +92,20 @@ public class NSOFArray extends NSOFPointer implements NSOFCollection {
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof NSOFArray) {
-			return this.getValue().equals(((NSOFArray) obj).getValue());
+			NSOFArray that = (NSOFArray) obj;
+			int thisLength = this.length();
+			int thatLength = that.length();
+			if (thisLength != thatLength)
+				return false;
+			NSOFObject thisItem;
+			NSOFObject thatItem;
+			for (int i = 0; i < thisLength; i++) {
+				thisItem = this.get(i);
+				thatItem = that.get(i);
+				if (!thisItem.equals(thatItem))
+					return false;
+			}
+			return true;
 		}
 		return super.equals(obj);
 	}
