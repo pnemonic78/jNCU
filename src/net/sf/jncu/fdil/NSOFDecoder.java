@@ -194,11 +194,11 @@ public class NSOFDecoder {
 				object = new NSOFReal(bin);
 			} else {
 				NSOFSymbol childClass = nsClass;
-				NSOFSymbol parentClass = NSOFSymbol.getInheritance(childClass);
+				NSOFSymbol parentClass = NSOFString.getInheritance(childClass);
 				if (parentClass != null) {
 					do {
 						childClass = parentClass;
-						parentClass = NSOFSymbol.getInheritance(childClass);
+						parentClass = NSOFString.getInheritance(childClass);
 					} while (parentClass != null);
 
 					if (NSOFString.CLASS_STRING.equals(childClass)) {
