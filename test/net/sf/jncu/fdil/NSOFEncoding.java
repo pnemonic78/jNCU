@@ -128,19 +128,11 @@ public class NSOFEncoding extends SFTestCase {
 	}
 
 	// extracted from DSoupInfo command.
-	private static final byte[] SOUP_INFO_NAMES_INTERNAL = { 2, 6, 3, 7, 7, 115, 111, 117, 112, 68, 101, 102, 7, 17, 78, 67, 75, 76, 97, 115, 116, 66, 97, 99, 107, 117, 112, 84,
-			105, 109, 101, 7, 12, 99, 117, 115, 116, 111, 109, 70, 105, 101, 108, 100, 115, 6, 6, 7, 8, 111, 119, 110, 101, 114, 65, 112, 112, 7, 9, 117, 115, 101, 114, 68, 101,
-			115, 99, 114, 7, 7, 105, 110, 100, 101, 120, 101, 115, 7, 4, 110, 97, 109, 101, 7, 8, 117, 115, 101, 114, 78, 97, 109, 101, 7, 12, 111, 119, 110, 101, 114, 65, 112,
-			112, 78, 97, 109, 101, 7, 8, 99, 97, 114, 100, 102, 105, 108, 101, 8, 60, 0, 83, 0, 111, 0, 117, 0, 112, 0, 32, 0, 119, 0, 105, 0, 116, 0, 104, 0, 32, 0, 78, 0, 97, 0,
-			109, 0, 101, 0, 115, 0, 32, 0, 97, 0, 110, 0, 100, 0, 32, 0, 65, 0, 100, 0, 100, 0, 114, 0, 101, 0, 115, 0, 115, 0, 101, 0, 115, 0, 0, 5, 2, 6, 3, 7, 4, 116, 121, 112,
-			101, 7, 4, 112, 97, 116, 104, 7, 9, 115, 116, 114, 117, 99, 116, 117, 114, 101, 7, 6, 115, 116, 114, 105, 110, 103, 7, 6, 115, 111, 114, 116, 111, 110, 7, 4, 115, 108,
-			111, 116, 6, 4, 9, 15, 9, 16, 7, 4, 116, 97, 103, 115, 9, 17, 9, 22, 7, 6, 108, 97, 98, 101, 108, 115, 10, 9, 20, 8, 12, 0, 78, 0, 97, 0, 109, 0, 101, 0, 115, 0, 0, 9,
-			24, 9, 24, 0, -1, 13, -99, -118, 60, 6, 8, 7, 7, 99, 117, 115, 116, 111, 109, 51, 7, 7, 99, 117, 115, 116, 111, 109, 56, 7, 7, 99, 117, 115, 116, 111, 109, 53, 7, 7,
-			99, 117, 115, 116, 111, 109, 50, 7, 7, 99, 117, 115, 116, 111, 109, 55, 7, 7, 99, 117, 115, 116, 111, 109, 52, 7, 7, 99, 117, 115, 116, 111, 109, 49, 7, 7, 99, 117,
-			115, 116, 111, 109, 54, 6, 1, 7, 5, 108, 97, 98, 101, 108, 8, 36, 0, 67, 0, 108, 0, 117, 0, 98, 0, 115, 0, 32, 0, 38, 0, 32, 0, 83, 0, 111, 0, 99, 0, 105, 0, 101, 0,
-			116, 0, 105, 0, 101, 0, 115, 0, 0, 6, 1, 9, 35, 8, 12, 0, 66, 0, 108, 0, 111, 0, 111, 0, 100, 0, 0, 6, 1, 9, 35, 8, 22, 0, 79, 0, 99, 0, 99, 0, 117, 0, 112, 0, 97, 0,
-			116, 0, 105, 0, 111, 0, 110, 0, 0, 6, 1, 9, 35, 8, 8, 0, 85, 0, 82, 0, 76, 0, 0, 6, 1, 9, 35, 8, 2, 0, 0, 6, 1, 9, 35, 8, 20, 0, 67, 0, 97, 0, 114, 0, 32, 0, 80, 0,
-			108, 0, 97, 0, 116, 0, 101, 0, 0, 6, 1, 9, 35, 8, 18, 0, 69, 0, 109, 0, 112, 0, 108, 0, 111, 0, 121, 0, 101, 0, 101, 0, 0, 6, 1, 9, 35, 8, 6, 0, 73, 0, 68, 0, 0 };
+	private static final byte[] SOUP_INFO_NAMES_INTERNAL = { /*
+															 * TODO POPULATE ME
+															 * from
+															 * "trace/backup_names.txt"
+															 */};
 
 	/**
 	 * Test soup encoding of Name on Internal card.
@@ -324,13 +316,14 @@ public class NSOFEncoding extends SFTestCase {
 	 * @throws Exception
 	 */
 	@Test
-	public void testStringsInFrame() throws Exception {
+	public void testStrings() throws Exception {
 		NSOFSymbol label = new NSOFSymbol("label");
-		String val = "Value";
-		String blank = "";
+		NSOFString val = new NSOFString("Value");
+		NSOFString blank = new NSOFString("");
+		NSOFString nil = new NSOFString(null);
 
 		NSOFFrame f = new NSOFFrame();
-		f.put(label, new NSOFString(val));
+		f.put(label, val);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		NSOFEncoder encoder = new NSOFEncoder();
 		encoder.flatten(f, out);
@@ -340,7 +333,7 @@ public class NSOFEncoding extends SFTestCase {
 		assertEquals(f, o);
 
 		f = new NSOFFrame();
-		f.put(label, new NSOFString(blank));
+		f.put(label, blank);
 		out = new ByteArrayOutputStream();
 		encoder = new NSOFEncoder();
 		encoder.flatten(f, out);
@@ -348,5 +341,43 @@ public class NSOFEncoding extends SFTestCase {
 		decoder = new NSOFDecoder();
 		o = decoder.inflate(in);
 		assertEquals(f, o);
+
+		f = new NSOFFrame();
+		f.put(label, nil);
+		out = new ByteArrayOutputStream();
+		encoder = new NSOFEncoder();
+		encoder.flatten(f, out);
+		in = new ByteArrayInputStream(out.toByteArray());
+		decoder = new NSOFDecoder();
+		o = decoder.inflate(in);
+		assertEquals(f, o);
+
+		out = new ByteArrayOutputStream();
+		encoder = new NSOFEncoder();
+		encoder.flatten(val, out);
+		encoder.flatten(blank, out);
+		encoder.flatten(nil, out);
+		in = new ByteArrayInputStream(out.toByteArray());
+		decoder = new NSOFDecoder();
+		o = decoder.inflate(in);
+		assertEquals(val, o);
+		o = decoder.inflate(in);
+		assertEquals(blank, o);
+		o = decoder.inflate(in);
+		assertEquals(nil, o);
+
+		out = new ByteArrayOutputStream();
+		encoder = new NSOFEncoder();
+		encoder.flatten(blank, out);
+		encoder.flatten(nil, out);
+		encoder.flatten(val, out);
+		in = new ByteArrayInputStream(out.toByteArray());
+		decoder = new NSOFDecoder();
+		o = decoder.inflate(in);
+		assertEquals(blank, o);
+		o = decoder.inflate(in);
+		assertEquals(nil, o);
+		o = decoder.inflate(in);
+		assertEquals(val, o);
 	}
 }

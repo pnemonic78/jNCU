@@ -146,29 +146,33 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 	@Override
 	public void flatten(OutputStream out, NSOFEncoder encoder) throws IOException {
 		NSOFSymbol nsClass = getObjectClass();
+		String s = getValue();
+		if (s == null) {
+			NSOFNil.NIL.flatten(out, encoder);
+			return;
+		}
+		int numBytes = s.length() << 1;
 		if (CLASS_STRING.equals(nsClass)) {
 			out.write(NSOF_STRING);
-			String s = getValue();
-			if ((s == null) || (s.length() == 0)) {
+			if (numBytes == 0) {
 				// Number of bytes in string (xlong)
 				XLong.encode(0, out);
 			} else {
 				byte[] buf = s.getBytes(CHARSET_UTF16);
 				// Number of bytes in string (xlong)
 				// 2-bytes per character + null-terminated
-				XLong.encode(buf.length, out);
+				XLong.encode(numBytes + 2, out);
 
 				// String (halfwords)
 				// Bytes [0] and [1] are 0xFE and 0xFF
 				if (buf.length >= 2)
-					out.write(buf, 2, buf.length - 2);
+					out.write(buf, 2, numBytes);
 				out.write(0);
 				out.write(0);
 			}
 		} else {
 			out.write(NSOF_BINARY);
-			String s = getValue();
-			if ((s == null) || (s.length() == 0)) {
+			if (numBytes == 0) {
 				// Number of bytes of data (xlong)
 				XLong.encode(0, out);
 
@@ -178,7 +182,7 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 				byte[] buf = s.getBytes(CHARSET_UTF16);
 				// Number of bytes of data (xlong)
 				// 2-bytes per character + null-terminated
-				XLong.encode(buf.length, out);
+				XLong.encode(numBytes + 2, out);
 
 				// Class (object)
 				encoder.flatten(nsClass, out);
@@ -186,7 +190,7 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 				// Data
 				// Bytes [0] and [1] are 0xFE and 0xFF
 				if (buf.length >= 2)
-					out.write(buf, 2, buf.length - 2);
+					out.write(buf, 2, numBytes);
 				out.write(0);
 				out.write(0);
 			}
@@ -327,6 +331,9 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 			return true;
 		if (obj instanceof NSOFString) {
 			return compareTo((NSOFString) obj) == 0;
+		}
+		if ((obj instanceof NSOFObject) && NSOFImmediate.isNil((NSOFObject) obj)) {
+			return getValue() == null;
 		}
 		return super.equals(obj);
 	}
