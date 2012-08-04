@@ -157,9 +157,9 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	 *            the bit depth.
 	 */
 	public NSOFRawBitmap(int bitDepth) {
-		this();
-		setBitDepth(bitDepth);
+		super();
 		setObjectClass((bitDepth == BIT_DEPTH_1) ? CLASS_BITS : CLASS_COLOR_BITS);
+		setBitDepth(bitDepth);
 	}
 
 	/**

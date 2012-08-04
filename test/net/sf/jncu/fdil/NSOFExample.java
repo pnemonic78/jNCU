@@ -103,13 +103,12 @@ public class NSOFExample extends SFTestCase {
 	@Test
 	public void testEncode() throws Exception {
 		NSOFObject[] phones = new NSOFObject[] { new NSOFString("408-996-1010"), null };
-		NSOFBinaryObject faxPhone = new NSOFBinaryObject();
-		faxPhone.setObjectClass("faxPhone");
 		byte[] utf16 = "408-974-9094".getBytes("UTF-16");
 		System.arraycopy(utf16, 2, utf16, 0, utf16.length - 2);
 		utf16[utf16.length - 2] = 0;
 		utf16[utf16.length - 1] = 0;
-		faxPhone.setValue(utf16);
+		NSOFBinaryObject faxPhone = new NSOFBinaryObject(utf16);
+		faxPhone.setObjectClass("faxPhone");
 		phones[1] = faxPhone;
 
 		NSOFFrame x = new NSOFFrame();

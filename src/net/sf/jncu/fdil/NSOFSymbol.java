@@ -47,11 +47,13 @@ public class NSOFSymbol extends NSOFString {
 	private String valueLower;
 
 	/**
-	 * Constructs a new symbol.
+	 * Constructs a new symbol.<br>
+	 * <em>Reserved for use by decoder!</em>
 	 */
 	public NSOFSymbol() {
 		super();
 		setObjectClass(CLASS_SYMBOL);
+		this.valueLower = "";
 	}
 
 	/**
@@ -61,7 +63,8 @@ public class NSOFSymbol extends NSOFString {
 	 *            the symbol name.
 	 */
 	public NSOFSymbol(String name) {
-		this();
+		super();
+		setObjectClass(CLASS_SYMBOL);
 		setValue(name);
 	}
 
@@ -95,29 +98,26 @@ public class NSOFSymbol extends NSOFString {
 
 	@Override
 	protected void setValue(String value) {
-		if (value == null) {
-			super.setValue(value);
-			this.valueLower = null;
-		} else {
-			int len = value.length();
-			if (len > MAX_LENGTH)
-				throw new SymbolTooLongException();
-			char c;
-			for (int i = 0; i < len; i++) {
-				c = value.charAt(i);
-				if ((c < 32) || (c > 127))
-					throw new IllegalCharInSymbolException(c);
-				if ((c == '|') || (c == '\\'))
-					throw new IllegalCharInSymbolException(c);
-			}
-			super.setValue(value);
-			this.valueLower = value.toLowerCase(Locale.ENGLISH);
+		if (value == null)
+			throw new IllegalArgumentException("non-null value required");
+		int len = value.length();
+		if (len > MAX_LENGTH)
+			throw new SymbolTooLongException();
+		char c;
+		for (int i = 0; i < len; i++) {
+			c = value.charAt(i);
+			if ((c < 32) || (c > 127))
+				throw new IllegalCharInSymbolException(c);
+			if ((c == '|') || (c == '\\'))
+				throw new IllegalCharInSymbolException(c);
 		}
+		super.setValue(value);
+		this.valueLower = value.toLowerCase(Locale.ENGLISH);
 	}
 
 	@Override
 	public int hashCode() {
-		return (valueLower == null) ? 0 : valueLower.hashCode();
+		return valueLower.hashCode();
 	}
 
 	@Override
@@ -126,11 +126,7 @@ public class NSOFSymbol extends NSOFString {
 			return +1;
 		if (other instanceof NSOFSymbol) {
 			NSOFSymbol that = (NSOFSymbol) other;
-			String valThis = this.valueLower;
-			String valThat = that.valueLower;
-			if (valThis == null)
-				return (valThat == null) ? 0 : -1;
-			return valThis.compareTo(valThat);
+			return this.valueLower.compareTo(that.valueLower);
 		}
 		return super.compareTo(other);
 	}
@@ -144,34 +140,23 @@ public class NSOFSymbol extends NSOFString {
 	public String toString() {
 		if (toString == null) {
 			String value = getValue();
-			if (value == null) {
-				toString = NSOFNil.NIL.toString();
-			} else {
-				StringBuffer buf = new StringBuffer();
-				int len = value.length();
-				char c;
-				boolean colon = false;
-				// boolean dot = false;
+			StringBuffer buf = new StringBuffer();
+			int len = value.length();
+			char c;
+			boolean colon = false;
 
-				for (int i = 0; i < len; i++) {
-					c = value.charAt(i);
+			for (int i = 0; i < len; i++) {
+				c = value.charAt(i);
 
-					if ((c < 32) || (c > 127))
-						throw new IllegalCharInSymbolException(c);
-					if ((c == '|') || (c == '\\'))
-						throw new IllegalCharInSymbolException(c);
-					if (c == ':')
-						colon = true;
-					// else if (c == '.')
-					// dot = true;
-					buf.append(c);
-				}
-				if (colon) {
-					buf.insert(0, '|');
-					buf.append('|');
-				}
-				toString = "'" + buf.toString();
+				if (c == ':')
+					colon = true;
+				buf.append(c);
 			}
+			if (colon) {
+				buf.insert(0, '|');
+				buf.append('|');
+			}
+			toString = "'" + buf.toString();
 		}
 		return toString;
 	}

@@ -62,7 +62,7 @@ public class PlainTextTranslator extends TextTranslator {
 	@Override
 	public NSOFObject translateToNewton(InputStream in) {
 		// TODO Auto-generated method stub
-		NSOFBinaryObject bin = new NSOFBinaryObject();
+		NSOFBinaryObject bin = new NSOFBinaryObject(null);
 		bin.setObjectClass(CLASS_PAPER);
 		return bin;
 	}

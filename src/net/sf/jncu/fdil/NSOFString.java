@@ -108,11 +108,13 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 	protected String toString;
 
 	/**
-	 * Constructs a new string.
+	 * Constructs a new string.<br>
+	 * <em>Reserved for use by decoder!</em>
 	 */
 	public NSOFString() {
 		super();
 		setObjectClass(CLASS_STRING);
+		this.value = "";
 	}
 
 	/**
@@ -122,7 +124,8 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 	 *            the value.
 	 */
 	public NSOFString(String value) {
-		this();
+		super();
+		setObjectClass(CLASS_STRING);
 		setValue(value);
 	}
 
@@ -147,10 +150,6 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 	public void flatten(OutputStream out, NSOFEncoder encoder) throws IOException {
 		NSOFSymbol nsClass = getObjectClass();
 		String s = getValue();
-		if (s == null) {
-			NSOFNil.NIL.flatten(out, encoder);
-			return;
-		}
 		int numBytes = s.length() << 1;
 		if (CLASS_STRING.equals(nsClass)) {
 			out.write(NSOF_STRING);
@@ -213,6 +212,8 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 	 *            the value.
 	 */
 	protected void setValue(String value) {
+		if (value == null)
+			throw new IllegalArgumentException("non-null value required");
 		if (valueSet)
 			throw new IllegalArgumentException("value already set");
 		this.value = value;
@@ -257,7 +258,7 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 
 	@Override
 	public int hashCode() {
-		return (value == null) ? 0 : value.hashCode();
+		return value.hashCode();
 	}
 
 	/**
@@ -278,37 +279,33 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 	@Override
 	public String toString() {
 		if (toString == null) {
-			if (value == null) {
-				toString = NSOFNil.NIL.toString();
-			} else {
-				StringBuffer buf = new StringBuffer();
-				int len = value.length();
-				char c;
+			StringBuffer buf = new StringBuffer();
+			int len = value.length();
+			char c;
 
-				for (int i = 0; i < len; i++) {
-					c = value.charAt(i);
-					if ((c >= 32) && (c <= 127)) {
-						buf.append(c);
-					} else if (c == '\n') {
-						buf.append("\\n");
-					} else if (c == '\r') {
-						buf.append("\\r");
-					} else if (c == '\t') {
-						buf.append("\\t");
-					} else if (c == '\\') {
-						buf.append("\\\\");
-					} else if (c == '"') {
-						buf.append("\\\"");
-					} else {
-						buf.append("\\u");
-						buf.append(HEX[(c >>> 12) & 0x000F]);
-						buf.append(HEX[(c >>> 8) & 0x000F]);
-						buf.append(HEX[(c >>> 4) & 0x000F]);
-						buf.append(HEX[(c >>> 0) & 0x000F]);
-					}
+			for (int i = 0; i < len; i++) {
+				c = value.charAt(i);
+				if ((c >= 32) && (c <= 127)) {
+					buf.append(c);
+				} else if (c == '\n') {
+					buf.append("\\n");
+				} else if (c == '\r') {
+					buf.append("\\r");
+				} else if (c == '\t') {
+					buf.append("\\t");
+				} else if (c == '\\') {
+					buf.append("\\\\");
+				} else if (c == '"') {
+					buf.append("\\\"");
+				} else {
+					buf.append("\\u");
+					buf.append(HEX[(c >>> 12) & 0x000F]);
+					buf.append(HEX[(c >>> 8) & 0x000F]);
+					buf.append(HEX[(c >>> 4) & 0x000F]);
+					buf.append(HEX[(c >>> 0) & 0x000F]);
 				}
-				toString = "\"" + buf.toString() + "\"";
 			}
+			toString = "\"" + buf.toString() + "\"";
 		}
 		return toString;
 	}
@@ -319,9 +316,6 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 			return +1;
 		String valThis = this.getValue();
 		String valThat = that.getValue();
-		if (valThis == null) {
-			return (valThat == null) ? 0 : -1;
-		}
 		return valThis.compareTo(valThat);
 	}
 
@@ -331,9 +325,6 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 			return true;
 		if (obj instanceof NSOFString) {
 			return compareTo((NSOFString) obj) == 0;
-		}
-		if ((obj instanceof NSOFObject) && NSOFImmediate.isNil((NSOFObject) obj)) {
-			return getValue() == null;
 		}
 		return super.equals(obj);
 	}
@@ -361,20 +352,16 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 
 	@Override
 	public int length() {
-		return (value == null) ? 0 : value.length();
+		return value.length();
 	}
 
 	@Override
 	public char charAt(int index) {
-		if (value == null)
-			throw new NullPointerException();
 		return value.charAt(index);
 	}
 
 	@Override
 	public CharSequence subSequence(int start, int end) {
-		if (value == null)
-			throw new NullPointerException();
 		return value.subSequence(start, end);
 	}
 

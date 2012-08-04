@@ -50,7 +50,8 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 	private Precedent referent;
 
 	/**
-	 * Constructs a new precedent.
+	 * Constructs a new precedent.<br>
+	 * <em>Reserved for use by decoder!</em>
 	 */
 	public NSOFPrecedent() {
 		super();
@@ -64,7 +65,8 @@ public class NSOFPrecedent extends NSOFObject implements Comparable<NSOFPreceden
 	 *            the id.
 	 */
 	public NSOFPrecedent(int id) {
-		this();
+		super();
+		setObjectClass(CLASS_PRECEDENT);
 		setId(id);
 	}
 

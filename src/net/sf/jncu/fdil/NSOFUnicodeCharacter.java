@@ -35,7 +35,8 @@ public class NSOFUnicodeCharacter extends NSOFCharacter {
 	public static final NSOFSymbol CLASS_UNICODE = new NSOFSymbol("uniChar");
 
 	/**
-	 * Constructs a new Unicode character.
+	 * Constructs a new Unicode character.<br>
+	 * <em>Reserved for use by decoder!</em>
 	 */
 	public NSOFUnicodeCharacter() {
 		super();
@@ -49,7 +50,8 @@ public class NSOFUnicodeCharacter extends NSOFCharacter {
 	 *            the character.
 	 */
 	public NSOFUnicodeCharacter(char value) {
-		this();
+		super();
+		setObjectClass(CLASS_UNICODE);
 		setValue(value);
 	}
 
@@ -60,7 +62,8 @@ public class NSOFUnicodeCharacter extends NSOFCharacter {
 	 *            the code point.
 	 */
 	public NSOFUnicodeCharacter(int value) {
-		this();
+		super();
+		setObjectClass(CLASS_UNICODE);
 		setValue(value);
 	}
 

@@ -34,13 +34,6 @@ public class NSOFRichString extends NSOFString {
 
 	/**
 	 * Constructs a new string.
-	 */
-	public NSOFRichString() {
-		super();
-	}
-
-	/**
-	 * Constructs a new string.
 	 * 
 	 * @param value
 	 *            the value.

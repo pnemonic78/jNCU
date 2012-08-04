@@ -32,7 +32,8 @@ import java.io.OutputStream;
 public class NSOFAsciiCharacter extends NSOFCharacter {
 
 	/**
-	 * Constructs a new character.
+	 * Constructs a new character.<br>
+	 * <em>Reserved for use by decoder!</em>
 	 */
 	public NSOFAsciiCharacter() {
 		super();
