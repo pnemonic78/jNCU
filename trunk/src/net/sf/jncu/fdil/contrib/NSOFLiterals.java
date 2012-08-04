@@ -36,7 +36,7 @@ public class NSOFLiterals extends NSOFArray {
 	/**
 	 * Constructs a new literals array.
 	 */
-	public NSOFLiterals() {
+	private NSOFLiterals() {
 		super();
 		setObjectClass(CLASS_LITERALS);
 	}

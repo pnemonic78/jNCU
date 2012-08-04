@@ -82,7 +82,8 @@ public class NSOFLargeBinary extends NSOFBinaryObject {
 	private Blob blob;
 
 	/**
-	 * Constructs a new large binary object.
+	 * Constructs a new large binary object.<br>
+	 * <em>Reserved for use by decoder!</em>
 	 */
 	public NSOFLargeBinary() {
 		super();

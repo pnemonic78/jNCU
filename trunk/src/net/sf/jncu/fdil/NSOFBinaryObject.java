@@ -43,8 +43,7 @@ public class NSOFBinaryObject extends NSOFPointer {
 	 * Constructs a new binary object.
 	 */
 	public NSOFBinaryObject() {
-		super();
-		setObjectClass(CLASS_BINARY);
+		this(new byte[0]);
 	}
 
 	/**
@@ -54,7 +53,8 @@ public class NSOFBinaryObject extends NSOFPointer {
 	 *            the value.
 	 */
 	public NSOFBinaryObject(byte[] value) {
-		this();
+		super();
+		setObjectClass(CLASS_BINARY);
 		setValue(value);
 	}
 
@@ -79,22 +79,14 @@ public class NSOFBinaryObject extends NSOFPointer {
 
 		byte[] v = getValue();
 
-		if (v == null) {
-			// Number of bytes of data (xlong)
-			XLong.encode(0, out);
+		// Number of bytes of data (xlong)
+		XLong.encode(v.length, out);
 
-			// Class (object)
-			encoder.flatten(getObjectClass(), out);
-		} else {
-			// Number of bytes of data (xlong)
-			XLong.encode(v.length, out);
+		// Class (object)
+		encoder.flatten(getObjectClass(), out);
 
-			// Class (object)
-			encoder.flatten(getObjectClass(), out);
-
-			// Data
-			out.write(v);
-		}
+		// Data
+		out.write(v);
 	}
 
 	/**
@@ -113,25 +105,24 @@ public class NSOFBinaryObject extends NSOFPointer {
 	 *            the value.
 	 */
 	public void setValue(byte[] value) {
+		if (value == null)
+			throw new IllegalArgumentException("non-null value required");
 		this.value = value;
 	}
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		NSOFBinaryObject copy = new NSOFBinaryObject();
+		NSOFBinaryObject copy = new NSOFBinaryObject(this.value);
 		copy.setObjectClass(this.getObjectClass());
-		copy.value = this.value;
 		return copy;
 	}
 
 	@Override
 	public NSOFObject deepClone() throws CloneNotSupportedException {
-		NSOFBinaryObject copy = new NSOFBinaryObject();
+		byte[] copyValue = new byte[this.value.length];
+		System.arraycopy(this.value, 0, copyValue, 0, copyValue.length);
+		NSOFBinaryObject copy = new NSOFBinaryObject(copyValue);
 		copy.setObjectClass(this.getObjectClass());
-		if (this.value != null) {
-			copy.value = new byte[this.value.length];
-			System.arraycopy(this.value, 0, copy.value, 0, this.value.length);
-		}
 		return copy;
 	}
 }

@@ -80,7 +80,8 @@ public class NSOFSmallRect extends NSOFFrame {
 	 *            the right co-ordinate.
 	 */
 	public NSOFSmallRect(byte top, byte left, byte bottom, byte right) {
-		this();
+		super();
+		setObjectClass(CLASS_SMALL_RECT);
 		setTop(top);
 		setLeft(left);
 		setBottom(bottom);

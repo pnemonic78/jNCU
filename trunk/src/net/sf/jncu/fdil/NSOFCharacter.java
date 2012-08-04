@@ -38,10 +38,12 @@ public class NSOFCharacter extends NSOFImmediate {
 	protected static final char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 	/**
-	 * Constructs a new character.
+	 * Constructs a new character.<br>
+	 * <em>Reserved for use by decoder!</em>
 	 */
-	public NSOFCharacter() {
-		super('\u0000');
+	protected NSOFCharacter() {
+		super(IMMEDIATE_CHARACTER);
+		setObjectClass(CLASS_CHARACTER);
 	}
 
 	/**

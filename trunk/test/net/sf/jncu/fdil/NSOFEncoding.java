@@ -320,7 +320,11 @@ public class NSOFEncoding extends SFTestCase {
 		NSOFSymbol label = new NSOFSymbol("label");
 		NSOFString val = new NSOFString("Value");
 		NSOFString blank = new NSOFString("");
-		NSOFString nil = new NSOFString(null);
+		try {
+			NSOFString nil = new NSOFString(null);
+			assertNull(nil);
+		} catch (IllegalArgumentException iae) {
+		}
 
 		NSOFFrame f = new NSOFFrame();
 		f.put(label, val);
@@ -342,41 +346,25 @@ public class NSOFEncoding extends SFTestCase {
 		o = decoder.inflate(in);
 		assertEquals(f, o);
 
-		f = new NSOFFrame();
-		f.put(label, nil);
-		out = new ByteArrayOutputStream();
-		encoder = new NSOFEncoder();
-		encoder.flatten(f, out);
-		in = new ByteArrayInputStream(out.toByteArray());
-		decoder = new NSOFDecoder();
-		o = decoder.inflate(in);
-		assertEquals(f, o);
-
 		out = new ByteArrayOutputStream();
 		encoder = new NSOFEncoder();
 		encoder.flatten(val, out);
 		encoder.flatten(blank, out);
-		encoder.flatten(nil, out);
 		in = new ByteArrayInputStream(out.toByteArray());
 		decoder = new NSOFDecoder();
 		o = decoder.inflate(in);
 		assertEquals(val, o);
 		o = decoder.inflate(in);
 		assertEquals(blank, o);
-		o = decoder.inflate(in);
-		assertEquals(nil, o);
 
 		out = new ByteArrayOutputStream();
 		encoder = new NSOFEncoder();
 		encoder.flatten(blank, out);
-		encoder.flatten(nil, out);
 		encoder.flatten(val, out);
 		in = new ByteArrayInputStream(out.toByteArray());
 		decoder = new NSOFDecoder();
 		o = decoder.inflate(in);
 		assertEquals(blank, o);
-		o = decoder.inflate(in);
-		assertEquals(nil, o);
 		o = decoder.inflate(in);
 		assertEquals(val, o);
 	}

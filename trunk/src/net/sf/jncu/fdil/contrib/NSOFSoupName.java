@@ -39,13 +39,6 @@ public class NSOFSoupName extends NSOFString {
 
 	/**
 	 * Constructs a new name.
-	 */
-	public NSOFSoupName() {
-		super();
-	}
-
-	/**
-	 * Constructs a new name.
 	 * 
 	 * @param value
 	 *            the name.

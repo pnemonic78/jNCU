@@ -40,7 +40,7 @@ public class NSOFReal extends NSOFBinaryObject {
 	/**
 	 * Creates a new real number.
 	 */
-	public NSOFReal() {
+	private NSOFReal() {
 		super();
 		setObjectClass(CLASS_REAL);
 	}
