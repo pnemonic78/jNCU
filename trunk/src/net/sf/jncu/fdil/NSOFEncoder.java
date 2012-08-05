@@ -125,13 +125,10 @@ public class NSOFEncoder {
 	 */
 	public static NSOFObject toNS(Object o) {
 		if (o == null) {
-			return new NSOFNil();
+			return NSOFNil.NIL;
 		}
 		if (o instanceof Boolean) {
-			if (((Boolean) o).booleanValue()) {
-				return new NSOFTrue();
-			}
-			return new NSOFNil();
+			return ((Boolean) o).booleanValue() ? NSOFBoolean.TRUE : NSOFBoolean.FALSE;
 		}
 		if (o instanceof Character) {
 			return new NSOFUnicodeCharacter((Character) o);
@@ -148,12 +145,12 @@ public class NSOFEncoder {
 		if (o instanceof Number) {
 			return new NSOFImmediate(((Number) o).intValue(), NSOFImmediate.IMMEDIATE_INTEGER);
 		}
+		if (o instanceof CharSequence) {
+			return new NSOFString(o.toString());
+		}
 		if (o instanceof Rectangle) {
 			Rectangle rect = (Rectangle) o;
 			return new NSOFSmallRect(rect.y, rect.x, rect.y + rect.height, rect.x + rect.width);
-		}
-		if (o instanceof String) {
-			return new NSOFString((String) o);
 		}
 		if (o.getClass().isArray()) {
 			if (o instanceof byte[]) {

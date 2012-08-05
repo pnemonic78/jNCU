@@ -49,57 +49,54 @@ import net.sf.jncu.dil.WritingToPipeException;
  * objects, and frames and arrays with circular references. The FDIL, unlike
  * NewtonScript, does not provide automatic garbage collection.
  * <p>
- * <h2>About the FDIL Objects</h2>
- * <br>
+ * <h2>About the FDIL Objects</h2> <br>
  * The objects the FDIL manipulate mimic the NewtonScript objects. There is a
  * one-to-one correspondence between NewtonScript and FDIL objects. There are a
  * number of minor implementation details that differ, however.
  * <p>
  * <h1>Using the FDIL</h1>
- * <h2>Initializing the Library</h2>
- * Before calling any FDIL function, you should initialize the library by
- * calling <tt>FD_Startup</tt>. When you are done using the library, call
- * <tt>FD_Shutdown</tt>; this function deallocates all memory used by the FDIL.
- * Usually you just call <tt>FD_Startup</tt> once, but you can call it multiple
- * times as long as an equal number of calls to <tt>FD_Shutdown</tt> are made.
- * <h2>Object Comparison</h2>
- * The <tt>FD_Equal</tt> function compares two FDIL objects. Objects of
- * different types are never equal. Note that this is unlike NewtonScript, where
- * the integer 3 and the real 3.0 are considered equal. All pointer objects:
- * binaries, arrays, frames, and large binaries, are equal only if they refer to
- * the same object.
- * <h2>Object Duplication</h2>
- * The <tt>FD_Clone</tt> and <tt>FD_DeepClone</tt> create duplicates of an FDIL
- * object. If the object is an aggregate object, that is an array or frame,
- * <tt>FD_Clone</tt> only copies the top level objects. <tt>FD_DeepClone</tt>
- * also makes copies of any nested objects, recursively.
- * <h2>Object Printing</h2>
- * The <tt>FD_PrintObject</tt> function prints formatted FDIL objects.
- * <tt>FD_PrintObject</tt> actually just converts the object into formatted
- * text. You must supply a function to actually print the formatted text.
- * <h2>Error Handling</h2>
- * All functions set an internal error code indicating the success of that
- * operation. A few functions also return that error code directly. You can
- * access the internal error code value with the <tt>FD_GetError</tt> function.
- * You should call <tt>FD_GetError</tt> after every FDIL function code that does
- * not return an error code. The functions listed in “FDIL Reference” (page
- * 3-29) list the possible error codes that each particular function might
- * create.
- * <h2>Object Streaming</h2>
- * The <tt>FD_Flatten</tt> function converts any FDIL object, including
- * aggregate objects such as frames and arrays, to a flat stream of bytes in
- * Newton Stream Object Format (NSOF). <tt>FD_Flatten</tt> then calls a callback
- * function you provide to actually write the data. You could, for instance,
- * send the data to a Newton device over a CDIL pipe with the CD_Write function,
- * or store it to disk. The <tt>FD_UnFlatten</tt> function conversely converts
- * from an NSOF byte stream to an FDIL object, calling a callback function you
- * provide to get the NSOF byte stream. For a description of NSOF, see Chapter
- * 4, “Newton Streamed Object Format,” in Newton Formats.
- * <h2>Object Classes</h2>
- * All objects have a class. An object’s class is primarily for your use as a
- * programmer in giving a meaning to your data. The class of integer, immediate,
- * and magic pointer objects is immutable. Pointer objects have default classes,
- * but you can change them with the <tt>FD_SetClass</tt> function.
+ * <h2>Initializing the Library</h2> Before calling any FDIL function, you
+ * should initialize the library by calling <tt>FD_Startup</tt>. When you are
+ * done using the library, call <tt>FD_Shutdown</tt>; this function deallocates
+ * all memory used by the FDIL. Usually you just call <tt>FD_Startup</tt> once,
+ * but you can call it multiple times as long as an equal number of calls to
+ * <tt>FD_Shutdown</tt> are made.
+ * <h2>Object Comparison</h2> The <tt>FD_Equal</tt> function compares two FDIL
+ * objects. Objects of different types are never equal. Note that this is unlike
+ * NewtonScript, where the integer 3 and the real 3.0 are considered equal. All
+ * pointer objects: binaries, arrays, frames, and large binaries, are equal only
+ * if they refer to the same object.
+ * <h2>Object Duplication</h2> The <tt>FD_Clone</tt> and <tt>FD_DeepClone</tt>
+ * create duplicates of an FDIL object. If the object is an aggregate object,
+ * that is an array or frame, <tt>FD_Clone</tt> only copies the top level
+ * objects. <tt>FD_DeepClone</tt> also makes copies of any nested objects,
+ * recursively.
+ * <h2>Object Printing</h2> The <tt>FD_PrintObject</tt> function prints
+ * formatted FDIL objects. <tt>FD_PrintObject</tt> actually just converts the
+ * object into formatted text. You must supply a function to actually print the
+ * formatted text.
+ * <h2>Error Handling</h2> All functions set an internal error code indicating
+ * the success of that operation. A few functions also return that error code
+ * directly. You can access the internal error code value with the
+ * <tt>FD_GetError</tt> function. You should call <tt>FD_GetError</tt> after
+ * every FDIL function code that does not return an error code. The functions
+ * listed in "FDIL Reference" (page 3-29) list the possible error codes that
+ * each particular function might create.
+ * <h2>Object Streaming</h2> The <tt>FD_Flatten</tt> function converts any FDIL
+ * object, including aggregate objects such as frames and arrays, to a flat
+ * stream of bytes in Newton Stream Object Format (NSOF). <tt>FD_Flatten</tt>
+ * then calls a callback function you provide to actually write the data. You
+ * could, for instance, send the data to a Newton device over a CDIL pipe with
+ * the CD_Write function, or store it to disk. The <tt>FD_UnFlatten</tt>
+ * function conversely converts from an NSOF byte stream to an FDIL object,
+ * calling a callback function you provide to get the NSOF byte stream. For a
+ * description of NSOF, see Chapter 4, "Newton Streamed Object Format," in
+ * Newton Formats.
+ * <h2>Object Classes</h2> All objects have a class. An object’s class is
+ * primarily for your use as a programmer in giving a meaning to your data. The
+ * class of integer, immediate, and magic pointer objects is immutable. Pointer
+ * objects have default classes, but you can change them with the
+ * <tt>FD_SetClass</tt> function.
  * <p>
  * 
  * @author Moshe
@@ -121,7 +118,6 @@ public class FDILibrary implements FDConstants {
 	 * 
 	 * @param val
 	 *            An integer between -536,870,912...536,870,911, inclusive.
-	 * 
 	 * @return An integer FDIL object.
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
@@ -228,13 +224,12 @@ public class FDILibrary implements FDConstants {
 	 * <tt>int FD_IsImmediate(FD_Handle obj)</tt>
 	 * <p>
 	 * <em>SPECIAL CONSIDERATIONS</em><br>
-	 * In NewtonScript the term “immediate” includes integers. Therefore, the
+	 * In NewtonScript the term "immediate" includes integers. Therefore, the
 	 * NewtonScript function <tt>IsImmediate</tt> differs from
 	 * <tt>FD_IsImmediate</tt>.
 	 * 
 	 * @param obj
 	 *            The object to test.
-	 * 
 	 * @return Zero or non-zero.
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
@@ -257,7 +252,6 @@ public class FDILibrary implements FDConstants {
 	 *            A pointer to where the value should be stored. If this value
 	 *            is {@code NULL}, the immediate value is simply not returned,
 	 *            no error is signaled.
-	 * 
 	 * @return type at index {@code 0}, and value at index {@code 1}.
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
@@ -690,7 +684,6 @@ public class FDILibrary implements FDConstants {
 	 *            Either {@code NULL} in which case the binary object is given a
 	 *            default class, or a string that is passed to
 	 *            <tt>FD_MakeSymbol</tt> and becomes the object’s class.
-	 * 
 	 * @return A binary FDIL object.
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
@@ -741,8 +734,8 @@ public class FDILibrary implements FDConstants {
 	 * <em>DISCUSSION</em><br>
 	 * <tt>FD_GetBinaryData</tt> cannot be used to get a pointer to the contents
 	 * of a large binary object. Instead, use <tt>FD_ReadFromLargeBinary</tt>
-	 * and <tt>FD_WriteToLargeBinary</tt> to access and modify a large binary’s
-	 * contents.
+	 * and <tt>FD_WriteToLargeBinary</tt> to access and modify a large
+	 * binary’s contents.
 	 * <p>
 	 * <em>SPECIAL CONSIDERATIONS</em><br>
 	 * Any pointers obtained with <tt>FD_GetBinaryData</tt> are invalidated by
@@ -768,7 +761,6 @@ public class FDILibrary implements FDConstants {
 	 * 
 	 * @param val
 	 *            Any valid IEEE-754 floating point value.
-	 * 
 	 * @return A real FDIL object.
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
@@ -783,7 +775,6 @@ public class FDILibrary implements FDConstants {
 	 * 
 	 * @param val
 	 *            Any valid IEEE-754 floating point value.
-	 * 
 	 * @return A real FDIL object.
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
@@ -852,13 +843,12 @@ public class FDILibrary implements FDConstants {
 	 * Symbols are a pooled resource. Once created, a symbol is added to an
 	 * internal table. Subsequent requests to create a new symbol from the same
 	 * text results in a reference to the previously created symbol to be
-	 * returned; where “the same text” implies a case-insensitive comparison.
+	 * returned; where "the same text" implies a case-insensitive comparison.
 	 * 
 	 * @param str
 	 *            A <tt>NULL</tt>-terminated series of less than 254 ASCII
 	 *            characters with values between 32-127, excluding the vertical
 	 *            bar (‘|’) and backslash (‘\’) characters.
-	 * 
 	 * @return A symbol FDIL object.
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
@@ -900,13 +890,12 @@ public class FDILibrary implements FDConstants {
 	 * Symbols are a pooled resource. Once created, a symbol is added to an
 	 * internal table. Subsequent requests to create a new symbol from the same
 	 * text results in a reference to the previously created symbol to be
-	 * returned; where “the same text” implies a case-insensitive comparison.
+	 * returned; where "the same text" implies a case-insensitive comparison.
 	 * 
 	 * @param str
 	 *            A <tt>NULL</tt>-terminated series of less than 254 ASCII
 	 *            characters with values between 32-127, excluding the vertical
 	 *            bar (‘|’) and backslash (‘\’) characters.
-	 * 
 	 * @return A symbol FDIL object.
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
@@ -936,13 +925,12 @@ public class FDILibrary implements FDConstants {
 	 * Symbols are a pooled resource. Once created, a symbol is added to an
 	 * internal table. Subsequent requests to create a new symbol from the same
 	 * text results in a reference to the previously created symbol to be
-	 * returned; where “the same text” implies a case-insensitive comparison.
+	 * returned; where "the same text" implies a case-insensitive comparison.
 	 * 
 	 * @param str
 	 *            A <tt>NULL</tt>-terminated series of less than 254 ASCII
 	 *            characters with values between 32-127, excluding the vertical
 	 *            bar (‘|’) and backslash (‘\’) characters.
-	 * 
 	 * @return A symbol FDIL object.
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
@@ -1011,8 +999,7 @@ public class FDILibrary implements FDConstants {
 	 * 
 	 * @param str
 	 *            A <tt>NULL</tt>-terminated series of ASCII characters; in
-	 *            other words, a “C string.”
-	 * 
+	 *            other words, a "C string."
 	 * @return A string FDIL object.
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
@@ -1048,8 +1035,7 @@ public class FDILibrary implements FDConstants {
 	 * 
 	 * @param str
 	 *            A <tt>NULL</tt>-terminated series of ASCII characters; in
-	 *            other words, a “C string.”
-	 * 
+	 *            other words, a "C string."
 	 * @return A string FDIL object.
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
@@ -1066,8 +1052,7 @@ public class FDILibrary implements FDConstants {
 	 * 
 	 * @param str
 	 *            A <tt>NULL</tt>-terminated series of ASCII characters; in
-	 *            other words, a “C string.”
-	 * 
+	 *            other words, a "C string."
 	 * @return A string FDIL object.
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
@@ -1084,7 +1069,6 @@ public class FDILibrary implements FDConstants {
 	 * 
 	 * @param unicodeStr
 	 *            <tt>NULL</tt>-terminated series of Unicode characters.
-	 * 
 	 * @return A string FDIL object.
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
@@ -1102,7 +1086,6 @@ public class FDILibrary implements FDConstants {
 	 * 
 	 * @param unicodeStr
 	 *            <tt>NULL</tt>-terminated series of Unicode characters.
-	 * 
 	 * @return A string FDIL object.
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
@@ -1111,8 +1094,7 @@ public class FDILibrary implements FDConstants {
 	public static FDHandle makeWideString(final CharSequence unicodeStr) throws FDILNotInitializedException, NullPointerException {
 		checkInitialized();
 		long memBefore = Runtime.getRuntime().totalMemory();
-		String val = (unicodeStr == null) ? null : unicodeStr.toString();
-		NSOFString s = new NSOFString(val);
+		NSOFString s = new NSOFString(unicodeStr.toString());
 		FDHandle obj = handles.create(s);
 		usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
 		return obj;
@@ -1371,7 +1353,6 @@ public class FDILibrary implements FDConstants {
 	 *            the data. Specify <tt>kFD_NoCompression</tt> if you do not
 	 *            want the data compressed, and <tt>kFD_LZCompression</tt> to
 	 *            compress the data.
-	 * 
 	 * @return A large binary FDIL object.
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
@@ -1624,7 +1605,6 @@ public class FDILibrary implements FDConstants {
 	 *            Either <tt>NULL</tt> in which case the array’s is given a
 	 *            default class, or a string that is passed to
 	 *            <tt>FD_MakeSymbol</tt> and becomes the array’s class.
-	 * 
 	 * @return An array FDIL object.
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
@@ -2006,7 +1986,6 @@ public class FDILibrary implements FDConstants {
 	 * 
 	 * @param val
 	 *            The pointer value.
-	 * 
 	 * @return A magic pointer FDIL object.
 	 * @throws FDILNotInitializedException
 	 *             if the library is not initialized.
@@ -2439,9 +2418,9 @@ public class FDILibrary implements FDConstants {
 	 * class.<br>
 	 * <tt>int FD_IsSubClass(FD_Handle obj, const char* class)</tt>
 	 * <p>
-	 * The <tt>FD_IsSubClass</tt> function determines if an object’s class is a
-	 * subclass of a given class. This function uses the same algorithm used in
-	 * the NewtonScript language, namely:
+	 * The <tt>FD_IsSubClass</tt> function determines if an object’s class is
+	 * a subclass of a given class. This function uses the same algorithm used
+	 * in the NewtonScript language, namely:
 	 * <ul>
 	 * <li>Every class is a subclass of the empty class "".
 	 * <li>Every class is a subclass of itself.

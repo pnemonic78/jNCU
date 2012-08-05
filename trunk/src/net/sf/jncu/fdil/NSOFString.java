@@ -164,8 +164,7 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 
 				// String (halfwords)
 				// Bytes [0] and [1] are 0xFE and 0xFF
-				if (buf.length >= 2)
-					out.write(buf, 2, numBytes);
+				out.write(buf, 2, numBytes);
 				out.write(0);
 				out.write(0);
 			}
@@ -188,8 +187,7 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
 
 				// Data
 				// Bytes [0] and [1] are 0xFE and 0xFF
-				if (buf.length >= 2)
-					out.write(buf, 2, numBytes);
+				out.write(buf, 2, numBytes);
 				out.write(0);
 				out.write(0);
 			}
