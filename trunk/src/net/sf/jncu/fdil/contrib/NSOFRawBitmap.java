@@ -299,8 +299,6 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 			}
 			setBitDepth(bitDepth);
 		}
-
-		setValue(null);
 	}
 
 	/**
@@ -333,7 +331,6 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	 */
 	public void setTop(int top) {
 		this.top = top;
-		setValue(null);
 	}
 
 	/**
@@ -380,7 +377,6 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	 */
 	public void setBottom(int bottom) {
 		this.bottom = bottom;
-		setValue(null);
 	}
 
 	/**
@@ -447,7 +443,7 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 	 */
 	public void setPixels(byte[] pixels) {
 		this.pixels = pixels;
-		setValue(null);
+		// setValue(null);
 	}
 
 	@Override
@@ -529,7 +525,7 @@ public class NSOFRawBitmap extends NSOFBinaryObject {
 		int mask = (pixel & pixelMask) << shift;
 		pixels[off] &= ~mask; // Clear the bit.
 		pixels[off] |= mask; // Set the bit.
-		setValue(null);
+		// setValue(null);
 	}
 
 	/**
