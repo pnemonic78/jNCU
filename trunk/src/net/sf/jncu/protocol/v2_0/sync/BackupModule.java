@@ -158,25 +158,23 @@ public class BackupModule extends IconModule {
 			DStoreNames storeNames = (DStoreNames) command;
 			stores = storeNames.getStores();
 
-			// In order to show the dialog, we need to populate it with
-			// stores and applications.
-			switch (state) {
-			case INITIALISED:
-				// DGetAppNames -> DAppNames -> dialog
-				DGetAppNames getApps = new DGetAppNames();
-				getApps.setWhat(DGetAppNames.ALL_STORES_NAMES_SOUPS);
-				write(getApps);
-				break;
-			case BACKUP:
-				backupStores();
-				break;
-			}
+			// DGetAppNames -> DAppNames -> dialog / backupStores
+			DGetAppNames getApps = new DGetAppNames();
+			getApps.setWhat(DGetAppNames.ALL_STORES_NAMES_SOUPS);
+			write(getApps);
 		} else if (DAppNames.COMMAND.equals(cmd)) {
 			DAppNames names = (DAppNames) command;
 			appNames = names.getNames();
 
-			if (state == State.INITIALISED) {
+			switch (state) {
+			case INITIALISED:
+				// In order to show the dialog, we need to populate it with
+				// stores and applications.
 				showDialog();
+				break;
+			case BACKUP:
+				backupStores();
+				break;
 			}
 		} else if (DCurrentTime.COMMAND.equals(cmd)) {
 			if (state == State.OPTIONS) {
