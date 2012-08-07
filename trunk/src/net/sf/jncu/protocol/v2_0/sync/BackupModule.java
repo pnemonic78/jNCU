@@ -30,9 +30,6 @@ import javax.swing.ProgressMonitor;
 import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
-import net.sf.jncu.data.BackupException;
-import net.sf.jncu.data.BackupHandler;
-import net.sf.jncu.data.BackupWriter;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.newton.os.Store;
@@ -58,6 +55,9 @@ import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
+import net.sf.jncu.sync.BackupException;
+import net.sf.jncu.sync.BackupHandler;
+import net.sf.jncu.sync.BackupWriter;
 
 /**
  * Backup module.

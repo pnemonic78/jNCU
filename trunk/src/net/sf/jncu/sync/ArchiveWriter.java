@@ -17,7 +17,7 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.data;
+package net.sf.jncu.sync;
 
 import java.io.File;
 import java.io.IOException;
