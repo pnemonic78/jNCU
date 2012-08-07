@@ -190,7 +190,7 @@ public class SyncOptions {
 			NSOFObject[] entries = arr.getValue();
 			Store store;
 			for (NSOFObject entry : entries) {
-				store = new Store(null);
+				store = new Store("");
 				store.fromFrame((NSOFFrame) entry);
 				stores.add(store);
 			}

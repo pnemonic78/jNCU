@@ -198,7 +198,7 @@ public class BackupModule extends IconModule {
 				if (Boolean.getBoolean("debug")) {
 					String thisName = this.soup.getName();
 					String thatName = info.getSoup().getName();
-					if ((thisName == null) || ((thatName != null) && !thisName.equals(thatName))) {
+					if ((thisName.length() == 0) || ((thatName.length() > 0) && !thisName.equals(thatName))) {
 						System.err.println("Expected name [" + thisName + "], but was [" + thatName + "]");
 						System.exit(1);
 					}

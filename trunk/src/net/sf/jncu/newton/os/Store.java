@@ -132,7 +132,7 @@ public class Store implements Comparable<Store> {
 					name = ((NSOFString) entry).getValue();
 					soup = new Soup(name);
 				} else {
-					soup = new Soup(null);
+					soup = new Soup("");
 					soup.fromFrame((NSOFFrame) entry);
 				}
 				soups.add(soup);
@@ -152,7 +152,7 @@ public class Store implements Comparable<Store> {
 			setSoupSignatures(signatures);
 		}
 
-		if (this.name == null) {
+		if (this.name.length() == 0) {
 			value = frame.get(SLOT_NAME);
 			if (!NSOFImmediate.isNil(value)) {
 				NSOFString s = (NSOFString) value;
@@ -177,6 +177,8 @@ public class Store implements Comparable<Store> {
 	 *            the name.
 	 */
 	private void setName(String name) {
+		if (name == null)
+			name = "";
 		this.name = name;
 		frame.put(SLOT_NAME, new NSOFString(name));
 	}
