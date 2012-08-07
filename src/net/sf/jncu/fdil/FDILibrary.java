@@ -734,8 +734,8 @@ public class FDILibrary implements FDConstants {
 	 * <em>DISCUSSION</em><br>
 	 * <tt>FD_GetBinaryData</tt> cannot be used to get a pointer to the contents
 	 * of a large binary object. Instead, use <tt>FD_ReadFromLargeBinary</tt>
-	 * and <tt>FD_WriteToLargeBinary</tt> to access and modify a large
-	 * binary’s contents.
+	 * and <tt>FD_WriteToLargeBinary</tt> to access and modify a large binary’s
+	 * contents.
 	 * <p>
 	 * <em>SPECIAL CONSIDERATIONS</em><br>
 	 * Any pointers obtained with <tt>FD_GetBinaryData</tt> are invalidated by
@@ -2228,8 +2228,8 @@ public class FDILibrary implements FDConstants {
 					deepDispose(handles.find(item));
 			}
 		} else if (p instanceof NSOFBinaryObject) {
-			NSOFBinaryObject b = (NSOFBinaryObject) p;
-			b.setValue(null);
+			// NSOFBinaryObject b = (NSOFBinaryObject) p;
+			// b.setValue(null);
 			dispose(obj);
 		} else if (p instanceof NSOFFrame) {
 			NSOFFrame f = (NSOFFrame) p;
@@ -2418,9 +2418,9 @@ public class FDILibrary implements FDConstants {
 	 * class.<br>
 	 * <tt>int FD_IsSubClass(FD_Handle obj, const char* class)</tt>
 	 * <p>
-	 * The <tt>FD_IsSubClass</tt> function determines if an object’s class is
-	 * a subclass of a given class. This function uses the same algorithm used
-	 * in the NewtonScript language, namely:
+	 * The <tt>FD_IsSubClass</tt> function determines if an object’s class is a
+	 * subclass of a given class. This function uses the same algorithm used in
+	 * the NewtonScript language, namely:
 	 * <ul>
 	 * <li>Every class is a subclass of the empty class "".
 	 * <li>Every class is a subclass of itself.
