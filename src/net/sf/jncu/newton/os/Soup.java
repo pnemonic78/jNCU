@@ -253,7 +253,7 @@ public class Soup implements Comparable<Soup> {
 	public void fromFrame(NSOFFrame frame) {
 		setInformation(frame);
 
-		if (this.name == null) {
+		if (this.name.length() == 0) {
 			NSOFObject value = frame.get(SLOT_NAME);
 			if (NSOFImmediate.isNil(value)) {
 				value = getDefinition().get(SLOT_NAME);
@@ -355,13 +355,13 @@ public class Soup implements Comparable<Soup> {
 	public void fromSoup(Soup that) {
 		String nameOld = getName();
 		int signatureOld = getSignature();
-		setName(null);
+		setName("");
 		try {
 			fromFrame((NSOFFrame) that.toFrame().deepClone());
 		} catch (CloneNotSupportedException e) {
 			fromFrame(that.toFrame());
 		}
-		if (getName() == null)
+		if (getName().length() == 0)
 			setName(nameOld);
 		if (getSignature() == 0)
 			setSignature(signatureOld);

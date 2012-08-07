@@ -77,7 +77,7 @@ public class DSoupInfo extends DockCommandFromNewtonScript<NSOFFrame> {
 		if (frame != null) {
 			soup = getSoup();
 			if (soup == null)
-				soup = new Soup(null);
+				soup = new Soup("");
 			soup.fromFrame(frame);
 		}
 		setSoup(soup);

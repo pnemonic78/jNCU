@@ -62,25 +62,25 @@ public class NSOFFrame extends NSOFPointer implements NSOFCollection {
 		this.slots.clear();
 
 		// Number of slots (xlong)
-		int length = XLong.decodeValue(in);
-		NSOFSymbol[] symbols = new NSOFSymbol[length];
+		final int size = XLong.decodeValue(in);
+		NSOFSymbol[] keys = new NSOFSymbol[size];
 		NSOFString str;
 
 		// Slot tags in ascending order (symbol objects)
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i < size; i++) {
 			str = (NSOFString) decoder.inflate(in);
 			if (str instanceof NSOFSymbol) {
-				symbols[i] = (NSOFSymbol) str;
+				keys[i] = (NSOFSymbol) str;
 			} else {
-				symbols[i] = new NSOFSymbol(str.getValue());
+				keys[i] = new NSOFSymbol(str.getValue());
 			}
 		}
 
 		// Slot values in ascending order (objects)
 		NSOFObject slot;
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i < size; i++) {
 			slot = decoder.inflate(in);
-			put(symbols[i], slot);
+			put(keys[i], slot);
 		}
 	}
 
@@ -88,18 +88,20 @@ public class NSOFFrame extends NSOFPointer implements NSOFCollection {
 	public void flatten(OutputStream out, NSOFEncoder encoder) throws IOException {
 		out.write(NSOF_FRAME);
 
+		final List<NSOFSymbol> keys = new ArrayList<NSOFSymbol>(slots.keySet());
+
 		// Number of slots (xlong)
-		XLong.encode(slots.size(), out);
+		XLong.encode(keys.size(), out);
 
 		// Slot tags in ascending order (symbol objects)
-		for (NSOFSymbol sym : slots.keySet()) {
-			encoder.flatten(sym, out);
+		for (NSOFSymbol key : keys) {
+			encoder.flatten(key, out);
 		}
 
 		// Slot values in ascending order (objects)
 		NSOFObject slot;
-		for (NSOFSymbol sym : slots.keySet()) {
-			slot = get(sym);
+		for (NSOFSymbol key : keys) {
+			slot = get(key);
 			encoder.flatten(slot, out);
 		}
 	}

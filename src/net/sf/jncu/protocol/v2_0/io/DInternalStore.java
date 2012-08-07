@@ -92,7 +92,7 @@ public class DInternalStore extends DockCommandFromNewton {
 	 *            the store frame.
 	 */
 	protected void setStore(NSOFFrame frame) {
-		Store store = new Store(null);
+		Store store = new Store("");
 		store.fromFrame(frame);
 		setStore(store);
 	}
