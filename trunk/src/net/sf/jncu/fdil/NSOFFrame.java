@@ -235,7 +235,12 @@ public class NSOFFrame extends NSOFPointer implements NSOFCollection {
 			sb.append('=');
 			if (value instanceof NSOFArray) {
 				int size = ((NSOFArray) value).length();
-				sb.append("[" + size + (size == 1 ? " Element" : " Elements") + "]");
+				if (size == 0)
+					sb.append("[]");
+				else if (size == 1)
+					sb.append("[1 Element]");
+				else
+					sb.append("[" + size + " Elements]");
 			} else
 				sb.append(value.toString());
 			i++;
