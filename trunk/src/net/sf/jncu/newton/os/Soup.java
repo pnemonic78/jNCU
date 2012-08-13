@@ -290,7 +290,7 @@ public class Soup implements Comparable<Soup> {
 				setIndexes((NSOFArray) value);
 			}
 		}
-		if (name != null)
+		if (name.length() > 0)
 			this.info.put(SLOT_NAME, new NSOFString(name));
 	}
 
@@ -314,25 +314,16 @@ public class Soup implements Comparable<Soup> {
 
 	@Override
 	public int hashCode() {
-		return (name == null) ? 0 : name.hashCode();
+		return name.hashCode();
 	}
 
 	@Override
 	public int compareTo(Soup that) {
-		int n = 0;
-		if (this.name == null) {
-			if (that.name != null) {
-				return -1;
-			}
-		} else if (that.name == null) {
-			return 1;
-		} else {
-			n = this.name.compareTo(that.name);
-		}
-		if (n != 0)
-			return n;
-		n = this.getSignature() - that.getSignature();
-		return 0;
+		int c = this.name.compareTo(that.name);
+		if (c != 0)
+			return c;
+		c = this.getSignature() - that.getSignature();
+		return c;
 	}
 
 	@Override

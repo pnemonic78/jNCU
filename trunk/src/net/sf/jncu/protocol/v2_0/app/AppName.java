@@ -125,7 +125,7 @@ public class AppName extends NSOFFrame implements Comparable<AppName> {
 	/**
 	 * Get the application name.
 	 * 
-	 * @return the name.
+	 * @return the name - {@code null} otherwise.
 	 */
 	public String getName() {
 		NSOFObject o = get(SLOT_NAME);
@@ -147,7 +147,7 @@ public class AppName extends NSOFFrame implements Comparable<AppName> {
 	/**
 	 * Get the application soup names.
 	 * 
-	 * @return the array of names.
+	 * @return the array of names - {@code null} otherwise.
 	 */
 	public NSOFArray getSoups() {
 		NSOFObject o = get(SLOT_SOUPS);
