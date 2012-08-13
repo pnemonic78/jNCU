@@ -546,20 +546,11 @@ public class Store implements Comparable<Store> {
 
 	@Override
 	public int compareTo(Store that) {
-		int c = 0;
-		if (this.name == null) {
-			if (that.name != null) {
-				return -1;
-			}
-		} else if (that.name == null) {
-			return 1;
-		} else {
-			c = this.name.compareTo(that.name);
-		}
+		int c = this.name.compareTo(that.name);
 		if (c != 0)
 			return c;
 		c = this.getSignature() - that.getSignature();
-		return 0;
+		return c;
 	}
 
 	@Override
