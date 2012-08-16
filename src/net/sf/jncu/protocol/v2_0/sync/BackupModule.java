@@ -21,8 +21,13 @@ package net.sf.jncu.protocol.v2_0.sync;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.swing.ProgressMonitor;
@@ -30,6 +35,8 @@ import javax.swing.ProgressMonitor;
 import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
+import net.sf.jncu.fdil.NSOFArray;
+import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.newton.os.Store;
@@ -66,6 +73,47 @@ import net.sf.jncu.sync.BackupWriter;
  */
 public class BackupModule extends IconModule {
 
+	/**
+	 * Backup events listener.
+	 */
+	public static interface BackupListener extends IconModuleListener {
+		/**
+		 * The store is about to be backed up.
+		 * 
+		 * @param module
+		 *            the backup module.
+		 * @param store
+		 *            the store.
+		 */
+		public void backupStore(BackupModule module, Store store);
+
+		/**
+		 * The application is about to be backed up.
+		 * 
+		 * @param module
+		 *            the backup module.
+		 * @param store
+		 *            the store.
+		 * @param appName
+		 *            the application.
+		 */
+		public void backupApplication(BackupModule module, Store store, AppName appName);
+
+		/**
+		 * The soup is about to be backed up.
+		 * 
+		 * @param module
+		 *            the backup module.
+		 * @param store
+		 *            the store.
+		 * @param appName
+		 *            the application.
+		 * @param soup
+		 *            the soup.
+		 */
+		public void backupSoup(BackupModule module, Store store, AppName appName, Soup soup);
+	}
+
 	protected enum State {
 		NONE,
 		/** Request from the Newton that we want to backup. */
@@ -78,6 +126,10 @@ public class BackupModule extends IconModule {
 		BACKUP,
 		/** Doing the backup for the store. */
 		BACKUP_STORE,
+		/** Doing the backup for the store's applications. */
+		BACKUP_APPS,
+		/** Doing the backup for the application. */
+		BACKUP_APP,
 		/** Doing the backup for the store's soups. */
 		BACKUP_SOUPS,
 		/** Doing the backup for the soup. */
@@ -95,11 +147,15 @@ public class BackupModule extends IconModule {
 	private SyncOptions options;
 	private BackupHandler writer;
 	private Collection<Store> stores;
-	private Collection<AppName> appNames;
-	private Store store;
-	private Soup soup;
+	private List<AppName> appNames;
 	private Iterator<Store> storesIter;
+	private Store store;
+	private Iterator<AppName> appsIter;
+	private AppName appName;
 	private Iterator<Soup> soupsIter;
+	private Soup soup;
+	private Map<AppName, Collection<Soup>> soupsToBackup;
+	private final List<BackupListener> listeners = new ArrayList<BackupListener>();
 
 	/**
 	 * Creates a new module.
@@ -165,6 +221,7 @@ public class BackupModule extends IconModule {
 		} else if (DAppNames.COMMAND.equals(cmd)) {
 			DAppNames names = (DAppNames) command;
 			appNames = names.getNames();
+			Collections.sort(appNames);
 
 			switch (state) {
 			case INITIALISED:
@@ -186,7 +243,7 @@ public class BackupModule extends IconModule {
 				store.setSoups(soupNames.getSoups());
 
 				if (state == State.BACKUP_STORE) {
-					backupSoups(store);
+					backupApps(store);
 				}
 			}
 		} else if (DSoupInfo.COMMAND.equals(cmd)) {
@@ -375,6 +432,7 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	protected void backupStores() throws BadPipeStateException {
+		System.out.println("@@@ backupStores " + state);// @@@
 		if (writer == null)
 			return;
 		if (!isEnabled())
@@ -397,6 +455,8 @@ public class BackupModule extends IconModule {
 			return;
 		this.storesIter = storesToBackup.iterator();
 		this.store = null;
+		this.appsIter = null;
+		this.appName = null;
 		this.soupsIter = null;
 		this.soup = null;
 
@@ -410,6 +470,7 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	protected void backupNextStore() throws BadPipeStateException {
+		System.out.println("@@@ backupNextStore " + state);// @@@
 		if (writer == null)
 			return;
 		if (!isEnabled())
@@ -429,17 +490,21 @@ public class BackupModule extends IconModule {
 		// No mores stores?
 		if (!storesIter.hasNext()) {
 			try {
-				writer.endBackup();
 				writeDone();
+				writer.endBackup();
 			} catch (BackupException e) {
 				e.printStackTrace();
 			}
 			return;
 		}
+		this.state = State.BACKUP_STORE;
 		this.store = storesIter.next();
+		this.appsIter = null;
+		this.appName = null;
 		this.soupsIter = null;
 		this.soup = null;
-		this.state = State.BACKUP_STORE;
+		// Notify listeners we are now going to backup <store>
+		fireBackupStore(store);
 
 		try {
 			writer.startStore(store.getName());
@@ -456,14 +521,18 @@ public class BackupModule extends IconModule {
 	}
 
 	/**
-	 * Backup the store's selected soups.
+	 * Backup the store's selected applications.
+	 * <p>
+	 * Soups to backup := (options soups) INTERSECT (store soups) INTERSECT
+	 * (appName soups)
 	 * 
 	 * @param store
 	 *            the store.
 	 * @throws BadPipeStateException
 	 *             if invalid state.
 	 */
-	protected void backupSoups(Store store) throws BadPipeStateException {
+	protected void backupApps(Store store) throws BadPipeStateException {
+		System.out.println("@@@ backupApps " + state + " store=" + store);// @@@
 		if (writer == null)
 			return;
 		if (!isEnabled())
@@ -471,39 +540,123 @@ public class BackupModule extends IconModule {
 		if (state != State.BACKUP_STORE)
 			throw new BadPipeStateException("bad state " + state);
 
-		// Find the selected soups from the sync options.
-		Collection<Soup> soupsOptions = null;
-		String storeName = store.getName();
-		for (Store storeSelected : options.getStores()) {
-			if (storeName.equals(storeSelected.getName())) {
-				soupsOptions = storeSelected.getSoups();
-				break;
-			}
-		}
-		if ((soupsOptions == null) || soupsOptions.isEmpty()) {
-			writeDone();
-			return;
-		}
+		// Populate the list of soups to backup.
+		soupsToBackup = new TreeMap<AppName, Collection<Soup>>();
+		Collection<Soup> soups;
+		Collection<Soup> soupsOptions;
+		String storeNameOption, soupNameOption, soupNameApp, soupNameStore;
+		NSOFArray appNameSoups;
+		int appNameSoupsLength;
 
-		// Populate the list of soups (for the current store) to backup.
-		Collection<Soup> soupsToBackup = new TreeSet<Soup>();
-		String soupName;
-		for (Soup soupOptions : soupsOptions) {
-			soupName = soupOptions.getName();
-			for (Soup soup : store.getSoups()) {
-				if (soupName.equals(soup.getName())) {
-					soupsToBackup.add(soup);
+		for (Store storeOption : options.getStores()) {
+			storeNameOption = storeOption.getName();
+			if (!storeNameOption.equals(store) && !storeNameOption.equals(store.getName()))
+				continue;
+			soupsOptions = storeOption.getSoups();
+			if ((soupsOptions == null) || soupsOptions.isEmpty())
+				continue;
+
+			for (Soup soupOptions : soupsOptions) {
+				soupNameOption = soupOptions.getName();
+
+				for (Soup soupStore : store.getSoups()) {
+					soupNameStore = soupStore.getName();
+					if (!soupNameOption.equals(soupNameStore))
+						continue;
+
+					for (AppName appName : appNames) {
+						appNameSoups = appName.getSoups();
+						appNameSoupsLength = (appNameSoups == null) ? 0 : appNameSoups.length();
+						if (appNameSoupsLength == 0)
+							continue;
+						soups = soupsToBackup.get(appName);
+
+						for (int i = 0; i < appNameSoupsLength; i++) {
+							soupNameApp = ((NSOFString) appNameSoups.get(i)).getValue();
+							if (!soupNameApp.equals(soupNameOption))
+								continue;
+
+							if (soups == null) {
+								soups = new TreeSet<Soup>();
+								soupsToBackup.put(appName, soups);
+							}
+							soups.add(soupStore);
+							break;
+						}
+					}
+					break;
 				}
 			}
 		}
+
 		if (soupsToBackup.isEmpty()) {
 			state = State.BACKUP;
 			backupNextStore();
 			return;
 		}
 
+		this.state = State.BACKUP_APPS;
+		this.appsIter = soupsToBackup.keySet().iterator();
+		this.appName = null;
+		this.soupsIter = null;
+		this.soup = null;
+		backupNextApp();
+	}
+
+	/**
+	 * Backup the next selected application.
+	 * 
+	 * @throws BadPipeStateException
+	 *             if invalid state.
+	 */
+	protected void backupNextApp() throws BadPipeStateException {
+		System.out.println("@@@ backupNextApp " + state);// @@@
+		if (writer == null)
+			return;
+		if (!isEnabled())
+			return;
+		if (state != State.BACKUP_APPS)
+			throw new BadPipeStateException("bad state " + state);
+
+		if (!appsIter.hasNext()) {
+			state = State.BACKUP;
+			backupNextStore();
+			return;
+		}
+		this.state = State.BACKUP_APP;
+		this.appName = appsIter.next();
+		this.soupsIter = null;
+		this.soup = null;
+		// Notify listeners we are now going to backup <store, appName>
+		fireBackupApp(store, appName);
+
+		backupSoups(store, appName);
+	}
+
+	/**
+	 * Backup the store's selected soups.
+	 * 
+	 * @param store
+	 *            the store.
+	 * @param appName
+	 *            the application name.
+	 * @throws BadPipeStateException
+	 *             if invalid state.
+	 */
+	protected void backupSoups(Store store, AppName appName) throws BadPipeStateException {
+		System.out.println("@@@ backupSoups " + state + " store=" + store + " appName=" + appName);// @@@
+		if (writer == null)
+			return;
+		if (!isEnabled())
+			return;
+		if (state != State.BACKUP_APP)
+			throw new BadPipeStateException("bad state " + state);
+
+		Collection<Soup> soups = soupsToBackup.get(appName);
+
 		this.state = State.BACKUP_SOUPS;
-		this.soupsIter = soupsToBackup.iterator();
+		this.soupsIter = soups.iterator();
+		this.soup = null;
 		backupNextSoup();
 	}
 
@@ -514,6 +667,7 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	protected void backupNextSoup() throws BadPipeStateException {
+		System.out.println("@@@ backupNextSoup " + state);// @@@
 		if (writer == null)
 			return;
 		if (!isEnabled())
@@ -522,12 +676,14 @@ public class BackupModule extends IconModule {
 			throw new BadPipeStateException("bad state " + state);
 
 		if (!soupsIter.hasNext()) {
-			state = State.BACKUP;
-			backupNextStore();
+			state = State.BACKUP_APPS;
+			backupNextApp();
 			return;
 		}
 		this.state = State.BACKUP_SOUP;
 		this.soup = soupsIter.next();
+		// Notify listeners we are now going to backup <store, appName, soup>
+		fireBackupSoup(store, appName, soup);
 
 		// DSetSoupGetInfo -> DSoupInfo -> DSendSoup -> DEntry* ->
 		// DBackupSoupDone
@@ -543,6 +699,7 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	protected void backupSoupInfo() throws BadPipeStateException {
+		System.out.println("@@@ backupSoupInfo " + state);// @@@
 		if (writer == null)
 			return;
 		if (!isEnabled())
@@ -571,6 +728,7 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	protected void backupSoupDone() throws BadPipeStateException {
+		System.out.println("@@@ backupSoupDone " + state);// @@@
 		if (writer == null)
 			return;
 		if (!isEnabled())
@@ -592,5 +750,77 @@ public class BackupModule extends IconModule {
 	@Override
 	protected ProgressMonitor getProgress() {
 		return null;// Never show the progress.
+	}
+
+	/**
+	 * Add a backup listener.
+	 * 
+	 * @param listener
+	 *            the listener to add.
+	 */
+	public void addListener(BackupListener listener) {
+		super.addListener(listener);
+		if (!listeners.contains(listener)) {
+			listeners.add(listener);
+		}
+	}
+
+	/**
+	 * Remove a backup listener.
+	 * 
+	 * @param listener
+	 *            the listener to remove.
+	 */
+	public void removeListener(BackupListener listener) {
+		super.removeListener(listener);
+		listeners.remove(listener);
+	}
+
+	/**
+	 * Notify all the listeners that the store will be backed up.
+	 * 
+	 * @param store
+	 *            the store.
+	 */
+	protected void fireBackupStore(Store store) {
+		// Make copy of listeners to avoid ConcurrentModificationException.
+		Collection<BackupListener> listenersCopy = new ArrayList<BackupListener>(listeners);
+		for (BackupListener listener : listenersCopy) {
+			listener.backupStore(this, store);
+		}
+	}
+
+	/**
+	 * Notify all the listeners that the application will be backed up.
+	 * 
+	 * @param store
+	 *            the store.
+	 * @param appName
+	 *            the application.
+	 */
+	protected void fireBackupApp(Store store, AppName appName) {
+		// Make copy of listeners to avoid ConcurrentModificationException.
+		Collection<BackupListener> listenersCopy = new ArrayList<BackupListener>(listeners);
+		for (BackupListener listener : listenersCopy) {
+			listener.backupApplication(this, store, appName);
+		}
+	}
+
+	/**
+	 * Notify all the listeners that the soup will be backed up.
+	 * 
+	 * @param store
+	 *            the store.
+	 * @param appName
+	 *            the application.
+	 * @param soup
+	 *            the soup.
+	 */
+	protected void fireBackupSoup(Store store, AppName appName, Soup soup) {
+		// Make copy of listeners to avoid ConcurrentModificationException.
+		Collection<BackupListener> listenersCopy = new ArrayList<BackupListener>(listeners);
+		for (BackupListener listener : listenersCopy) {
+			listener.backupSoup(this, store, appName, soup);
+		}
 	}
 }
