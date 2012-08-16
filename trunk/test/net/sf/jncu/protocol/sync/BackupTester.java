@@ -9,14 +9,17 @@ import net.sf.jncu.cdil.mnp.MNPPacketListener;
 import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
 import net.sf.jncu.cdil.mnp.PacketLogger;
+import net.sf.jncu.newton.os.Soup;
+import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v2_0.IconModule;
-import net.sf.jncu.protocol.v2_0.IconModule.IconModuleListener;
+import net.sf.jncu.protocol.v2_0.app.AppName;
 import net.sf.jncu.protocol.v2_0.sync.BackupModule;
+import net.sf.jncu.protocol.v2_0.sync.BackupModule.BackupListener;
 import net.sf.jncu.protocol.v2_0.sync.DGetSyncOptions;
 import net.sf.jncu.protocol.v2_0.sync.DRequestToSync;
 import net.sf.jncu.protocol.v2_0.sync.DSynchronize;
@@ -26,7 +29,7 @@ import net.sf.jncu.protocol.v2_0.sync.DSynchronize;
  * 
  * @author moshew
  */
-public class BackupTester implements IconModuleListener, MNPPacketListener, DockCommandListener {
+public class BackupTester implements BackupListener, MNPPacketListener, DockCommandListener {
 
 	private String portName;
 	private boolean running = false;
@@ -148,14 +151,29 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 
 	@Override
 	public void successModule(IconModule module) {
-		System.out.println("successModule module=" + module);
+		System.out.println("BT successModule module=" + module);
 		exit(false);
 	}
 
 	@Override
 	public void cancelModule(IconModule module) {
-		System.out.println("cancelModule module=" + module);
+		System.out.println("BT cancelModule module=" + module);
 		exit(false);
+	}
+
+	@Override
+	public void backupStore(BackupModule module, Store store) {
+		System.out.println("BT backupStore module=" + module + " store=" + store);
+	}
+
+	@Override
+	public void backupApplication(BackupModule module, Store store, AppName appName) {
+		System.out.println("BT backupApplication module=" + module + " appName=" + appName);
+	}
+
+	@Override
+	public void backupSoup(BackupModule module, Store store, AppName appName, Soup soup) {
+		System.out.println("BT backupSoup module=" + module + " soup=" + soup);
 	}
 
 	@Override
@@ -225,5 +243,4 @@ public class BackupTester implements IconModuleListener, MNPPacketListener, Dock
 	@Override
 	public void commandEOF() {
 	}
-
 }

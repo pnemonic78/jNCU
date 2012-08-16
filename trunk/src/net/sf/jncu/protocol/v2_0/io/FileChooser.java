@@ -54,7 +54,7 @@ import net.sf.swing.SwingUtils;
 public abstract class FileChooser extends IconModule {
 
 	/**
-	 * File chooser event.
+	 * File chooser events listener.
 	 */
 	public static interface FileChooserListener extends IconModuleListener {
 		/**
