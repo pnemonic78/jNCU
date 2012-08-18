@@ -155,10 +155,8 @@ public class MNPPipe extends CDPipe<MNPPacket> {
 	public void packetReceived(MNPPacket packet) {
 		super.packetReceived(packet);
 
-		byte packetType = packet.getType();
-
 		try {
-			switch (packetType) {
+			switch (packet.getType()) {
 			case MNPPacket.LA:
 				packetReceivedLA((MNPLinkAcknowledgementPacket) packet);
 				break;

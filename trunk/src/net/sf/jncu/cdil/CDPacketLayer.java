@@ -227,6 +227,8 @@ public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 				if (packet != null)
 					firePacketReceived(packet);
 			}
+		} catch (ChecksumException ce) {
+			ce.printStackTrace();
 		} catch (EOFException eofe) {
 			firePacketEOF();
 		}
@@ -398,8 +400,6 @@ public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 				listen();
 			} catch (EOFException eofe) {
 				firePacketEOF();
-			} catch (ChecksumException ce) {
-				ce.printStackTrace();
 			} catch (IOException ioe) {
 				if (isConnected()) {
 					ioe.printStackTrace();
