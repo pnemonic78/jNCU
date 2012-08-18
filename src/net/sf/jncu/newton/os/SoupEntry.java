@@ -59,7 +59,7 @@ public class SoupEntry extends NSOFFrame implements Comparable<SoupEntry> {
 	 * @return the unique ID.
 	 */
 	public int getId() {
-		return ((NSOFInteger) get(SLOT_ID)).getValue();
+		return ((NSOFImmediate) get(SLOT_ID)).getValue();
 	}
 
 	/**
