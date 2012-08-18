@@ -48,6 +48,8 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 
 	/** Send packets. */
 	protected MNPPacketSender sender;
+	/** Current LR/LT sequence id. */
+	private int sequence = -1;
 
 	/**
 	 * Creates a new packet layer.
@@ -127,7 +129,7 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 				buf.write(b);
 				crc.update(b);
 			} else {
-				 throw new ChecksumException("Unexpected byte");
+				throw new ChecksumException("Unexpected byte");
 			}
 		}
 		buf.close();
@@ -140,7 +142,7 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 		b = readByte(in);
 		crcWord = (b << 8) | crcWord;
 		if (crcWord != crc.getValue()) {
-			 throw new ChecksumException("CRC mismatch");
+			throw new ChecksumException("CRC mismatch");
 		}
 
 		return payload;
@@ -238,17 +240,42 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 
 	@Override
 	public void packetReceived(MNPPacket packet) {
-		if (packet.getType() == MNPPacket.LT) {
-			if (allowAcknowledge()) {
-				MNPLinkTransferPacket packetLT = (MNPLinkTransferPacket) packet;
-				MNPLinkAcknowledgementPacket ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
-				ack.setSequence(packetLT.getSequence());
-				try {
-					send(ack);
-				} catch (Exception e) {
-					e.printStackTrace();
-					firePacketEOF();
-				}
+		switch (packet.getType()) {
+		case MNPPacket.LR:
+			packetReceivedLR((MNPLinkRequestPacket) packet);
+			break;
+		case MNPPacket.LT:
+			packetReceivedLT((MNPLinkTransferPacket) packet);
+			break;
+		}
+	}
+
+	/**
+	 * Received a link request packet.
+	 * 
+	 * @param packet
+	 *            the packet.
+	 */
+	protected void packetReceivedLR(MNPLinkRequestPacket packet) {
+		sequence = 0;
+	}
+
+	/**
+	 * Received a link transfer packet.
+	 * 
+	 * @param packet
+	 *            the packet.
+	 */
+	protected void packetReceivedLT(MNPLinkTransferPacket packet) {
+		if (allowAcknowledge(packet)) {
+			sequence = packet.getSequence();
+			MNPLinkAcknowledgementPacket ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
+			ack.setSequence(sequence);
+			try {
+				send(ack);
+			} catch (Exception e) {
+				e.printStackTrace();
+				firePacketEOF();
 			}
 		}
 	}
@@ -269,13 +296,33 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 	}
 
 	/**
+	 * Can send a link acknowledgement packet after receiving a link request
+	 * packet?
+	 * 
+	 * @param packet
+	 *            the packet.
+	 * @return {@code true} if can send.
+	 */
+	protected boolean allowAcknowledge(MNPLinkRequestPacket packet) {
+		if (sequence == 0)
+			return true;
+		return false;
+	}
+
+	/**
 	 * Can send a link acknowledgement packet after receiving a link transfer
 	 * packet?
 	 * 
+	 * @param packet
+	 *            the packet.
 	 * @return {@code true} if can send.
 	 */
-	protected boolean allowAcknowledge() {
-		return true;
+	protected boolean allowAcknowledge(MNPLinkTransferPacket packet) {
+		// Keep packets in order.
+		final int seq = packet.getSequence();
+		if ((sequence + 1) == seq)
+			return true;
+		return false;
 	}
 
 	/**

@@ -46,7 +46,7 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 	/** Queue of outgoing commands. */
 	protected final Map<Integer, CommandPiece> queueOut = new HashMap<Integer, CommandPiece>();
 	/** Current LT sequence id. */
-	private int sequenceLT = -1;
+	private int sequenceLT = 0;
 
 	/**
 	 * Command chunk that is sent in a LT packet.
@@ -210,14 +210,14 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 		byte[] payload = packet.getData();
 		int seq = packet.getSequence();
 
-		if (sequenceLT < seq) {
+		// Keep packets in order.
+		if ((sequenceLT + 1) == seq) {
 			sequenceLT = seq;
 			// Byte: 0xFF + 1 == 0x00
 			if (sequenceLT == 0xFF)
 				sequenceLT = -1;
 
 			try {
-				// Ignore duplicate packets?
 				packetsToCommands.write(payload);
 				packetsToCommands.flush();
 				synchronized (in) {
@@ -225,6 +225,8 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 				}
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
+				if ("Read end dead".equals(ioe.getMessage()))
+					fireCommandEOF();
 			}
 		}
 	}
