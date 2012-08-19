@@ -276,7 +276,8 @@ public class BackupTester implements BackupListener, MNPPacketListener, DockComm
 
 				@Override
 				public void run() {
-					progressMonitor.setVisible(true);
+					if (progressMonitor != null)
+						progressMonitor.setVisible(true);
 				}
 			});
 		}
