@@ -33,12 +33,7 @@ public class EmptyPacketLayer extends MNPSerialPacketLayer {
 	}
 
 	@Override
-	protected boolean allowAcknowledge(MNPLinkRequestPacket packet) {
-		return false;
-	}
-
-	@Override
-	protected boolean allowAcknowledge(MNPLinkTransferPacket packet) {
+	protected boolean allowAcknowledge(MNPPacket packet) {
 		return false;
 	}
 
