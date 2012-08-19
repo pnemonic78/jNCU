@@ -2,6 +2,8 @@ package net.sf.jncu.protocol.sync;
 
 import java.io.File;
 
+import javax.swing.SwingUtilities;
+
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.cdil.mnp.MNPPacket;
@@ -36,11 +38,8 @@ public class BackupTester implements BackupListener, MNPPacketListener, DockComm
 	private CDLayer layer;
 	private MNPPipe pipe;
 	private PacketLogger logger;
-	// private Store store;
-	// private List<Soup> soups;
-	// private Soup soup;
-	// private Integer result;
 	private BackupModule backup;
+	private BackupProgressDialog progressMonitor;
 
 	public BackupTester() {
 		super();
@@ -152,23 +151,41 @@ public class BackupTester implements BackupListener, MNPPacketListener, DockComm
 	@Override
 	public void successModule(IconModule module) {
 		System.out.println("BT successModule module=" + module);
+		BackupProgressDialog monitor = getProgress();
+		if (monitor != null) {
+			monitor.setNote("Done");
+		}
+		closeProgress();
 		exit(false);
 	}
 
 	@Override
 	public void cancelModule(IconModule module) {
 		System.out.println("BT cancelModule module=" + module);
+		BackupProgressDialog monitor = getProgress();
+		if (monitor != null) {
+			monitor.setNote("Cancelled");
+		}
+		closeProgress();
 		exit(false);
 	}
 
 	@Override
 	public void backupStore(BackupModule module, Store store) {
 		System.out.println("BT backupStore module=" + module + " store=" + store);
+		BackupProgressDialog monitor = getProgress();
+		if (monitor != null) {
+			monitor.setNote(String.format("Backing up store %s", store.getName()));
+		}
 	}
 
 	@Override
 	public void backupApplication(BackupModule module, Store store, AppName appName) {
 		System.out.println("BT backupApplication module=" + module + " appName=" + appName);
+		BackupProgressDialog monitor = getProgress();
+		if (monitor != null) {
+			monitor.setNote(String.format("Backing up %s on store %s", appName.getName(), store.getName()));
+		}
 	}
 
 	@Override
@@ -242,5 +259,37 @@ public class BackupTester implements BackupListener, MNPPacketListener, DockComm
 
 	@Override
 	public void commandEOF() {
+	}
+
+	/**
+	 * Get the progress monitor.
+	 * 
+	 * @return the progress.
+	 */
+	protected BackupProgressDialog getProgress() {
+		if (progressMonitor == null) {
+			progressMonitor = new BackupProgressDialog();
+			progressMonitor.setNote(null);
+			// Setting the dialog to visible will not exit this function until
+			// it is hidden.
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+					progressMonitor.setVisible(true);
+				}
+			});
+		}
+		return progressMonitor;
+	}
+
+	/**
+	 * Close the progress monitor.
+	 */
+	protected void closeProgress() {
+		if (progressMonitor != null) {
+			progressMonitor.setVisible(false);
+			progressMonitor = null;
+		}
 	}
 }

@@ -432,7 +432,6 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	protected void backupStores() throws BadPipeStateException {
-		System.out.println("@@@ backupStores " + state);// @@@
 		if (writer == null)
 			return;
 		if (!isEnabled())
@@ -470,7 +469,6 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	protected void backupNextStore() throws BadPipeStateException {
-		System.out.println("@@@ backupNextStore " + state);// @@@
 		if (writer == null)
 			return;
 		if (!isEnabled())
@@ -508,6 +506,7 @@ public class BackupModule extends IconModule {
 
 		try {
 			writer.startStore(store.getName());
+			writer.storeDefinition(store);
 		} catch (BackupException e) {
 			e.printStackTrace();
 			writeCancel();
@@ -532,7 +531,6 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	protected void backupApps(Store store) throws BadPipeStateException {
-		System.out.println("@@@ backupApps " + state + " store=" + store);// @@@
 		if (writer == null)
 			return;
 		if (!isEnabled())
@@ -610,7 +608,6 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	protected void backupNextApp() throws BadPipeStateException {
-		System.out.println("@@@ backupNextApp " + state);// @@@
 		if (writer == null)
 			return;
 		if (!isEnabled())
@@ -644,7 +641,6 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	protected void backupSoups(Store store, AppName appName) throws BadPipeStateException {
-		System.out.println("@@@ backupSoups " + state + " store=" + store + " appName=" + appName);// @@@
 		if (writer == null)
 			return;
 		if (!isEnabled())
@@ -652,7 +648,7 @@ public class BackupModule extends IconModule {
 		if (state != State.BACKUP_APP)
 			throw new BadPipeStateException("bad state " + state);
 
-		Collection<Soup> soups = soupsToBackup.get(appName);
+		final Collection<Soup> soups = soupsToBackup.get(appName);
 
 		this.state = State.BACKUP_SOUPS;
 		this.soupsIter = soups.iterator();
@@ -667,7 +663,6 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	protected void backupNextSoup() throws BadPipeStateException {
-		System.out.println("@@@ backupNextSoup " + state);// @@@
 		if (writer == null)
 			return;
 		if (!isEnabled())
@@ -699,7 +694,6 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	protected void backupSoupInfo() throws BadPipeStateException {
-		System.out.println("@@@ backupSoupInfo " + state);// @@@
 		if (writer == null)
 			return;
 		if (!isEnabled())
@@ -728,7 +722,6 @@ public class BackupModule extends IconModule {
 	 *             if invalid state.
 	 */
 	protected void backupSoupDone() throws BadPipeStateException {
-		System.out.println("@@@ backupSoupDone " + state);// @@@
 		if (writer == null)
 			return;
 		if (!isEnabled())
