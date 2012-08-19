@@ -109,8 +109,7 @@ public class TranslatorFactory {
 	 * @param extensions
 	 *            the file extensions.
 	 */
-	protected synchronized void register(Map<Class<? extends Translator>, TranslatorItem> registry, Class<? extends Translator> clazz, String description,
-			String[] extensions) {
+	protected synchronized void register(Map<Class<? extends Translator>, TranslatorItem> registry, Class<? extends Translator> clazz, String description, String[] extensions) {
 		TranslatorItem item = registry.get(clazz);
 		if (item == null) {
 			item = new TranslatorItem(clazz);
@@ -131,13 +130,13 @@ public class TranslatorFactory {
 	 *            the registry.
 	 */
 	protected synchronized void register(Map<Class<? extends Translator>, TranslatorItem> registry) {
-//		register(registry, DelimitedTextTranslator.class, TextTranslator.getFilterDescription(), DelimitedTextTranslator.getFilterExtensions());
-//		register(registry, ICalendarTranslator.class, CalendarTranslator.getFilterDescription(), ICalendarTranslator.getFilterExtensions());
-//		register(registry, PlainTextTranslator.class, TextTranslator.getFilterDescription(), PlainTextTranslator.getFilterExtensions());
-//		register(registry, RichTextTranslator.class, RichTextTranslator.getFilterDescription(), RichTextTranslator.getFilterExtensions());
-//		register(registry, VCalendarTranslator.class, CalendarTranslator.getFilterDescription(), VCalendarTranslator.getFilterExtensions());
-//		register(registry, VCardTranslator.class, NamesTranslator.getFilterDescription(), VCardTranslator.getFilterExtensions());
-//		register(registry, WindowsMetaFileTranslator.class, ImageTranslator.getFilterDescription(), WindowsMetaFileTranslator.getFilterExtensions());
+		register(registry, DelimitedTextTranslator.class, TextTranslator.getFilterDescription(), DelimitedTextTranslator.getFilterExtensions());
+		register(registry, ICalendarTranslator.class, CalendarTranslator.getFilterDescription(), ICalendarTranslator.getFilterExtensions());
+		register(registry, PlainTextTranslator.class, TextTranslator.getFilterDescription(), PlainTextTranslator.getFilterExtensions());
+		register(registry, RichTextTranslator.class, RichTextTranslator.getFilterDescription(), RichTextTranslator.getFilterExtensions());
+		register(registry, VCalendarTranslator.class, CalendarTranslator.getFilterDescription(), VCalendarTranslator.getFilterExtensions());
+		register(registry, VCardTranslator.class, NamesTranslator.getFilterDescription(), VCardTranslator.getFilterExtensions());
+		register(registry, WindowsMetaFileTranslator.class, ImageTranslator.getFilterDescription(), WindowsMetaFileTranslator.getFilterExtensions());
 	}
 
 	/**
@@ -164,9 +163,12 @@ public class TranslatorFactory {
 	 * @return the list of translators.
 	 */
 	public List<Translator> getTranslatorsBySuffix(String fileSuffix) {
+		if ((fileSuffix == null) || (fileSuffix.length() == 0))
+			return null;
 		if (getRegistry().isEmpty())
 			return null;
 
+		fileSuffix = fileSuffix.toLowerCase();
 		final List<Translator> result = new ArrayList<Translator>();
 		Class<? extends Translator> clazz;
 		Translator translator;
@@ -184,6 +186,9 @@ public class TranslatorFactory {
 				}
 			}
 		}
+
+		if (result.isEmpty())
+			return null;
 
 		return result;
 	}
