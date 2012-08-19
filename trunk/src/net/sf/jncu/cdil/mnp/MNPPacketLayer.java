@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.TimeoutException;
 
+import net.sf.jncu.cdil.CDPacketFilter;
 import net.sf.jncu.cdil.CDPacketLayer;
 import net.sf.jncu.cdil.CDPacketListener;
 import net.sf.lang.ControlCharacter;
@@ -49,7 +50,7 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 	/** Send packets. */
 	protected MNPPacketSender sender;
 	/** Current LR/LT sequence id. */
-	private int sequence = -1;
+	private int sequence = Integer.MIN_VALUE;
 
 	/**
 	 * Creates a new packet layer.
@@ -62,6 +63,7 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 		setName("MNPPacketLayer-" + getId());
 		this.sender = new MNPPacketSender(pipe, this);
 		this.sender.start();
+		addPacketFilter(new MNPPacketSequenceFilter());
 		addPacketListener(this);
 	}
 
@@ -257,7 +259,7 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 	 *            the packet.
 	 */
 	protected void packetReceivedLR(MNPLinkRequestPacket packet) {
-		sequence = 0;
+		this.sequence = 0;
 	}
 
 	/**
@@ -268,15 +270,20 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 	 */
 	protected void packetReceivedLT(MNPLinkTransferPacket packet) {
 		if (allowAcknowledge(packet)) {
-			sequence = packet.getSequence();
+			final int seq = packet.getSequence();
 			MNPLinkAcknowledgementPacket ack = (MNPLinkAcknowledgementPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LA);
-			ack.setSequence(sequence);
+			ack.setSequence(seq);
 			try {
 				send(ack);
 			} catch (Exception e) {
 				e.printStackTrace();
 				firePacketEOF();
 			}
+			// Byte: 0xFF + 1 == 0x00
+			if (seq == 0xFF)
+				this.sequence = -1;
+			else
+				this.sequence = seq;
 		}
 	}
 
@@ -296,33 +303,14 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 	}
 
 	/**
-	 * Can send a link acknowledgement packet after receiving a link request
-	 * packet?
+	 * Can send a link acknowledgement packet after receiving a link packet?
 	 * 
 	 * @param packet
 	 *            the packet.
 	 * @return {@code true} if can send.
 	 */
-	protected boolean allowAcknowledge(MNPLinkRequestPacket packet) {
-		if (sequence == 0)
-			return true;
-		return false;
-	}
-
-	/**
-	 * Can send a link acknowledgement packet after receiving a link transfer
-	 * packet?
-	 * 
-	 * @param packet
-	 *            the packet.
-	 * @return {@code true} if can send.
-	 */
-	protected boolean allowAcknowledge(MNPLinkTransferPacket packet) {
-		// Keep packets in order.
-		final int seq = packet.getSequence();
-		if ((sequence + 1) == seq)
-			return true;
-		return false;
+	protected boolean allowAcknowledge(MNPPacket packet) {
+		return true;
 	}
 
 	/**
@@ -350,5 +338,34 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 	public void notifyTimeout(TimeoutException te) {
 		firePacketEOF();
 		close();
+	}
+
+	/**
+	 * Ensure that packets arrive sequentially.
+	 * 
+	 * @author Moshe
+	 */
+	private class MNPPacketSequenceFilter implements CDPacketFilter<MNPPacket> {
+
+		@Override
+		public MNPPacket filterPacket(MNPPacket packet) {
+			if (packet.getType() == MNPPacket.LT) {
+				return filterLT((MNPLinkTransferPacket) packet);
+			}
+			return packet;
+		}
+
+		/**
+		 * Filter a link transfer packet.
+		 * 
+		 * @param packet
+		 *            the packet.
+		 */
+		protected MNPLinkTransferPacket filterLT(MNPLinkTransferPacket packet) {
+			if ((sequence + 1) == packet.getSequence()) {
+				return packet;
+			}
+			return null;
+		}
 	}
 }
