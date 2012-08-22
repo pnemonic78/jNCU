@@ -131,7 +131,7 @@ public class ImportFile extends IconModule {
 			write(ack);
 		} else if (DAddedID.COMMAND.equals(cmd)) {
 			DAddedID cmdAdded = (DAddedID) command;
-			SoupChanged soup = DSoupsChanged.createSoup(translator.getName(), cmdAdded.getId());
+			SoupChanged soup = DSoupsChanged.createSoup(translator.getSoupName(), cmdAdded.getId());
 
 			if (changed == null)
 				changed = new DSoupsChanged();
@@ -228,13 +228,14 @@ public class ImportFile extends IconModule {
 		@Override
 		public void run() {
 			InputStream in;
+			NSOFFrame entry;
 			try {
 				in = new FileInputStream(file);
+				entry = (NSOFFrame) translator.translateToNewton(in);
 			} catch (IOException e) {
 				e.printStackTrace();
 				return;
 			}
-			NSOFFrame entry = (NSOFFrame) translator.translateToNewton(in);
 
 			DAddEntry add = new DAddEntry();
 			add.setObject(entry);
