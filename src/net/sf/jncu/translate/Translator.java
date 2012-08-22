@@ -58,8 +58,10 @@ public abstract class Translator {
 	 * @param in
 	 *            the input file.
 	 * @return the object.
+	 * @throws TranslatorException
+	 *             if a translation error occurs.
 	 */
-	public abstract NSOFObject translateToNewton(InputStream in);
+	public abstract NSOFObject translateToNewton(InputStream in) throws TranslatorException;
 
 	/**
 	 * Transform the Newton object to a file.
@@ -67,6 +69,8 @@ public abstract class Translator {
 	 * @param obj
 	 *            the object.
 	 * @return the file.
+	 * @throws TranslatorException
+	 *             if a translation error occurs.
 	 */
-	public abstract InputStream translateFromNewton(NSOFObject obj);
+	public abstract InputStream translateFromNewton(NSOFObject obj) throws TranslatorException;
 }
