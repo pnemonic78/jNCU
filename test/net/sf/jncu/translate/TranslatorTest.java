@@ -199,4 +199,48 @@ public class TranslatorTest extends SFTestCase {
 		assertNotNull(toNewton);
 		assertEquals(meeting, toNewton);
 	}
+
+	/**
+	 * Test translating a plain meeting at a location.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testMeetingLocation() throws Exception {
+		TranslatorFactory factory = TranslatorFactory.getInstance();
+		assertNotNull(factory);
+
+		Collection<? extends Translator> translators = factory.getTranslatorsBySuffix("ics");
+		assertNotNull(translators);
+		assertFalse(0 == translators.size());
+		Translator translator = translators.iterator().next();
+		assertNotNull(translator);
+
+		final long now = System.currentTimeMillis();
+		NSOFFrame mtgLocation = new NSOFFrame();
+		mtgLocation.setObjectClass(ICalendarTranslator.CLASS_LOCATION);
+		mtgLocation.put(ICalendarTranslator.SLOT_COMPANY, new NSOFString("Shopping Mall"));
+		mtgLocation.put(ICalendarTranslator.SLOT_ENTRY_CLASS, ICalendarTranslator.CLASS_COMPANY);
+		mtgLocation.put(ICalendarTranslator.SLOT_FAKE_ID, NSOFNil.NIL);
+		mtgLocation.put(ICalendarTranslator.SLOT_UNSELECTED, NSOFNil.NIL);
+
+		NSOFFrame meeting = new NSOFFrame();
+		meeting.setObjectClass(ICalendarTranslator.CLASS_MEETING);
+		meeting.put(ICalendarTranslator.SLOT_ALARM, NSOFNil.NIL);
+		meeting.put(ICalendarTranslator.SLOT_DURATION, new NSOFInteger(30));
+		meeting.put(ICalendarTranslator.SLOT_ICON_TYPE, NSOFNil.NIL);
+		meeting.put(ICalendarTranslator.SLOT_INVITEES, NSOFNil.NIL);
+		meeting.put(ICalendarTranslator.SLOT_LOCATION, mtgLocation);
+		meeting.put(ICalendarTranslator.SLOT_START_DATE, new NSOFInteger(NewtonDateUtils.getMinutes(now)));
+		meeting.put(ICalendarTranslator.SLOT_TEXT, new NSOFString("buy groceries"));
+		meeting.put(ICalendarTranslator.SLOT_NOTES, NSOFNil.NIL);
+		meeting.put(ICalendarTranslator.SLOT_BOUNDS, NSOFNil.NIL);
+		meeting.put(ICalendarTranslator.SLOT_STATIONERY, ICalendarTranslator.STATIONERY_MEETING);
+
+		InputStream fromNewton = translator.translateFromNewton(meeting);
+		assertNotNull(fromNewton);
+		NSOFObject toNewton = translator.translateToNewton(fromNewton);
+		assertNotNull(toNewton);
+		assertEquals(meeting, toNewton);
+	}
 }

@@ -40,6 +40,7 @@ import net.fortuna.ical4j.model.property.Action;
 import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.DtStart;
+import net.fortuna.ical4j.model.property.Location;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Trigger;
@@ -94,8 +95,16 @@ public class ICalendarTranslator extends CalendarTranslator {
 	public static final NSOFSymbol SLOT_NOTES = new NSOFSymbol("NotesData");
 	public static final NSOFSymbol SLOT_BOUNDS = new NSOFSymbol("viewBounds");
 	public static final NSOFSymbol SLOT_STATIONERY = new NSOFSymbol("viewStationery");
+	public static final NSOFSymbol SLOT_COMPANY = new NSOFSymbol("company");
+	public static final NSOFSymbol SLOT_LABELS = new NSOFSymbol("labels");
+	public static final NSOFSymbol SLOT_ALIAS = new NSOFSymbol("_alias");
+	public static final NSOFSymbol SLOT_ENTRY_CLASS = new NSOFSymbol("_entryClass");
+	public static final NSOFSymbol SLOT_FAKE_ID = new NSOFSymbol("_fakeID");
+	public static final NSOFSymbol SLOT_UNSELECTED = new NSOFSymbol("_unselected");
 
 	public static final NSOFSymbol CLASS_MEETING = new NSOFSymbol("meeting");
+	public static final NSOFSymbol CLASS_LOCATION = new NSOFSymbol("nameRef.meetingPlace");
+	public static final NSOFSymbol CLASS_COMPANY = new NSOFSymbol("company");
 
 	public static final NSOFSymbol STATIONERY_MEETING = new NSOFSymbol("meeting");
 
@@ -147,12 +156,13 @@ public class ICalendarTranslator extends CalendarTranslator {
 			throw new TranslatorException("duration required");
 		Summary summary = event.getSummary();
 		VAlarm alarm = (VAlarm) event.getAlarms().getComponent(Component.VALARM);
+		Location location = event.getLocation();
 
 		int startMinutes = NewtonDateUtils.getMinutes(start.getDate().getTime());
 		NSOFInteger mtgStartDate = new NSOFInteger(startMinutes);
 		NSOFInteger mtgDuration = new NSOFInteger(toMinutes(duration));
-		NSOFObject mtgText = new NSOFString(summary.getValue());
-		NSOFObject mtgAlarm = NSOFNil.NIL;
+		NSOFString mtgText = new NSOFString(summary.getValue());
+		NSOFInteger mtgAlarm = null;
 		if (alarm != null) {
 			Trigger alarmTrigger = alarm.getTrigger();
 			if (alarmTrigger != null) {
@@ -162,6 +172,15 @@ public class ICalendarTranslator extends CalendarTranslator {
 				}
 			}
 		}
+		NSOFFrame mtgLocation = null;
+		if (location != null) {
+			mtgLocation = new NSOFFrame();
+			mtgLocation.setObjectClass(ICalendarTranslator.CLASS_LOCATION);
+			mtgLocation.put(ICalendarTranslator.SLOT_COMPANY, new NSOFString(location.getValue()));
+			mtgLocation.put(ICalendarTranslator.SLOT_ENTRY_CLASS, CLASS_COMPANY);
+			mtgLocation.put(ICalendarTranslator.SLOT_FAKE_ID, NSOFNil.NIL);
+			mtgLocation.put(ICalendarTranslator.SLOT_UNSELECTED, NSOFNil.NIL);
+		}
 
 		NSOFFrame meeting = new NSOFFrame();
 		meeting.put(SLOT_CLASS, CLASS_MEETING);
@@ -169,7 +188,7 @@ public class ICalendarTranslator extends CalendarTranslator {
 		meeting.put(SLOT_DURATION, mtgDuration);
 		meeting.put(SLOT_ICON_TYPE, NSOFNil.NIL);
 		meeting.put(SLOT_INVITEES, NSOFNil.NIL);
-		meeting.put(SLOT_LOCATION, NSOFNil.NIL);
+		meeting.put(SLOT_LOCATION, mtgLocation);
 		meeting.put(SLOT_START_DATE, mtgStartDate);
 		meeting.put(SLOT_TEXT, mtgText);
 		meeting.put(SLOT_NOTES, NSOFNil.NIL);
@@ -189,6 +208,7 @@ public class ICalendarTranslator extends CalendarTranslator {
 		if (NSOFImmediate.isNil(mtgDuration))
 			throw new TranslatorException("slot " + SLOT_DURATION + " required");
 		NSOFObject mtgText = meeting.get(SLOT_TEXT);
+		NSOFObject mtgLocation = meeting.get(SLOT_LOCATION);
 
 		Date start = new DateTime(NewtonDateUtils.fromMinutes(mtgStartDate.getValue()));
 		Dur duration = new Dur(0, 0, mtgDuration.getValue(), 0);
@@ -201,6 +221,12 @@ public class ICalendarTranslator extends CalendarTranslator {
 			alarm.getProperties().add(Action.DISPLAY);
 			alarm.getProperties().add(new Description(summary));
 			event.getAlarms().add(alarm);
+		}
+		if (!NSOFImmediate.isNil(mtgLocation) && CLASS_LOCATION.equals(mtgLocation.getObjectClass())) {
+			NSOFFrame mtgLocationFrame = (NSOFFrame) mtgLocation;
+			NSOFString company = (NSOFString) mtgLocationFrame.get(SLOT_COMPANY);
+			Location location = new Location(company.getValue());
+			event.getProperties().add(location);
 		}
 		Calendar cal = new Calendar();
 		cal.getProperties().add(new ProdId("-//jNCU//iCal4j 1.0//EN"));
