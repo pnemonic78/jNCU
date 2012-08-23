@@ -15,6 +15,8 @@ import net.sf.junit.SFTestCase;
 
 public class TranslatorTest extends SFTestCase {
 
+	private static final long MINUTES_5 = 5 * 60 * 1000;
+
 	public TranslatorTest() {
 		super("Translator");
 	}
@@ -45,7 +47,7 @@ public class TranslatorTest extends SFTestCase {
 	}
 
 	/**
-	 * Test translating a plain meeting.
+	 * Test translating a plain meeting for 30 minutes.
 	 * 
 	 * @throws Exception
 	 */
@@ -60,6 +62,8 @@ public class TranslatorTest extends SFTestCase {
 		Translator translator = translators.iterator().next();
 		assertNotNull(translator);
 
+		final long now = System.currentTimeMillis();
+
 		NSOFFrame meeting = new NSOFFrame();
 		meeting.put(ICalendarTranslator.SLOT_CLASS, ICalendarTranslator.CLASS_MEETING);
 		meeting.put(ICalendarTranslator.SLOT_ALARM, NSOFNil.NIL);
@@ -67,9 +71,87 @@ public class TranslatorTest extends SFTestCase {
 		meeting.put(ICalendarTranslator.SLOT_ICON_TYPE, NSOFNil.NIL);
 		meeting.put(ICalendarTranslator.SLOT_INVITEES, NSOFNil.NIL);
 		meeting.put(ICalendarTranslator.SLOT_LOCATION, NSOFNil.NIL);
-		meeting.put(ICalendarTranslator.SLOT_START_DATE, new NSOFInteger(NewtonDateUtils.getMinutes(System.currentTimeMillis())));
+		meeting.put(ICalendarTranslator.SLOT_START_DATE, new NSOFInteger(NewtonDateUtils.getMinutes(now)));
 		meeting.put(ICalendarTranslator.SLOT_TEXT, new NSOFString("buy groceries"));
 		meeting.put(ICalendarTranslator.SLOT_NOTES, NSOFNil.NIL);
+		meeting.put(ICalendarTranslator.SLOT_BOUNDS, NSOFNil.NIL);
+		meeting.put(ICalendarTranslator.SLOT_STATIONERY, ICalendarTranslator.STATIONERY_MEETING);
+
+		InputStream fromNewton = translator.translateFromNewton(meeting);
+		assertNotNull(fromNewton);
+		NSOFObject toNewton = translator.translateToNewton(fromNewton);
+		assertNotNull(toNewton);
+		assertEquals(meeting, toNewton);
+	}
+
+	/**
+	 * Test translating a plain meeting for 150 minutes.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testMeetingPlain150() throws Exception {
+		TranslatorFactory factory = TranslatorFactory.getInstance();
+		assertNotNull(factory);
+
+		Collection<? extends Translator> translators = factory.getTranslatorsBySuffix("ics");
+		assertNotNull(translators);
+		assertFalse(0 == translators.size());
+		Translator translator = translators.iterator().next();
+		assertNotNull(translator);
+
+		final long now = System.currentTimeMillis();
+
+		NSOFFrame meeting = new NSOFFrame();
+		meeting.put(ICalendarTranslator.SLOT_CLASS, ICalendarTranslator.CLASS_MEETING);
+		meeting.put(ICalendarTranslator.SLOT_ALARM, NSOFNil.NIL);
+		meeting.put(ICalendarTranslator.SLOT_DURATION, new NSOFInteger(150));
+		meeting.put(ICalendarTranslator.SLOT_ICON_TYPE, NSOFNil.NIL);
+		meeting.put(ICalendarTranslator.SLOT_INVITEES, NSOFNil.NIL);
+		meeting.put(ICalendarTranslator.SLOT_LOCATION, NSOFNil.NIL);
+		meeting.put(ICalendarTranslator.SLOT_START_DATE, new NSOFInteger(NewtonDateUtils.getMinutes(now)));
+		meeting.put(ICalendarTranslator.SLOT_TEXT, new NSOFString("buy groceries"));
+		meeting.put(ICalendarTranslator.SLOT_NOTES, NSOFNil.NIL);
+		meeting.put(ICalendarTranslator.SLOT_BOUNDS, NSOFNil.NIL);
+		meeting.put(ICalendarTranslator.SLOT_STATIONERY, ICalendarTranslator.STATIONERY_MEETING);
+
+		InputStream fromNewton = translator.translateFromNewton(meeting);
+		assertNotNull(fromNewton);
+		NSOFObject toNewton = translator.translateToNewton(fromNewton);
+		assertNotNull(toNewton);
+		assertEquals(meeting, toNewton);
+	}
+
+	/**
+	 * Test translating a plain meeting for 30 minutes with an alarm 5 minutes
+	 * before.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testMeetingAlarm() throws Exception {
+		TranslatorFactory factory = TranslatorFactory.getInstance();
+		assertNotNull(factory);
+
+		Collection<? extends Translator> translators = factory.getTranslatorsBySuffix("ics");
+		assertNotNull(translators);
+		assertFalse(0 == translators.size());
+		Translator translator = translators.iterator().next();
+		assertNotNull(translator);
+
+		final long now = System.currentTimeMillis();
+
+		NSOFFrame meeting = new NSOFFrame();
+		meeting.put(ICalendarTranslator.SLOT_CLASS, ICalendarTranslator.CLASS_MEETING);
+		meeting.put(ICalendarTranslator.SLOT_ALARM, new NSOFInteger(NewtonDateUtils.getMinutes(now - MINUTES_5)));
+		meeting.put(ICalendarTranslator.SLOT_DURATION, new NSOFInteger(30));
+		meeting.put(ICalendarTranslator.SLOT_ICON_TYPE, NSOFNil.NIL);
+		meeting.put(ICalendarTranslator.SLOT_INVITEES, NSOFNil.NIL);
+		meeting.put(ICalendarTranslator.SLOT_LOCATION, NSOFNil.NIL);
+		meeting.put(ICalendarTranslator.SLOT_START_DATE, new NSOFInteger(NewtonDateUtils.getMinutes(now)));
+		meeting.put(ICalendarTranslator.SLOT_TEXT, new NSOFString("buy groceries"));
+		meeting.put(ICalendarTranslator.SLOT_NOTES, NSOFNil.NIL);
+		meeting.put(ICalendarTranslator.SLOT_BOUNDS, NSOFNil.NIL);
 		meeting.put(ICalendarTranslator.SLOT_STATIONERY, ICalendarTranslator.STATIONERY_MEETING);
 
 		InputStream fromNewton = translator.translateFromNewton(meeting);

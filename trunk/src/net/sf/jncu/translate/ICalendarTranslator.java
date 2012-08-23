@@ -34,11 +34,15 @@ import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.ValidationException;
+import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.Action;
 import net.fortuna.ical4j.model.property.CalScale;
+import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Summary;
+import net.fortuna.ical4j.model.property.Trigger;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.UidGenerator;
@@ -88,6 +92,7 @@ public class ICalendarTranslator extends CalendarTranslator {
 	public static final NSOFSymbol SLOT_START_DATE = new NSOFSymbol("mtgStartDate");
 	public static final NSOFSymbol SLOT_TEXT = new NSOFSymbol("mtgText");
 	public static final NSOFSymbol SLOT_NOTES = new NSOFSymbol("NotesData");
+	public static final NSOFSymbol SLOT_BOUNDS = new NSOFSymbol("viewBounds");
 	public static final NSOFSymbol SLOT_STATIONERY = new NSOFSymbol("viewStationery");
 
 	public static final NSOFSymbol CLASS_MEETING = new NSOFSymbol("meeting");
@@ -141,15 +146,26 @@ public class ICalendarTranslator extends CalendarTranslator {
 		if (duration == null)
 			throw new TranslatorException("duration required");
 		Summary summary = event.getSummary();
+		VAlarm alarm = (VAlarm) event.getAlarms().getComponent(Component.VALARM);
 
 		int startMinutes = NewtonDateUtils.getMinutes(start.getDate().getTime());
 		NSOFInteger mtgStartDate = new NSOFInteger(startMinutes);
 		NSOFInteger mtgDuration = new NSOFInteger(toMinutes(duration));
 		NSOFObject mtgText = new NSOFString(summary.getValue());
+		NSOFObject mtgAlarm = NSOFNil.NIL;
+		if (alarm != null) {
+			Trigger alarmTrigger = alarm.getTrigger();
+			if (alarmTrigger != null) {
+				Date alarmDate = alarmTrigger.getDate();
+				if (alarmDate != null) {
+					mtgAlarm = new NSOFInteger(NewtonDateUtils.getMinutes(alarmDate.getTime()));
+				}
+			}
+		}
 
 		NSOFFrame meeting = new NSOFFrame();
 		meeting.put(SLOT_CLASS, CLASS_MEETING);
-		meeting.put(SLOT_ALARM, NSOFNil.NIL);
+		meeting.put(SLOT_ALARM, mtgAlarm);
 		meeting.put(SLOT_DURATION, mtgDuration);
 		meeting.put(SLOT_ICON_TYPE, NSOFNil.NIL);
 		meeting.put(SLOT_INVITEES, NSOFNil.NIL);
@@ -157,6 +173,7 @@ public class ICalendarTranslator extends CalendarTranslator {
 		meeting.put(SLOT_START_DATE, mtgStartDate);
 		meeting.put(SLOT_TEXT, mtgText);
 		meeting.put(SLOT_NOTES, NSOFNil.NIL);
+		meeting.put(SLOT_BOUNDS, NSOFNil.NIL);
 		meeting.put(SLOT_STATIONERY, STATIONERY_MEETING);
 		return meeting;
 	}
@@ -164,6 +181,7 @@ public class ICalendarTranslator extends CalendarTranslator {
 	@Override
 	public InputStream translateFromNewton(NSOFObject obj) throws TranslatorException {
 		NSOFFrame meeting = (NSOFFrame) obj;
+		NSOFImmediate mtgAlarm = (NSOFImmediate) meeting.get(SLOT_ALARM);
 		NSOFImmediate mtgStartDate = (NSOFImmediate) meeting.get(SLOT_START_DATE);
 		if (NSOFImmediate.isNil(mtgStartDate))
 			throw new TranslatorException("slot " + SLOT_START_DATE + " required");
@@ -174,10 +192,16 @@ public class ICalendarTranslator extends CalendarTranslator {
 
 		Date start = new DateTime(NewtonDateUtils.fromMinutes(mtgStartDate.getValue()));
 		Dur duration = new Dur(0, 0, mtgDuration.getValue(), 0);
-		String summary = NSOFImmediate.isNil(mtgText) ? null : ((NSOFString) mtgText).getValue();
+		String summary = NSOFImmediate.isNil(mtgText) ? "" : ((NSOFString) mtgText).getValue();
 		VEvent event = new VEvent(start, duration, summary);
 		Uid uid = getUidGenerator().generateUid();
 		event.getProperties().add(uid);
+		if (!NSOFImmediate.isNil(mtgAlarm)) {
+			VAlarm alarm = new VAlarm(new DateTime(NewtonDateUtils.fromMinutes(mtgAlarm.getValue())));
+			alarm.getProperties().add(Action.DISPLAY);
+			alarm.getProperties().add(new Description(summary));
+			event.getAlarms().add(alarm);
+		}
 		Calendar cal = new Calendar();
 		cal.getProperties().add(new ProdId("-//jNCU//iCal4j 1.0//EN"));
 		cal.getProperties().add(Version.VERSION_2_0);
