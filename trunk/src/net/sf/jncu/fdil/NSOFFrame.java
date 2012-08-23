@@ -46,6 +46,7 @@ public class NSOFFrame extends NSOFPointer implements NSOFCollection {
 	 * <tt>kFD_SymFrame</tt>
 	 */
 	public static final NSOFSymbol CLASS_FRAME = new NSOFSymbol("frame");
+	public static final NSOFSymbol SLOT_CLASS = new NSOFSymbol("class");
 
 	private final Map<NSOFSymbol, NSOFObject> slots = new LinkedHashMap<NSOFSymbol, NSOFObject>();
 
@@ -151,6 +152,8 @@ public class NSOFFrame extends NSOFPointer implements NSOFCollection {
 	 */
 	public NSOFObject put(NSOFSymbol name, NSOFObject value) {
 		NSOFObject old = slots.put(name, (value == null) ? NSOFNil.NIL : value);
+		if (SLOT_CLASS.equals(name))
+			super.setObjectClass(((NSOFString) value).getValue());
 		return (old == null) ? NSOFNil.NIL : old;
 	}
 
@@ -324,5 +327,13 @@ public class NSOFFrame extends NSOFPointer implements NSOFCollection {
 	 */
 	public Set<NSOFSymbol> getKeys() {
 		return slots.keySet();
+	}
+
+	@Override
+	protected void setObjectClass(String nsClassName) {
+		super.setObjectClass(nsClassName);
+		if (!CLASS_FRAME.equals(nsClassName)) {
+			put(SLOT_CLASS, new NSOFSymbol(nsClassName));
+		}
 	}
 }
