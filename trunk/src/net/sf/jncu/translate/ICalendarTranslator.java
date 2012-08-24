@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketException;
+import java.net.URISyntaxException;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
@@ -33,11 +34,18 @@ import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Dur;
+import net.fortuna.ical4j.model.Parameter;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.parameter.Cn;
+import net.fortuna.ical4j.model.parameter.CuType;
 import net.fortuna.ical4j.model.property.Action;
+import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.CalScale;
+import net.fortuna.ical4j.model.property.Categories;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Location;
@@ -47,11 +55,13 @@ import net.fortuna.ical4j.model.property.Trigger;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.UidGenerator;
+import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFImmediate;
 import net.sf.jncu.fdil.NSOFInteger;
 import net.sf.jncu.fdil.NSOFNil;
 import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.util.NewtonDateUtils;
@@ -101,12 +111,21 @@ public class ICalendarTranslator extends CalendarTranslator {
 	public static final NSOFSymbol SLOT_ENTRY_CLASS = new NSOFSymbol("_entryClass");
 	public static final NSOFSymbol SLOT_FAKE_ID = new NSOFSymbol("_fakeID");
 	public static final NSOFSymbol SLOT_UNSELECTED = new NSOFSymbol("_unselected");
+	public static final NSOFSymbol SLOT_NAME = new NSOFSymbol("name");
+	public static final NSOFSymbol SLOT_NAME_FIRST = new NSOFSymbol("first");
+	public static final NSOFSymbol SLOT_NAME_LAST = new NSOFSymbol("last");
+	public static final NSOFSymbol SLOT_GROUP = new NSOFSymbol("group");
 
 	public static final NSOFSymbol CLASS_MEETING = new NSOFSymbol("meeting");
-	public static final NSOFSymbol CLASS_LOCATION = new NSOFSymbol("nameRef.meetingPlace");
+	public static final NSOFSymbol CLASS_NAMEREF_LOCATION = new NSOFSymbol("nameRef.meetingPlace");
 	public static final NSOFSymbol CLASS_COMPANY = new NSOFSymbol("company");
+	public static final NSOFSymbol CLASS_NAMEREF_PEOPLE = new NSOFSymbol("nameRef.people");
+	public static final NSOFSymbol CLASS_PERSON = new NSOFSymbol("person");
+	public static final NSOFSymbol CLASS_GROUP = new NSOFSymbol("group");
 
 	public static final NSOFSymbol STATIONERY_MEETING = new NSOFSymbol("meeting");
+
+	public static final String CATEGORY_MEETING = "MEETING";
 
 	private static UidGenerator uidGenerator;
 
@@ -157,6 +176,7 @@ public class ICalendarTranslator extends CalendarTranslator {
 		Summary summary = event.getSummary();
 		VAlarm alarm = (VAlarm) event.getAlarms().getComponent(Component.VALARM);
 		Location location = event.getLocation();
+		PropertyList attendees = event.getProperties(Property.ATTENDEE);
 
 		int startMinutes = NewtonDateUtils.getMinutes(start.getDate().getTime());
 		NSOFInteger mtgStartDate = new NSOFInteger(startMinutes);
@@ -175,11 +195,65 @@ public class ICalendarTranslator extends CalendarTranslator {
 		NSOFFrame mtgLocation = null;
 		if (location != null) {
 			mtgLocation = new NSOFFrame();
-			mtgLocation.setObjectClass(ICalendarTranslator.CLASS_LOCATION);
+			mtgLocation.setObjectClass(ICalendarTranslator.CLASS_NAMEREF_LOCATION);
 			mtgLocation.put(ICalendarTranslator.SLOT_COMPANY, new NSOFString(location.getValue()));
 			mtgLocation.put(ICalendarTranslator.SLOT_ENTRY_CLASS, CLASS_COMPANY);
 			mtgLocation.put(ICalendarTranslator.SLOT_FAKE_ID, NSOFNil.NIL);
 			mtgLocation.put(ICalendarTranslator.SLOT_UNSELECTED, NSOFNil.NIL);
+		}
+		NSOFArray mtgInvitees = null;
+		if (!attendees.isEmpty()) {
+			mtgInvitees = new NSOFPlainArray();
+			NSOFFrame invitee;
+			Attendee attendee;
+			Cn cn;
+			CuType cuType;
+			NSOFFrame person;
+			NSOFString company, group;
+			String name, first, last;
+			int indexSpace;
+
+			for (Object item : attendees) {
+				attendee = (Attendee) item;
+				cn = (Cn) attendee.getParameter(Parameter.CN);
+				cuType = (CuType) attendee.getParameter(Parameter.CUTYPE);
+
+				invitee = new NSOFFrame();
+				invitee.setObjectClass(ICalendarTranslator.CLASS_NAMEREF_PEOPLE);
+				invitee.put(ICalendarTranslator.SLOT_FAKE_ID, NSOFNil.NIL);
+				invitee.put(ICalendarTranslator.SLOT_UNSELECTED, NSOFNil.NIL);
+				mtgInvitees.add(invitee);
+
+				if (cuType == CuType.GROUP) {
+					group = (cn == null) ? null : new NSOFString(cn.getValue());
+
+					invitee.put(ICalendarTranslator.SLOT_ENTRY_CLASS, ICalendarTranslator.CLASS_GROUP);
+					invitee.put(ICalendarTranslator.SLOT_GROUP, group);
+				} else if ((cuType == CuType.ROOM) || (cuType == CuType.RESOURCE)) {
+					company = (cn == null) ? null : new NSOFString(cn.getValue());
+
+					invitee.put(ICalendarTranslator.SLOT_ENTRY_CLASS, ICalendarTranslator.CLASS_COMPANY);
+					invitee.put(ICalendarTranslator.SLOT_COMPANY, company);
+				} else {
+					name = (cn == null) ? "" : cn.getValue();
+					indexSpace = name.lastIndexOf(' ');
+					if (indexSpace >= 0) {
+						first = name.substring(0, indexSpace);
+						last = name.substring(indexSpace + 1);
+					} else {
+						first = name;
+						last = null;
+					}
+
+					person = new NSOFFrame();
+					person.setObjectClass(ICalendarTranslator.CLASS_PERSON);
+					person.put(ICalendarTranslator.SLOT_NAME_FIRST, new NSOFString(first));
+					person.put(ICalendarTranslator.SLOT_NAME_LAST, new NSOFString(last));
+
+					invitee.put(ICalendarTranslator.SLOT_ENTRY_CLASS, ICalendarTranslator.CLASS_PERSON);
+					invitee.put(ICalendarTranslator.SLOT_NAME, person);
+				}
+			}
 		}
 
 		NSOFFrame meeting = new NSOFFrame();
@@ -187,7 +261,7 @@ public class ICalendarTranslator extends CalendarTranslator {
 		meeting.put(SLOT_ALARM, mtgAlarm);
 		meeting.put(SLOT_DURATION, mtgDuration);
 		meeting.put(SLOT_ICON_TYPE, NSOFNil.NIL);
-		meeting.put(SLOT_INVITEES, NSOFNil.NIL);
+		meeting.put(SLOT_INVITEES, mtgInvitees);
 		meeting.put(SLOT_LOCATION, mtgLocation);
 		meeting.put(SLOT_START_DATE, mtgStartDate);
 		meeting.put(SLOT_TEXT, mtgText);
@@ -209,6 +283,7 @@ public class ICalendarTranslator extends CalendarTranslator {
 			throw new TranslatorException("slot " + SLOT_DURATION + " required");
 		NSOFObject mtgText = meeting.get(SLOT_TEXT);
 		NSOFObject mtgLocation = meeting.get(SLOT_LOCATION);
+		NSOFObject mtgInvitees = meeting.get(SLOT_INVITEES);
 
 		Date start = new DateTime(NewtonDateUtils.fromMinutes(mtgStartDate.getValue()));
 		Dur duration = new Dur(0, 0, mtgDuration.getValue(), 0);
@@ -216,17 +291,79 @@ public class ICalendarTranslator extends CalendarTranslator {
 		VEvent event = new VEvent(start, duration, summary);
 		Uid uid = getUidGenerator().generateUid();
 		event.getProperties().add(uid);
+		event.getProperties().add(new Categories(CATEGORY_MEETING));
 		if (!NSOFImmediate.isNil(mtgAlarm)) {
 			VAlarm alarm = new VAlarm(new DateTime(NewtonDateUtils.fromMinutes(mtgAlarm.getValue())));
 			alarm.getProperties().add(Action.DISPLAY);
 			alarm.getProperties().add(new Description(summary));
 			event.getAlarms().add(alarm);
 		}
-		if (!NSOFImmediate.isNil(mtgLocation) && CLASS_LOCATION.equals(mtgLocation.getObjectClass())) {
+		if (!NSOFImmediate.isNil(mtgLocation) && CLASS_NAMEREF_LOCATION.equals(mtgLocation.getObjectClass())) {
 			NSOFFrame mtgLocationFrame = (NSOFFrame) mtgLocation;
 			NSOFString company = (NSOFString) mtgLocationFrame.get(SLOT_COMPANY);
 			Location location = new Location(company.getValue());
 			event.getProperties().add(location);
+		}
+		if (!NSOFImmediate.isNil(mtgInvitees)) {
+			NSOFArray mtgInviteesArr = (NSOFArray) mtgInvitees;
+			int size = mtgInviteesArr.length();
+			NSOFFrame invitee;
+			NSOFFrame person;
+			NSOFString first;
+			NSOFString last;
+			NSOFObject value;
+			String name;
+			Attendee attendee;
+			NSOFSymbol entryClass;
+			NSOFString company, group;
+
+			for (int i = 0; i < size; i++) {
+				invitee = (NSOFFrame) mtgInviteesArr.get(i);
+				if (!CLASS_NAMEREF_PEOPLE.equals(invitee.getObjectClass()))
+					continue;
+				attendee = new Attendee();
+				try {
+					attendee.setValue("mailto:jncu@sourceforge.net");
+				} catch (URISyntaxException e) {
+					throw new TranslatorException(e);
+				}
+				name = null;
+				entryClass = (NSOFSymbol) invitee.get(SLOT_ENTRY_CLASS);
+				if (CLASS_PERSON.equals(entryClass)) {
+					person = (NSOFFrame) invitee.get(SLOT_NAME);
+					attendee.getParameters().add(CuType.INDIVIDUAL);
+
+					first = null;
+					value = person.get(SLOT_NAME_FIRST);
+					if (!NSOFImmediate.isNil(value)) {
+						first = (NSOFString) value;
+						name = first.getValue();
+					}
+
+					last = null;
+					value = person.get(SLOT_NAME_LAST);
+					if (!NSOFImmediate.isNil(value)) {
+						last = (NSOFString) value;
+						if (name == null)
+							name = last.getValue();
+						else
+							name += " " + last.getValue();
+					}
+				} else if (CLASS_GROUP.equals(entryClass)) {
+					group = (NSOFString) invitee.get(SLOT_GROUP);
+					attendee.getParameters().add(CuType.GROUP);
+					name = group.getValue();
+				} else if (CLASS_COMPANY.equals(entryClass)) {
+					company = (NSOFString) invitee.get(SLOT_COMPANY);
+					attendee.getParameters().add(CuType.ROOM);
+					name = company.getValue();
+				}
+				if (name != null) {
+					name = name.trim();
+					attendee.getParameters().add(new Cn(name));
+					event.getProperties().add(attendee);
+				}
+			}
 		}
 		Calendar cal = new Calendar();
 		cal.getProperties().add(new ProdId("-//jNCU//iCal4j 1.0//EN"));
