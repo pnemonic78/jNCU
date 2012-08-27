@@ -151,8 +151,8 @@ public class ICalendarTranslator extends CalendarTranslator {
 	}
 
 	@Override
-	public String getSoupName() {
-		return "Calendar";
+	public String getApplicationName() {
+		return "Dates";
 	}
 
 	@Override

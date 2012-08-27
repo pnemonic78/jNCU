@@ -55,7 +55,7 @@ public class VCalendarTranslator extends CalendarTranslator {
 	}
 
 	@Override
-	public String getSoupName() {
+	public String getApplicationName() {
 		// TODO Auto-generated method stub
 		return null;
 	}

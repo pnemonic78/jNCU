@@ -55,7 +55,7 @@ public class KiesTranslator extends NamesTranslator {
 	}
 
 	@Override
-	public String getSoupName() {
+	public String getApplicationName() {
 		// TODO Auto-generated method stub
 		return null;
 	}

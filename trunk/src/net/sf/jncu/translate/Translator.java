@@ -46,11 +46,11 @@ public abstract class Translator {
 	public abstract String getName();
 
 	/**
-	 * Get the default soup name.
+	 * Get the application name.
 	 * 
-	 * @return the soup name.
+	 * @return the name.
 	 */
-	public abstract String getSoupName();
+	public abstract String getApplicationName();
 
 	/**
 	 * Transform the file to Newton format.

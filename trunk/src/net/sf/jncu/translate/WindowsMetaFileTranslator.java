@@ -54,7 +54,7 @@ public class WindowsMetaFileTranslator extends ImageTranslator {
 	}
 
 	@Override
-	public String getSoupName() {
+	public String getApplicationName() {
 		// TODO Auto-generated method stub
 		return null;
 	}
