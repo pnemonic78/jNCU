@@ -20,9 +20,10 @@
 package net.sf.jncu.translate;
 
 import java.io.InputStream;
+import java.util.Collection;
 
-import net.sf.jncu.fdil.NSOFBinaryObject;
 import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.newton.os.Soup;
 
 /**
  * Plain text translator.
@@ -60,11 +61,12 @@ public class PlainTextTranslator extends TextTranslator {
 	}
 
 	@Override
-	public NSOFObject translateToNewton(InputStream in) {
+	public Collection<Soup> translateToNewton(InputStream in) {
 		// TODO Auto-generated method stub
-		NSOFBinaryObject bin = new NSOFBinaryObject(null);
-		bin.setObjectClass(CLASS_PAPER);
-		return bin;
+		// NSOFBinaryObject bin = new NSOFBinaryObject(null);
+		// bin.setObjectClass(CLASS_PAPER);
+		// return bin;
+		return null;
 	}
 
 	@Override

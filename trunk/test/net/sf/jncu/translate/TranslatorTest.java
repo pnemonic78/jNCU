@@ -7,9 +7,10 @@ import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFInteger;
 import net.sf.jncu.fdil.NSOFNil;
-import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.newton.os.Soup;
+import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.util.NewtonDateUtils;
 import net.sf.junit.SFTestCase;
 
@@ -81,9 +82,15 @@ public class TranslatorTest extends SFTestCase {
 
 		InputStream fromNewton = translator.translateFromNewton(meeting);
 		assertNotNull(fromNewton);
-		NSOFObject toNewton = translator.translateToNewton(fromNewton);
+		Collection<Soup> toNewton = translator.translateToNewton(fromNewton);
 		assertNotNull(toNewton);
-		assertEquals(meeting, toNewton);
+		assertEquals(1, toNewton.size());
+		Soup soup = toNewton.iterator().next();
+		assertNotNull(soup);
+		assertEquals("Calendar", soup.getName());
+		SoupEntry entry = soup.getEntries().iterator().next();
+		assertNotNull(entry);
+		assertEquals(meeting, entry);
 	}
 
 	/**
@@ -119,9 +126,15 @@ public class TranslatorTest extends SFTestCase {
 
 		InputStream fromNewton = translator.translateFromNewton(meeting);
 		assertNotNull(fromNewton);
-		NSOFObject toNewton = translator.translateToNewton(fromNewton);
+		Collection<Soup> toNewton = translator.translateToNewton(fromNewton);
 		assertNotNull(toNewton);
-		assertEquals(meeting, toNewton);
+		assertEquals(1, toNewton.size());
+		Soup soup = toNewton.iterator().next();
+		assertNotNull(soup);
+		assertEquals("Calendar", soup.getName());
+		SoupEntry entry = soup.getEntries().iterator().next();
+		assertNotNull(entry);
+		assertEquals(meeting, entry);
 	}
 
 	/**
@@ -158,9 +171,15 @@ public class TranslatorTest extends SFTestCase {
 
 		InputStream fromNewton = translator.translateFromNewton(meeting);
 		assertNotNull(fromNewton);
-		NSOFObject toNewton = translator.translateToNewton(fromNewton);
+		Collection<Soup> toNewton = translator.translateToNewton(fromNewton);
 		assertNotNull(toNewton);
-		assertEquals(meeting, toNewton);
+		assertEquals(1, toNewton.size());
+		Soup soup = toNewton.iterator().next();
+		assertNotNull(soup);
+		assertEquals("Calendar", soup.getName());
+		SoupEntry entry = soup.getEntries().iterator().next();
+		assertNotNull(entry);
+		assertEquals(meeting, entry);
 	}
 
 	/**
@@ -197,9 +216,15 @@ public class TranslatorTest extends SFTestCase {
 
 		InputStream fromNewton = translator.translateFromNewton(meeting);
 		assertNotNull(fromNewton);
-		NSOFObject toNewton = translator.translateToNewton(fromNewton);
+		Collection<Soup> toNewton = translator.translateToNewton(fromNewton);
 		assertNotNull(toNewton);
-		assertEquals(meeting, toNewton);
+		assertEquals(1, toNewton.size());
+		Soup soup = toNewton.iterator().next();
+		assertNotNull(soup);
+		assertEquals("Calendar", soup.getName());
+		SoupEntry entry = soup.getEntries().iterator().next();
+		assertNotNull(entry);
+		assertEquals(meeting, entry);
 	}
 
 	/**
@@ -241,9 +266,15 @@ public class TranslatorTest extends SFTestCase {
 
 		InputStream fromNewton = translator.translateFromNewton(meeting);
 		assertNotNull(fromNewton);
-		NSOFObject toNewton = translator.translateToNewton(fromNewton);
+		Collection<Soup> toNewton = translator.translateToNewton(fromNewton);
 		assertNotNull(toNewton);
-		assertEquals(meeting, toNewton);
+		assertEquals(1, toNewton.size());
+		Soup soup = toNewton.iterator().next();
+		assertNotNull(soup);
+		assertEquals("Calendar", soup.getName());
+		SoupEntry entry = soup.getEntries().iterator().next();
+		assertNotNull(entry);
+		assertEquals(meeting, entry);
 	}
 
 	/**
@@ -291,9 +322,15 @@ public class TranslatorTest extends SFTestCase {
 
 		InputStream fromNewton = translator.translateFromNewton(meeting);
 		assertNotNull(fromNewton);
-		NSOFObject toNewton = translator.translateToNewton(fromNewton);
+		Collection<Soup> toNewton = translator.translateToNewton(fromNewton);
 		assertNotNull(toNewton);
-		assertEquals(meeting, toNewton);
+		assertEquals(1, toNewton.size());
+		Soup soup = toNewton.iterator().next();
+		assertNotNull(soup);
+		assertEquals("Calendar", soup.getName());
+		SoupEntry entry = soup.getEntries().iterator().next();
+		assertNotNull(entry);
+		assertEquals(meeting, entry);
 	}
 
 	/**
@@ -353,8 +390,14 @@ public class TranslatorTest extends SFTestCase {
 
 		InputStream fromNewton = translator.translateFromNewton(meeting);
 		assertNotNull(fromNewton);
-		NSOFObject toNewton = translator.translateToNewton(fromNewton);
+		Collection<Soup> toNewton = translator.translateToNewton(fromNewton);
 		assertNotNull(toNewton);
-		assertEquals(meeting, toNewton);
+		assertEquals(1, toNewton.size());
+		Soup soup = toNewton.iterator().next();
+		assertNotNull(soup);
+		assertEquals("Calendar", soup.getName());
+		SoupEntry entry = soup.getEntries().iterator().next();
+		assertNotNull(entry);
+		assertEquals(meeting, entry);
 	}
 }

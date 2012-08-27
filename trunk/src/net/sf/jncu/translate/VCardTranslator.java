@@ -20,8 +20,10 @@
 package net.sf.jncu.translate;
 
 import java.io.InputStream;
+import java.util.Collection;
 
 import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.newton.os.Soup;
 
 /**
  * vCard translator.
@@ -60,13 +62,11 @@ public class VCardTranslator extends NamesTranslator {
 
 	@Override
 	public String getApplicationName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Names";
 	}
 
 	@Override
-	public NSOFObject translateToNewton(InputStream in) {
-		// TODO Auto-generated method stub
+	public Collection<Soup> translateToNewton(InputStream in) {
 		return null;
 	}
 

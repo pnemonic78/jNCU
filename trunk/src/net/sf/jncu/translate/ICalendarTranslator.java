@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
@@ -64,6 +66,8 @@ import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.NSOFSymbol;
+import net.sf.jncu.newton.os.Soup;
+import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.util.NewtonDateUtils;
 
 /**
@@ -127,6 +131,11 @@ public class ICalendarTranslator extends CalendarTranslator {
 
 	public static final String CATEGORY_MEETING = "MEETING";
 
+	protected static final String SOUP_CALENDAR = "Calendar";
+	protected static final String SOUP_CALENDAR_NOTES = "Calendar Notes";
+	protected static final String SOUP_REPEAT = "Repeat Meetings";
+	protected static final String SOUP_REPEAT_NOTES = "Repeat Notes";
+
 	private static UidGenerator uidGenerator;
 
 	/**
@@ -156,7 +165,8 @@ public class ICalendarTranslator extends CalendarTranslator {
 	}
 
 	@Override
-	public NSOFObject translateToNewton(InputStream in) throws TranslationException {
+	public Collection<Soup> translateToNewton(InputStream in) throws TranslationException {
+		Collection<Soup> soups = new ArrayList<Soup>();
 		CalendarBuilder builder = new CalendarBuilder();
 		Calendar cal;
 		try {
@@ -256,7 +266,7 @@ public class ICalendarTranslator extends CalendarTranslator {
 			}
 		}
 
-		NSOFFrame meeting = new NSOFFrame();
+		SoupEntry meeting = new SoupEntry();
 		meeting.put(SLOT_CLASS, CLASS_MEETING);
 		meeting.put(SLOT_ALARM, mtgAlarm);
 		meeting.put(SLOT_DURATION, mtgDuration);
@@ -268,7 +278,12 @@ public class ICalendarTranslator extends CalendarTranslator {
 		meeting.put(SLOT_NOTES, NSOFNil.NIL);
 		meeting.put(SLOT_BOUNDS, NSOFNil.NIL);
 		meeting.put(SLOT_STATIONERY, STATIONERY_MEETING);
-		return meeting;
+
+		Soup soup = new Soup(SOUP_CALENDAR);
+		soup.addEntry(meeting);
+		soups.add(soup);
+
+		return soups;
 	}
 
 	@Override

@@ -20,8 +20,10 @@
 package net.sf.jncu.translate;
 
 import java.io.InputStream;
+import java.util.Collection;
 
 import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.newton.os.Soup;
 
 /**
  * Delimited text translator.
@@ -54,7 +56,7 @@ public class DelimitedTextTranslator extends TextTranslator {
 	}
 
 	@Override
-	public NSOFObject translateToNewton(InputStream in) {
+	public Collection<Soup> translateToNewton(InputStream in) {
 		// TODO Auto-generated method stub
 		return null;
 	}

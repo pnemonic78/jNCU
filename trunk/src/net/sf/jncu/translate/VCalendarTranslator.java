@@ -20,8 +20,10 @@
 package net.sf.jncu.translate;
 
 import java.io.InputStream;
+import java.util.Collection;
 
 import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.newton.os.Soup;
 
 /**
  * vCalendar translator.
@@ -56,12 +58,11 @@ public class VCalendarTranslator extends CalendarTranslator {
 
 	@Override
 	public String getApplicationName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Dates";
 	}
 
 	@Override
-	public NSOFObject translateToNewton(InputStream in) {
+	public Collection<Soup> translateToNewton(InputStream in) {
 		// TODO Auto-generated method stub
 		return null;
 	}
