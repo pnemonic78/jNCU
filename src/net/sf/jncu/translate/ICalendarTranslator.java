@@ -156,23 +156,23 @@ public class ICalendarTranslator extends CalendarTranslator {
 	}
 
 	@Override
-	public NSOFObject translateToNewton(InputStream in) throws TranslatorException {
+	public NSOFObject translateToNewton(InputStream in) throws TranslationException {
 		CalendarBuilder builder = new CalendarBuilder();
 		Calendar cal;
 		try {
 			cal = builder.build(in);
 		} catch (IOException ioe) {
-			throw new TranslatorException(ioe);
+			throw new TranslationException(ioe);
 		} catch (ParserException pe) {
-			throw new TranslatorException(pe);
+			throw new TranslationException(pe);
 		}
 		VEvent event = (VEvent) cal.getComponent(Component.VEVENT);
 		DtStart start = event.getStartDate();
 		if (start == null)
-			throw new TranslatorException("start date required");
+			throw new TranslationException("start date required");
 		Dur duration = event.getDuration().getDuration();
 		if (duration == null)
-			throw new TranslatorException("duration required");
+			throw new TranslationException("duration required");
 		Summary summary = event.getSummary();
 		VAlarm alarm = (VAlarm) event.getAlarms().getComponent(Component.VALARM);
 		Location location = event.getLocation();
@@ -272,15 +272,15 @@ public class ICalendarTranslator extends CalendarTranslator {
 	}
 
 	@Override
-	public InputStream translateFromNewton(NSOFObject obj) throws TranslatorException {
+	public InputStream translateFromNewton(NSOFObject obj) throws TranslationException {
 		NSOFFrame meeting = (NSOFFrame) obj;
 		NSOFImmediate mtgAlarm = (NSOFImmediate) meeting.get(SLOT_ALARM);
 		NSOFImmediate mtgStartDate = (NSOFImmediate) meeting.get(SLOT_START_DATE);
 		if (NSOFImmediate.isNil(mtgStartDate))
-			throw new TranslatorException("slot " + SLOT_START_DATE + " required");
+			throw new TranslationException("slot " + SLOT_START_DATE + " required");
 		NSOFImmediate mtgDuration = (NSOFImmediate) meeting.get(SLOT_DURATION);
 		if (NSOFImmediate.isNil(mtgDuration))
-			throw new TranslatorException("slot " + SLOT_DURATION + " required");
+			throw new TranslationException("slot " + SLOT_DURATION + " required");
 		NSOFObject mtgText = meeting.get(SLOT_TEXT);
 		NSOFObject mtgLocation = meeting.get(SLOT_LOCATION);
 		NSOFObject mtgInvitees = meeting.get(SLOT_INVITEES);
@@ -325,7 +325,7 @@ public class ICalendarTranslator extends CalendarTranslator {
 				try {
 					attendee.setValue("mailto:jncu@sourceforge.net");
 				} catch (URISyntaxException e) {
-					throw new TranslatorException(e);
+					throw new TranslationException(e);
 				}
 				name = null;
 				entryClass = (NSOFSymbol) invitee.get(SLOT_ENTRY_CLASS);
@@ -376,9 +376,9 @@ public class ICalendarTranslator extends CalendarTranslator {
 		try {
 			outputter.output(cal, out);
 		} catch (ValidationException ve) {
-			throw new TranslatorException(ve);
+			throw new TranslationException(ve);
 		} catch (IOException ioe) {
-			throw new TranslatorException(ioe);
+			throw new TranslationException(ioe);
 		}
 
 		byte[] b = out.toByteArray();
@@ -389,15 +389,15 @@ public class ICalendarTranslator extends CalendarTranslator {
 	 * Get the UID generator instance.
 	 * 
 	 * @return the generator.
-	 * @throws TranslatorException
+	 * @throws TranslationException
 	 *             if a socket error occurs.
 	 */
-	protected UidGenerator getUidGenerator() throws TranslatorException {
+	protected UidGenerator getUidGenerator() throws TranslationException {
 		if (uidGenerator == null) {
 			try {
 				uidGenerator = new UidGenerator("jNCU");
 			} catch (SocketException se) {
-				throw new TranslatorException(se);
+				throw new TranslationException(se);
 			}
 		}
 		return uidGenerator;
