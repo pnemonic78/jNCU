@@ -20,8 +20,10 @@
 package net.sf.jncu.translate;
 
 import java.io.InputStream;
+import java.util.Collection;
 
 import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.newton.os.Soup;
 
 /**
  * Translator.<br>
@@ -57,11 +59,11 @@ public abstract class Translator {
 	 * 
 	 * @param in
 	 *            the input file.
-	 * @return the object.
+	 * @return the soups with entries.
 	 * @throws TranslationException
 	 *             if a translation error occurs.
 	 */
-	public abstract NSOFObject translateToNewton(InputStream in) throws TranslationException;
+	public abstract Collection<Soup> translateToNewton(InputStream in) throws TranslationException;
 
 	/**
 	 * Transform the Newton object to a file.

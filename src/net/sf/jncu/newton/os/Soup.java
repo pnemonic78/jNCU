@@ -22,7 +22,6 @@ package net.sf.jncu.newton.os;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.TreeSet;
 
 import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFFrame;
@@ -75,7 +74,11 @@ public class Soup implements Comparable<Soup> {
 
 	private String name;
 	private final NSOFFrame info;
-	private final Collection<SoupEntry> entries = new TreeSet<SoupEntry>();
+	/*
+	 * Use "list" instead of "set" in case of possible duplicate entries of
+	 * "_uniqueID" slots.
+	 */
+	private final Collection<SoupEntry> entries = new ArrayList<SoupEntry>();
 
 	/**
 	 * Creates a new soup.
