@@ -233,12 +233,8 @@ public abstract class TextTranslator extends Translator {
 		super();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.jncu.protocol.v2_0.data.Translator#getSoupName()
-	 */
 	@Override
-	public String getSoupName() {
+	public String getApplicationName() {
 		return "Notes";
 	}
 }

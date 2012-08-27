@@ -55,7 +55,7 @@ public class PlainTextTranslator extends TextTranslator {
 	}
 
 	@Override
-	public String getSoupName() {
+	public String getApplicationName() {
 		return "Notes";
 	}
 

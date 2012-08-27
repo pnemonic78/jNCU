@@ -104,7 +104,7 @@ public class ImportFile extends IconModule {
 					break;
 				case SetStoreToDefault:
 					DSetCurrentSoup setSoup = new DSetCurrentSoup();
-					setSoup.setName(translator.getSoupName());
+					setSoup.setName(translator.getApplicationName());
 					write(setSoup);
 					break;
 				case SetCurrentSoup:
@@ -131,7 +131,7 @@ public class ImportFile extends IconModule {
 			write(ack);
 		} else if (DAddedID.COMMAND.equals(cmd)) {
 			DAddedID cmdAdded = (DAddedID) command;
-			SoupChanged soup = DSoupsChanged.createSoup(translator.getSoupName(), cmdAdded.getId());
+			SoupChanged soup = DSoupsChanged.createSoup(translator.getApplicationName(), cmdAdded.getId());
 
 			if (changed == null)
 				changed = new DSoupsChanged();
