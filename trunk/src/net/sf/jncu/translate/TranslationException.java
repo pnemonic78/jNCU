@@ -26,12 +26,12 @@ import java.io.IOException;
  * 
  * @author Moshe
  */
-public class TranslatorException extends IOException {
+public class TranslationException extends IOException {
 
 	/**
 	 * Constructs a new exception.
 	 */
-	public TranslatorException() {
+	public TranslationException() {
 		super();
 	}
 
@@ -41,7 +41,7 @@ public class TranslatorException extends IOException {
 	 * @param message
 	 *            the detail message.
 	 */
-	public TranslatorException(String message) {
+	public TranslationException(String message) {
 		super(message);
 	}
 
@@ -51,7 +51,7 @@ public class TranslatorException extends IOException {
 	 * @param cause
 	 *            the cause.
 	 */
-	public TranslatorException(Throwable cause) {
+	public TranslationException(Throwable cause) {
 		super(cause);
 	}
 
@@ -63,7 +63,7 @@ public class TranslatorException extends IOException {
 	 * @param cause
 	 *            the cause.
 	 */
-	public TranslatorException(String message, Throwable cause) {
+	public TranslationException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
