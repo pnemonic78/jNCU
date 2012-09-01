@@ -22,8 +22,8 @@ package net.sf.jncu.translate;
 import java.io.InputStream;
 import java.util.Collection;
 
-import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.newton.os.Soup;
+import net.sf.jncu.newton.os.SoupEntry;
 
 /**
  * Plain text translator.
@@ -70,7 +70,7 @@ public class PlainTextTranslator extends TextTranslator {
 	}
 
 	@Override
-	public InputStream translateFromNewton(NSOFObject obj) {
+	public InputStream translateFromNewton(SoupEntry entry) {
 		// TODO Auto-generated method stub
 		return null;
 	}

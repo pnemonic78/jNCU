@@ -166,7 +166,6 @@ public class ICalendarTranslator extends CalendarTranslator {
 
 	@Override
 	public Collection<Soup> translateToNewton(InputStream in) throws TranslationException {
-		Collection<Soup> soups = new ArrayList<Soup>();
 		CalendarBuilder builder = new CalendarBuilder();
 		Calendar cal;
 		try {
@@ -176,6 +175,86 @@ public class ICalendarTranslator extends CalendarTranslator {
 		} catch (ParserException pe) {
 			throw new TranslationException(pe);
 		}
+
+		if (isMeeting(cal))
+			return translateToMeeting(cal);
+		if (isWeeklyMeeting(cal))
+			return translateToMeeting(cal);
+		if (isEvent(cal))
+			return translateToMeeting(cal);
+		if (isMultiDayEvent(cal))
+			return translateToMeeting(cal);
+		if (isAnnualEvent(cal))
+			return translateToMeeting(cal);
+		return null;
+	}
+
+	/**
+	 * Is the calendar item a plain "Meeting"?
+	 * 
+	 * @param cal
+	 *            the iCalendar.
+	 * @return {@code true} if a plain meeting.
+	 */
+	protected boolean isMeeting(Calendar cal) {
+		return true;
+	}
+
+	/**
+	 * Is the calendar item a "Weekly Meeting"?
+	 * 
+	 * @param cal
+	 *            the iCalendar.
+	 * @return {@code true} if a weekly meeting.
+	 */
+	protected boolean isWeeklyMeeting(Calendar cal) {
+		return false;
+	}
+
+	/**
+	 * Is the calendar item an "Event"?
+	 * 
+	 * @param cal
+	 *            the iCalendar.
+	 * @return {@code true} if an event.
+	 */
+	protected boolean isEvent(Calendar cal) {
+		return false;
+	}
+
+	/**
+	 * Is the calendar item an "Multi-Day Event"?
+	 * 
+	 * @param cal
+	 *            the iCalendar.
+	 * @return {@code true} if a multi-day event.
+	 */
+	protected boolean isMultiDayEvent(Calendar cal) {
+		return false;
+	}
+
+	/**
+	 * Is the calendar item an "Annual Event"?
+	 * 
+	 * @param cal
+	 *            the iCalendar.
+	 * @return {@code true} if an annual event.
+	 */
+	protected boolean isAnnualEvent(Calendar cal) {
+		return false;
+	}
+
+	/**
+	 * Translate to "Meeting".
+	 * 
+	 * @param cal
+	 *            the iCalendar.
+	 * @return the soup entries.
+	 * @throws TranslationException
+	 *             if a translation error occurs.
+	 */
+	protected Collection<Soup> translateToMeeting(Calendar cal) throws TranslationException {
+		Collection<Soup> soups = new ArrayList<Soup>();
 		VEvent event = (VEvent) cal.getComponent(Component.VEVENT);
 		DtStart start = event.getStartDate();
 		if (start == null)
@@ -287,8 +366,8 @@ public class ICalendarTranslator extends CalendarTranslator {
 	}
 
 	@Override
-	public InputStream translateFromNewton(NSOFObject obj) throws TranslationException {
-		NSOFFrame meeting = (NSOFFrame) obj;
+	public InputStream translateFromNewton(SoupEntry entry) throws TranslationException {
+		NSOFFrame meeting = entry;
 		NSOFImmediate mtgAlarm = (NSOFImmediate) meeting.get(SLOT_ALARM);
 		NSOFImmediate mtgStartDate = (NSOFImmediate) meeting.get(SLOT_START_DATE);
 		if (NSOFImmediate.isNil(mtgStartDate))

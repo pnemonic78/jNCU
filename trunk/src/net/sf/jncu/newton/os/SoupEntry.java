@@ -22,6 +22,7 @@ package net.sf.jncu.newton.os;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFImmediate;
 import net.sf.jncu.fdil.NSOFInteger;
+import net.sf.jncu.fdil.NSOFNil;
 import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.util.NewtonDateUtils;
 
@@ -40,6 +41,7 @@ public class SoupEntry extends NSOFFrame implements Comparable<SoupEntry> {
 	 */
 	public SoupEntry() {
 		super();
+		init();
 	}
 
 	/**
@@ -50,7 +52,13 @@ public class SoupEntry extends NSOFFrame implements Comparable<SoupEntry> {
 	 */
 	public SoupEntry(NSOFFrame frame) {
 		super();
+		init();
 		this.putAll(frame);
+	}
+
+	private void init() {
+		put(SLOT_ID, NSOFNil.NIL);
+		put(SLOT_MODIFIED, new NSOFInteger(NewtonDateUtils.getMinutes(System.currentTimeMillis())));
 	}
 
 	/**
