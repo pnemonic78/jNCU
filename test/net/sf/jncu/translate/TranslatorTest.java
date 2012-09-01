@@ -67,7 +67,7 @@ public class TranslatorTest extends SFTestCase {
 
 		final long now = System.currentTimeMillis();
 
-		NSOFFrame meeting = new NSOFFrame();
+		SoupEntry meeting = new SoupEntry();
 		meeting.setObjectClass(ICalendarTranslator.CLASS_MEETING);
 		meeting.put(ICalendarTranslator.SLOT_ALARM, NSOFNil.NIL);
 		meeting.put(ICalendarTranslator.SLOT_DURATION, new NSOFInteger(30));
@@ -111,7 +111,7 @@ public class TranslatorTest extends SFTestCase {
 
 		final long now = System.currentTimeMillis();
 
-		NSOFFrame meeting = new NSOFFrame();
+		SoupEntry meeting = new SoupEntry();
 		meeting.setObjectClass(ICalendarTranslator.CLASS_MEETING);
 		meeting.put(ICalendarTranslator.SLOT_ALARM, NSOFNil.NIL);
 		meeting.put(ICalendarTranslator.SLOT_DURATION, new NSOFInteger(150));
@@ -156,7 +156,7 @@ public class TranslatorTest extends SFTestCase {
 
 		final long now = System.currentTimeMillis();
 
-		NSOFFrame meeting = new NSOFFrame();
+		SoupEntry meeting = new SoupEntry();
 		meeting.setObjectClass(ICalendarTranslator.CLASS_MEETING);
 		meeting.put(ICalendarTranslator.SLOT_ALARM, new NSOFInteger(NewtonDateUtils.getMinutes(now - MINUTES_5)));
 		meeting.put(ICalendarTranslator.SLOT_DURATION, new NSOFInteger(30));
@@ -201,7 +201,7 @@ public class TranslatorTest extends SFTestCase {
 		final long now = System.currentTimeMillis();
 		// TODO NSOFArray mtgNotes = new NSOFPlainArray();
 
-		NSOFFrame meeting = new NSOFFrame();
+		SoupEntry meeting = new SoupEntry();
 		meeting.setObjectClass(ICalendarTranslator.CLASS_MEETING);
 		meeting.put(ICalendarTranslator.SLOT_ALARM, NSOFNil.NIL);
 		meeting.put(ICalendarTranslator.SLOT_DURATION, new NSOFInteger(30));
@@ -251,7 +251,7 @@ public class TranslatorTest extends SFTestCase {
 		mtgLocation.put(ICalendarTranslator.SLOT_FAKE_ID, NSOFNil.NIL);
 		mtgLocation.put(ICalendarTranslator.SLOT_UNSELECTED, NSOFNil.NIL);
 
-		NSOFFrame meeting = new NSOFFrame();
+		SoupEntry meeting = new SoupEntry();
 		meeting.setObjectClass(ICalendarTranslator.CLASS_MEETING);
 		meeting.put(ICalendarTranslator.SLOT_ALARM, NSOFNil.NIL);
 		meeting.put(ICalendarTranslator.SLOT_DURATION, new NSOFInteger(30));
@@ -307,7 +307,7 @@ public class TranslatorTest extends SFTestCase {
 		invitee.put(ICalendarTranslator.SLOT_UNSELECTED, NSOFNil.NIL);
 		mtgInvitees.add(invitee);
 
-		NSOFFrame meeting = new NSOFFrame();
+		SoupEntry meeting = new SoupEntry();
 		meeting.setObjectClass(ICalendarTranslator.CLASS_MEETING);
 		meeting.put(ICalendarTranslator.SLOT_ALARM, NSOFNil.NIL);
 		meeting.put(ICalendarTranslator.SLOT_DURATION, new NSOFInteger(30));
@@ -375,7 +375,7 @@ public class TranslatorTest extends SFTestCase {
 		invitee.put(ICalendarTranslator.SLOT_UNSELECTED, NSOFNil.NIL);
 		mtgInvitees.add(invitee);
 
-		NSOFFrame meeting = new NSOFFrame();
+		SoupEntry meeting = new SoupEntry();
 		meeting.setObjectClass(ICalendarTranslator.CLASS_MEETING);
 		meeting.put(ICalendarTranslator.SLOT_ALARM, NSOFNil.NIL);
 		meeting.put(ICalendarTranslator.SLOT_DURATION, new NSOFInteger(30));
