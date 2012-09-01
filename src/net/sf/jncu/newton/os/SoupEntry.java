@@ -58,7 +58,7 @@ public class SoupEntry extends NSOFFrame implements Comparable<SoupEntry> {
 
 	private void init() {
 		put(SLOT_ID, NSOFNil.NIL);
-		put(SLOT_MODIFIED, new NSOFInteger(NewtonDateUtils.getMinutes(System.currentTimeMillis())));
+		put(SLOT_MODIFIED, NewtonDateUtils.toMinutes(System.currentTimeMillis()));
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class SoupEntry extends NSOFFrame implements Comparable<SoupEntry> {
 	 *            the time in milliseconds.
 	 */
 	public void setModifiedTime(long time) {
-		put(SLOT_MODIFIED, new NSOFInteger(NewtonDateUtils.getMinutes(time)));
+		put(SLOT_MODIFIED, NewtonDateUtils.toMinutes(time));
 	}
 
 	@Override

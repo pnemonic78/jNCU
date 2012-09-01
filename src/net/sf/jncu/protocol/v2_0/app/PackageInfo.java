@@ -238,8 +238,7 @@ public class PackageInfo extends NSOFFrame {
 	 *            the date in milliseconds.
 	 */
 	public void setModifyDate(long modifyDate) {
-		int minutes = NewtonDateUtils.getMinutes(modifyDate);
-		this.put(SLOT_MODIFIED, new NSOFInteger(minutes));
+		this.put(SLOT_MODIFIED, NewtonDateUtils.toMinutes(modifyDate));
 	}
 
 	/**
