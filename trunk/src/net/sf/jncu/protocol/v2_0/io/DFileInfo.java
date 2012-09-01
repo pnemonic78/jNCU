@@ -127,7 +127,7 @@ public class DFileInfo extends DockCommandToNewton {
 			description = "Unknown";
 		frame.put(SLOT_KIND, new NSOFString(description));
 
-		NSOFInteger mtime = new NSOFInteger(NewtonDateUtils.getMinutes(file.lastModified()));
+		NSOFInteger mtime = NewtonDateUtils.toMinutes(file.lastModified());
 		frame.put(SLOT_CREATED, mtime);
 		frame.put(SLOT_MODIFIED, mtime);
 

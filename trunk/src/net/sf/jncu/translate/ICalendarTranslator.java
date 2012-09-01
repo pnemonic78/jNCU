@@ -267,8 +267,7 @@ public class ICalendarTranslator extends CalendarTranslator {
 		Location location = event.getLocation();
 		PropertyList attendees = event.getProperties(Property.ATTENDEE);
 
-		int startMinutes = NewtonDateUtils.getMinutes(start.getDate().getTime());
-		NSOFInteger mtgStartDate = new NSOFInteger(startMinutes);
+		NSOFInteger mtgStartDate = NewtonDateUtils.toMinutes(start.getDate().getTime());
 		NSOFInteger mtgDuration = new NSOFInteger(toMinutes(duration));
 		NSOFString mtgText = new NSOFString(summary.getValue());
 		NSOFInteger mtgAlarm = null;
@@ -277,7 +276,7 @@ public class ICalendarTranslator extends CalendarTranslator {
 			if (alarmTrigger != null) {
 				Date alarmDate = alarmTrigger.getDate();
 				if (alarmDate != null) {
-					mtgAlarm = new NSOFInteger(NewtonDateUtils.getMinutes(alarmDate.getTime()));
+					mtgAlarm = NewtonDateUtils.toMinutes(alarmDate.getTime());
 				}
 			}
 		}

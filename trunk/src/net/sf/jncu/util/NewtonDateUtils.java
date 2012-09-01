@@ -19,6 +19,8 @@
  */
 package net.sf.jncu.util;
 
+import net.sf.jncu.fdil.NSOFInteger;
+
 /**
  * Newton date utilities.
  * <p>
@@ -76,6 +78,42 @@ public class NewtonDateUtils {
 	 */
 	public static int getDays(long millis) {
 		return (int) ((millis - MINUTES_1904) / 86400000L);
+	}
+
+	/**
+	 * Get the number of seconds since 1993 January 1, 00:00:00 UTC (GMT).
+	 * 
+	 * @param millis
+	 *            the number of milliseconds since 1970 January 1, 00:00:00 UTC
+	 *            (GMT).
+	 * @return the Newton date.
+	 */
+	public static NSOFInteger toSeconds(long millis) {
+		return new NSOFInteger(getSeconds(millis));
+	}
+
+	/**
+	 * Get the number of minutes since 1904 January 1, 00:00:00 UTC (GMT).
+	 * 
+	 * @param millis
+	 *            the number of milliseconds since 1970 January 1, 00:00:00 UTC
+	 *            (GMT).
+	 * @return the Newton date.
+	 */
+	public static NSOFInteger toMinutes(long millis) {
+		return new NSOFInteger(getMinutes(millis));
+	}
+
+	/**
+	 * Get the number of days since 1904 January 1, 00:00:00 UTC (GMT).
+	 * 
+	 * @param millis
+	 *            the number of milliseconds since 1970 January 1, 00:00:00 UTC
+	 *            (GMT).
+	 * @return the Newton date.
+	 */
+	public static NSOFInteger toDays(long millis) {
+		return new NSOFInteger(getDays(millis));
 	}
 
 	/**
