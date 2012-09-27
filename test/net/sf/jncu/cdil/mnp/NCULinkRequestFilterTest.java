@@ -78,6 +78,9 @@ public class NCULinkRequestFilterTest extends SFTestCase {
 		assertEquals(availRaw, in.available());
 		availFiltered = count - find.length + replace.length;
 		assertEquals(availFiltered, filter.available());
+
+		out.close();
+		filter.close();
 	}
 
 	@Test
@@ -131,5 +134,8 @@ public class NCULinkRequestFilterTest extends SFTestCase {
 		filter.flush();
 		availFiltered = count - find.length + replace.length;
 		assertEquals(availFiltered, in.available());
+
+		out.close();
+		filter.close();
 	}
 }

@@ -6,9 +6,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import net.sf.jncu.cdil.mnp.TraceDecode;
-import net.sf.jncu.data.Archive;
-import net.sf.jncu.data.ArchiveReader;
-import net.sf.jncu.data.ArchiveWriter;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFLargeBinary;
 import net.sf.jncu.fdil.NSOFNil;
@@ -35,6 +32,9 @@ import net.sf.jncu.protocol.v2_0.app.DAppNames;
 import net.sf.jncu.protocol.v2_0.app.PackageInfo;
 import net.sf.jncu.protocol.v2_0.session.DNewtonName;
 import net.sf.jncu.protocol.v2_0.sync.DBackupSoupDone;
+import net.sf.jncu.sync.Archive;
+import net.sf.jncu.sync.ArchiveReader;
+import net.sf.jncu.sync.ArchiveWriter;
 
 import org.junit.Assert;
 
