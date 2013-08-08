@@ -21,11 +21,22 @@ package net.sf.jncu.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -34,37 +45,56 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 
 import net.sf.jncu.Settings;
+import net.sf.jncu.protocol.v2_0.io.KeyboardInputDialog;
 import net.sf.swing.SwingUtils;
 
 /**
- * Main NCU frame.
+ * Main jNCU frame.
  * 
  * @author moshew
  */
-public class NCUFrame extends JFrame {
+public class NCUFrame extends JFrame implements ActionListener {
 
-	private final JFrame jFrame;
-	private JPanel jContentPane = null;
-	private JMenuBar mainMenu = null;
-	private JMenu menuFile = null; // @jve:decl-index=0:visual-constraint="264,82"
-	private JMenu menuNewton = null;
-	private JMenu menuHelp = null;
-	private JMenuItem menuExit = null;
-	private JMenuItem menuSettings = null;
-	private JMenuItem menuBackup = null;
-	private JMenuItem menuRestore = null;
-	private JMenuItem menuInstall = null;
-	private JMenuItem menuKeyboard = null;
-	private JMenuItem menuAbout = null;
-	private NCUSettings settingsDialog = null;
-	private Settings settings = null;
-	private JPanel panelStatus = null;
-	private JLabel labelStatus = null; // @jve:decl-index=0:
+	static {
+		SwingUtils.init();
+	}
+
+	private static final String TITLE = "jNewton Connection Utility";
+	private static final int INSET_X = 20;
+	private static final int INSET_Y = 20;
+	private static final int INSET_BUTTON = 10;
+
+	private final NCUFrame frame;
+	private JPanel contentPane;
+	private JMenuBar mainMenu;
+	private JMenu menuFile;
+	private JMenu menuNewton;
+	private JMenu menuHelp;
+	private JMenuItem menuExit;
+	private JMenuItem menuSettings;
+	private JMenuItem menuBackup;
+	private JMenuItem menuRestore;
+	private JMenuItem menuInstall;
+	private JMenuItem menuKeyboard;
+	private JMenuItem menuAbout;
+	private NCUSettings settingsDialog;
+	private Settings settings;
+	private JPanel statusPanel;
+	private JLabel statusLabel;
+	private KeyboardInputDialog keyboardDialog;
+	private JPanel quickMenuPane;
+	private JButton syncButton;
+	private JButton installButton;
+	private JButton keyboardButton;
+	private JButton backupButton;
+	private JButton restoreButton;
+	private JButton importButton;
+	private JButton exportButton;
+	private NCUAbout aboutDialog;
 
 	/**
 	 * This method initializes mainMenu
@@ -125,7 +155,7 @@ public class NCUFrame extends JFrame {
 		if (menuHelp == null) {
 			menuHelp = new JMenu();
 			menuHelp.setMnemonic(KeyEvent.VK_H);
-			menuHelp.setText("Help");
+			menuHelp.setText(Toolkit.getProperty("AWT.help", "Help"));
 			menuHelp.add(getMenuAbout());
 		}
 		return menuHelp;
@@ -138,15 +168,13 @@ public class NCUFrame extends JFrame {
 	 */
 	private JMenuItem getMenuExit() {
 		if (menuExit == null) {
-			menuExit = new JMenuItem();
-			menuExit.setText("Exit");
-			menuExit.setMnemonic(KeyEvent.VK_X);
-			menuExit.addActionListener(new java.awt.event.ActionListener() {
-				@Override
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					close();
-				}
-			});
+			JMenuItem menuItem = new JMenuItem();
+			menuItem.setText("Exit");
+			menuItem.setMnemonic(KeyEvent.VK_X);
+			menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,
+					InputEvent.CTRL_MASK));
+			menuItem.addActionListener(this);
+			menuExit = menuItem;
 		}
 		return menuExit;
 	}
@@ -158,22 +186,13 @@ public class NCUFrame extends JFrame {
 	 */
 	private JMenuItem getMenuSettings() {
 		if (menuSettings == null) {
-			menuSettings = new JMenuItem();
-			menuSettings.setMnemonic(KeyEvent.VK_S);
-			menuSettings.setText("Settings...");
-			menuSettings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
-			menuSettings.addActionListener(new java.awt.event.ActionListener() {
-				@Override
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					Settings settings = getSettings();
-					// comm.stopListenForNewton();
-					getSettingsDialog().setVisible(true);
-					if (settings.isListen()) {
-						// comm.startListenForNewton(settings.getPortIdentifier(),
-						// settings.getPortSpeed());
-					}
-				}
-			});
+			JMenuItem menuItem = new JMenuItem();
+			menuItem.setMnemonic(KeyEvent.VK_S);
+			menuItem.setText("Settings...");
+			menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+					InputEvent.CTRL_MASK));
+			menuItem.addActionListener(this);
+			menuSettings = menuItem;
 		}
 		return menuSettings;
 	}
@@ -185,10 +204,12 @@ public class NCUFrame extends JFrame {
 	 */
 	private JMenuItem getMenuBackup() {
 		if (menuBackup == null) {
-			menuBackup = new JMenuItem();
-			menuBackup.setText("Backup...");
-			menuBackup.setEnabled(false);
-			menuBackup.setMnemonic(KeyEvent.VK_B);
+			JMenuItem menuItem = new JMenuItem();
+			menuItem.setText("Backup...");
+			menuItem.setMnemonic(KeyEvent.VK_B);
+			menuItem.addActionListener(this);
+			menuItem.setEnabled(false);
+			menuBackup = menuItem;
 		}
 		return menuBackup;
 	}
@@ -200,10 +221,12 @@ public class NCUFrame extends JFrame {
 	 */
 	private JMenuItem getMenuRestore() {
 		if (menuRestore == null) {
-			menuRestore = new JMenuItem();
-			menuRestore.setText("Restore...");
-			menuRestore.setEnabled(false);
-			menuRestore.setMnemonic(KeyEvent.VK_R);
+			JMenuItem menuItem = new JMenuItem();
+			menuItem.setText("Restore...");
+			menuItem.setMnemonic(KeyEvent.VK_R);
+			menuItem.addActionListener(this);
+			menuItem.setEnabled(false);
+			menuRestore = menuItem;
 		}
 		return menuRestore;
 	}
@@ -215,10 +238,12 @@ public class NCUFrame extends JFrame {
 	 */
 	private JMenuItem getMenuInstall() {
 		if (menuInstall == null) {
-			menuInstall = new JMenuItem();
-			menuInstall.setMnemonic(KeyEvent.VK_I);
-			menuInstall.setEnabled(false);
-			menuInstall.setText("Install Packages...");
+			JMenuItem menuItem = new JMenuItem();
+			menuItem.setMnemonic(KeyEvent.VK_I);
+			menuItem.setText("Install Packages...");
+			menuItem.addActionListener(this);
+			menuItem.setEnabled(false);
+			menuInstall = menuItem;
 		}
 		return menuInstall;
 	}
@@ -230,10 +255,12 @@ public class NCUFrame extends JFrame {
 	 */
 	private JMenuItem getMenuKeyboard() {
 		if (menuKeyboard == null) {
-			menuKeyboard = new JMenuItem();
-			menuKeyboard.setText("Keyboard Passthrough");
-			menuKeyboard.setEnabled(false);
-			menuKeyboard.setMnemonic(KeyEvent.VK_K);
+			JMenuItem menuItem = new JMenuItem();
+			menuItem.setText("Keyboard Passthrough...");
+			menuItem.setMnemonic(KeyEvent.VK_K);
+			menuItem.addActionListener(this);
+			menuItem.setEnabled(false);
+			menuKeyboard = menuItem;
 		}
 		return menuKeyboard;
 	}
@@ -245,9 +272,14 @@ public class NCUFrame extends JFrame {
 	 */
 	private JMenuItem getMenuAbout() {
 		if (menuAbout == null) {
-			menuAbout = new JMenuItem();
-			menuAbout.setText("About...");
-			menuAbout.setMnemonic(KeyEvent.VK_A);
+			JMenuItem menuItem = new JMenuItem();
+			menuItem.setText("About...");
+			menuItem.setMnemonic(KeyEvent.VK_A);
+			menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1,
+					InputEvent.ALT_MASK));
+			menuItem.addActionListener(this);
+			menuAbout = menuItem;
+
 		}
 		return menuAbout;
 	}
@@ -258,45 +290,42 @@ public class NCUFrame extends JFrame {
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel getPanelStatus() {
-		if (panelStatus == null) {
-			labelStatus = new JLabel();
-			labelStatus.setText("For help, press F1");
-			panelStatus = new JPanel();
-			panelStatus.setLayout(new BoxLayout(getPanelStatus(), BoxLayout.X_AXIS));
-			panelStatus.setPreferredSize(new Dimension(0, 24));
-			panelStatus.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
-			panelStatus.add(labelStatus, null);
+		if (statusPanel == null) {
+			statusLabel = new JLabel();
+			statusLabel.setText("For help, press F1");
+			statusPanel = new JPanel();
+			statusPanel.setLayout(new BoxLayout(getPanelStatus(),
+					BoxLayout.X_AXIS));
+			statusPanel.setPreferredSize(new Dimension(0, 24));
+			statusPanel.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
+			statusPanel.add(statusLabel, null);
 		}
-		return panelStatus;
+		return statusPanel;
 	}
 
 	/**
+	 * Main method.
+	 * 
 	 * @param args
+	 *            the array of arguments.
 	 */
 	public static void main(String[] args) {
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				NCUFrame thisClass = new NCUFrame();
-				thisClass.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				thisClass.setVisible(true);
+				NCUFrame frame = new NCUFrame();
+				frame.setVisible(true);
 			}
 		});
 	}
 
 	/**
-	 * This is the default constructor
+	 * Create a new frame.
 	 */
 	public NCUFrame() {
 		super();
-		this.jFrame = this;
-		initialize();
+		this.frame = this;
+		init();
 	}
 
 	/**
@@ -304,14 +333,15 @@ public class NCUFrame extends JFrame {
 	 * 
 	 * @return void
 	 */
-	private void initialize() {
-		this.setSize(450, 440);
-		this.setJMenuBar(getMainMenu());
-		this.setContentPane(getJContentPane());
-		this.setTitle("jNewton Connection Utility");
-		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Dimension screenSize = toolkit.getScreenSize();
-		this.setLocation((screenSize.width - this.getWidth()) >> 1, (screenSize.height - this.getHeight()) >> 1);
+	private void init() {
+		setTitle(TITLE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		setJMenuBar(getMainMenu());
+		setContentPane(getMainContentPane());
+
+		setSize(450, 440);
+		SwingUtils.centreInOwner(this);
 	}
 
 	/**
@@ -319,13 +349,14 @@ public class NCUFrame extends JFrame {
 	 * 
 	 * @return javax.swing.JPanel
 	 */
-	private JPanel getJContentPane() {
-		if (jContentPane == null) {
-			jContentPane = new JPanel();
-			jContentPane.setLayout(new BorderLayout());
-			jContentPane.add(getPanelStatus(), BorderLayout.SOUTH);
+	private JPanel getMainContentPane() {
+		if (contentPane == null) {
+			contentPane = new JPanel();
+			contentPane.setLayout(new BorderLayout());
+			contentPane.add(getPanelStatus(), BorderLayout.SOUTH);
+			contentPane.add(getQuickMenuPane(), BorderLayout.CENTER);
 		}
-		return jContentPane;
+		return contentPane;
 	}
 
 	private NCUSettings getSettingsDialog() {
@@ -343,8 +374,315 @@ public class NCUFrame extends JFrame {
 		return settings;
 	}
 
+	/**
+	 * Close jNCU.
+	 */
 	public void close() {
 		// comm.stopListenForNewton();
-		SwingUtils.postWindowClosing(jFrame);
+		if (isShowing()) {
+			SwingUtils.postWindowClosing(frame);
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		final Object src = event.getSource();
+
+		if (src == menuExit) {
+			close();
+		} else if (src == menuSettings) {
+			settings();
+		} else if (src == menuKeyboard) {
+			getKeyboardDialog().setVisible(true);
+		} else if (src == menuAbout) {
+			about();
+		} else if (src == syncButton) {
+			sync();
+		} else if (src == installButton) {
+			install();
+		} else if (src == keyboardButton) {
+			keyboard();
+		} else if (src == backupButton) {
+			backupToDesktop();
+		} else if (src == exportButton) {
+			exportToDesktop();
+		} else if (src == restoreButton) {
+			restoreToNewton();
+		} else if (src == importButton) {
+			importToNewton();
+		}
+	}
+
+	/**
+	 * Get the keyboard input dialog.
+	 * 
+	 * @return the dialog.
+	 */
+	private KeyboardInputDialog getKeyboardDialog() {
+		if (keyboardDialog == null) {
+			keyboardDialog = new KeyboardInputDialog(frame);
+		}
+		return keyboardDialog;
+	}
+
+	private JPanel getQuickMenuPane() {
+		if (quickMenuPane == null) {
+			JPanel utilsGroup = new JPanel();
+			utilsGroup.setOpaque(false);
+			utilsGroup.setLayout(new GridBagLayout());
+			utilsGroup.setBorder(BorderFactory
+					.createTitledBorder("Basic Utilities"));
+			GridBagConstraints gbcSync = new GridBagConstraints();
+			gbcSync.gridx = 0;
+			gbcSync.insets = new Insets(INSET_Y, INSET_X, INSET_Y, INSET_X);
+			utilsGroup.add(getSyncButton(), gbcSync);
+			GridBagConstraints gbcInstall = new GridBagConstraints();
+			gbcInstall.gridx = 1;
+			gbcInstall.insets = new Insets(INSET_Y, INSET_X, INSET_Y, INSET_X);
+			utilsGroup.add(getInstallButton(), gbcInstall);
+			GridBagConstraints gbcKeyboard = new GridBagConstraints();
+			gbcKeyboard.gridx = 2;
+			gbcKeyboard.insets = new Insets(INSET_Y, INSET_X, INSET_Y, INSET_X);
+			utilsGroup.add(getKeyboardButton(), gbcKeyboard);
+
+			JPanel exportGroup = new JPanel();
+			exportGroup.setOpaque(false);
+			exportGroup.setLayout(new GridBagLayout());
+			exportGroup
+					.setBorder(BorderFactory
+							.createTitledBorder("Move information to your desktop computer"));
+			GridBagConstraints gbcBackup = new GridBagConstraints();
+			gbcBackup.gridx = 0;
+			gbcBackup.insets = new Insets(INSET_Y, INSET_X, INSET_Y, INSET_X);
+			exportGroup.add(getBackupButton(), gbcBackup);
+			GridBagConstraints gbcExport = new GridBagConstraints();
+			gbcExport.gridx = 1;
+			gbcExport.insets = new Insets(INSET_Y, INSET_X, INSET_Y, INSET_X);
+			exportGroup.add(getExportButton(), gbcExport);
+
+			JPanel importGroup = new JPanel();
+			importGroup.setOpaque(false);
+			importGroup.setLayout(new GridBagLayout());
+			importGroup
+					.setBorder(BorderFactory
+							.createTitledBorder("Move information to your Newton device"));
+			GridBagConstraints gbcRestore = new GridBagConstraints();
+			gbcRestore.gridx = 0;
+			gbcRestore.insets = new Insets(INSET_Y, INSET_X, INSET_Y, INSET_X);
+			importGroup.add(getRestoreButton(), gbcRestore);
+			GridBagConstraints gbcImport = new GridBagConstraints();
+			gbcImport.gridx = 1;
+			gbcImport.insets = new Insets(INSET_Y, INSET_X, INSET_Y, INSET_X);
+			importGroup.add(getImportButton(), gbcImport);
+
+			quickMenuPane = new JPanel();
+			quickMenuPane.setLayout(new GridLayout(3, 1));
+			quickMenuPane.add(utilsGroup);
+			quickMenuPane.add(exportGroup);
+			quickMenuPane.add(importGroup);
+		}
+		return quickMenuPane;
+	}
+
+	/**
+	 * @return the syncButton
+	 */
+	private JButton getSyncButton() {
+		if (syncButton == null) {
+			URL url = getClass().getResource("/sync.png");
+			Icon icon = new ImageIcon(url);
+
+			syncButton = new JButton(icon);
+			syncButton.setToolTipText("Synchronize");
+			syncButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON,
+					INSET_BUTTON, INSET_BUTTON));
+			syncButton.addActionListener(this);
+			syncButton.setEnabled(false);
+		}
+		return syncButton;
+	}
+
+	/**
+	 * @return the insallButton
+	 */
+	private JButton getInstallButton() {
+		if (installButton == null) {
+			URL url = getClass().getResource("/pkg.png");
+			Icon icon = new ImageIcon(url);
+
+			installButton = new JButton(icon);
+			installButton.setToolTipText("Install Package");
+			installButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON,
+					INSET_BUTTON, INSET_BUTTON));
+			installButton.addActionListener(this);
+			installButton.setEnabled(false);
+		}
+		return installButton;
+	}
+
+	/**
+	 * @return the keyboardButton
+	 */
+	private JButton getKeyboardButton() {
+		if (keyboardButton == null) {
+			URL url = getClass().getResource("/kbd.png");
+			Icon icon = new ImageIcon(url);
+
+			keyboardButton = new JButton(icon);
+			keyboardButton.setToolTipText("Use Keyboard");
+			keyboardButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON,
+					INSET_BUTTON, INSET_BUTTON));
+			keyboardButton.addActionListener(this);
+			keyboardButton.setEnabled(false);
+		}
+		return keyboardButton;
+	}
+
+	/**
+	 * @return the backupButton
+	 */
+	private JButton getBackupButton() {
+		if (backupButton == null) {
+			URL url = getClass().getResource("/backup.png");
+			Icon icon = new ImageIcon(url);
+
+			backupButton = new JButton(icon);
+			backupButton.setToolTipText("Backup");
+			backupButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON,
+					INSET_BUTTON, INSET_BUTTON));
+			backupButton.addActionListener(this);
+			backupButton.setEnabled(false);
+		}
+		return backupButton;
+	}
+
+	/**
+	 * @return the restoreButton
+	 */
+	private JButton getRestoreButton() {
+		if (restoreButton == null) {
+			URL url = getClass().getResource("/restore.png");
+			Icon icon = new ImageIcon(url);
+
+			restoreButton = new JButton(icon);
+			restoreButton.setToolTipText("Restore");
+			restoreButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON,
+					INSET_BUTTON, INSET_BUTTON));
+			restoreButton.addActionListener(this);
+			restoreButton.setEnabled(false);
+		}
+		return restoreButton;
+	}
+
+	/**
+	 * @return the importButton
+	 */
+	private JButton getImportButton() {
+		if (importButton == null) {
+			URL url = getClass().getResource("/import.png");
+			Icon icon = new ImageIcon(url);
+
+			importButton = new JButton(icon);
+			importButton.setToolTipText("Import");
+			importButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON,
+					INSET_BUTTON, INSET_BUTTON));
+			importButton.addActionListener(this);
+			importButton.setEnabled(false);
+		}
+		return importButton;
+	}
+
+	/**
+	 * @return the exportButton
+	 */
+	private JButton getExportButton() {
+		if (exportButton == null) {
+			URL url = getClass().getResource("/export.png");
+			Icon icon = new ImageIcon(url);
+
+			exportButton = new JButton(icon);
+			exportButton.setToolTipText("Export");
+			exportButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON,
+					INSET_BUTTON, INSET_BUTTON));
+			exportButton.addActionListener(this);
+			exportButton.setEnabled(false);
+		}
+		return exportButton;
+	}
+
+	/**
+	 * Synchronize.
+	 */
+	private void sync() {
+		// TODO implement me!
+	}
+
+	/**
+	 * Install package.
+	 */
+	private void install() {
+		// TODO implement me!
+	}
+
+	/**
+	 * Use keyboard.
+	 */
+	private void keyboard() {
+		getKeyboardDialog().setVisible(true);
+	}
+
+	/**
+	 * Backup.
+	 */
+	private void backupToDesktop() {
+		// TODO implement me!
+	}
+
+	/**
+	 * Export.
+	 */
+	private void exportToDesktop() {
+		// TODO implement me!
+	}
+
+	/**
+	 * Restore.
+	 */
+	private void restoreToNewton() {
+		// TODO implement me!
+	}
+
+	/**
+	 * Import.
+	 */
+	private void importToNewton() {
+		// TODO implement me!
+	}
+
+	private NCUAbout getAboutDialog() {
+		if (aboutDialog == null) {
+			aboutDialog = new NCUAbout(this);
+		}
+		return aboutDialog;
+	}
+
+	/**
+	 * Show the 'about' dialog.
+	 */
+	private void about() {
+		getAboutDialog().setVisible(true);
+	}
+
+	/**
+	 * Show the settings dialog.
+	 */
+	private void settings() {
+		Settings settings = getSettings();
+		// comm.stopListenForNewton();
+		getSettingsDialog().setVisible(true);
+		if (settings.isListen()) {
+			// comm.startListenForNewton(settings.getPortIdentifier(),
+			// settings.getPortSpeed());
+		}
 	}
 }

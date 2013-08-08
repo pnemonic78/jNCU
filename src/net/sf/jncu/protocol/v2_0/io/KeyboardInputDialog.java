@@ -21,6 +21,7 @@ package net.sf.jncu.protocol.v2_0.io;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
@@ -47,6 +48,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.UIManager;
 
 import net.sf.swing.SwingUtils;
 
@@ -57,17 +59,20 @@ import net.sf.swing.SwingUtils;
  * 
  * @author Moshe
  */
-public class KeyboardInputDialog extends JDialog implements KeyListener {
+public class KeyboardInputDialog extends JDialog implements ActionListener,
+		KeyListener {
 
 	static {
 		SwingUtils.init();
 	}
 
 	private static final String TITLE = "Keyboard Passthrough";
+
 	private JTextArea input;
 	private JButton pasteButton;
 	private JButton cancelButton;
 	private final List<KeyboardInputListener> listeners = new ArrayList<KeyboardInputListener>();
+	private Dimension buttonMinimumSize;
 
 	/**
 	 * Constructs a new dialog.
@@ -111,6 +116,10 @@ public class KeyboardInputDialog extends JDialog implements KeyListener {
 	}
 
 	private void init() {
+		int buttonMinimumWidth = UIManager
+				.getInt("OptionPane.buttonMinimumWidth");
+		this.buttonMinimumSize = new Dimension(buttonMinimumWidth, 24);
+
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle(TITLE);
 
@@ -124,6 +133,7 @@ public class KeyboardInputDialog extends JDialog implements KeyListener {
 
 		panelContents.add(new JScrollPane(getTextInput()), BorderLayout.CENTER);
 		getTextInput().requestFocus();
+		addKeyListener(this);
 
 		JPanel panelButtons = new JPanel();
 		panelButtons.setOpaque(false);
@@ -133,10 +143,8 @@ public class KeyboardInputDialog extends JDialog implements KeyListener {
 		panelButtons.add(getCancelButton());
 		panelContents.add(panelButtons, BorderLayout.SOUTH);
 
-		setSize(320, 150);
+		setSize(320, 160);
 		SwingUtils.centreInOwner(this);
-
-		this.addKeyListener(this);
 	}
 
 	/**
@@ -167,13 +175,8 @@ public class KeyboardInputDialog extends JDialog implements KeyListener {
 	private JButton getPasteButton() {
 		if (pasteButton == null) {
 			pasteButton = new JButton(Toolkit.getProperty("AWT.paste", "Paste"));
-			pasteButton.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					paste();
-				}
-			});
+			pasteButton.setMinimumSize(buttonMinimumSize);
+			pasteButton.addActionListener(this);
 		}
 		return pasteButton;
 	}
@@ -185,14 +188,10 @@ public class KeyboardInputDialog extends JDialog implements KeyListener {
 	 */
 	private JButton getCancelButton() {
 		if (cancelButton == null) {
-			cancelButton = new JButton(Toolkit.getProperty("AWT.cancel", "Cancel"));
-			cancelButton.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					close();
-				}
-			});
+			cancelButton = new JButton(Toolkit.getProperty("AWT.cancel",
+					"Cancel"));
+			cancelButton.setMinimumSize(buttonMinimumSize);
+			cancelButton.addActionListener(this);
 		}
 		return cancelButton;
 	}
@@ -263,7 +262,8 @@ public class KeyboardInputDialog extends JDialog implements KeyListener {
 	 */
 	protected void fireCharTyped(KeyEvent ke) {
 		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<KeyboardInputListener> listenersCopy = new ArrayList<KeyboardInputListener>(listeners);
+		Collection<KeyboardInputListener> listenersCopy = new ArrayList<KeyboardInputListener>(
+				listeners);
 		for (KeyboardInputListener listener : listenersCopy) {
 			listener.charTyped(ke);
 		}
@@ -277,7 +277,8 @@ public class KeyboardInputDialog extends JDialog implements KeyListener {
 	 */
 	protected void fireStringTyped(String text) {
 		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<KeyboardInputListener> listenersCopy = new ArrayList<KeyboardInputListener>(listeners);
+		Collection<KeyboardInputListener> listenersCopy = new ArrayList<KeyboardInputListener>(
+				listeners);
 		for (KeyboardInputListener listener : listenersCopy) {
 			listener.stringTyped(text);
 		}
@@ -308,5 +309,16 @@ public class KeyboardInputDialog extends JDialog implements KeyListener {
 	@Override
 	public void keyTyped(KeyEvent ke) {
 		fireCharTyped(ke);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		final Object src = event.getSource();
+
+		if (src == cancelButton) {
+			close();
+		} else if (src == pasteButton) {
+			paste();
+		}
 	}
 }

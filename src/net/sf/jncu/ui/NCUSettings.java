@@ -20,13 +20,14 @@
 package net.sf.jncu.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
@@ -44,40 +45,42 @@ import net.sf.jncu.cdil.mnp.MNPSerialPort;
 import net.sf.swing.SwingUtils;
 
 /**
- * NCU settings.
+ * jNCU settings dialog.
  * 
  * @author moshew
  */
-public class NCUSettings extends JDialog {
+public class NCUSettings extends JDialog implements ActionListener {
 
-	private JPanel jContentPane = null;
-	private JPanel buttons = null;
-	private JButton buttonOk = null;
-	private JButton buttonCancel = null;
-	private Dimension buttonMinimumSize; // @jve:decl-index=0:
-	private Settings settings; // @jve:decl-index=0:
-	private JTabbedPane tabbedPane = null;
-	private JPanel tabComm = null; // @jve:decl-index=0:visual-constraint="507,150"
-	private JButton buttonApply = null;
-	private JButton buttonHelp = null;
-	private JPanel tabPassword = null; // @jve:decl-index=0:visual-constraint="532,140"
-	private JPanel tabDock = null;
-	private JLabel labelPort = null;
-	private JLabel labelSpeed = null;
-	private JComboBox/* <String> */listPort = null;
-	private JComboBox/* <Integer> */listSpeed = null;
-	private JCheckBox checkListen = null;
-	private JLabel labelFolder = null;
-	private JLabel labelFolderPath = null;
-	private JButton buttonBrowse = null;
-	private JFileChooser browser = null;
+	private static final String TITLE = "jNewton Connection Utility";
+
+	private JPanel contentPane;
+	private JPanel buttons;
+	private JButton okButton;
+	private JButton cancelButton;
+	private Dimension buttonMinimumSize;
+	private Settings settings;
+	private JTabbedPane tabbedPane;
+	private JPanel tabComm;
+	private JButton applyButton;
+	private JButton buttonHelp;
+	private JPanel tabPassword;
+	private JPanel tabDock;
+	private JLabel labelPort;
+	private JLabel labelSpeed;
+	private JComboBox/* <String> */listPort;
+	private JComboBox/* <Integer> */listSpeed;
+	private JCheckBox checkListen;
+	private JLabel labelFolder;
+	private JLabel labelFolderPath;
+	private JButton browseButton;
+	private JFileChooser browser;
 
 	/**
 	 * @param owner
 	 */
 	public NCUSettings(Frame owner) {
 		super(owner, true);
-		initialize();
+		init();
 	}
 
 	/**
@@ -85,17 +88,16 @@ public class NCUSettings extends JDialog {
 	 * 
 	 * @return void
 	 */
-	private void initialize() {
-		int buttonMinimumWidth = UIManager.getInt("OptionPane.buttonMinimumWidth");
-		buttonMinimumSize = new Dimension(buttonMinimumWidth, 24);
-		this.setSize(400, 260);
-		this.setTitle("jNewton Connection Utility");
-		this.setContentPane(getJContentPane());
-		this.setResizable(false);
-		Container parent = getParent();
-		Point locParent = parent.getLocation();
-		Dimension sizeParent = parent.getSize();
-		this.setLocation(locParent.x + ((sizeParent.width - this.getWidth()) >> 1), locParent.y + ((sizeParent.height - this.getHeight()) >> 1));
+	private void init() {
+		int buttonMinimumWidth = UIManager
+				.getInt("OptionPane.buttonMinimumWidth");
+		this.buttonMinimumSize = new Dimension(buttonMinimumWidth, 24);
+
+		setTitle(TITLE);
+		setContentPane(getMainContentPane());
+		setResizable(false);
+		setSize(400, 260);
+		SwingUtils.centreInOwner(this);
 	}
 
 	/**
@@ -103,14 +105,14 @@ public class NCUSettings extends JDialog {
 	 * 
 	 * @return javax.swing.JPanel
 	 */
-	private JPanel getJContentPane() {
-		if (jContentPane == null) {
-			jContentPane = new JPanel();
-			jContentPane.setLayout(new BorderLayout());
-			jContentPane.add(getButtons(), BorderLayout.SOUTH);
-			jContentPane.add(getTabbedPane(), BorderLayout.CENTER);
+	private JPanel getMainContentPane() {
+		if (contentPane == null) {
+			contentPane = new JPanel();
+			contentPane.setLayout(new BorderLayout());
+			contentPane.add(getButtons(), BorderLayout.SOUTH);
+			contentPane.add(getTabbedPane(), BorderLayout.CENTER);
 		}
-		return jContentPane;
+		return contentPane;
 	}
 
 	/**
@@ -122,9 +124,9 @@ public class NCUSettings extends JDialog {
 		if (buttons == null) {
 			buttons = new JPanel();
 			buttons.setLayout(new FlowLayout());
-			buttons.add(getButtonOk(), null);
-			buttons.add(getButtonCancel(), null);
-			buttons.add(getButtonApply(), null);
+			buttons.add(getOkButton(), null);
+			buttons.add(getCancelButton(), null);
+			buttons.add(getApplyButton(), null);
 			buttons.add(getButtonHelp(), null);
 		}
 		return buttons;
@@ -135,22 +137,15 @@ public class NCUSettings extends JDialog {
 	 * 
 	 * @return javax.swing.JButton
 	 */
-	private JButton getButtonOk() {
-		if (buttonOk == null) {
-			buttonOk = new JButton();
-			buttonOk.setMnemonic(KeyEvent.VK_O);
-			buttonOk.setText("OK");
-			buttonOk.setName("buttonOk");
-			buttonOk.setMinimumSize(buttonMinimumSize);
-			buttonOk.addActionListener(new java.awt.event.ActionListener() {
-				@Override
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					save();
-					close();
-				}
-			});
+	private JButton getOkButton() {
+		if (okButton == null) {
+			okButton = new JButton();
+			okButton.setMnemonic(KeyEvent.VK_O);
+			okButton.setText("OK");
+			okButton.setMinimumSize(buttonMinimumSize);
+			okButton.addActionListener(this);
 		}
-		return buttonOk;
+		return okButton;
 	}
 
 	/**
@@ -158,21 +153,15 @@ public class NCUSettings extends JDialog {
 	 * 
 	 * @return javax.swing.JButton
 	 */
-	private JButton getButtonCancel() {
-		if (buttonCancel == null) {
-			buttonCancel = new JButton();
-			buttonCancel.setText("Cancel");
-			buttonCancel.setMnemonic(KeyEvent.VK_C);
-			buttonCancel.setName("buttonCancel");
-			buttonCancel.setMinimumSize(buttonMinimumSize);
-			buttonCancel.addActionListener(new java.awt.event.ActionListener() {
-				@Override
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					close();
-				}
-			});
+	private JButton getCancelButton() {
+		if (cancelButton == null) {
+			cancelButton = new JButton(Toolkit.getProperty("AWT.cancel",
+					"Cancel"));
+			cancelButton.addActionListener(this);
+			cancelButton.setMnemonic(KeyEvent.VK_C);
+			cancelButton.setMinimumSize(buttonMinimumSize);
 		}
-		return buttonCancel;
+		return cancelButton;
 	}
 
 	/**
@@ -278,7 +267,7 @@ public class NCUSettings extends JDialog {
 			tabComm.add(getCheckListen(), gridBagConstraints4);
 			tabComm.add(labelFolder, gridBagConstraints11);
 			tabComm.add(labelFolderPath, gridBagConstraints21);
-			tabComm.add(getButtonBrowse(), gridBagConstraints31);
+			tabComm.add(getBrowseButton(), gridBagConstraints31);
 		}
 		return tabComm;
 	}
@@ -288,20 +277,15 @@ public class NCUSettings extends JDialog {
 	 * 
 	 * @return javax.swing.JButton
 	 */
-	private JButton getButtonApply() {
-		if (buttonApply == null) {
-			buttonApply = new JButton();
-			buttonApply.setText("Apply");
-			buttonApply.setMnemonic(KeyEvent.VK_A);
-			buttonApply.setMinimumSize(buttonMinimumSize);
-			buttonApply.addActionListener(new java.awt.event.ActionListener() {
-				@Override
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					save();
-				}
-			});
+	private JButton getApplyButton() {
+		if (applyButton == null) {
+			applyButton = new JButton();
+			applyButton.setText("Apply");
+			applyButton.setMnemonic(KeyEvent.VK_A);
+			applyButton.setMinimumSize(buttonMinimumSize);
+			applyButton.addActionListener(this);
 		}
-		return buttonApply;
+		return applyButton;
 	}
 
 	/**
@@ -395,22 +379,14 @@ public class NCUSettings extends JDialog {
 	 * 
 	 * @return javax.swing.JButton
 	 */
-	private JButton getButtonBrowse() {
-		if (buttonBrowse == null) {
-			buttonBrowse = new JButton();
-			buttonBrowse.setText("Browse...");
-			buttonBrowse.setMnemonic(KeyEvent.VK_B);
-			buttonBrowse.addActionListener(new java.awt.event.ActionListener() {
-				@Override
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					int ret = getBrowser().showOpenDialog(getButtonBrowse());
-					if (ret == JFileChooser.APPROVE_OPTION) {
-						labelFolderPath.setText(getBrowser().getSelectedFile().getPath());
-					}
-				}
-			});
+	private JButton getBrowseButton() {
+		if (browseButton == null) {
+			browseButton = new JButton();
+			browseButton.setText("Browse...");
+			browseButton.setMnemonic(KeyEvent.VK_B);
+			browseButton.addActionListener(this);
 		}
-		return buttonBrowse;
+		return browseButton;
 	}
 
 	public JFileChooser getBrowser() {
@@ -422,7 +398,9 @@ public class NCUSettings extends JDialog {
 	}
 
 	public void close() {
-		SwingUtils.postWindowClosing(this);
+		if (isShowing()) {
+			SwingUtils.postWindowClosing(this);
+		}
 	}
 
 	public void save() {
@@ -431,5 +409,25 @@ public class NCUSettings extends JDialog {
 		settings.setPortSpeed((Integer) getListSpeed().getSelectedItem());
 		settings.setListen(getCheckListen().isSelected());
 		settings.setBackupFolder(labelFolderPath.getText());
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		final Object src = event.getSource();
+
+		if (src == cancelButton) {
+			close();
+		} else if (src == okButton) {
+			save();
+			close();
+		} else if (src == applyButton) {
+			save();
+		} else if (src == browseButton) {
+			int ret = getBrowser().showOpenDialog(getBrowseButton());
+			if (ret == JFileChooser.APPROVE_OPTION) {
+				labelFolderPath.setText(getBrowser().getSelectedFile()
+						.getPath());
+			}
+		}
 	}
 }
