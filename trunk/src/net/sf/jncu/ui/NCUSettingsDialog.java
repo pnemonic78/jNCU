@@ -29,7 +29,10 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -49,7 +52,7 @@ import net.sf.swing.SwingUtils;
  * 
  * @author moshew
  */
-public class NCUSettings extends JDialog implements ActionListener {
+public class NCUSettingsDialog extends JDialog implements ActionListener {
 
 	private static final String TITLE = "jNewton Connection Utility";
 
@@ -64,6 +67,7 @@ public class NCUSettings extends JDialog implements ActionListener {
 	private JButton applyButton;
 	private JButton buttonHelp;
 	private JPanel tabPassword;
+	private JPanel tabGeneral;
 	private JPanel tabDock;
 	private JLabel labelPort;
 	private JLabel labelSpeed;
@@ -78,7 +82,7 @@ public class NCUSettings extends JDialog implements ActionListener {
 	/**
 	 * @param owner
 	 */
-	public NCUSettings(Frame owner) {
+	public NCUSettingsDialog(Frame owner) {
 		super(owner, true);
 		init();
 	}
@@ -98,6 +102,7 @@ public class NCUSettings extends JDialog implements ActionListener {
 		setResizable(false);
 		setSize(400, 260);
 		SwingUtils.centreInOwner(this);
+		getCancelButton().requestFocus();
 	}
 
 	/**
@@ -109,8 +114,8 @@ public class NCUSettings extends JDialog implements ActionListener {
 		if (contentPane == null) {
 			contentPane = new JPanel();
 			contentPane.setLayout(new BorderLayout());
-			contentPane.add(getButtons(), BorderLayout.SOUTH);
 			contentPane.add(getTabbedPane(), BorderLayout.CENTER);
+			contentPane.add(getButtons(), BorderLayout.SOUTH);
 		}
 		return contentPane;
 	}
@@ -127,7 +132,7 @@ public class NCUSettings extends JDialog implements ActionListener {
 			buttons.add(getOkButton(), null);
 			buttons.add(getCancelButton(), null);
 			buttons.add(getApplyButton(), null);
-			buttons.add(getButtonHelp(), null);
+			buttons.add(getHelpButton(), null);
 		}
 		return buttons;
 	}
@@ -139,11 +144,16 @@ public class NCUSettings extends JDialog implements ActionListener {
 	 */
 	private JButton getOkButton() {
 		if (okButton == null) {
-			okButton = new JButton();
-			okButton.setMnemonic(KeyEvent.VK_O);
-			okButton.setText("OK");
-			okButton.setMinimumSize(buttonMinimumSize);
-			okButton.addActionListener(this);
+			URL url = getClass().getResource("/dialog-ok.png");
+			Icon icon = new ImageIcon(url);
+
+			JButton button = new JButton();
+			button.setMnemonic(KeyEvent.VK_O);
+			button.setText("OK");
+			button.setIcon(icon);
+			button.setMinimumSize(buttonMinimumSize);
+			button.addActionListener(this);
+			okButton = button;
 		}
 		return okButton;
 	}
@@ -155,11 +165,16 @@ public class NCUSettings extends JDialog implements ActionListener {
 	 */
 	private JButton getCancelButton() {
 		if (cancelButton == null) {
-			cancelButton = new JButton(Toolkit.getProperty("AWT.cancel",
-					"Cancel"));
-			cancelButton.addActionListener(this);
-			cancelButton.setMnemonic(KeyEvent.VK_C);
-			cancelButton.setMinimumSize(buttonMinimumSize);
+			URL url = getClass().getResource("/dialog-cancel.png");
+			Icon icon = new ImageIcon(url);
+
+			JButton button = new JButton();
+			button.setMnemonic(KeyEvent.VK_C);
+			button.setText(Toolkit.getProperty("AWT.cancel", "Cancel"));
+			button.setIcon(icon);
+			button.setMinimumSize(buttonMinimumSize);
+			button.addActionListener(this);
+			cancelButton = button;
 		}
 		return cancelButton;
 	}
@@ -178,13 +193,14 @@ public class NCUSettings extends JDialog implements ActionListener {
 	public void setSettings(Settings settings) {
 		this.settings = settings;
 
-		JComboBox/* <String> */ports = getListPort();
+		JComboBox/* <String> */ports = getListPorts();
 		ports.removeAllItems();
 		for (String port : settings.getPorts()) {
 			ports.addItem(port);
 		}
-		JComboBox/* <Integer> */speed = getListSpeed();
-		speed.setSelectedItem(settings.getPortSpeed());
+		ports.setSelectedItem(settings.getPortIdentifier());
+		JComboBox/* <Integer> */speeds = getListSpeeds();
+		speeds.setSelectedItem(settings.getPortSpeed());
 		getCheckListen().setSelected(settings.isListen());
 
 		labelFolderPath.setText(settings.getBackupFolder().getPath());
@@ -200,6 +216,7 @@ public class NCUSettings extends JDialog implements ActionListener {
 			tabbedPane = new JTabbedPane();
 			tabbedPane.addTab("Communications", getTabComm());
 			tabbedPane.addTab("Password", getTabPassword());
+			tabbedPane.addTab("General", getTabGeneral());
 			tabbedPane.addTab("Auto Dock", getTabDock());
 			tabbedPane.setSelectedIndex(0);
 		}
@@ -213,61 +230,36 @@ public class NCUSettings extends JDialog implements ActionListener {
 	 */
 	private JPanel getTabComm() {
 		if (tabComm == null) {
-			GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
-			gridBagConstraints31.gridx = 2;
-			gridBagConstraints31.gridy = 4;
-			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
-			gridBagConstraints21.gridx = 0;
-			gridBagConstraints21.gridwidth = 2;
-			gridBagConstraints21.anchor = GridBagConstraints.WEST;
-			gridBagConstraints21.gridy = 4;
-			labelFolderPath = new JLabel();
-			labelFolderPath.setText("c:\\");
-			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-			gridBagConstraints11.gridx = 0;
-			gridBagConstraints11.gridwidth = 2;
-			gridBagConstraints11.anchor = GridBagConstraints.WEST;
-			gridBagConstraints11.gridy = 3;
-			labelFolder = new JLabel();
-			labelFolder.setText("Default folder for backup files:");
 			labelSpeed = new JLabel();
 			labelSpeed.setText("Speed:");
+			GridBagConstraints gbcListSpeed = new GridBagConstraints();
+			gbcListSpeed.fill = GridBagConstraints.NONE;
+			gbcListSpeed.gridy = 1;
+			gbcListSpeed.gridx = 1;
+			gbcListSpeed.weightx = 1.0;
+			gbcListSpeed.anchor = GridBagConstraints.WEST;
 			labelPort = new JLabel();
-			labelPort.setText("Port:");
+			labelPort.setText("Serial Port:");
+			GridBagConstraints gbcLabelPort = new GridBagConstraints();
+			gbcLabelPort.gridx = 0;
+			gbcLabelPort.gridy = 0;
+			GridBagConstraints gbcListPort = new GridBagConstraints();
+			gbcListPort.fill = GridBagConstraints.NONE;
+			gbcListPort.gridx = 1;
+			gbcListPort.gridy = 0;
+			gbcListPort.weightx = 1.0;
+			gbcListPort.anchor = GridBagConstraints.WEST;
+			GridBagConstraints gbcLabelSpeed = new GridBagConstraints();
+			gbcLabelSpeed.gridx = 0;
+			gbcLabelSpeed.gridy = 1;
 
-			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-			gridBagConstraints4.gridx = 0;
-			gridBagConstraints4.gridwidth = 2;
-			gridBagConstraints4.anchor = GridBagConstraints.WEST;
-			gridBagConstraints4.gridy = 2;
-			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-			gridBagConstraints3.fill = GridBagConstraints.NONE;
-			gridBagConstraints3.gridy = 1;
-			gridBagConstraints3.weightx = 1.0;
-			gridBagConstraints3.anchor = GridBagConstraints.WEST;
-			gridBagConstraints3.gridx = 1;
-			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-			gridBagConstraints2.fill = GridBagConstraints.NONE;
-			gridBagConstraints2.gridy = 0;
-			gridBagConstraints2.weightx = 1.0;
-			gridBagConstraints2.anchor = GridBagConstraints.WEST;
-			gridBagConstraints2.gridx = 1;
-			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-			gridBagConstraints1.gridx = 0;
-			gridBagConstraints1.gridy = 1;
-			GridBagConstraints gridBagConstraints = new GridBagConstraints();
-			gridBagConstraints.gridx = 0;
-			gridBagConstraints.gridy = 0;
-			tabComm = new JPanel();
-			tabComm.setLayout(new GridBagLayout());
-			tabComm.add(labelPort, gridBagConstraints);
-			tabComm.add(labelSpeed, gridBagConstraints1);
-			tabComm.add(getListPort(), gridBagConstraints2);
-			tabComm.add(getListSpeed(), gridBagConstraints3);
-			tabComm.add(getCheckListen(), gridBagConstraints4);
-			tabComm.add(labelFolder, gridBagConstraints11);
-			tabComm.add(labelFolderPath, gridBagConstraints21);
-			tabComm.add(getBrowseButton(), gridBagConstraints31);
+			JPanel tab = new JPanel();
+			tab.setLayout(new GridBagLayout());
+			tab.add(labelPort, gbcLabelPort);
+			tab.add(getListPorts(), gbcListPort);
+			tab.add(labelSpeed, gbcLabelSpeed);
+			tab.add(getListSpeeds(), gbcListSpeed);
+			tabComm = tab;
 		}
 		return tabComm;
 	}
@@ -279,11 +271,17 @@ public class NCUSettings extends JDialog implements ActionListener {
 	 */
 	private JButton getApplyButton() {
 		if (applyButton == null) {
-			applyButton = new JButton();
-			applyButton.setText("Apply");
-			applyButton.setMnemonic(KeyEvent.VK_A);
-			applyButton.setMinimumSize(buttonMinimumSize);
-			applyButton.addActionListener(this);
+			URL url = getClass().getResource("/dialog-apply.png");
+			Icon icon = new ImageIcon(url);
+
+			JButton button = new JButton();
+			button.setMnemonic(KeyEvent.VK_A);
+			button.setText("Apply");
+			button.setIcon(icon);
+			button.setMinimumSize(buttonMinimumSize);
+			button.addActionListener(this);
+			button.setEnabled(false);
+			applyButton = button;
 		}
 		return applyButton;
 	}
@@ -293,12 +291,19 @@ public class NCUSettings extends JDialog implements ActionListener {
 	 * 
 	 * @return javax.swing.JButton
 	 */
-	private JButton getButtonHelp() {
+	private JButton getHelpButton() {
 		if (buttonHelp == null) {
-			buttonHelp = new JButton();
-			buttonHelp.setText("Help");
-			buttonHelp.setMnemonic(KeyEvent.VK_H);
-			buttonHelp.setMinimumSize(buttonMinimumSize);
+			URL url = getClass().getResource("/dialog-help.png");
+			Icon icon = new ImageIcon(url);
+
+			JButton button = new JButton();
+			button.setMnemonic(KeyEvent.VK_H);
+			button.setText("Help");
+			button.setIcon(icon);
+			button.setMinimumSize(buttonMinimumSize);
+			button.addActionListener(this);
+			button.setEnabled(false);
+			buttonHelp = button;
 		}
 		return buttonHelp;
 	}
@@ -320,6 +325,48 @@ public class NCUSettings extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * This method initializes tabPassword
+	 * 
+	 * @return javax.swing.JPanel
+	 */
+	private JPanel getTabGeneral() {
+		if (tabGeneral == null) {
+			GridBagConstraints gbcListen = new GridBagConstraints();
+			gbcListen.gridx = 0;
+			gbcListen.gridwidth = 2;
+			gbcListen.anchor = GridBagConstraints.WEST;
+			gbcListen.gridy = 2;
+			labelFolder = new JLabel();
+			labelFolder.setText("Default folder for backup files:");
+			GridBagConstraints gbcLabelFolder = new GridBagConstraints();
+			gbcLabelFolder.gridx = 0;
+			gbcLabelFolder.gridwidth = 2;
+			gbcLabelFolder.anchor = GridBagConstraints.WEST;
+			gbcLabelFolder.gridy = 3;
+			labelFolderPath = new JLabel();
+			labelFolderPath.setText(".");
+			GridBagConstraints gbcValueFolder = new GridBagConstraints();
+			gbcValueFolder.gridx = 0;
+			gbcValueFolder.gridwidth = 2;
+			gbcValueFolder.anchor = GridBagConstraints.WEST;
+			gbcValueFolder.gridy = 4;
+			GridBagConstraints gbcBrowseFolder = new GridBagConstraints();
+			gbcBrowseFolder.gridx = 2;
+			gbcBrowseFolder.gridy = 4;
+
+			JPanel tab = new JPanel();
+			tab.setLayout(new GridBagLayout());
+			tab.add(getCheckListen(), gbcListen);
+			tab.add(labelFolder, gbcLabelFolder);
+			tab.add(labelFolderPath, gbcValueFolder);
+			tab.add(getBrowseButton(), gbcBrowseFolder);
+
+			tabGeneral = tab;
+		}
+		return tabGeneral;
+	}
+
+	/**
 	 * This method initializes tabDock
 	 * 
 	 * @return javax.swing.JPanel
@@ -337,7 +384,7 @@ public class NCUSettings extends JDialog implements ActionListener {
 	 * 
 	 * @return javax.swing.JComboBox
 	 */
-	private JComboBox/* <String> */getListPort() {
+	private JComboBox/* <String> */getListPorts() {
 		if (listPort == null) {
 			listPort = new JComboBox/* <String> */();
 		}
@@ -349,7 +396,7 @@ public class NCUSettings extends JDialog implements ActionListener {
 	 * 
 	 * @return javax.swing.JComboBox
 	 */
-	private JComboBox/* <Integer> */getListSpeed() {
+	private JComboBox/* <Integer> */getListSpeeds() {
 		if (listSpeed == null) {
 			listSpeed = new JComboBox/* <Integer> */();
 			listSpeed.addItem(MNPSerialPort.BAUD_2400);
@@ -405,10 +452,11 @@ public class NCUSettings extends JDialog implements ActionListener {
 
 	public void save() {
 		Settings settings = getSettings();
-		settings.setPortIdentifier((String) getListPort().getSelectedItem());
-		settings.setPortSpeed((Integer) getListSpeed().getSelectedItem());
+		settings.setPortIdentifier((String) getListPorts().getSelectedItem());
+		settings.setPortSpeed((Integer) getListSpeeds().getSelectedItem());
 		settings.setListen(getCheckListen().isSelected());
 		settings.setBackupFolder(labelFolderPath.getText());
+		settings.save();
 	}
 
 	@Override
