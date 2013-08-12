@@ -37,11 +37,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.Reader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -174,9 +177,15 @@ public class KeyboardInputDialog extends JDialog implements ActionListener,
 	 */
 	private JButton getPasteButton() {
 		if (pasteButton == null) {
-			pasteButton = new JButton(Toolkit.getProperty("AWT.paste", "Paste"));
-			pasteButton.setMinimumSize(buttonMinimumSize);
-			pasteButton.addActionListener(this);
+			URL url = getClass().getResource("/dialog-paste.png");
+			Icon icon = new ImageIcon(url);
+
+			JButton button = new JButton();
+			button.setText(Toolkit.getProperty("AWT.paste", "Paste"));
+			button.setIcon(icon);
+			button.setMinimumSize(buttonMinimumSize);
+			button.addActionListener(this);
+			pasteButton = button;
 		}
 		return pasteButton;
 	}
@@ -188,10 +197,15 @@ public class KeyboardInputDialog extends JDialog implements ActionListener,
 	 */
 	private JButton getCancelButton() {
 		if (cancelButton == null) {
-			cancelButton = new JButton(Toolkit.getProperty("AWT.cancel",
-					"Cancel"));
-			cancelButton.setMinimumSize(buttonMinimumSize);
-			cancelButton.addActionListener(this);
+			URL url = getClass().getResource("/dialog-cancel.png");
+			Icon icon = new ImageIcon(url);
+
+			JButton button = new JButton();
+			button.setText(Toolkit.getProperty("AWT.cancel", "Cancel"));
+			button.setIcon(icon);
+			button.setMinimumSize(buttonMinimumSize);
+			button.addActionListener(this);
+			cancelButton = button;
 		}
 		return cancelButton;
 	}
