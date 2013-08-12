@@ -20,18 +20,29 @@
 package net.sf.jncu.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.InputStream;
+import java.net.URL;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.UIManager;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.html.HTMLEditorKit;
 
 import net.sf.swing.SwingUtils;
 
@@ -40,20 +51,21 @@ import net.sf.swing.SwingUtils;
  * 
  * @author moshew
  */
-public class NCUAbout extends JDialog implements ActionListener {
+public class NCUAboutDialog extends JDialog implements ActionListener,
+		HyperlinkListener {
 
-	private static final String TITLE = "jNewton Connection Utility";
+	private static final String TITLE = "About jNewton Connection Utility";
 
 	private JPanel contentPane;
 	private JPanel buttons;
 	private JButton okButton;
 	private Dimension buttonMinimumSize;
-	private JTextArea description;
+	private JTextComponent description;
 
 	/**
 	 * @param owner
 	 */
-	public NCUAbout(Frame owner) {
+	public NCUAboutDialog(Frame owner) {
 		super(owner, true);
 		init();
 	}
@@ -71,8 +83,9 @@ public class NCUAbout extends JDialog implements ActionListener {
 		setTitle(TITLE);
 		setContentPane(getMainContentPane());
 		setResizable(false);
-		setSize(400, 260);
+		pack();
 		SwingUtils.centreInOwner(this);
+		getOkButton().requestFocus();
 	}
 
 	/**
@@ -90,17 +103,36 @@ public class NCUAbout extends JDialog implements ActionListener {
 		return contentPane;
 	}
 
-	private JTextArea getDescription() {
+	private JTextComponent getDescription() {
 		if (description == null) {
-			StringBuilder buf = new StringBuilder();
-			buf.append("Copyright (c) 2010-2013. All Rights Reserved.").append(
-					'\n');
-			buf.append("http://sourceforge.net/projects/jncu").append('\n');
-			buf.append("http://jncu.sourceforge.net").append('\n');
-			buf.append("Contributor(s):").append('\n');
-			buf.append("    Moshe Waisberg").append('\n');
+			JTextPane text = new JTextPane();
+			text.setEditable(false);
+			text.setMargin(new Insets(10, 10, 10, 10));
+			text.setOpaque(false);
+			text.setFont(this.getFont());
+			text.setHighlighter(null);
+			HTMLEditorKit editor = new HTMLEditorKit();
+			text.setEditorKit(editor);
+			text.addHyperlinkListener(this);
+			description = text;
 
-			description = new JTextArea(buf.toString());
+			URL url = getClass().getResource("/about.html");
+			InputStream in = null;
+			try {
+				in = url.openStream();
+				Document doc = text.getDocument();
+				editor.read(in, doc, 0);
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if (in != null) {
+					try {
+						in.close();
+					} catch (Exception e) {
+						// ignore
+					}
+				}
+			}
 		}
 		return description;
 	}
@@ -114,6 +146,7 @@ public class NCUAbout extends JDialog implements ActionListener {
 		if (buttons == null) {
 			buttons = new JPanel();
 			buttons.setLayout(new FlowLayout());
+			buttons.setOpaque(false);
 			buttons.add(getOkButton(), null);
 		}
 		return buttons;
@@ -126,11 +159,16 @@ public class NCUAbout extends JDialog implements ActionListener {
 	 */
 	private JButton getOkButton() {
 		if (okButton == null) {
-			okButton = new JButton();
-			okButton.setMnemonic(KeyEvent.VK_O);
-			okButton.setText("OK");
-			okButton.setMinimumSize(buttonMinimumSize);
-			okButton.addActionListener(this);
+			URL url = getClass().getResource("/dialog-ok.png");
+			Icon icon = new ImageIcon(url);
+
+			JButton button = new JButton();
+			button.setMnemonic(KeyEvent.VK_O);
+			button.setText("OK");
+			button.setIcon(icon);
+			button.setMinimumSize(buttonMinimumSize);
+			button.addActionListener(this);
+			okButton = button;
 		}
 		return okButton;
 	}
@@ -147,6 +185,19 @@ public class NCUAbout extends JDialog implements ActionListener {
 	public void close() {
 		if (isShowing()) {
 			SwingUtils.postWindowClosing(this);
+		}
+	}
+
+	@Override
+	public void hyperlinkUpdate(HyperlinkEvent event) {
+		if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+			// open link in browser.
+			URL url = event.getURL();
+			try {
+				Desktop.getDesktop().browse(url.toURI());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
