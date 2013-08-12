@@ -24,14 +24,19 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
@@ -42,14 +47,16 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 
+import net.sf.jncu.Controller;
 import net.sf.jncu.Settings;
-import net.sf.jncu.protocol.v2_0.io.KeyboardInputDialog;
+import net.sf.jncu.cdil.PlatformException;
 import net.sf.swing.SwingUtils;
 
 /**
@@ -81,11 +88,13 @@ public class NCUFrame extends JFrame implements ActionListener {
 	private JMenuItem menuInstall;
 	private JMenuItem menuKeyboard;
 	private JMenuItem menuAbout;
-	private NCUSettings settingsDialog;
-	private Settings settings;
+	private JMenuItem menuImport;
+	private JMenuItem menuExport;
+	private JMenuItem menuSync;
+	private JMenuItem menuSyncSettings;
+	private NCUSettingsDialog settingsDialog;
 	private JPanel statusPanel;
 	private JLabel statusLabel;
-	private KeyboardInputDialog keyboardDialog;
 	private JPanel quickMenuPane;
 	private JButton syncButton;
 	private JButton installButton;
@@ -94,7 +103,8 @@ public class NCUFrame extends JFrame implements ActionListener {
 	private JButton restoreButton;
 	private JButton importButton;
 	private JButton exportButton;
-	private NCUAbout aboutDialog;
+	private NCUAboutDialog aboutDialog;
+	private Controller control;
 
 	/**
 	 * This method initializes mainMenu
@@ -121,9 +131,63 @@ public class NCUFrame extends JFrame implements ActionListener {
 			menuFile = new JMenu();
 			menuFile.setText("File");
 			menuFile.setMnemonic(KeyEvent.VK_F);
+			menuFile.add(getMenuImport());
+			menuFile.add(getMenuExport());
+			menuFile.addSeparator();
+			menuFile.add(getMenuSync());
+			menuFile.add(getMenuSyncSettings());
+			menuFile.addSeparator();
 			menuFile.add(getMenuExit());
 		}
 		return menuFile;
+	}
+
+	private JMenuItem getMenuImport() {
+		if (menuImport == null) {
+			JMenuItem menuItem = new JMenuItem();
+			menuItem.setText("Import from...");
+			menuItem.setMnemonic(KeyEvent.VK_I);
+			menuItem.addActionListener(this);
+			menuItem.setEnabled(false);
+			menuImport = menuItem;
+		}
+		return menuImport;
+	}
+
+	private JMenuItem getMenuExport() {
+		if (menuExport == null) {
+			JMenuItem menuItem = new JMenuItem();
+			menuItem.setText("Export to...");
+			menuItem.setMnemonic(KeyEvent.VK_E);
+			menuItem.addActionListener(this);
+			menuItem.setEnabled(false);
+			menuExport = menuItem;
+		}
+		return menuExport;
+	}
+
+	private JMenuItem getMenuSync() {
+		if (menuSync == null) {
+			JMenuItem menuItem = new JMenuItem();
+			menuItem.setText("Synchronize");
+			menuItem.setMnemonic(KeyEvent.VK_S);
+			menuItem.addActionListener(this);
+			menuItem.setEnabled(false);
+			menuSync = menuItem;
+		}
+		return menuSync;
+	}
+
+	private JMenuItem getMenuSyncSettings() {
+		if (menuSyncSettings == null) {
+			JMenuItem menuItem = new JMenuItem();
+			menuItem.setText("Synchronization Settings...");
+			menuItem.setMnemonic(KeyEvent.VK_T);
+			menuItem.addActionListener(this);
+			menuItem.setEnabled(false);
+			menuSyncSettings = menuItem;
+		}
+		return menuSyncSettings;
 	}
 
 	/**
@@ -138,6 +202,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 			menuNewton.setMnemonic(KeyEvent.VK_N);
 			menuNewton.add(getMenuBackup());
 			menuNewton.add(getMenuRestore());
+			menuNewton.addSeparator();
 			menuNewton.add(getMenuInstall());
 			menuNewton.add(getMenuKeyboard());
 			menuNewton.addSeparator();
@@ -304,7 +369,8 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * Main method.
+	 * Main method.<br>
+	 * TODO move this method to Controller.
 	 * 
 	 * @param args
 	 *            the array of arguments.
@@ -325,6 +391,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 	public NCUFrame() {
 		super();
 		this.frame = this;
+		getControl();
 		init();
 	}
 
@@ -337,9 +404,29 @@ public class NCUFrame extends JFrame implements ActionListener {
 		setTitle(TITLE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+		List<Image> images = new ArrayList<Image>();
+		URL url;
+		Image image;
+		try {
+			url = getClass().getResource("/icon-64.png");
+			image = ImageIO.read(url);
+			images.add(image);
+			url = getClass().getResource("/icon-48.png");
+			image = ImageIO.read(url);
+			images.add(image);
+			url = getClass().getResource("/icon-32.png");
+			image = ImageIO.read(url);
+			images.add(image);
+			url = getClass().getResource("/icon-16.png");
+			image = ImageIO.read(url);
+			images.add(image);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		setIconImages(images);
+
 		setJMenuBar(getMainMenu());
 		setContentPane(getMainContentPane());
-
 		setSize(450, 440);
 		SwingUtils.centreInOwner(this);
 	}
@@ -359,19 +446,16 @@ public class NCUFrame extends JFrame implements ActionListener {
 		return contentPane;
 	}
 
-	private NCUSettings getSettingsDialog() {
+	private NCUSettingsDialog getSettingsDialog() {
 		if (settingsDialog == null) {
-			settingsDialog = new NCUSettings(this);
+			settingsDialog = new NCUSettingsDialog(this);
 			settingsDialog.setSettings(getSettings());
 		}
 		return settingsDialog;
 	}
 
-	public Settings getSettings() {
-		if (settings == null) {
-			settings = new Settings();
-		}
-		return settings;
+	private Settings getSettings() {
+		return getControl().getSettings();
 	}
 
 	/**
@@ -380,6 +464,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 	public void close() {
 		// comm.stopListenForNewton();
 		if (isShowing()) {
+			getControl().close();
 			SwingUtils.postWindowClosing(frame);
 		}
 	}
@@ -393,7 +478,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 		} else if (src == menuSettings) {
 			settings();
 		} else if (src == menuKeyboard) {
-			getKeyboardDialog().setVisible(true);
+			keyboard();
 		} else if (src == menuAbout) {
 			about();
 		} else if (src == syncButton) {
@@ -411,18 +496,6 @@ public class NCUFrame extends JFrame implements ActionListener {
 		} else if (src == importButton) {
 			importToNewton();
 		}
-	}
-
-	/**
-	 * Get the keyboard input dialog.
-	 * 
-	 * @return the dialog.
-	 */
-	private KeyboardInputDialog getKeyboardDialog() {
-		if (keyboardDialog == null) {
-			keyboardDialog = new KeyboardInputDialog(frame);
-		}
-		return keyboardDialog;
 	}
 
 	private JPanel getQuickMenuPane() {
@@ -533,7 +606,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 			keyboardButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON,
 					INSET_BUTTON, INSET_BUTTON));
 			keyboardButton.addActionListener(this);
-			keyboardButton.setEnabled(false);
+			// keyboardButton.setEnabled(false);
 		}
 		return keyboardButton;
 	}
@@ -614,54 +687,54 @@ public class NCUFrame extends JFrame implements ActionListener {
 	 * Synchronize.
 	 */
 	private void sync() {
-		// TODO implement me!
+		getControl().sync();
 	}
 
 	/**
 	 * Install package.
 	 */
 	private void install() {
-		// TODO implement me!
+		getControl().install();
 	}
 
 	/**
 	 * Use keyboard.
 	 */
 	private void keyboard() {
-		getKeyboardDialog().setVisible(true);
+		getControl().keyboard();
 	}
 
 	/**
 	 * Backup.
 	 */
 	private void backupToDesktop() {
-		// TODO implement me!
+		getControl().backupToDesktop();
 	}
 
 	/**
 	 * Export.
 	 */
 	private void exportToDesktop() {
-		// TODO implement me!
+		getControl().exportToDesktop();
 	}
 
 	/**
 	 * Restore.
 	 */
 	private void restoreToNewton() {
-		// TODO implement me!
+		getControl().restoreToNewton();
 	}
 
 	/**
 	 * Import.
 	 */
 	private void importToNewton() {
-		// TODO implement me!
+		getControl().importToNewton();
 	}
 
-	private NCUAbout getAboutDialog() {
+	private NCUAboutDialog getAboutDialog() {
 		if (aboutDialog == null) {
-			aboutDialog = new NCUAbout(this);
+			aboutDialog = new NCUAboutDialog(this);
 		}
 		return aboutDialog;
 	}
@@ -677,12 +750,33 @@ public class NCUFrame extends JFrame implements ActionListener {
 	 * Show the settings dialog.
 	 */
 	private void settings() {
+		getControl().stop();
 		Settings settings = getSettings();
-		// comm.stopListenForNewton();
+		getSettingsDialog().setSettings(settings);
 		getSettingsDialog().setVisible(true);
-		if (settings.isListen()) {
-			// comm.startListenForNewton(settings.getPortIdentifier(),
-			// settings.getPortSpeed());
+		getControl().setSettings(settings);
+		try {
+			getControl().start();
+		} catch (Exception e) {
+			showError(e);
 		}
+	}
+
+	private Controller getControl() {
+		if (control == null) {
+			try {
+				control = new Controller(frame);
+			} catch (PlatformException e) {
+				showError(e);
+			}
+		}
+		return control;
+	}
+
+	private void showError(Exception e) {
+		e.printStackTrace();
+		JOptionPane.showMessageDialog(frame,
+				"Error: " + e.getLocalizedMessage(), frame.getTitle(),
+				JOptionPane.ERROR_MESSAGE);
 	}
 }
