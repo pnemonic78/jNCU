@@ -369,7 +369,7 @@ public class CDLayer {
 	 */
 	protected final void checkInitialized() throws CDILNotInitializedException, PlatformException {
 		if ((state == CDState.UNINITIALIZED) && (serialPorts != null)) {
-			throw new CDILNotInitializedException();
+			throw new CDILNotInitializedException("CDIL not initialized");
 		}
 	}
 

@@ -20,6 +20,7 @@
 package net.sf.jncu.protocol.v2_0.io;
 
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -39,7 +40,8 @@ import net.sf.jncu.protocol.v2_0.session.DOperationDone;
  * 
  * @author Moshe
  */
-public class KeyboardInput extends IconModule implements WindowListener, KeyboardInputListener {
+public class KeyboardInput extends IconModule implements WindowListener,
+		KeyboardInputListener {
 
 	/** Windows EOL. */
 	protected static final String CRLF = "\r\n";
@@ -49,33 +51,42 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	protected static final char LF = '\n';
 
 	private static enum State {
-		None, Initialised, Input, Cancelled, Finished
+		NONE, INIT, INPUT, CANCELLED, FINISHED
 	}
 
-	private static final String TITLE = Toolkit.getProperty("AWT.CompositionWindowTitle", "Keyboard Input");
+	private static final String TITLE = Toolkit.getProperty(
+			"AWT.CompositionWindowTitle", "Keyboard Input");
 	/**
 	 * Wait to batch several "kbdc" as single "kbds" (unless the key is control
 	 * character).
 	 */
 	private static final long TIMEOUT = 500;
 
-	private State state = State.None;
+	private State state = State.NONE;
 	private KeyboardInputDialog dialog;
 	private KeyboardTask task;
 	private Timer timer;
 	private StringBuilder buffer = new StringBuilder();
+	
 
 	/**
-	 * Constructs a new object.
+	 * Constructs a new input.
 	 */
 	public KeyboardInput(CDPipe<? extends CDPacket> pipe) {
-		super(TITLE, pipe);
+		this(pipe,null);
+	}
+
+	/**
+	 * Constructs a new input.
+	 */
+	public KeyboardInput(CDPipe<? extends CDPacket> pipe, Window owner) {
+		super(TITLE,pipe);
 		setName("KeyboardInput-" + getId());
 
-		state = State.Initialised;
+		state = State.INIT;
 
 		timer = new Timer();
-		dialog = new KeyboardInputDialog();
+		dialog = new KeyboardInputDialog(owner);
 		dialog.addInputListener(this);
 		dialog.addWindowListener(this);
 	}
@@ -86,7 +97,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	@Override
 	public void run() {
 		pipe.ping();
-		state = State.Input;
+		state = State.INPUT;
 		dialog.setVisible(true);
 	}
 
@@ -100,7 +111,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 		String cmd = command.getCommand();
 
 		if (DOperationCanceled.COMMAND.equals(cmd)) {
-			state = State.Cancelled;
+			state = State.CANCELLED;
 		}
 	}
 
@@ -114,9 +125,9 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 		String cmd = command.getCommand();
 
 		if (DOperationDone.COMMAND.equals(cmd)) {
-			state = State.Finished;
+			state = State.FINISHED;
 		} else if (DOperationCanceledAck.COMMAND.equals(cmd)) {
-			state = State.Cancelled;
+			state = State.CANCELLED;
 		}
 	}
 
@@ -129,7 +140,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	 *            the state flags.
 	 */
 	public void writeChar(char c, int flags) {
-		if (state != State.Input)
+		if (state != State.INPUT)
 			return;
 
 		DKeyboardChar cmd = new DKeyboardChar();
@@ -145,7 +156,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	 *            the string.
 	 */
 	public void writeString(String s) {
-		if (state != State.Input)
+		if (state != State.INPUT)
 			return;
 
 		DKeyboardString cmd = new DKeyboardString();
@@ -186,7 +197,8 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	public void charTyped(KeyEvent ke) {
 		if (ke.getID() != KeyEvent.KEY_PRESSED)
 			return;
-		char keyChar = DKeyboardChar.toNewtonChar(ke.getKeyChar(), ke.getKeyCode());
+		char keyChar = DKeyboardChar.toNewtonChar(ke.getKeyChar(),
+				ke.getKeyCode());
 		// Ignore unknown characters.
 		if (keyChar == 0)
 			return;
@@ -214,7 +226,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 
 	@Override
 	protected void done() {
-		if (state == State.Input) {
+		if (state == State.INPUT) {
 			writeDone();
 			dialog.close();
 		}
@@ -225,9 +237,9 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 
 	@Override
 	protected boolean isEnabled() {
-		if (state == State.Cancelled)
+		if (state == State.CANCELLED)
 			return false;
-		if (state == State.Finished)
+		if (state == State.FINISHED)
 			return false;
 		return super.isEnabled();
 	}
