@@ -33,11 +33,22 @@ import net.sf.jncu.cdil.mnp.MNPSerialPort;
  */
 public class Settings {
 
+	/** Property key for backup path. */
+	private static final String KEY_BACKUP_PATH = "jncu.backup.path";
+	/** Property key for port id. */
+	private static final String KEY_PORT_ID = "jncu.port.id";
+	/** Property key for port speed. */
+	private static final String KEY_PORT_SPEED = "jncu.port.baud";
+	/** Property key for listening. */
+	private static final String KEY_LISTEN = "jncu.listen";
+	/** Backup files folder. */
+	private static final String FOLDER = "jNCU";
+
 	private final Collection<String> portIds = new ArrayList<String>();
 	private String portId;
-	private int baud = MNPSerialPort.BAUD_38400;
-	private boolean listen = true;
-	private File backupFolder = new File(".");
+	private int baud;
+	private boolean listen;
+	private File backupFolder;
 
 	/**
 	 * Constructs new settings.
@@ -45,6 +56,20 @@ public class Settings {
 	public Settings() {
 		super();
 		rescanPorts();
+		load();
+	}
+
+	private void load() {
+		File userFolder = new File(System.getProperty("user.home"));
+		File jncuFolder = new File(userFolder, FOLDER);
+
+		Preferences prefs = Preferences.getInstance();
+		setBackupFolder(prefs.get(KEY_BACKUP_PATH, jncuFolder.getPath()));
+		setPortIdentifier(prefs.get(KEY_PORT_ID));
+		setPortSpeed(Integer.parseInt(prefs.get(KEY_PORT_SPEED,
+				Integer.toString(MNPSerialPort.BAUD_38400))));
+		setListen(Boolean.parseBoolean(prefs.get(KEY_LISTEN,
+				Boolean.TRUE.toString())));
 	}
 
 	public Collection<String> getPorts() {
@@ -129,6 +154,15 @@ public class Settings {
 	 *            the backupFolder to set
 	 */
 	public void setBackupFolder(String backupFolder) {
-		this.backupFolder = new File(backupFolder);
+		setBackupFolder(new File(backupFolder));
+	}
+
+	public void save() {
+		Preferences prefs = Preferences.getInstance();
+		prefs.set(KEY_BACKUP_PATH, getBackupFolder().getPath());
+		prefs.set(KEY_LISTEN, Boolean.toString(isListen()));
+		prefs.set(KEY_PORT_ID, getPortIdentifier());
+		prefs.set(KEY_PORT_SPEED, Integer.toString(getPortSpeed()));
+		prefs.save();
 	}
 }

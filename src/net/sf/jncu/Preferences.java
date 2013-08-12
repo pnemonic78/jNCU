@@ -118,6 +118,21 @@ public class Preferences {
 	}
 
 	/**
+	 * Get the property.
+	 * 
+	 * @param key
+	 *            the property key.
+	 * @param defaultValue
+	 *            the default value if none is found.
+	 * @return the property value - {@code null} otherwise.
+	 */
+	public String get(String key, String defaultValue) {
+		if (props.containsKey(key))
+			return props.getProperty(key);
+		return defaultValue;
+	}
+
+	/**
 	 * Set the property.
 	 * 
 	 * @param key
