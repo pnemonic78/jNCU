@@ -428,6 +428,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 		setJMenuBar(getMainMenu());
 		setContentPane(getMainContentPane());
 		setSize(450, 440);
+		setResizable(false);
 		SwingUtils.centreInOwner(this);
 	}
 
