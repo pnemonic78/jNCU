@@ -152,9 +152,9 @@ public class Controller {
 	 */
 	public void start() throws CDILNotInitializedException, PlatformException,
 			ServiceNotSupportedException {
-		if (settings.isListen()) {
-			String portName = settings.getPortIdentifier();
-			int baud = settings.getPortSpeed();
+		if (settings.getCommunications().isListen()) {
+			String portName = settings.getCommunications().getPortIdentifier();
+			int baud = settings.getCommunications().getPortSpeed();
 			this.pipe = layer.createMNPSerial(portName, baud);
 		}
 	}

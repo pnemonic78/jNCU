@@ -21,28 +21,27 @@ package net.sf.jncu.protocol.v2_0.sync;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog;
-import java.awt.FlowLayout;
 import java.awt.Frame;
-import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.SortedMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -55,6 +54,7 @@ import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.v2_0.app.AppName;
+import net.sf.jncu.ui.NCUDialog;
 import net.sf.swing.CheckListCellRenderer;
 import net.sf.swing.SwingUtils;
 
@@ -63,17 +63,19 @@ import net.sf.swing.SwingUtils;
  * 
  * @author mwaisberg
  */
-public class BackupDialog extends JDialog {
-
-	static {
-		SwingUtils.init();
-	}
+public class BackupDialog extends NCUDialog {
 
 	private static final String TITLE = "Backup";
-	private JButton buttonCancel;
-	private JButton buttonBackup;
+
+	private JButton cancelButton;
+	private JButton backupButton;
 	private JList listStores;
 	private JList listInformation;
+	private JButton selectAllStoresButton;
+	private JButton clearAllStoresButton;
+	private JButton selectAllInfoButton;
+	private JButton clearAllInfoButton;
+
 	private final MouseListener listMouseClicked = new MouseAdapter() {
 		public void mouseClicked(MouseEvent event) {
 			JList list = (JList) event.getSource();
@@ -93,6 +95,7 @@ public class BackupDialog extends JDialog {
 			list.repaint(list.getCellBounds(index, index));
 		}
 	};
+
 	private final KeyListener listkeyClicked = new KeyAdapter() {
 		@Override
 		public void keyReleased(KeyEvent event) {
@@ -117,8 +120,9 @@ public class BackupDialog extends JDialog {
 			list.repaint(list.getCellBounds(index, index));
 		}
 	};
-	private final SortedMap<String, Store> stores = new TreeMap<String, Store>();
-	private final SortedMap<String, AppName> apps = new TreeMap<String, AppName>();
+
+	private final Map<String, Store> stores = new TreeMap<String, Store>();
+	private final Map<String, AppName> apps = new TreeMap<String, AppName>();
 	private boolean success;
 
 	/**
@@ -136,7 +140,7 @@ public class BackupDialog extends JDialog {
 	 *            the owner.
 	 */
 	public BackupDialog(Frame owner) {
-		super(owner, true);
+		super(owner);
 		init();
 	}
 
@@ -147,7 +151,7 @@ public class BackupDialog extends JDialog {
 	 *            the owner.
 	 */
 	public BackupDialog(Dialog owner) {
-		super(owner, true);
+		super(owner);
 		init();
 	}
 
@@ -158,7 +162,7 @@ public class BackupDialog extends JDialog {
 	 *            the owner.
 	 */
 	public BackupDialog(Window owner) {
-		super(owner, ModalityType.APPLICATION_MODAL);
+		super(owner);
 		init();
 	}
 
@@ -169,7 +173,6 @@ public class BackupDialog extends JDialog {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle(TITLE);
 		setResizable(false);
-		setModalityType(ModalityType.APPLICATION_MODAL);
 
 		JPanel panelContents = new JPanel();
 		panelContents.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -181,112 +184,38 @@ public class BackupDialog extends JDialog {
 		panelStores.setOpaque(false);
 		panelContents.add(panelStores, BorderLayout.WEST);
 		panelStores.setLayout(new BorderLayout(5, 5));
-		panelStores.setBorder(BorderFactory.createTitledBorder("Backup From:"));
+		panelStores.setBorder(BorderFactory.createTitledBorder("Backup From Stores"));
 
-		listStores = new JList();
-		listStores.setCellRenderer(new CheckListCellRenderer());
-		listStores.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		listStores.setVisibleRowCount(5);
-		listStores.addMouseListener(listMouseClicked);
-		listStores.addKeyListener(listkeyClicked);
-		JScrollPane scrollStores = new JScrollPane(listStores);
+		JScrollPane scrollStores = new JScrollPane(getListStores());
 		panelStores.add(scrollStores, BorderLayout.CENTER);
 
-		JPanel panelStoresButtons = new JPanel();
-		FlowLayout flowLayout = (FlowLayout) panelStoresButtons.getLayout();
-		flowLayout.setAlignment(FlowLayout.TRAILING);
+		JPanel panelStoresButtons = createButtonsPanel();
+		panelStoresButtons.add(getSelectAllStoresButton());
+		panelStoresButtons.add(getClearAllStoresButton());
 		panelStores.add(panelStoresButtons, BorderLayout.SOUTH);
-
-		JButton btnStoresSelectAll = new JButton("Select All");
-		btnStoresSelectAll.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				selectAll(listStores);
-			}
-		});
-		panelStoresButtons.add(btnStoresSelectAll);
-
-		JButton btnStoresClearAll = new JButton("Clear All");
-		btnStoresClearAll.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				clearAll(listStores);
-			}
-		});
-		panelStoresButtons.add(btnStoresClearAll);
 
 		JPanel panelInfo = new JPanel();
 		panelInfo.setOpaque(false);
 		panelContents.add(panelInfo, BorderLayout.CENTER);
 		panelInfo.setLayout(new BorderLayout(5, 5));
-		panelInfo.setBorder(BorderFactory.createTitledBorder("Information:"));
+		panelInfo.setBorder(BorderFactory.createTitledBorder("Information"));
 
-		listInformation = new JList();
-		listInformation.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		listInformation.setVisibleRowCount(5);
-		listInformation.setCellRenderer(new CheckListCellRenderer());
-		listInformation.addMouseListener(listMouseClicked);
-		listInformation.addKeyListener(listkeyClicked);
-		JScrollPane scrollInfo = new JScrollPane(listInformation);
+		JScrollPane scrollInfo = new JScrollPane(getListInformation());
 		panelInfo.add(scrollInfo, BorderLayout.CENTER);
 
-		JPanel panelInfoButtons = new JPanel();
+		JPanel panelInfoButtons = createButtonsPanel();
+		panelInfoButtons.add(getSelectAllInfoButton());
+		panelInfoButtons.add(getClearAllInfoButton());
 		panelInfo.add(panelInfoButtons, BorderLayout.SOUTH);
-		panelInfoButtons.setOpaque(false);
-		FlowLayout flowLayout_1 = (FlowLayout) panelInfoButtons.getLayout();
-		flowLayout_1.setAlignment(FlowLayout.TRAILING);
 
-		JButton btnInfoSelectAll = new JButton("Select All");
-		btnInfoSelectAll.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				selectAll(listInformation);
-			}
-		});
-		panelInfoButtons.add(btnInfoSelectAll);
-
-		JButton btnInfoClearAll = new JButton("Clear All");
-		btnInfoClearAll.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				clearAll(listInformation);
-			}
-		});
-		panelInfoButtons.add(btnInfoClearAll);
-
-		JPanel panelButtons = new JPanel();
-		panelButtons.setOpaque(false);
+		JPanel panelButtons = createButtonsPanel();
+		panelButtons.add(getBackupButton());
+		panelButtons.add(getCancelButton());
 		panelContents.add(panelButtons, BorderLayout.SOUTH);
-		panelButtons.setLayout(new FlowLayout(FlowLayout.TRAILING, 5, 5));
-
-		buttonBackup = new JButton("Backup");
-		buttonBackup.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				success = true;
-				close();
-			}
-		});
-		panelButtons.add(buttonBackup);
-
-		buttonCancel = new JButton(Toolkit.getProperty("AWT.cancel", "Cancel"));
-		buttonCancel.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				success = false;
-				close();
-			}
-		});
-		panelButtons.add(buttonCancel);
 
 		setSize(380, 300);
 		SwingUtils.centreInOwner(this);
+		getBackupButton().requestFocus();
 	}
 
 	/**
@@ -305,6 +234,15 @@ public class BackupDialog extends JDialog {
 	 * @return the list.
 	 */
 	private JList getListStores() {
+		if (listStores == null) {
+			JList list = new JList();
+			list.setCellRenderer(new CheckListCellRenderer());
+			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			list.setVisibleRowCount(5);
+			list.addMouseListener(listMouseClicked);
+			list.addKeyListener(listkeyClicked);
+			listStores = list;
+		}
 		return listStores;
 	}
 
@@ -314,6 +252,15 @@ public class BackupDialog extends JDialog {
 	 * @return the list.
 	 */
 	private JList getListInformation() {
+		if (listInformation == null) {
+			JList list = new JList();
+			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			list.setVisibleRowCount(5);
+			list.setCellRenderer(new CheckListCellRenderer());
+			list.addMouseListener(listMouseClicked);
+			list.addKeyListener(listkeyClicked);
+			listInformation = list;
+		}
 		return listInformation;
 	}
 
@@ -466,5 +413,111 @@ public class BackupDialog extends JDialog {
 			options.setSyncAll(true);
 
 		return options;
+	}
+
+	private JButton getCancelButton() {
+		if (cancelButton == null) {
+			cancelButton = createCancelButton();
+		}
+		return cancelButton;
+	}
+
+	private JButton getBackupButton() {
+		if (backupButton == null) {
+			URL url = getClass().getResource("/dialog-play.png");
+			Icon icon = new ImageIcon(url);
+
+			JButton button = createButton();
+			button.setText("Backup");
+			button.setMnemonic(KeyEvent.VK_B);
+			button.setIcon(icon);
+			backupButton = button;
+		}
+		return backupButton;
+	}
+
+	/**
+	 * @return the selectAllStoresButton
+	 */
+	private JButton getSelectAllStoresButton() {
+		if (selectAllStoresButton == null) {
+			URL url = getClass().getResource("/dialog-select-all.png");
+			Icon icon = new ImageIcon(url);
+
+			JButton button = createButton();
+			button.setText("Select All");
+			button.setIcon(icon);
+			selectAllStoresButton = button;
+		}
+		return selectAllStoresButton;
+	}
+
+	/**
+	 * @return the clearAllStoresButton
+	 */
+	private JButton getClearAllStoresButton() {
+		if (clearAllStoresButton == null) {
+			URL url = getClass().getResource("/dialog-clear-all.png");
+			Icon icon = new ImageIcon(url);
+
+			JButton button = createButton();
+			button.setText("Clear All");
+			button.setIcon(icon);
+			clearAllStoresButton = button;
+		}
+		return clearAllStoresButton;
+	}
+
+	/**
+	 * @return the selectAllInfoButton
+	 */
+	private JButton getSelectAllInfoButton() {
+		if (selectAllInfoButton == null) {
+			URL url = getClass().getResource("/dialog-select-all.png");
+			Icon icon = new ImageIcon(url);
+
+			JButton button = createButton();
+			button.setText("Select All");
+			button.setIcon(icon);
+			selectAllInfoButton = button;
+		}
+		return selectAllInfoButton;
+	}
+
+	/**
+	 * @return the clearAllInfoButton
+	 */
+	private JButton getClearAllInfoButton() {
+		if (clearAllInfoButton == null) {
+			URL url = getClass().getResource("/dialog-clear-all.png");
+			Icon icon = new ImageIcon(url);
+
+			JButton button = createButton();
+			button.setText("Clear All");
+			button.setIcon(icon);
+			clearAllInfoButton = button;
+		}
+		return clearAllInfoButton;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		final Object src = event.getSource();
+
+		if (src == cancelButton) {
+			success = false;
+			close();
+		} else if (src == backupButton) {
+			success = true;
+			close();
+		} else if (src == clearAllInfoButton) {
+			clearAll(getListInformation());
+		} else if (src == clearAllStoresButton) {
+			clearAll(getListStores());
+		} else if (src == selectAllInfoButton) {
+			selectAll(getListInformation());
+		} else if (src == selectAllStoresButton) {
+			selectAll(getListStores());
+		}
 	}
 }

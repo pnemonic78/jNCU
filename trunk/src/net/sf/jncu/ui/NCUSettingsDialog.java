@@ -20,16 +20,14 @@
 package net.sf.jncu.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.net.URL;
 
 import javax.swing.BorderFactory;
@@ -38,42 +36,43 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTabbedPane;
-import javax.swing.UIManager;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.DocumentFilter;
 
 import net.sf.jncu.Settings;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
 import net.sf.swing.SwingUtils;
+import net.sf.swing.text.DocumentLengthFilter;
 
 /**
  * jNCU settings dialog.
  * 
  * @author moshew
  */
-public class NCUSettingsDialog extends JDialog implements ActionListener {
+public class NCUSettingsDialog extends NCUDialog {
 
 	private static final String TITLE = "jNewton Connection Utility";
 
 	private static final int INSET_TAB = 10;
 	private static final int INSET_CELL_Y = 0;
 	private static final int INSET_CELL_X = 10;
+	private static final int PASSWORD_LENGTH = 8;
 
 	private JPanel contentPane;
 	private JPanel buttons;
 	private JButton okButton;
 	private JButton cancelButton;
-	private Dimension buttonMinimumSize;
 	private Settings settings;
 	private JTabbedPane tabbedPane;
 	private JPanel tabComm;
 	private JButton applyButton;
 	private JButton buttonHelp;
-	private JPanel tabPassword;
+	private JPanel tabSecurity;
 	private JPanel tabGeneral;
 	private JPanel tabDock;
 	private JLabel labelPort;
@@ -81,7 +80,7 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 	private JComboBox/* <String> */listPort;
 	private JComboBox/* <Integer> */listSpeed;
 	private JCheckBox checkListen;
-	private JLabel labelFolderPath;
+	private JLabel labelBackupPath;
 	private JButton browseButton;
 	private JFileChooser browser;
 	private JPasswordField passwordOld;
@@ -90,12 +89,16 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 	private JCheckBox checkDockBackup;
 	private JCheckBox checkDockBackupSelective;
 	private JCheckBox checkDockSync;
+	private DocumentFilter passwordFilter;
 
 	/**
+	 * Create a new settings dialog.
+	 * 
 	 * @param owner
+	 *            the owner.
 	 */
 	public NCUSettingsDialog(Frame owner) {
-		super(owner, true);
+		super(owner);
 		init();
 	}
 
@@ -105,10 +108,6 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 	 * @return void
 	 */
 	private void init() {
-		int buttonMinimumWidth = UIManager
-				.getInt("OptionPane.buttonMinimumWidth");
-		this.buttonMinimumSize = new Dimension(buttonMinimumWidth, 24);
-
 		setTitle(TITLE);
 		setContentPane(getMainContentPane());
 		setResizable(false);
@@ -159,12 +158,10 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 			URL url = getClass().getResource("/dialog-ok.png");
 			Icon icon = new ImageIcon(url);
 
-			JButton button = new JButton();
+			JButton button = createButton();
 			button.setText("OK");
 			button.setMnemonic(KeyEvent.VK_O);
 			button.setIcon(icon);
-			button.setMinimumSize(buttonMinimumSize);
-			button.addActionListener(this);
 			okButton = button;
 		}
 		return okButton;
@@ -177,16 +174,7 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 	 */
 	private JButton getCancelButton() {
 		if (cancelButton == null) {
-			URL url = getClass().getResource("/dialog-cancel.png");
-			Icon icon = new ImageIcon(url);
-
-			JButton button = new JButton();
-			button.setText(Toolkit.getProperty("AWT.cancel", "Cancel"));
-			button.setMnemonic(KeyEvent.VK_C);
-			button.setIcon(icon);
-			button.setMinimumSize(buttonMinimumSize);
-			button.addActionListener(this);
-			cancelButton = button;
+			cancelButton = createCancelButton();
 		}
 		return cancelButton;
 	}
@@ -207,10 +195,10 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 
 		JComboBox/* <String> */ports = getListPorts();
 		ports.removeAllItems();
-		String portSet = settings.getPortIdentifier();
+		String portSet = settings.getCommunications().getPortIdentifier();
 		int portIndex = 0;
 		int i = 0;
-		for (String portId : settings.getPorts()) {
+		for (String portId : settings.getCommunications().getPorts()) {
 			ports.addItem(portId);
 			if (portId.equals(portSet)) {
 				portIndex = i;
@@ -219,10 +207,20 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 		}
 		ports.setSelectedIndex(portIndex);
 		JComboBox/* <Integer> */speeds = getListSpeeds();
-		speeds.setSelectedItem(settings.getPortSpeed());
-		getCheckListen().setSelected(settings.isListen());
+		speeds.setSelectedItem(settings.getCommunications().getPortSpeed());
+		getCheckListen().setSelected(settings.getCommunications().isListen());
 
-		labelFolderPath.setText(settings.getBackupFolder().getPath());
+		getBackupPath().setText(
+				settings.getGeneral().getBackupFolder().getPath());
+
+		getCheckDockBackup().setSelected(settings.getAutoDock().isBackup());
+		getCheckDockBackupSelective().setSelected(
+				settings.getAutoDock().isBackupSelective());
+		getCheckDockSync().setSelected(settings.getAutoDock().isSync());
+
+		getPasswordOld().setText(null);
+		getPasswordNew().setText(null);
+		getPasswordConfirm().setText(null);
 	}
 
 	/**
@@ -234,10 +232,12 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 		if (tabbedPane == null) {
 			tabbedPane = new JTabbedPane();
 			tabbedPane.addTab("Communications", getTabComm());
-			tabbedPane.addTab("Password", getTabPassword());
+			tabbedPane.addTab("Security", getTabSecurity());
 			tabbedPane.addTab("General", getTabGeneral());
 			tabbedPane.addTab("Auto Dock", getTabDock());
 			tabbedPane.setSelectedIndex(0);
+			tabbedPane.setEnabledAt(1, false);
+			tabbedPane.setEnabledAt(3, false);
 		}
 		return tabbedPane;
 	}
@@ -249,11 +249,21 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 	 */
 	private JPanel getTabComm() {
 		if (tabComm == null) {
+			GridBagConstraints gbcListen = new GridBagConstraints();
+			gbcListen.gridx = 0;
+			gbcListen.gridy = 0;
+			gbcListen.gridwidth = 2;
+			gbcListen.weightx = 1.0;
+			gbcListen.weighty = 1.0;
+			gbcListen.anchor = GridBagConstraints.WEST;
+			gbcListen.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
+					INSET_CELL_Y, INSET_CELL_X);
+
 			labelPort = new JLabel();
 			labelPort.setText("Serial Port:");
 			GridBagConstraints gbcLabelPort = new GridBagConstraints();
 			gbcLabelPort.gridx = 0;
-			gbcLabelPort.gridy = 0;
+			gbcLabelPort.gridy = 1;
 			gbcLabelPort.weightx = 1.0;
 			gbcLabelPort.weighty = 1.0;
 			gbcLabelPort.anchor = GridBagConstraints.EAST;
@@ -262,7 +272,7 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 
 			GridBagConstraints gbcListPort = new GridBagConstraints();
 			gbcListPort.gridx = 1;
-			gbcListPort.gridy = 0;
+			gbcListPort.gridy = 1;
 			gbcListPort.weightx = 1.0;
 			gbcListPort.anchor = GridBagConstraints.WEST;
 			gbcListPort.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
@@ -272,7 +282,7 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 			labelSpeed.setText("Speed:");
 			GridBagConstraints gbcLabelSpeed = new GridBagConstraints();
 			gbcLabelSpeed.gridx = 0;
-			gbcLabelSpeed.gridy = 1;
+			gbcLabelSpeed.gridy = 2;
 			gbcLabelSpeed.weightx = 1.0;
 			gbcLabelSpeed.weighty = 1.0;
 			gbcLabelSpeed.anchor = GridBagConstraints.EAST;
@@ -281,7 +291,7 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 
 			GridBagConstraints gbcListSpeed = new GridBagConstraints();
 			gbcListSpeed.gridx = 1;
-			gbcListSpeed.gridy = 1;
+			gbcListSpeed.gridy = 2;
 			gbcListSpeed.weightx = 1.0;
 			gbcListSpeed.anchor = GridBagConstraints.WEST;
 			gbcListSpeed.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
@@ -289,6 +299,7 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 
 			JPanel tab = new JPanel();
 			tab.setLayout(new GridBagLayout());
+			tab.add(getCheckListen(), gbcListen);
 			tab.add(labelPort, gbcLabelPort);
 			tab.add(getListPorts(), gbcListPort);
 			tab.add(labelSpeed, gbcLabelSpeed);
@@ -310,12 +321,10 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 			URL url = getClass().getResource("/dialog-apply.png");
 			Icon icon = new ImageIcon(url);
 
-			JButton button = new JButton();
+			JButton button = createButton();
 			button.setText("Apply");
 			button.setMnemonic(KeyEvent.VK_A);
 			button.setIcon(icon);
-			button.setMinimumSize(buttonMinimumSize);
-			button.addActionListener(this);
 			button.setEnabled(false);
 			applyButton = button;
 		}
@@ -332,12 +341,10 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 			URL url = getClass().getResource("/dialog-help.png");
 			Icon icon = new ImageIcon(url);
 
-			JButton button = new JButton();
+			JButton button = createButton();
 			button.setText("Help");
 			button.setMnemonic(KeyEvent.VK_H);
 			button.setIcon(icon);
-			button.setMinimumSize(buttonMinimumSize);
-			button.addActionListener(this);
 			button.setEnabled(false);
 			buttonHelp = button;
 		}
@@ -349,8 +356,8 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 	 * 
 	 * @return javax.swing.JPanel
 	 */
-	private JPanel getTabPassword() {
-		if (tabPassword == null) {
+	private JPanel getTabSecurity() {
+		if (tabSecurity == null) {
 			JLabel labelOld = new JLabel("Old Password:");
 			GridBagConstraints gbcLabelOld = new GridBagConstraints();
 			gbcLabelOld.gridx = 0;
@@ -415,9 +422,9 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 			tab.add(getPasswordNew(), gbcPassNew);
 			tab.add(labelConfirm, gbcLabelConfirm);
 			tab.add(getPasswordConfirm(), gbcPassConfirm);
-			tabPassword = tab;
+			tabSecurity = tab;
 		}
-		return tabPassword;
+		return tabSecurity;
 	}
 
 	/**
@@ -427,31 +434,20 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 	 */
 	private JPanel getTabGeneral() {
 		if (tabGeneral == null) {
-			GridBagConstraints gbcListen = new GridBagConstraints();
-			gbcListen.gridx = 0;
-			gbcListen.gridy = 0;
-			gbcListen.anchor = GridBagConstraints.WEST;
-			gbcListen.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
-					INSET_CELL_Y, INSET_CELL_X);
-			gbcListen.weightx = 1.0;
-			gbcListen.weighty = 1.0;
-
 			JLabel labelFolder = new JLabel();
 			labelFolder.setText("Default folder for backup files:");
 			GridBagConstraints gbcLabelFolder = new GridBagConstraints();
 			gbcLabelFolder.gridx = 0;
-			gbcLabelFolder.gridy = 1;
+			gbcLabelFolder.gridy = 0;
 			gbcLabelFolder.anchor = GridBagConstraints.WEST;
 			gbcLabelFolder.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
 					INSET_CELL_Y, INSET_CELL_X);
 			gbcLabelFolder.weightx = 1.0;
 			gbcLabelFolder.weighty = 1.0;
 
-			labelFolderPath = new JLabel();
-			labelFolderPath.setText(".");
 			GridBagConstraints gbcValueFolder = new GridBagConstraints();
 			gbcValueFolder.gridx = 0;
-			gbcValueFolder.gridy = 2;
+			gbcValueFolder.gridy = 1;
 			gbcValueFolder.anchor = GridBagConstraints.WEST;
 			gbcValueFolder.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
 					INSET_CELL_Y, INSET_CELL_X);
@@ -461,7 +457,7 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 
 			GridBagConstraints gbcBrowseFolder = new GridBagConstraints();
 			gbcBrowseFolder.gridx = 0;
-			gbcBrowseFolder.gridy = 3;
+			gbcBrowseFolder.gridy = 2;
 			gbcBrowseFolder.anchor = GridBagConstraints.EAST;
 			gbcBrowseFolder.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
 					INSET_CELL_Y, INSET_CELL_X);
@@ -470,9 +466,8 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 
 			JPanel tab = new JPanel();
 			tab.setLayout(new GridBagLayout());
-			tab.add(getCheckListen(), gbcListen);
 			tab.add(labelFolder, gbcLabelFolder);
-			tab.add(labelFolderPath, gbcValueFolder);
+			tab.add(getBackupPath(), gbcValueFolder);
 			tab.add(getBrowseButton(), gbcBrowseFolder);
 			tab.setBorder(BorderFactory.createEmptyBorder(INSET_TAB, INSET_TAB,
 					INSET_TAB, INSET_TAB));
@@ -536,7 +531,8 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 	 */
 	private JComboBox/* <String> */getListPorts() {
 		if (listPort == null) {
-			listPort = new JComboBox/* <String> */();
+			JComboBox list = new JComboBox/* <String> */();
+			listPort = list;
 		}
 		return listPort;
 	}
@@ -548,12 +544,13 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 	 */
 	private JComboBox/* <Integer> */getListSpeeds() {
 		if (listSpeed == null) {
-			listSpeed = new JComboBox/* <Integer> */();
-			listSpeed.addItem(MNPSerialPort.BAUD_2400);
-			listSpeed.addItem(MNPSerialPort.BAUD_4800);
-			listSpeed.addItem(MNPSerialPort.BAUD_9600);
-			listSpeed.addItem(MNPSerialPort.BAUD_38400);
-			listSpeed.addItem(MNPSerialPort.BAUD_57600);
+			JComboBox list = new JComboBox/* <Integer> */();
+			list.addItem(MNPSerialPort.BAUD_2400);
+			list.addItem(MNPSerialPort.BAUD_4800);
+			list.addItem(MNPSerialPort.BAUD_9600);
+			list.addItem(MNPSerialPort.BAUD_38400);
+			list.addItem(MNPSerialPort.BAUD_57600);
+			listSpeed = list;
 		}
 		return listSpeed;
 	}
@@ -582,12 +579,10 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 			URL url = getClass().getResource("/browse.png");
 			Icon icon = new ImageIcon(url);
 
-			JButton button = new JButton();
+			JButton button = createButton();
 			button.setText("Browse...");
 			button.setMnemonic(KeyEvent.VK_B);
 			button.setIcon(icon);
-			button.setMinimumSize(buttonMinimumSize);
-			button.addActionListener(this);
 			browseButton = button;
 		}
 		return browseButton;
@@ -609,10 +604,27 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 
 	public void save() {
 		Settings settings = getSettings();
-		settings.setPortIdentifier((String) getListPorts().getSelectedItem());
-		settings.setPortSpeed((Integer) getListSpeeds().getSelectedItem());
-		settings.setListen(getCheckListen().isSelected());
-		settings.setBackupFolder(labelFolderPath.getText());
+
+		settings.getCommunications().setListen(getCheckListen().isSelected());
+		settings.getCommunications().setPortIdentifier(
+				(String) getListPorts().getSelectedItem());
+		settings.getCommunications().setPortSpeed(
+				(Integer) getListSpeeds().getSelectedItem());
+
+		settings.getAutoDock().setBackup(getCheckDockBackup().isSelected());
+		settings.getAutoDock().setBackupSelective(
+				getCheckDockBackupSelective().isSelected());
+		settings.getAutoDock().setSync(getCheckDockSync().isSelected());
+
+		String passwordOld = String.valueOf(getPasswordOld().getPassword());
+		String passwordNew = String.valueOf(getPasswordNew().getPassword());
+		String passwordConfirm = String.valueOf(getPasswordConfirm()
+				.getPassword());
+		if (passwordNew.equals(passwordConfirm)) {
+			settings.getSecurity().setPasswordOld(passwordOld);
+			settings.getSecurity().setPasswordNew(passwordNew);
+		}
+
 		settings.save();
 	}
 
@@ -628,10 +640,13 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 		} else if (src == applyButton) {
 			save();
 		} else if (src == browseButton) {
-			int ret = getBrowser().showOpenDialog(getBrowseButton());
+			JFileChooser browser = getBrowser();
+			browser.setSelectedFile(settings.getGeneral().getBackupFolder());
+			int ret = browser.showOpenDialog(getBrowseButton());
 			if (ret == JFileChooser.APPROVE_OPTION) {
-				labelFolderPath.setText(getBrowser().getSelectedFile()
-						.getPath());
+				File selectedFile = browser.getSelectedFile();
+				getBackupPath().setText(selectedFile.getPath());
+				settings.getGeneral().setBackupFolder(selectedFile);
 			}
 		} else if (src == checkDockBackup) {
 			getCheckDockBackupSelective().setEnabled(
@@ -641,21 +656,30 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 
 	private JPasswordField getPasswordConfirm() {
 		if (passwordConfirm == null) {
-			passwordConfirm = new JPasswordField(15);
+			JPasswordField password = new JPasswordField(PASSWORD_LENGTH + 4);
+			((AbstractDocument) password.getDocument())
+					.setDocumentFilter(getPasswordFilter());
+			passwordConfirm = password;
 		}
 		return passwordConfirm;
 	}
 
 	private JPasswordField getPasswordNew() {
 		if (passwordNew == null) {
-			passwordNew = new JPasswordField(15);
+			JPasswordField password = new JPasswordField(PASSWORD_LENGTH + 4);
+			((AbstractDocument) password.getDocument())
+					.setDocumentFilter(getPasswordFilter());
+			passwordNew = password;
 		}
 		return passwordNew;
 	}
 
 	private JPasswordField getPasswordOld() {
 		if (passwordOld == null) {
-			passwordOld = new JPasswordField(15);
+			JPasswordField password = new JPasswordField(PASSWORD_LENGTH + 4);
+			((AbstractDocument) password.getDocument())
+					.setDocumentFilter(getPasswordFilter());
+			passwordOld = password;
 		}
 		return passwordOld;
 	}
@@ -691,4 +715,23 @@ public class NCUSettingsDialog extends JDialog implements ActionListener {
 		}
 		return checkDockSync;
 	}
+
+	private DocumentFilter getPasswordFilter() {
+		if (passwordFilter == null) {
+			passwordFilter = new DocumentLengthFilter(PASSWORD_LENGTH);
+		}
+		return passwordFilter;
+	}
+
+	/**
+	 * @return the labelFolderPath
+	 */
+	private JLabel getBackupPath() {
+		if (labelBackupPath == null) {
+			labelBackupPath = new JLabel();
+			labelBackupPath.setText(".");
+		}
+		return labelBackupPath;
+	}
+
 }

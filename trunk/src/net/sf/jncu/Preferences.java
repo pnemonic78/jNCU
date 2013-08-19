@@ -124,11 +124,26 @@ public class Preferences {
 	 *            the property key.
 	 * @param defaultValue
 	 *            the default value if none is found.
-	 * @return the property value - {@code null} otherwise.
+	 * @return the property value - {@code defaultValue} otherwise.
 	 */
 	public String get(String key, String defaultValue) {
 		if (props.containsKey(key))
 			return props.getProperty(key);
+		return defaultValue;
+	}
+
+	/**
+	 * Get the boolean property.
+	 * 
+	 * @param key
+	 *            the property key.
+	 * @param defaultValue
+	 *            the default value if none is found.
+	 * @return the property value - {@code defaultValue} otherwise.
+	 */
+	public boolean getBoolean(String key, boolean defaultValue) {
+		if (props.containsKey(key))
+			return Boolean.parseBoolean(props.getProperty(key));
 		return defaultValue;
 	}
 
@@ -142,6 +157,18 @@ public class Preferences {
 	 */
 	public void set(String key, String value) {
 		props.setProperty(key, value);
+	}
+
+	/**
+	 * Set the property.
+	 * 
+	 * @param key
+	 *            the property key.
+	 * @param value
+	 *            the property value.
+	 */
+	public void set(String key, boolean value) {
+		set(key, Boolean.toString(value));
 	}
 
 	/**

@@ -21,7 +21,6 @@ package net.sf.jncu.protocol.v2_0.io;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
@@ -32,7 +31,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
@@ -46,13 +44,12 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.UIManager;
 
+import net.sf.jncu.ui.NCUDialog;
 import net.sf.swing.SwingUtils;
 
 /**
@@ -62,12 +59,7 @@ import net.sf.swing.SwingUtils;
  * 
  * @author Moshe
  */
-public class KeyboardInputDialog extends JDialog implements ActionListener,
-		KeyListener {
-
-	static {
-		SwingUtils.init();
-	}
+public class KeyboardInputDialog extends NCUDialog implements KeyListener {
 
 	private static final String TITLE = "Keyboard Passthrough";
 
@@ -75,7 +67,6 @@ public class KeyboardInputDialog extends JDialog implements ActionListener,
 	private JButton pasteButton;
 	private JButton cancelButton;
 	private final List<KeyboardInputListener> listeners = new ArrayList<KeyboardInputListener>();
-	private Dimension buttonMinimumSize;
 
 	/**
 	 * Constructs a new dialog.
@@ -92,7 +83,7 @@ public class KeyboardInputDialog extends JDialog implements ActionListener,
 	 *            the owner.
 	 */
 	public KeyboardInputDialog(Frame owner) {
-		super(owner, true);
+		super(owner);
 		init();
 	}
 
@@ -103,7 +94,7 @@ public class KeyboardInputDialog extends JDialog implements ActionListener,
 	 *            the owner.
 	 */
 	public KeyboardInputDialog(Dialog owner) {
-		super(owner, true);
+		super(owner);
 		init();
 	}
 
@@ -114,15 +105,11 @@ public class KeyboardInputDialog extends JDialog implements ActionListener,
 	 *            the owner.
 	 */
 	public KeyboardInputDialog(Window owner) {
-		super(owner, ModalityType.APPLICATION_MODAL);
+		super(owner);
 		init();
 	}
 
 	private void init() {
-		int buttonMinimumWidth = UIManager
-				.getInt("OptionPane.buttonMinimumWidth");
-		this.buttonMinimumSize = new Dimension(buttonMinimumWidth, 24);
-
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle(TITLE);
 
@@ -180,11 +167,9 @@ public class KeyboardInputDialog extends JDialog implements ActionListener,
 			URL url = getClass().getResource("/dialog-paste.png");
 			Icon icon = new ImageIcon(url);
 
-			JButton button = new JButton();
+			JButton button = createButton();
 			button.setText(Toolkit.getProperty("AWT.paste", "Paste"));
 			button.setIcon(icon);
-			button.setMinimumSize(buttonMinimumSize);
-			button.addActionListener(this);
 			pasteButton = button;
 		}
 		return pasteButton;
@@ -197,15 +182,7 @@ public class KeyboardInputDialog extends JDialog implements ActionListener,
 	 */
 	private JButton getCancelButton() {
 		if (cancelButton == null) {
-			URL url = getClass().getResource("/dialog-cancel.png");
-			Icon icon = new ImageIcon(url);
-
-			JButton button = new JButton();
-			button.setText(Toolkit.getProperty("AWT.cancel", "Cancel"));
-			button.setIcon(icon);
-			button.setMinimumSize(buttonMinimumSize);
-			button.addActionListener(this);
-			cancelButton = button;
+			cancelButton = createCancelButton();
 		}
 		return cancelButton;
 	}
