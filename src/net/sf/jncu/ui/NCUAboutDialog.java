@@ -21,12 +21,10 @@ package net.sf.jncu.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.InputStream;
 import java.net.URL;
@@ -34,10 +32,8 @@ import java.net.URL;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
-import javax.swing.UIManager;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.Document;
@@ -51,22 +47,20 @@ import net.sf.swing.SwingUtils;
  * 
  * @author moshew
  */
-public class NCUAboutDialog extends JDialog implements ActionListener,
-		HyperlinkListener {
+public class NCUAboutDialog extends NCUDialog implements HyperlinkListener {
 
 	private static final String TITLE = "About jNewton Connection Utility";
 
 	private JPanel contentPane;
 	private JPanel buttons;
 	private JButton okButton;
-	private Dimension buttonMinimumSize;
 	private JTextComponent description;
 
 	/**
 	 * @param owner
 	 */
 	public NCUAboutDialog(Frame owner) {
-		super(owner, true);
+		super(owner);
 		init();
 	}
 
@@ -76,10 +70,6 @@ public class NCUAboutDialog extends JDialog implements ActionListener,
 	 * @return void
 	 */
 	private void init() {
-		int buttonMinimumWidth = UIManager
-				.getInt("OptionPane.buttonMinimumWidth");
-		this.buttonMinimumSize = new Dimension(buttonMinimumWidth, 24);
-
 		setTitle(TITLE);
 		setContentPane(getMainContentPane());
 		setResizable(false);
@@ -162,12 +152,10 @@ public class NCUAboutDialog extends JDialog implements ActionListener,
 			URL url = getClass().getResource("/dialog-ok.png");
 			Icon icon = new ImageIcon(url);
 
-			JButton button = new JButton();
+			JButton button = createButton();
 			button.setMnemonic(KeyEvent.VK_O);
 			button.setText("OK");
 			button.setIcon(icon);
-			button.setMinimumSize(buttonMinimumSize);
-			button.addActionListener(this);
 			okButton = button;
 		}
 		return okButton;

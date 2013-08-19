@@ -38,7 +38,6 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -51,8 +50,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.SoftBevelBorder;
 
 import net.sf.jncu.Controller;
 import net.sf.jncu.Settings;
@@ -71,6 +68,8 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	private static final String TITLE = "jNewton Connection Utility";
+	private static final String HELP = "For help, press F1";
+
 	private static final int INSET_X = 20;
 	private static final int INSET_Y = 20;
 	private static final int INSET_BUTTON = 10;
@@ -356,14 +355,15 @@ public class NCUFrame extends JFrame implements ActionListener {
 	 */
 	private JPanel getPanelStatus() {
 		if (statusPanel == null) {
-			statusLabel = new JLabel();
-			statusLabel.setText("For help, press F1");
-			statusPanel = new JPanel();
-			statusPanel.setLayout(new BoxLayout(getPanelStatus(),
-					BoxLayout.X_AXIS));
-			statusPanel.setPreferredSize(new Dimension(0, 24));
-			statusPanel.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
-			statusPanel.add(statusLabel, null);
+			JLabel label = new JLabel();
+			statusLabel = label;
+
+			JPanel panel = new JPanel();
+			panel.setLayout(new BorderLayout());
+			panel.setPreferredSize(new Dimension(0, 24));
+			panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+			panel.add(label, BorderLayout.CENTER);
+			statusPanel = panel;
 		}
 		return statusPanel;
 	}
@@ -430,6 +430,8 @@ public class NCUFrame extends JFrame implements ActionListener {
 		setSize(450, 440);
 		setResizable(false);
 		SwingUtils.centreInOwner(this);
+
+		setStatus(HELP);
 	}
 
 	/**
@@ -607,7 +609,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 			keyboardButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON,
 					INSET_BUTTON, INSET_BUTTON));
 			keyboardButton.addActionListener(this);
-			// keyboardButton.setEnabled(false);
+			keyboardButton.setEnabled(false);
 		}
 		return keyboardButton;
 	}
@@ -625,7 +627,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 			backupButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON,
 					INSET_BUTTON, INSET_BUTTON));
 			backupButton.addActionListener(this);
-			backupButton.setEnabled(false);
+			// TODO backupButton.setEnabled(false);
 		}
 		return backupButton;
 	}
@@ -779,5 +781,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 		JOptionPane.showMessageDialog(frame,
 				"Error: " + e.getLocalizedMessage(), frame.getTitle(),
 				JOptionPane.ERROR_MESSAGE);
+	}
+
+	public void setStatus(String status) {
+		statusLabel.setText(status);
 	}
 }

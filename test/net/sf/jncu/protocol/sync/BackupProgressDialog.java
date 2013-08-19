@@ -30,12 +30,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.border.EmptyBorder;
 
+import net.sf.jncu.ui.NCUDialog;
 import net.sf.swing.SwingUtils;
 
 /**
@@ -43,13 +43,9 @@ import net.sf.swing.SwingUtils;
  * 
  * @author Moshe
  */
-public class BackupProgressDialog extends JDialog {
+public class BackupProgressDialog extends NCUDialog {
 
-	static {
-		SwingUtils.init();
-	}
-
-	private JLabel lblNote;
+	private JLabel labelNote;
 
 	/**
 	 * Constructs a new dialog.
@@ -63,6 +59,7 @@ public class BackupProgressDialog extends JDialog {
 	 * Constructs a new dialog.
 	 * 
 	 * @param owner
+	 *            the owner.
 	 */
 	public BackupProgressDialog(Frame owner) {
 		super(owner);
@@ -73,6 +70,7 @@ public class BackupProgressDialog extends JDialog {
 	 * Constructs a new dialog.
 	 * 
 	 * @param owner
+	 *            the owner.
 	 */
 	public BackupProgressDialog(Dialog owner) {
 		super(owner);
@@ -83,6 +81,7 @@ public class BackupProgressDialog extends JDialog {
 	 * Constructs a new dialog.
 	 * 
 	 * @param owner
+	 *            te owner.
 	 */
 	public BackupProgressDialog(Window owner) {
 		super(owner);
@@ -91,7 +90,6 @@ public class BackupProgressDialog extends JDialog {
 
 	private void init() {
 		setTitle("Backup Progress");
-		setModalityType(ModalityType.APPLICATION_MODAL);
 
 		JPanel panelMain = new JPanel();
 		panelMain.setBorder(new EmptyBorder(10, 5, 5, 5));
@@ -105,7 +103,8 @@ public class BackupProgressDialog extends JDialog {
 		flowLayout.setAlignment(FlowLayout.TRAILING);
 		panelMain.add(panelButtons, BorderLayout.SOUTH);
 
-		JButton btnCancel = new JButton(Toolkit.getProperty("AWT.cancel", "Cancel"));
+		JButton btnCancel = new JButton(Toolkit.getProperty("AWT.cancel",
+				"Cancel"));
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				BackupProgressDialog.this.setVisible(false);
@@ -117,15 +116,15 @@ public class BackupProgressDialog extends JDialog {
 		panelMain.add(progressBar, BorderLayout.NORTH);
 		progressBar.setIndeterminate(true);
 
-		lblNote = new JLabel("Note");
-		panelMain.add(lblNote, BorderLayout.CENTER);
+		labelNote = new JLabel("Note");
+		panelMain.add(labelNote, BorderLayout.CENTER);
 
 		setMinimumSize(new Dimension(320, 140));
 		SwingUtils.centreInOwner(this);
 	}
 
 	protected JLabel getNote() {
-		return lblNote;
+		return labelNote;
 	}
 
 	public void setNote(String text) {
