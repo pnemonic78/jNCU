@@ -27,6 +27,7 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.net.URL;
 
 import javax.swing.Icon;
@@ -127,6 +128,23 @@ public class NCUDialog extends JDialog implements ActionListener {
 
 		JButton button = createButton();
 		button.setText(Toolkit.getProperty("AWT.cancel", "Cancel"));
+		button.setIcon(icon);
+
+		return button;
+	}
+
+	/**
+	 * Create an "OK" button.
+	 * 
+	 * @return the button.
+	 */
+	protected JButton createOkButton() {
+		URL url = getClass().getResource("/dialog-ok.png");
+		Icon icon = new ImageIcon(url);
+
+		JButton button = createButton();
+		button.setText("OK");
+		button.setMnemonic(KeyEvent.VK_O);
 		button.setIcon(icon);
 
 		return button;

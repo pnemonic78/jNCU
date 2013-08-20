@@ -591,7 +591,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 			installButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON,
 					INSET_BUTTON, INSET_BUTTON));
 			installButton.addActionListener(this);
-			installButton.setEnabled(false);
+			// TODO installButton.setEnabled(false);
 		}
 		return installButton;
 	}
@@ -609,7 +609,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 			keyboardButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON,
 					INSET_BUTTON, INSET_BUTTON));
 			keyboardButton.addActionListener(this);
-			keyboardButton.setEnabled(false);
+			// TODO keyboardButton.setEnabled(false);
 		}
 		return keyboardButton;
 	}

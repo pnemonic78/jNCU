@@ -52,12 +52,35 @@ import net.sf.jncu.translate.TranslatorFactory;
 public class ImportFile extends IconModule {
 
 	protected enum State {
-		None, Initialised, TranslatorList, Importing, SetStoreToDefault, SetCurrentSoup, CreateDefaultSoup, AddEntry, Changed, Imported, Cancelled, Finished
+		/** None. */
+		NONE,
+		/** Initialised. */
+		INITIALISED,
+		/** Translator list. */
+		TRANSLATOR_LIST,
+		/** Importing. */
+		IMPORTING,
+		/** Set store to default. */
+		SET_STORE_DEFAULT,
+		/** Set current soup. */
+		SET_CURRENT_SOUP,
+		/** Create default soup. */
+		CREATE_DEFAULT_SOUP,
+		/** Add entry. */
+		ADD_ENTRY,
+		/** Changed. */
+		CHANGED,
+		/** Imported. */
+		IMPORTED,
+		/** Cancelled. */
+		CANCELLED,
+		/** Finished. */
+		FINISHED
 	}
 
 	protected static final String TITLE = "Import File";
 
-	private State state = State.None;
+	private State state = State.NONE;
 	private File file;
 	private Importer importer;
 	private List<? extends Translator> translators;
@@ -73,7 +96,7 @@ public class ImportFile extends IconModule {
 	public ImportFile(CDPipe<? extends CDPacket> pipe) {
 		super(TITLE, pipe);
 		setName("ImportFile-" + getId());
-		state = State.Initialised;
+		state = State.INITIALISED;
 	}
 
 	@Override
@@ -95,32 +118,33 @@ public class ImportFile extends IconModule {
 
 			if (code == DResult.OK) {
 				switch (state) {
-				case Initialised:
-					state = State.Importing;
+				case INITIALISED:
+					state = State.IMPORTING;
 					break;
-				case Importing:
+				case IMPORTING:
 					DSetStoreToDefault setStore = new DSetStoreToDefault();
 					write(setStore);
 					break;
-				case SetStoreToDefault:
+				case SET_STORE_DEFAULT:
 					DSetCurrentSoup setSoup = new DSetCurrentSoup();
 					setSoup.setName(translator.getApplicationName());
 					write(setSoup);
 					break;
-				case SetCurrentSoup:
+				case SET_CURRENT_SOUP:
 					importer = new Importer();
 					importer.start();
 					break;
 				}
 			} else {
-				if (state == State.SetCurrentSoup) {
+				if (state == State.SET_CURRENT_SOUP) {
 					if (code == DSetCurrentSoup.ERROR_NOT_FOUND) {
 
 					}
 				} else {
 					done();
-					state = State.Cancelled;
-					showError(result.getError().getMessage() + "\nCode: " + code);
+					state = State.CANCELLED;
+					showError(result.getError().getMessage() + "\nCode: "
+							+ code);
 				}
 			}
 		} else if (DOperationCanceled2.COMMAND.equals(cmd)) {
@@ -131,7 +155,8 @@ public class ImportFile extends IconModule {
 			write(ack);
 		} else if (DAddedID.COMMAND.equals(cmd)) {
 			DAddedID cmdAdded = (DAddedID) command;
-			SoupChanged soup = DSoupsChanged.createSoup(translator.getApplicationName(), cmdAdded.getId());
+			SoupChanged soup = DSoupsChanged.createSoup(
+					translator.getApplicationName(), cmdAdded.getId());
 
 			if (changed == null)
 				changed = new DSoupsChanged();
@@ -152,25 +177,25 @@ public class ImportFile extends IconModule {
 		String cmd = command.getCommand();
 
 		if (DImporting.COMMAND.equals(cmd)) {
-			state = State.Importing;
+			state = State.IMPORTING;
 		} else if (DTranslatorList.COMMAND.equals(cmd)) {
-			state = State.TranslatorList;
+			state = State.TRANSLATOR_LIST;
 		} else if (DSetStoreToDefault.COMMAND.equals(cmd)) {
-			state = State.SetStoreToDefault;
+			state = State.SET_STORE_DEFAULT;
 		} else if (DSetCurrentSoup.COMMAND.equals(cmd)) {
-			state = State.SetCurrentSoup;
+			state = State.SET_CURRENT_SOUP;
 		} else if (DCreateDefaultSoup.COMMAND.equals(cmd)) {
-			state = State.CreateDefaultSoup;
+			state = State.CREATE_DEFAULT_SOUP;
 		} else if (DAddEntry.COMMAND.equals(cmd)) {
-			state = State.AddEntry;
+			state = State.ADD_ENTRY;
 		} else if (DSoupsChanged.COMMAND.equals(cmd)) {
-			state = State.Changed;
+			state = State.CHANGED;
 			DOperationDone done = new DOperationDone();
 			write(done);
 		} else if (DOperationDone.COMMAND.equals(cmd)) {
-			state = State.Finished;
+			state = State.FINISHED;
 		} else if (DOperationCanceledAck.COMMAND.equals(cmd)) {
-			state = State.Cancelled;
+			state = State.CANCELLED;
 		}
 	}
 
@@ -187,8 +212,9 @@ public class ImportFile extends IconModule {
 
 	@Override
 	public void run() {
-		if (state == State.Initialised) {
-			translators = TranslatorFactory.getInstance().getTranslatorsByFile(file);
+		if (state == State.INITIALISED) {
+			translators = TranslatorFactory.getInstance().getTranslatorsByFile(
+					file);
 			if ((translators == null) || translators.isEmpty()) {
 				showError("No translator found");
 				return;

@@ -67,7 +67,8 @@ public abstract class FileChooser extends IconModule {
 		 * @param command
 		 *            the command from the Newton.
 		 */
-		public void approveSelection(FileChooser chooser, File file, IDockCommandFromNewton command);
+		public void approveSelection(FileChooser chooser, File file,
+				IDockCommandFromNewton command);
 
 		/**
 		 * The file browsing was cancelled.
@@ -86,13 +87,24 @@ public abstract class FileChooser extends IconModule {
 	protected static final String KEY_PATH = "jncu.fileChooser.path";
 
 	private static enum State {
-		None, Initialised, Browsing, Cancelled, Selected, Finished
+		/** None. */
+		NONE,
+		/** Initialised. */
+		INITIALISED,
+		/** Browsing for file. */
+		BROWSING,
+		/** Cancelled. */
+		CANCELLED,
+		/** File selected. */
+		SELECTED,
+		/** Finished. */
+		FINISHED
 	}
 
 	private static final String TITLE = "File Chooser";
 
 	private final List<NSOFString> types = new ArrayList<NSOFString>();
-	private State state = State.None;
+	private State state = State.NONE;
 	private File path;
 	private File file;
 	private IDockCommandFromNewton command;
@@ -109,7 +121,8 @@ public abstract class FileChooser extends IconModule {
 	 * @param types
 	 *            the chooser types.
 	 */
-	public FileChooser(CDPipe<? extends CDPacket> pipe, Collection<NSOFString> types) {
+	public FileChooser(CDPipe<? extends CDPacket> pipe,
+			Collection<NSOFString> types) {
 		super(TITLE, pipe);
 		setName("FileChooser-" + getId());
 
@@ -147,7 +160,8 @@ public abstract class FileChooser extends IconModule {
 		Preferences prefs = Preferences.getInstance();
 		String folderPath = prefs.get(KEY_PATH);
 		if (folderPath == null) {
-			folderPath = SwingUtils.getFileSystemView().getDefaultDirectory().getPath();
+			folderPath = SwingUtils.getFileSystemView().getDefaultDirectory()
+					.getPath();
 			prefs.set(KEY_PATH, folderPath);
 			prefs.save();
 		}
@@ -161,7 +175,7 @@ public abstract class FileChooser extends IconModule {
 			DResult cmdResult = new DResult();
 			write(cmdResult);
 		}
-		state = State.Initialised;
+		state = State.INITIALISED;
 	}
 
 	@Override
@@ -199,7 +213,7 @@ public abstract class FileChooser extends IconModule {
 			String filename = cmdGet.getFilename();
 			this.file = new File(path, filename);
 			this.command = command;
-			state = State.Selected;
+			state = State.SELECTED;
 			fireApproved(this.file, command);
 			done();
 		} else if (DRestoreFile.COMMAND.equals(cmd)) {
@@ -207,7 +221,7 @@ public abstract class FileChooser extends IconModule {
 			String filename = cmdGet.getFilename();
 			this.file = new File(path, filename);
 			this.command = command;
-			state = State.Selected;
+			state = State.SELECTED;
 			fireApproved(this.file, command);
 			done();
 		} else if (DLoadPackageFile.COMMAND.equals(cmd)) {
@@ -215,12 +229,12 @@ public abstract class FileChooser extends IconModule {
 			String filename = cmdGet.getFilename();
 			this.file = new File(path, filename);
 			this.command = command;
-			state = State.Selected;
+			state = State.SELECTED;
 			fireApproved(this.file, command);
 			done();
 		} else if (DOperationCanceled.COMMAND.equals(cmd)) {
 			fireCancelled();
-			state = State.Cancelled;
+			state = State.CANCELLED;
 		}
 	}
 
@@ -234,18 +248,18 @@ public abstract class FileChooser extends IconModule {
 		String cmd = command.getCommand();
 
 		if (DResult.COMMAND.equals(cmd)) {
-			state = State.Browsing;
+			state = State.BROWSING;
 		} else if (DOperationCanceled.COMMAND.equals(cmd)) {
-			state = State.Cancelled;
+			state = State.CANCELLED;
 		} else if (DOperationDone.COMMAND.equals(cmd)) {
-			state = State.Finished;
+			state = State.FINISHED;
 		}
 	}
 
 	@Override
 	protected void done() {
 		super.done();
-		state = State.Finished;
+		state = State.FINISHED;
 	}
 
 	/**
@@ -378,7 +392,8 @@ public abstract class FileChooser extends IconModule {
 	 */
 	protected void fireApproved(File file, IDockCommandFromNewton command) {
 		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<FileChooserListener> listenersCopy = new ArrayList<FileChooserListener>(listeners);
+		Collection<FileChooserListener> listenersCopy = new ArrayList<FileChooserListener>(
+				listeners);
 		for (FileChooserListener listener : listenersCopy) {
 			listener.approveSelection(this, file, command);
 		}
@@ -389,7 +404,8 @@ public abstract class FileChooser extends IconModule {
 	 */
 	protected void fireCancelled() {
 		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<FileChooserListener> listenersCopy = new ArrayList<FileChooserListener>(listeners);
+		Collection<FileChooserListener> listenersCopy = new ArrayList<FileChooserListener>(
+				listeners);
 		for (FileChooserListener listener : listenersCopy) {
 			listener.cancelSelection(this);
 		}
@@ -406,9 +422,9 @@ public abstract class FileChooser extends IconModule {
 
 	@Override
 	protected boolean isEnabled() {
-		if (state == State.Cancelled)
+		if (state == State.CANCELLED)
 			return false;
-		if (state == State.Finished)
+		if (state == State.FINISHED)
 			return false;
 		return super.isEnabled();
 	}

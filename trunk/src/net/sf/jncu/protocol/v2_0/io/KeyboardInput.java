@@ -51,7 +51,16 @@ public class KeyboardInput extends IconModule implements WindowListener,
 	protected static final char LF = '\n';
 
 	private static enum State {
-		NONE, INIT, INPUT, CANCELLED, FINISHED
+		/** None. */
+		NONE,
+		/** Initialised. */
+		INITIALISED,
+		/** Listening for keyboard input. */
+		INPUT,
+		/** Cancelled. */
+		CANCELLED,
+		/** Finished. */
+		FINISHED
 	}
 
 	private static final String TITLE = Toolkit.getProperty(
@@ -67,23 +76,22 @@ public class KeyboardInput extends IconModule implements WindowListener,
 	private KeyboardTask task;
 	private Timer timer;
 	private StringBuilder buffer = new StringBuilder();
-	
 
 	/**
 	 * Constructs a new input.
 	 */
 	public KeyboardInput(CDPipe<? extends CDPacket> pipe) {
-		this(pipe,null);
+		this(pipe, null);
 	}
 
 	/**
 	 * Constructs a new input.
 	 */
 	public KeyboardInput(CDPipe<? extends CDPacket> pipe, Window owner) {
-		super(TITLE,pipe);
+		super(TITLE, pipe);
 		setName("KeyboardInput-" + getId());
 
-		state = State.INIT;
+		state = State.INITIALISED;
 
 		timer = new Timer();
 		dialog = new KeyboardInputDialog(owner);

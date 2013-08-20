@@ -27,11 +27,20 @@ package net.sf.jncu.fdil;
  */
 public enum FDCompressionType {
 
-	/** <tt>kFD_NoCompression</tt> */
-	NoCompression,
-	/** <tt>kFD_LZCompression</tt> */
-	LZCompression,
-	/** <tt>kFD_ZippyCompression</tt> */
-	ZippyCompression
+	/**
+	 * No compression.<br>
+	 * <tt>kFD_NoCompression</tt>
+	 */
+	NO_COMPRESSION,
+	/**
+	 * Lempel-Ziv compression.<br>
+	 * <tt>kFD_LZCompression</tt>
+	 */
+	LZ_COMPRESSION,
+	/**
+	 * Zippy compression.<br>
+	 * <tt>kFD_ZippyCompression</tt>
+	 */
+	ZIPPY_COMPRESSION
 
 }
