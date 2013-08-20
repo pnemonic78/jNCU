@@ -41,13 +41,28 @@ import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 public class LoadPackage extends IconModule implements DockCommandListener {
 
 	protected enum State {
-		None, Initialised, Requesting, Requested, Loading, Loaded, Cancelled, Finished
+		/** None. */
+		NONE,
+		/** Initialised. */
+		INITIALISED,
+		/** Requesting. */
+		REQUESTING,
+		/** Requested. */
+		REQUESTED,
+		/** Loading. */
+		LOADING,
+		/** Loaded. */
+		LOADED,
+		/** Cancelled. */
+		CANCELLED,
+		/** Finished. */
+		FINISHED
 	}
 
 	private static final String TITLE = "Load Package";
 
 	private File file;
-	private State state = State.None;
+	private State state = State.NONE;
 
 	/**
 	 * Constructs a new loader.
@@ -61,11 +76,11 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 		super(TITLE, pipe);
 		setName("LoadPackage-" + getId());
 
-		state = State.Initialised;
+		state = State.INITIALISED;
 
 		// Newton wants to load package so skip Requesting and Requested states.
 		if (requested)
-			state = State.Loading;
+			state = State.LOADING;
 	}
 
 	@Override
@@ -86,19 +101,19 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 			int code = result.getErrorCode();
 			// Upload can begin or was finished?
 			if (code == DResult.OK) {
-				if (state == State.Requested) {
-					state = State.Loading;
+				if (state == State.REQUESTED) {
+					state = State.LOADING;
 					loadPackage(file);
-				} else if (state == State.Loaded) {
+				} else if (state == State.LOADED) {
 					writeDone();
 				}
 			} else {
 				done();
-				state = State.Cancelled;
+				state = State.CANCELLED;
 				showError(result.getError().getMessage() + "\nCode: " + code);
 			}
 		} else if (DLoadPackageFile.COMMAND.equals(cmd)) {
-			state = State.Loading;
+			state = State.LOADING;
 		}
 	}
 
@@ -112,13 +127,13 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 		String cmd = command.getCommand();
 
 		if (DRequestToInstall.COMMAND.equals(cmd)) {
-			state = State.Requested;
+			state = State.REQUESTED;
 		} else if (DLoadPackage.COMMAND.equals(cmd)) {
-			state = State.Loaded;
+			state = State.LOADED;
 		} else if (DOperationDone.COMMAND.equals(cmd)) {
-			state = State.Finished;
+			state = State.FINISHED;
 		} else if (DOperationCanceledAck.COMMAND.equals(cmd)) {
-			state = State.Cancelled;
+			state = State.CANCELLED;
 		}
 	}
 
@@ -130,11 +145,11 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 	public void loadPackage(File file) {
 		this.file = file;
 
-		if (state == State.Initialised) {
+		if (state == State.INITIALISED) {
 			DRequestToInstall req = new DRequestToInstall();
 			write(req);
-		} else if (state == State.Loading) {
-			this.start();
+		} else if (state == State.LOADING) {
+			start();
 		}
 	}
 
@@ -150,9 +165,9 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 
 	@Override
 	protected boolean isEnabled() {
-		if (state == State.Cancelled)
+		if (state == State.CANCELLED)
 			return false;
-		if (state == State.Finished)
+		if (state == State.FINISHED)
 			return false;
 		return super.isEnabled();
 	}

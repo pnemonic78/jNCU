@@ -21,7 +21,6 @@ package net.sf.jncu.protocol.v2_0.io;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Toolkit;
@@ -125,10 +124,7 @@ public class KeyboardInputDialog extends NCUDialog implements KeyListener {
 		getTextInput().requestFocus();
 		addKeyListener(this);
 
-		JPanel panelButtons = new JPanel();
-		panelButtons.setOpaque(false);
-		FlowLayout layoutButtons = new FlowLayout(FlowLayout.TRAILING);
-		panelButtons.setLayout(layoutButtons);
+		JPanel panelButtons = createButtonsPanel();
 		panelButtons.add(getPasteButton());
 		panelButtons.add(getCancelButton());
 		panelContents.add(panelButtons, BorderLayout.SOUTH);

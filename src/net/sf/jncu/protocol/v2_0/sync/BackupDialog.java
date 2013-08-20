@@ -21,6 +21,7 @@ package net.sf.jncu.protocol.v2_0.sync;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -184,7 +185,8 @@ public class BackupDialog extends NCUDialog {
 		panelStores.setOpaque(false);
 		panelContents.add(panelStores, BorderLayout.WEST);
 		panelStores.setLayout(new BorderLayout(5, 5));
-		panelStores.setBorder(BorderFactory.createTitledBorder("Backup From Stores"));
+		panelStores.setBorder(BorderFactory
+				.createTitledBorder("Backup From Stores"));
 
 		JScrollPane scrollStores = new JScrollPane(getListStores());
 		panelStores.add(scrollStores, BorderLayout.CENTER);
@@ -213,7 +215,8 @@ public class BackupDialog extends NCUDialog {
 		panelButtons.add(getCancelButton());
 		panelContents.add(panelButtons, BorderLayout.SOUTH);
 
-		setSize(380, 300);
+		setMinimumSize(new Dimension(380, 300));
+		pack();
 		SwingUtils.centreInOwner(this);
 		getBackupButton().requestFocus();
 	}

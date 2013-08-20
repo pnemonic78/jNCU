@@ -21,16 +21,12 @@ package net.sf.jncu.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Desktop;
-import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.io.InputStream;
 import java.net.URL;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
@@ -134,10 +130,8 @@ public class NCUAboutDialog extends NCUDialog implements HyperlinkListener {
 	 */
 	private JPanel getButtons() {
 		if (buttons == null) {
-			buttons = new JPanel();
-			buttons.setLayout(new FlowLayout());
-			buttons.setOpaque(false);
-			buttons.add(getOkButton(), null);
+			buttons = createButtonsPanel();
+			buttons.add(getOkButton());
 		}
 		return buttons;
 	}
@@ -149,14 +143,7 @@ public class NCUAboutDialog extends NCUDialog implements HyperlinkListener {
 	 */
 	private JButton getOkButton() {
 		if (okButton == null) {
-			URL url = getClass().getResource("/dialog-ok.png");
-			Icon icon = new ImageIcon(url);
-
-			JButton button = createButton();
-			button.setMnemonic(KeyEvent.VK_O);
-			button.setText("OK");
-			button.setIcon(icon);
-			okButton = button;
+			okButton = createOkButton();
 		}
 		return okButton;
 	}

@@ -115,6 +115,7 @@ public class BackupModule extends IconModule {
 	}
 
 	protected enum State {
+		/** None. */
 		NONE,
 		/** Request from the Newton that we want to backup. */
 		INITIALISED,

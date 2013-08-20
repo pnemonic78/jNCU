@@ -19,12 +19,21 @@
  */
 package net.sf.jncu;
 
+import java.io.File;
+
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
+import net.sf.jncu.cdil.mnp.EmptyPipe;
 import net.sf.jncu.cdil.mnp.MNPPipe;
+import net.sf.jncu.protocol.v2_0.app.LoadPackage;
 import net.sf.jncu.protocol.v2_0.io.KeyboardInput;
+import net.sf.jncu.protocol.v2_0.sync.BackupDialog;
 import net.sf.jncu.ui.NCUFrame;
 
 /**
@@ -37,9 +46,11 @@ public class Controller {
 	private NCUFrame frame;
 	private CDLayer layer;
 	private MNPPipe pipe;
-	private KeyboardInput keyboardInput;
-	private Preferences prefs;
 	private Settings settings;
+	private KeyboardInput keyboardDialog;
+	private BackupDialog backupDialog;
+	private LoadPackage packageLoader;
+	private JFileChooser packageChooser;
 
 	/**
 	 * Create a new controller.
@@ -50,9 +61,14 @@ public class Controller {
 	 */
 	public Controller(NCUFrame frame) throws PlatformException {
 		this.frame = frame;
-		this.prefs = Preferences.getInstance();
 		this.layer = CDLayer.getInstance();
-		layer.startUp();
+		try {
+			// FIXME create actual pipe
+			this.pipe = new EmptyPipe(layer);
+		} catch (ServiceNotSupportedException e) {
+			e.printStackTrace();
+		}
+		// FIXME layer.startUp();
 	}
 
 	/**
@@ -66,24 +82,45 @@ public class Controller {
 	 * Install package.
 	 */
 	public void install() {
-		// TODO implement me!
+		if (packageLoader == null) {
+			packageLoader = new LoadPackage(pipe, false);
+		}
+		if (packageChooser == null) {
+			packageChooser = new JFileChooser();
+			packageChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+			FileFilter filter = new FileNameExtensionFilter("Newton Package",
+					"pkg", "PKG");
+			packageChooser.setFileFilter(filter);
+			packageChooser.setAcceptAllFileFilterUsed(false);
+		}
+		int ret = packageChooser.showOpenDialog(frame);
+		if (ret == JFileChooser.APPROVE_OPTION) {
+			File selectedFile = packageChooser.getSelectedFile();
+			packageLoader.loadPackage(selectedFile);
+		}
 	}
 
 	/**
 	 * Use keyboard.
 	 */
 	public void keyboard() {
-		if (keyboardInput == null) {
-			keyboardInput = new KeyboardInput(pipe, frame);
+		if (keyboardDialog == null) {
+			keyboardDialog = new KeyboardInput(pipe, frame);
 		}
-		keyboardInput.getDialog().setVisible(true);
+		keyboardDialog.getDialog().setVisible(true);
 	}
 
 	/**
 	 * Backup.
 	 */
 	public void backupToDesktop() {
-		// TODO implement me!
+		if (backupDialog == null) {
+			backupDialog = new BackupDialog(frame);
+			// TODO backupDialog.setStores(stores);
+			// TODO backupDialog.setApplications(apps);
+		}
+		backupDialog.setVisible(true);
 	}
 
 	/**

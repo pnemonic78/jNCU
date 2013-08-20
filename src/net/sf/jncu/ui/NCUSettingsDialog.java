@@ -20,7 +20,6 @@
 package net.sf.jncu.ui;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -138,12 +137,11 @@ public class NCUSettingsDialog extends NCUDialog {
 	 */
 	private JPanel getButtons() {
 		if (buttons == null) {
-			buttons = new JPanel();
-			buttons.setLayout(new FlowLayout());
-			buttons.add(getOkButton(), null);
-			buttons.add(getCancelButton(), null);
-			buttons.add(getApplyButton(), null);
-			buttons.add(getHelpButton(), null);
+			buttons = createButtonsPanel();
+			buttons.add(getOkButton());
+			buttons.add(getCancelButton());
+			buttons.add(getApplyButton());
+			buttons.add(getHelpButton());
 		}
 		return buttons;
 	}
@@ -155,14 +153,7 @@ public class NCUSettingsDialog extends NCUDialog {
 	 */
 	private JButton getOkButton() {
 		if (okButton == null) {
-			URL url = getClass().getResource("/dialog-ok.png");
-			Icon icon = new ImageIcon(url);
-
-			JButton button = createButton();
-			button.setText("OK");
-			button.setMnemonic(KeyEvent.VK_O);
-			button.setIcon(icon);
-			okButton = button;
+			okButton = createOkButton();
 		}
 		return okButton;
 	}
@@ -588,7 +579,7 @@ public class NCUSettingsDialog extends NCUDialog {
 		return browseButton;
 	}
 
-	public JFileChooser getBrowser() {
+	private JFileChooser getBrowser() {
 		if (browser == null) {
 			browser = new JFileChooser();
 			browser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

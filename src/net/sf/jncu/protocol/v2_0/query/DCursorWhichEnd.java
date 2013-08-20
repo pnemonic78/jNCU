@@ -36,7 +36,8 @@ public class DCursorWhichEnd extends DCursor {
 	/** <tt>kDCursorWhichEnd</tt> */
 	public static final String COMMAND = "whch";
 
-	public static enum eCursorWhichEnd {
+	/** <tt>eCursorWhichEnd</tt> */
+	public static enum CursorWhichEnd {
 		/** Cursor is at unknown position. */
 		UNKNOWN,
 		/** Cursor is at start position. */
