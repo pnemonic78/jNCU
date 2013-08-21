@@ -20,9 +20,7 @@
 package net.sf.jncu.protocol.v2_0.io;
 
 import java.awt.BorderLayout;
-import java.awt.Dialog;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.Clipboard;
@@ -72,28 +70,6 @@ public class KeyboardInputDialog extends NCUDialog implements KeyListener {
 	 */
 	public KeyboardInputDialog() {
 		super();
-		init();
-	}
-
-	/**
-	 * Constructs a new dialog.
-	 * 
-	 * @param owner
-	 *            the owner.
-	 */
-	public KeyboardInputDialog(Frame owner) {
-		super(owner);
-		init();
-	}
-
-	/**
-	 * Constructs a new dialog.
-	 * 
-	 * @param owner
-	 *            the owner.
-	 */
-	public KeyboardInputDialog(Dialog owner) {
-		super(owner);
 		init();
 	}
 

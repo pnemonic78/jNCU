@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.io.unix;
 
+import java.awt.Window;
 import java.util.Collection;
 
 import net.sf.jncu.cdil.CDPacket;
@@ -41,9 +42,12 @@ public class UnixFileChooser extends FileChooser {
 	 *            the pipe.
 	 * @param types
 	 *            the chooser types.
+	 * @param owner
+	 *            the owner window.
 	 */
-	public UnixFileChooser(CDPipe<? extends CDPacket> pipe, Collection<NSOFString> types) {
-		super(pipe, types);
+	public UnixFileChooser(CDPipe<? extends CDPacket> pipe,
+			Collection<NSOFString> types, Window owner) {
+		super(pipe, types, owner);
 		init();
 	}
 
@@ -54,9 +58,12 @@ public class UnixFileChooser extends FileChooser {
 	 *            the pipe.
 	 * @param type
 	 *            the chooser type.
+	 * @param owner
+	 *            the owner window.
 	 */
-	public UnixFileChooser(CDPipe<? extends CDPacket> pipe, NSOFString type) {
-		super(pipe, type);
+	public UnixFileChooser(CDPipe<? extends CDPacket> pipe, NSOFString type,
+			Window owner) {
+		super(pipe, type, owner);
 		init();
 	}
 

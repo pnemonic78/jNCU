@@ -41,7 +41,8 @@ import net.sf.jncu.protocol.v2_0.app.LoadPackage;
  * 
  * @author moshew
  */
-public class LoadPackageTester implements IconModuleListener, MNPPacketListener, DockCommandListener {
+public class LoadPackageTester implements IconModuleListener,
+		MNPPacketListener, DockCommandListener {
 
 	private String portName;
 	private String pkgPath;
@@ -112,7 +113,7 @@ public class LoadPackageTester implements IconModuleListener, MNPPacketListener,
 		File file = new File(pkgPath);
 
 		loading = true;
-		pkg = new LoadPackage(pipe, false);
+		pkg = new LoadPackage(pipe, false, null);
 		pkg.loadPackage(file);
 		while (loading)
 			Thread.yield();
@@ -161,7 +162,8 @@ public class LoadPackageTester implements IconModuleListener, MNPPacketListener,
 	}
 
 	@Override
-	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+	public void commandReceiving(IDockCommandFromNewton command, int progress,
+			int total) {
 	}
 
 	@Override
@@ -174,7 +176,8 @@ public class LoadPackageTester implements IconModuleListener, MNPPacketListener,
 	}
 
 	@Override
-	public void commandSending(IDockCommandToNewton command, int progress, int total) {
+	public void commandSending(IDockCommandToNewton command, int progress,
+			int total) {
 	}
 
 	@Override

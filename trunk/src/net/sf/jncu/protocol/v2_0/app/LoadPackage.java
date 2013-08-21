@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.app;
 
+import java.awt.Window;
 import java.io.File;
 
 import net.sf.jncu.cdil.CDPacket;
@@ -71,9 +72,12 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 	 *            the pipe.
 	 * @param requested
 	 *            loading was requested by Newton?
+	 * @param owner
+	 *            the owner window.
 	 */
-	public LoadPackage(CDPipe<? extends CDPacket> pipe, boolean requested) {
-		super(TITLE, pipe);
+	public LoadPackage(CDPipe<? extends CDPacket> pipe, boolean requested,
+			Window owner) {
+		super(TITLE, pipe, owner);
 		setName("LoadPackage-" + getId());
 
 		state = State.INITIALISED;

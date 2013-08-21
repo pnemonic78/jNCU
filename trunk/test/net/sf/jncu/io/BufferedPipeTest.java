@@ -24,7 +24,7 @@ import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
-import junit.framework.Assert;
+import junit.framework.AssertionFailedError;
 import net.sf.junit.SFTestCase;
 
 import org.junit.Test;
@@ -114,7 +114,7 @@ public class BufferedPipeTest extends SFTestCase {
 					sleep(30);
 				}
 			} catch (Exception e) {
-				Assert.fail(e.getMessage());
+				throw new AssertionFailedError(e.getMessage());
 			}
 		}
 	}

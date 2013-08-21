@@ -19,10 +19,8 @@
  */
 package net.sf.jncu.ui;
 
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -57,28 +55,6 @@ public class NCUDialog extends JDialog implements ActionListener {
 	 */
 	public NCUDialog() {
 		super();
-		init();
-	}
-
-	/**
-	 * Create a new dialog.
-	 * 
-	 * @param owner
-	 *            the owner.
-	 */
-	public NCUDialog(Frame owner) {
-		super(owner);
-		init();
-	}
-
-	/**
-	 * Create a new dialog.
-	 * 
-	 * @param owner
-	 *            the owner.
-	 */
-	public NCUDialog(Dialog owner) {
-		super(owner);
 		init();
 	}
 

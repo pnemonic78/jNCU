@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0;
 
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,7 +36,6 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
-import net.sf.swing.SwingUtils;
 
 /**
  * Module that does some function when user clicks an icon.
@@ -43,10 +43,6 @@ import net.sf.swing.SwingUtils;
  * @author Moshe
  */
 public abstract class IconModule extends Thread implements DockCommandListener {
-
-	static {
-		SwingUtils.init();
-	}
 
 	/**
 	 * Icon module event.
@@ -75,6 +71,7 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	private ProgressMonitor progressMonitor;
 	private IDockCommandFromNewton progressCommandFrom;
 	private IDockCommandToNewton progressCommandTo;
+	private Window owner;
 
 	/**
 	 * Constructs a new module.
@@ -83,11 +80,15 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	 *            the title.
 	 * @param pipe
 	 *            the pipe.
+	 * @param owner
+	 *            the owner window.
 	 */
-	public IconModule(String title, CDPipe<? extends CDPacket> pipe) {
+	public IconModule(String title, CDPipe<? extends CDPacket> pipe,
+			Window owner) {
 		super();
 		setName("IconModule-" + getId());
 		this.title = title;
+		this.owner = owner;
 		if (pipe == null)
 			throw new IllegalArgumentException("pipe required");
 		this.pipe = pipe;
@@ -101,6 +102,15 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	 */
 	public String getTitle() {
 		return title;
+	}
+
+	/**
+	 * Get the owner window.
+	 * 
+	 * @return the owner.
+	 */
+	protected Window getOwner() {
+		return owner;
 	}
 
 	@Override
@@ -137,7 +147,8 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	protected void showError(final String msg) {
 		new Thread() {
 			public void run() {
-				JOptionPane.showMessageDialog(null, msg, title, JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(getOwner(), msg, title,
+						JOptionPane.ERROR_MESSAGE);
 			}
 		}.start();
 	}
@@ -180,7 +191,8 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	}
 
 	@Override
-	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+	public void commandReceiving(IDockCommandFromNewton command, int progress,
+			int total) {
 		if (!isEnabled())
 			return;
 		progressCommandFrom = command;
@@ -188,7 +200,8 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 		if (monitor != null) {
 			monitor.setMaximum(total);
 			monitor.setProgress(progress);
-			monitor.setNote(String.format("Receiving %d%%", (progress * 100) / total));
+			monitor.setNote(String.format("Receiving %d%%", (progress * 100)
+					/ total));
 		}
 	}
 
@@ -210,7 +223,8 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	}
 
 	@Override
-	public void commandSending(IDockCommandToNewton command, int progress, int total) {
+	public void commandSending(IDockCommandToNewton command, int progress,
+			int total) {
 		if (!isEnabled())
 			return;
 		progressCommandTo = command;
@@ -218,7 +232,8 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 		if (monitor != null) {
 			monitor.setMaximum(total);
 			monitor.setProgress(progress);
-			monitor.setNote(String.format("Sending %d%%", (progress * 100) / total));
+			monitor.setNote(String.format("Sending %d%%", (progress * 100)
+					/ total));
 		}
 	}
 
@@ -272,7 +287,8 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	 */
 	protected void fireDone() {
 		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<IconModuleListener> listenersCopy = new ArrayList<IconModuleListener>(listeners);
+		Collection<IconModuleListener> listenersCopy = new ArrayList<IconModuleListener>(
+				listeners);
 		for (IconModuleListener listener : listenersCopy) {
 			listener.successModule(this);
 		}
@@ -283,7 +299,8 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	 */
 	protected void fireCancelled() {
 		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<IconModuleListener> listenersCopy = new ArrayList<IconModuleListener>(listeners);
+		Collection<IconModuleListener> listenersCopy = new ArrayList<IconModuleListener>(
+				listeners);
 		for (IconModuleListener listener : listenersCopy) {
 			listener.cancelModule(this);
 		}
@@ -297,7 +314,8 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	protected ProgressMonitor getProgress() {
 		if (progressMonitor == null) {
 			synchronized (this) {
-				progressMonitor = new ProgressMonitor(null, getTitle(), "0%%", 0, IDockCommand.LENGTH_WORD);
+				progressMonitor = new ProgressMonitor(getOwner(), getTitle(),
+						"0%%", 0, IDockCommand.LENGTH_WORD);
 			}
 		}
 		return progressMonitor;

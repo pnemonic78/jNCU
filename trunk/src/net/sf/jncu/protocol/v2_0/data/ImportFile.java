@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
+import java.awt.Window;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -92,9 +93,11 @@ public class ImportFile extends IconModule {
 	 * 
 	 * @param pipe
 	 *            the pipe.
+	 * @param owner
+	 *            the owner window.
 	 */
-	public ImportFile(CDPipe<? extends CDPacket> pipe) {
-		super(TITLE, pipe);
+	public ImportFile(CDPipe<? extends CDPacket> pipe, Window owner) {
+		super(TITLE, pipe, owner);
 		setName("ImportFile-" + getId());
 		state = State.INITIALISED;
 	}

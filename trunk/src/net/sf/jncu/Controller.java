@@ -83,7 +83,7 @@ public class Controller {
 	 */
 	public void install() {
 		if (packageLoader == null) {
-			packageLoader = new LoadPackage(pipe, false);
+			packageLoader = new LoadPackage(pipe, false, frame);
 		}
 		if (packageChooser == null) {
 			packageChooser = new JFileChooser();

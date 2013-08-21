@@ -79,22 +79,20 @@ public class KeyboardInput extends IconModule implements WindowListener,
 
 	/**
 	 * Constructs a new input.
-	 */
-	public KeyboardInput(CDPipe<? extends CDPacket> pipe) {
-		this(pipe, null);
-	}
-
-	/**
-	 * Constructs a new input.
+	 * 
+	 * @param pipe
+	 *            the pipe.
+	 * @param owner
+	 *            the owner window.
 	 */
 	public KeyboardInput(CDPipe<? extends CDPacket> pipe, Window owner) {
-		super(TITLE, pipe);
+		super(TITLE, pipe, owner);
 		setName("KeyboardInput-" + getId());
 
-		state = State.INITIALISED;
+		this.state = State.INITIALISED;
 
-		timer = new Timer();
-		dialog = new KeyboardInputDialog(owner);
+		this.timer = new Timer();
+		this.dialog = new KeyboardInputDialog(owner);
 		dialog.addInputListener(this);
 		dialog.addWindowListener(this);
 	}
