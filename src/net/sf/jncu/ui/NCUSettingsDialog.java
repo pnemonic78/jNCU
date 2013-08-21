@@ -20,10 +20,10 @@
 package net.sf.jncu.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -96,7 +96,7 @@ public class NCUSettingsDialog extends NCUDialog {
 	 * @param owner
 	 *            the owner.
 	 */
-	public NCUSettingsDialog(Frame owner) {
+	public NCUSettingsDialog(Window owner) {
 		super(owner);
 		init();
 	}

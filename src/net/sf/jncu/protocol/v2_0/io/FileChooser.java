@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
+import java.awt.Window;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -120,10 +121,12 @@ public abstract class FileChooser extends IconModule {
 	 *            the pipe.
 	 * @param types
 	 *            the chooser types.
+	 * @param owner
+	 *            the owner window.
 	 */
 	public FileChooser(CDPipe<? extends CDPacket> pipe,
-			Collection<NSOFString> types) {
-		super(TITLE, pipe);
+			Collection<NSOFString> types, Window owner) {
+		super(TITLE, pipe, owner);
 		setName("FileChooser-" + getId());
 
 		if ((types == null) || types.isEmpty())
@@ -140,9 +143,12 @@ public abstract class FileChooser extends IconModule {
 	 *            the pipe.
 	 * @param type
 	 *            the chooser type.
+	 * @param owner
+	 *            the owner window.
 	 */
-	public FileChooser(CDPipe<? extends CDPacket> pipe, NSOFString type) {
-		super(TITLE, pipe);
+	public FileChooser(CDPipe<? extends CDPacket> pipe, NSOFString type,
+			Window owner) {
+		super(TITLE, pipe, owner);
 		setName("FileChooser-" + getId());
 
 		if (type == null)

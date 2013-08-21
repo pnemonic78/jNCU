@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.io.win;
 
+import java.awt.Window;
 import java.io.File;
 import java.util.Collection;
 
@@ -44,9 +45,12 @@ public class WindowsFileChooser extends FileChooser {
 	 *            the pipe.
 	 * @param types
 	 *            the chooser types.
+	 * @param owner
+	 *            the owner window.
 	 */
-	public WindowsFileChooser(CDPipe<? extends CDPacket> pipe, Collection<NSOFString> types) {
-		super(pipe, types);
+	public WindowsFileChooser(CDPipe<? extends CDPacket> pipe,
+			Collection<NSOFString> types, Window owner) {
+		super(pipe, types, owner);
 		init();
 	}
 
@@ -57,9 +61,12 @@ public class WindowsFileChooser extends FileChooser {
 	 *            the pipe.
 	 * @param type
 	 *            the chooser type.
+	 * @param owner
+	 *            the owner window.
 	 */
-	public WindowsFileChooser(CDPipe<? extends CDPacket> pipe, NSOFString type) {
-		super(pipe, type);
+	public WindowsFileChooser(CDPipe<? extends CDPacket> pipe, NSOFString type,
+			Window owner) {
+		super(pipe, type, owner);
 		init();
 	}
 

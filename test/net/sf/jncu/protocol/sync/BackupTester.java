@@ -50,7 +50,8 @@ import net.sf.jncu.protocol.v2_0.sync.DSynchronize;
  * 
  * @author moshew
  */
-public class BackupTester implements BackupListener, MNPPacketListener, DockCommandListener {
+public class BackupTester implements BackupListener, MNPPacketListener,
+		DockCommandListener {
 
 	private String portName;
 	private boolean running = false;
@@ -122,7 +123,7 @@ public class BackupTester implements BackupListener, MNPPacketListener, DockComm
 		File jncuFolder = new File(userFolder, "jNCU");
 		jncuFolder.mkdirs();
 		File f = new File(jncuFolder, "Backups/backup.zip");
-		backup = new BackupModule(pipe, false);
+		backup = new BackupModule(pipe, false, null);
 		backup.addListener(this);
 		backup.backup(f);
 
@@ -191,24 +192,30 @@ public class BackupTester implements BackupListener, MNPPacketListener, DockComm
 
 	@Override
 	public void backupStore(BackupModule module, Store store) {
-		System.out.println("BT backupStore module=" + module + " store=" + store);
+		System.out.println("BT backupStore module=" + module + " store="
+				+ store);
 		BackupProgressDialog monitor = getProgress();
 		if (monitor != null) {
-			monitor.setNote(String.format("Backing up store %s", store.getName()));
+			monitor.setNote(String.format("Backing up store %s",
+					store.getName()));
 		}
 	}
 
 	@Override
-	public void backupApplication(BackupModule module, Store store, AppName appName) {
-		System.out.println("BT backupApplication module=" + module + " appName=" + appName);
+	public void backupApplication(BackupModule module, Store store,
+			AppName appName) {
+		System.out.println("BT backupApplication module=" + module
+				+ " appName=" + appName);
 		BackupProgressDialog monitor = getProgress();
 		if (monitor != null) {
-			monitor.setNote(String.format("Backing up %s on store %s", appName.getName(), store.getName()));
+			monitor.setNote(String.format("Backing up %s on store %s",
+					appName.getName(), store.getName()));
 		}
 	}
 
 	@Override
-	public void backupSoup(BackupModule module, Store store, AppName appName, Soup soup) {
+	public void backupSoup(BackupModule module, Store store, AppName appName,
+			Soup soup) {
 		System.out.println("BT backupSoup module=" + module + " soup=" + soup);
 	}
 
@@ -233,7 +240,8 @@ public class BackupTester implements BackupListener, MNPPacketListener, DockComm
 	}
 
 	@Override
-	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+	public void commandReceiving(IDockCommandFromNewton command, int progress,
+			int total) {
 	}
 
 	@Override
@@ -263,7 +271,8 @@ public class BackupTester implements BackupListener, MNPPacketListener, DockComm
 	}
 
 	@Override
-	public void commandSending(IDockCommandToNewton command, int progress, int total) {
+	public void commandSending(IDockCommandToNewton command, int progress,
+			int total) {
 	}
 
 	@Override

@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.sync;
 
+import java.awt.Window;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -97,7 +98,8 @@ public class BackupModule extends IconModule {
 		 * @param appName
 		 *            the application.
 		 */
-		public void backupApplication(BackupModule module, Store store, AppName appName);
+		public void backupApplication(BackupModule module, Store store,
+				AppName appName);
 
 		/**
 		 * The soup is about to be backed up.
@@ -111,7 +113,8 @@ public class BackupModule extends IconModule {
 		 * @param soup
 		 *            the soup.
 		 */
-		public void backupSoup(BackupModule module, Store store, AppName appName, Soup soup);
+		public void backupSoup(BackupModule module, Store store,
+				AppName appName, Soup soup);
 	}
 
 	protected enum State {
@@ -165,9 +168,12 @@ public class BackupModule extends IconModule {
 	 *            the pipe.
 	 * @param requested
 	 *            backup was requested by Newton?
+	 * @param owner
+	 *            the owner window.
 	 */
-	public BackupModule(CDPipe<? extends CDPacket> pipe, boolean requested) {
-		super(TITLE, pipe);
+	public BackupModule(CDPipe<? extends CDPacket> pipe, boolean requested,
+			Window owner) {
+		super(TITLE, pipe, owner);
 		setName("BackupModule-" + getId());
 
 		state = State.INITIALISED;
@@ -256,14 +262,19 @@ public class BackupModule extends IconModule {
 				if (Boolean.getBoolean("debug")) {
 					String thisName = this.soup.getName();
 					String thatName = info.getSoup().getName();
-					if ((thisName.length() == 0) || ((thatName.length() > 0) && !thisName.equals(thatName))) {
-						System.err.println("Expected name [" + thisName + "], but was [" + thatName + "]");
+					if ((thisName.length() == 0)
+							|| ((thatName.length() > 0) && !thisName
+									.equals(thatName))) {
+						System.err.println("Expected name [" + thisName
+								+ "], but was [" + thatName + "]");
 						System.exit(1);
 					}
 					int thisSig = this.soup.getSignature();
 					int thatSig = info.getSoup().getSignature();
-					if ((thisSig != 0) && (thatSig != 0) && (thisSig != thatSig)) {
-						System.err.println("Expected signature " + thisSig + ", but was " + thatSig);
+					if ((thisSig != 0) && (thatSig != 0)
+							&& (thisSig != thatSig)) {
+						System.err.println("Expected signature " + thisSig
+								+ ", but was " + thatSig);
 						System.exit(1);
 					}
 				}
@@ -549,7 +560,8 @@ public class BackupModule extends IconModule {
 
 		for (Store storeOption : options.getStores()) {
 			storeNameOption = storeOption.getName();
-			if (!storeNameOption.equals(store) && !storeNameOption.equals(store.getName()))
+			if (!storeNameOption.equals(store)
+					&& !storeNameOption.equals(store.getName()))
 				continue;
 			soupsOptions = storeOption.getSoups();
 			if ((soupsOptions == null) || soupsOptions.isEmpty())
@@ -565,13 +577,15 @@ public class BackupModule extends IconModule {
 
 					for (AppName appName : appNames) {
 						appNameSoups = appName.getSoups();
-						appNameSoupsLength = (appNameSoups == null) ? 0 : appNameSoups.length();
+						appNameSoupsLength = (appNameSoups == null) ? 0
+								: appNameSoups.length();
 						if (appNameSoupsLength == 0)
 							continue;
 						soups = soupsToBackup.get(appName);
 
 						for (int i = 0; i < appNameSoupsLength; i++) {
-							soupNameApp = ((NSOFString) appNameSoups.get(i)).getValue();
+							soupNameApp = ((NSOFString) appNameSoups.get(i))
+									.getValue();
 							if (!soupNameApp.equals(soupNameOption))
 								continue;
 
@@ -641,7 +655,8 @@ public class BackupModule extends IconModule {
 	 * @throws BadPipeStateException
 	 *             if invalid state.
 	 */
-	protected void backupSoups(Store store, AppName appName) throws BadPipeStateException {
+	protected void backupSoups(Store store, AppName appName)
+			throws BadPipeStateException {
 		if (writer == null)
 			return;
 		if (!isEnabled())
@@ -778,7 +793,8 @@ public class BackupModule extends IconModule {
 	 */
 	protected void fireBackupStore(Store store) {
 		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<BackupListener> listenersCopy = new ArrayList<BackupListener>(listeners);
+		Collection<BackupListener> listenersCopy = new ArrayList<BackupListener>(
+				listeners);
 		for (BackupListener listener : listenersCopy) {
 			listener.backupStore(this, store);
 		}
@@ -794,7 +810,8 @@ public class BackupModule extends IconModule {
 	 */
 	protected void fireBackupApp(Store store, AppName appName) {
 		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<BackupListener> listenersCopy = new ArrayList<BackupListener>(listeners);
+		Collection<BackupListener> listenersCopy = new ArrayList<BackupListener>(
+				listeners);
 		for (BackupListener listener : listenersCopy) {
 			listener.backupApplication(this, store, appName);
 		}
@@ -812,7 +829,8 @@ public class BackupModule extends IconModule {
 	 */
 	protected void fireBackupSoup(Store store, AppName appName, Soup soup) {
 		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<BackupListener> listenersCopy = new ArrayList<BackupListener>(listeners);
+		Collection<BackupListener> listenersCopy = new ArrayList<BackupListener>(
+				listeners);
 		for (BackupListener listener : listenersCopy) {
 			listener.backupSoup(this, store, appName, soup);
 		}

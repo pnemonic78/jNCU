@@ -32,7 +32,8 @@ import net.sf.jncu.protocol.v2_0.io.DKeyboardChar;
 import net.sf.jncu.protocol.v2_0.io.KeyboardInput;
 import net.sf.jncu.protocol.v2_0.io.KeyboardInputListener;
 
-public class KeyboardInputTester implements WindowListener, KeyboardInputListener {
+public class KeyboardInputTester implements WindowListener,
+		KeyboardInputListener {
 
 	private String portName;
 	private CDLayer layer;
@@ -67,7 +68,8 @@ public class KeyboardInputTester implements WindowListener, KeyboardInputListene
 				this.pipe = new EmptyPipe(layer);
 			} else {
 				layer.startUp();
-				this.pipe = layer.createMNPSerial(portName, MNPSerialPort.BAUD_38400);
+				this.pipe = layer.createMNPSerial(portName,
+						MNPSerialPort.BAUD_38400);
 			}
 			pipe.startListening();
 			while (layer.getState() == CDState.LISTENING) {
@@ -77,7 +79,7 @@ public class KeyboardInputTester implements WindowListener, KeyboardInputListene
 				layer.setState(pipe, CDState.CONNECT_PENDING);
 			pipe.accept();
 
-			this.input = new KeyboardInput(pipe);
+			this.input = new KeyboardInput(pipe, null);
 			input.getDialog().addWindowListener(this);
 			input.getDialog().addInputListener(this);
 			input.start();
@@ -120,12 +122,14 @@ public class KeyboardInputTester implements WindowListener, KeyboardInputListene
 	public void charTyped(KeyEvent ke) {
 		if (ke.getID() != KeyEvent.KEY_PRESSED)
 			return;
-		char keyChar = DKeyboardChar.toNewtonChar(ke.getKeyChar(), ke.getKeyCode());
+		char keyChar = DKeyboardChar.toNewtonChar(ke.getKeyChar(),
+				ke.getKeyCode());
 		// Ignore unknown characters.
 		if (keyChar == 0)
 			return;
 		int keyFlags = DKeyboardChar.toNewtonState(ke.getModifiers());
-		System.out.println("charTyped keyChar=" + keyChar + " keyFlags=" + keyFlags);
+		System.out.println("charTyped keyChar=" + keyChar + " keyFlags="
+				+ keyFlags);
 	}
 
 	@Override

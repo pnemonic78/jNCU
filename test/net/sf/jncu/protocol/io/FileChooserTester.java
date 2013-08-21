@@ -44,7 +44,8 @@ import net.sf.jncu.protocol.v2_0.io.win.WindowsFileChooser;
  * 
  * @author moshew
  */
-public class FileChooserTester implements IconModuleListener, MNPPacketListener, DockCommandListener {
+public class FileChooserTester implements IconModuleListener,
+		MNPPacketListener, DockCommandListener {
 
 	private String portName;
 	private boolean choosing;
@@ -154,7 +155,8 @@ public class FileChooserTester implements IconModuleListener, MNPPacketListener,
 	}
 
 	@Override
-	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+	public void commandReceiving(IDockCommandFromNewton command, int progress,
+			int total) {
 	}
 
 	@Override
@@ -165,15 +167,17 @@ public class FileChooserTester implements IconModuleListener, MNPPacketListener,
 			choosing = false;
 		} else if (DRequestToBrowse.COMMAND.equals(cmd)) {
 			if (File.separatorChar == '\\')
-				chooser = new WindowsFileChooser(pipe, FileChooser.PACKAGES);
+				chooser = new WindowsFileChooser(pipe, FileChooser.PACKAGES,
+						null);
 			else
 				// if (File.separatorChar == '/')
-				chooser = new UnixFileChooser(pipe, FileChooser.PACKAGES);
+				chooser = new UnixFileChooser(pipe, FileChooser.PACKAGES, null);
 		}
 	}
 
 	@Override
-	public void commandSending(IDockCommandToNewton command, int progress, int total) {
+	public void commandSending(IDockCommandToNewton command, int progress,
+			int total) {
 	}
 
 	@Override

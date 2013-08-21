@@ -67,7 +67,8 @@ import net.sf.jncu.protocol.v2_0.session.DUnknownCommand;
  * 
  * @author moshew
  */
-public class PackagesTester implements IconModuleListener, MNPPacketListener, DockCommandListener {
+public class PackagesTester implements IconModuleListener, MNPPacketListener,
+		DockCommandListener {
 
 	private String portName;
 	private boolean running = false;
@@ -95,7 +96,8 @@ public class PackagesTester implements IconModuleListener, MNPPacketListener, Do
 	 *            the array of arguments.
 	 */
 	public static void main(String[] args) throws Exception {
-		String[] argv = { "/dev/ttyUSB0", "/tmp/COM8", "38400", "./trace/trace.txt" };
+		String[] argv = { "/dev/ttyUSB0", "/tmp/COM8", "38400",
+				"./trace/trace.txt" };
 		CommTrace.main(argv);
 
 		PackagesTester tester = new PackagesTester();
@@ -338,7 +340,8 @@ public class PackagesTester implements IconModuleListener, MNPPacketListener, Do
 	}
 
 	@Override
-	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+	public void commandReceiving(IDockCommandFromNewton command, int progress,
+			int total) {
 	}
 
 	@Override
@@ -352,7 +355,8 @@ public class PackagesTester implements IconModuleListener, MNPPacketListener, Do
 			running = false;
 		} else if (DOperationCanceled2.COMMAND.equals(cmd)) {
 			running = false;
-		} else if (net.sf.jncu.protocol.v1_0.session.DOperationCanceled.COMMAND.equals(cmd)) {
+		} else if (net.sf.jncu.protocol.v1_0.session.DOperationCanceled.COMMAND
+				.equals(cmd)) {
 			running = false;
 		} else if (DResult.COMMAND.equals(cmd)) {
 			DResult dResult = (DResult) command;
@@ -374,7 +378,8 @@ public class PackagesTester implements IconModuleListener, MNPPacketListener, Do
 			names = dAppNames.getNames();
 			for (AppName name : names) {
 				if (name.hasPackages()) {
-					soup = new Soup(((NSOFString) name.getSoups().get(0)).getValue());
+					soup = new Soup(
+							((NSOFString) name.getSoups().get(0)).getValue());
 					break;
 				}
 			}
@@ -411,7 +416,8 @@ public class PackagesTester implements IconModuleListener, MNPPacketListener, Do
 	}
 
 	@Override
-	public void commandSending(IDockCommandToNewton command, int progress, int total) {
+	public void commandSending(IDockCommandToNewton command, int progress,
+			int total) {
 	}
 
 	@Override

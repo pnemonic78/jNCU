@@ -21,8 +21,8 @@ package net.sf.jncu.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Desktop;
-import java.awt.Frame;
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.io.InputStream;
 import java.net.URL;
@@ -53,9 +53,12 @@ public class NCUAboutDialog extends NCUDialog implements HyperlinkListener {
 	private JTextComponent description;
 
 	/**
+	 * Create an about dialog.
+	 * 
 	 * @param owner
+	 *            the owner.
 	 */
-	public NCUAboutDialog(Frame owner) {
+	public NCUAboutDialog(Window owner) {
 		super(owner);
 		init();
 	}
