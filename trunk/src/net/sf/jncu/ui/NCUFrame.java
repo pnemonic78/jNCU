@@ -71,7 +71,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 	private static final String HELP = "For help, press F1";
 
 	private static final int INSET_X = 20;
-	private static final int INSET_Y = 20;
+	private static final int INSET_Y = 10;
 	private static final int INSET_BUTTON = 10;
 
 	private final NCUFrame frame;
@@ -94,6 +94,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 	private NCUSettingsDialog settingsDialog;
 	private JPanel statusPanel;
 	private JLabel statusLabel;
+	private JLabel statusConnection;
 	private JPanel quickMenuPane;
 	private JButton syncButton;
 	private JButton installButton;
@@ -104,6 +105,8 @@ public class NCUFrame extends JFrame implements ActionListener {
 	private JButton exportButton;
 	private NCUAboutDialog aboutDialog;
 	private Controller control;
+	private Icon statusDisconnected;
+	private Icon statusConnected;
 
 	/**
 	 * This method initializes mainMenu
@@ -235,8 +238,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 			JMenuItem menuItem = new JMenuItem();
 			menuItem.setText("Exit");
 			menuItem.setMnemonic(KeyEvent.VK_X);
-			menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,
-					InputEvent.CTRL_MASK));
+			menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_MASK));
 			menuItem.addActionListener(this);
 			menuExit = menuItem;
 		}
@@ -253,8 +255,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 			JMenuItem menuItem = new JMenuItem();
 			menuItem.setMnemonic(KeyEvent.VK_S);
 			menuItem.setText("Settings...");
-			menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-					InputEvent.CTRL_MASK));
+			menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
 			menuItem.addActionListener(this);
 			menuSettings = menuItem;
 		}
@@ -339,8 +340,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 			JMenuItem menuItem = new JMenuItem();
 			menuItem.setText("About...");
 			menuItem.setMnemonic(KeyEvent.VK_A);
-			menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1,
-					InputEvent.ALT_MASK));
+			menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, InputEvent.ALT_MASK));
 			menuItem.addActionListener(this);
 			menuAbout = menuItem;
 
@@ -353,19 +353,54 @@ public class NCUFrame extends JFrame implements ActionListener {
 	 * 
 	 * @return javax.swing.JPanel
 	 */
-	private JPanel getPanelStatus() {
+	private JPanel getStatusPanel() {
 		if (statusPanel == null) {
 			JLabel label = new JLabel();
-			statusLabel = label;
+			label.setMinimumSize(new Dimension(0, 24));
+			label.setText("Please connect your Newton device.");
+			label.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+			statusConnection = label;
 
 			JPanel panel = new JPanel();
 			panel.setLayout(new BorderLayout());
-			panel.setPreferredSize(new Dimension(0, 24));
-			panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-			panel.add(label, BorderLayout.CENTER);
+			panel.setBorder(BorderFactory.createTitledBorder("Connection Status"));
+			panel.setOpaque(false);
+			panel.add(statusConnection, BorderLayout.CENTER);
+			JPanel statusConnectionPanel = panel;
+
+			label = new JLabel();
+			label.setMinimumSize(new Dimension(0, 24));
+			label.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+			statusLabel = label;
+
+			panel = new JPanel();
+			panel.setLayout(new BorderLayout());
+			panel.setOpaque(false);
+			panel.add(statusConnectionPanel, BorderLayout.CENTER);
+			panel.add(statusLabel, BorderLayout.SOUTH);
 			statusPanel = panel;
 		}
 		return statusPanel;
+	}
+
+	private void setStatusConnected(boolean connected) {
+		if (connected) {
+			if (statusConnected == null) {
+				URL url = getClass().getResource("/199.png");
+				statusConnected = new ImageIcon(url);
+			}
+
+			statusConnection.setIcon(statusConnected);
+			statusConnection.setText("Connected to Newton device.");
+		} else {
+			if (statusDisconnected == null) {
+				URL url = getClass().getResource("/200.png");
+				statusDisconnected = new ImageIcon(url);
+			}
+
+			statusConnection.setIcon(statusDisconnected);
+			statusConnection.setText("Please connect your Newton device.");
+		}
 	}
 
 	/**
@@ -427,10 +462,12 @@ public class NCUFrame extends JFrame implements ActionListener {
 
 		setJMenuBar(getMainMenu());
 		setContentPane(getMainContentPane());
-		setSize(450, 440);
+		setMinimumSize(new Dimension(450, 440));
+		pack();
 		setResizable(false);
 		SwingUtils.centreInOwner(this);
 
+		setStatusConnected(false);
 		setStatus(HELP);
 	}
 
@@ -443,8 +480,8 @@ public class NCUFrame extends JFrame implements ActionListener {
 		if (contentPane == null) {
 			contentPane = new JPanel();
 			contentPane.setLayout(new BorderLayout());
-			contentPane.add(getPanelStatus(), BorderLayout.SOUTH);
 			contentPane.add(getQuickMenuPane(), BorderLayout.CENTER);
+			contentPane.add(getStatusPanel(), BorderLayout.SOUTH);
 		}
 		return contentPane;
 	}
@@ -506,8 +543,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 			JPanel utilsGroup = new JPanel();
 			utilsGroup.setOpaque(false);
 			utilsGroup.setLayout(new GridBagLayout());
-			utilsGroup.setBorder(BorderFactory
-					.createTitledBorder("Basic Utilities"));
+			utilsGroup.setBorder(BorderFactory.createTitledBorder("Basic Utilities"));
 			GridBagConstraints gbcSync = new GridBagConstraints();
 			gbcSync.gridx = 0;
 			gbcSync.insets = new Insets(INSET_Y, INSET_X, INSET_Y, INSET_X);
@@ -524,9 +560,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 			JPanel exportGroup = new JPanel();
 			exportGroup.setOpaque(false);
 			exportGroup.setLayout(new GridBagLayout());
-			exportGroup
-					.setBorder(BorderFactory
-							.createTitledBorder("Move information to your desktop computer"));
+			exportGroup.setBorder(BorderFactory.createTitledBorder("Move information to your desktop computer"));
 			GridBagConstraints gbcBackup = new GridBagConstraints();
 			gbcBackup.gridx = 0;
 			gbcBackup.insets = new Insets(INSET_Y, INSET_X, INSET_Y, INSET_X);
@@ -539,9 +573,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 			JPanel importGroup = new JPanel();
 			importGroup.setOpaque(false);
 			importGroup.setLayout(new GridBagLayout());
-			importGroup
-					.setBorder(BorderFactory
-							.createTitledBorder("Move information to your Newton device"));
+			importGroup.setBorder(BorderFactory.createTitledBorder("Move information to your Newton device"));
 			GridBagConstraints gbcRestore = new GridBagConstraints();
 			gbcRestore.gridx = 0;
 			gbcRestore.insets = new Insets(INSET_Y, INSET_X, INSET_Y, INSET_X);
@@ -551,11 +583,12 @@ public class NCUFrame extends JFrame implements ActionListener {
 			gbcImport.insets = new Insets(INSET_Y, INSET_X, INSET_Y, INSET_X);
 			importGroup.add(getImportButton(), gbcImport);
 
-			quickMenuPane = new JPanel();
-			quickMenuPane.setLayout(new GridLayout(3, 1));
-			quickMenuPane.add(utilsGroup);
-			quickMenuPane.add(exportGroup);
-			quickMenuPane.add(importGroup);
+			JPanel panel = new JPanel();
+			panel.setLayout(new GridLayout(3, 1));
+			panel.add(utilsGroup);
+			panel.add(exportGroup);
+			panel.add(importGroup);
+			quickMenuPane = panel;
 		}
 		return quickMenuPane;
 	}
@@ -570,8 +603,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 
 			syncButton = new JButton(icon);
 			syncButton.setToolTipText("Synchronize");
-			syncButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON,
-					INSET_BUTTON, INSET_BUTTON));
+			syncButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON, INSET_BUTTON, INSET_BUTTON));
 			syncButton.addActionListener(this);
 			syncButton.setEnabled(false);
 		}
@@ -588,8 +620,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 
 			installButton = new JButton(icon);
 			installButton.setToolTipText("Install Package");
-			installButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON,
-					INSET_BUTTON, INSET_BUTTON));
+			installButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON, INSET_BUTTON, INSET_BUTTON));
 			installButton.addActionListener(this);
 			// TODO installButton.setEnabled(false);
 		}
@@ -606,8 +637,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 
 			keyboardButton = new JButton(icon);
 			keyboardButton.setToolTipText("Use Keyboard");
-			keyboardButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON,
-					INSET_BUTTON, INSET_BUTTON));
+			keyboardButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON, INSET_BUTTON, INSET_BUTTON));
 			keyboardButton.addActionListener(this);
 			// TODO keyboardButton.setEnabled(false);
 		}
@@ -624,8 +654,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 
 			backupButton = new JButton(icon);
 			backupButton.setToolTipText("Backup");
-			backupButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON,
-					INSET_BUTTON, INSET_BUTTON));
+			backupButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON, INSET_BUTTON, INSET_BUTTON));
 			backupButton.addActionListener(this);
 			// TODO backupButton.setEnabled(false);
 		}
@@ -642,8 +671,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 
 			restoreButton = new JButton(icon);
 			restoreButton.setToolTipText("Restore");
-			restoreButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON,
-					INSET_BUTTON, INSET_BUTTON));
+			restoreButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON, INSET_BUTTON, INSET_BUTTON));
 			restoreButton.addActionListener(this);
 			restoreButton.setEnabled(false);
 		}
@@ -660,8 +688,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 
 			importButton = new JButton(icon);
 			importButton.setToolTipText("Import");
-			importButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON,
-					INSET_BUTTON, INSET_BUTTON));
+			importButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON, INSET_BUTTON, INSET_BUTTON));
 			importButton.addActionListener(this);
 			importButton.setEnabled(false);
 		}
@@ -678,8 +705,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 
 			exportButton = new JButton(icon);
 			exportButton.setToolTipText("Export");
-			exportButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON,
-					INSET_BUTTON, INSET_BUTTON));
+			exportButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON, INSET_BUTTON, INSET_BUTTON));
 			exportButton.addActionListener(this);
 			exportButton.setEnabled(false);
 		}
@@ -778,9 +804,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 
 	private void showError(Exception e) {
 		e.printStackTrace();
-		JOptionPane.showMessageDialog(frame,
-				"Error: " + e.getLocalizedMessage(), frame.getTitle(),
-				JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(frame, "Error: " + e.getLocalizedMessage(), frame.getTitle(), JOptionPane.ERROR_MESSAGE);
 	}
 
 	public void setStatus(String status) {

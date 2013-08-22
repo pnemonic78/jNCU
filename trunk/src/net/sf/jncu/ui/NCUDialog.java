@@ -72,8 +72,7 @@ public class NCUDialog extends JDialog implements ActionListener {
 	private void init() {
 		setModalityType(ModalityType.APPLICATION_MODAL);
 
-		int buttonMinimumWidth = UIManager
-				.getInt("OptionPane.buttonMinimumWidth");
+		int buttonMinimumWidth = UIManager.getInt("OptionPane.buttonMinimumWidth");
 		this.buttonMinimumSize = new Dimension(buttonMinimumWidth, 24);
 	}
 

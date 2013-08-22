@@ -201,12 +201,10 @@ public class NCUSettingsDialog extends NCUDialog {
 		speeds.setSelectedItem(settings.getCommunications().getPortSpeed());
 		getCheckListen().setSelected(settings.getCommunications().isListen());
 
-		getBackupPath().setText(
-				settings.getGeneral().getBackupFolder().getPath());
+		getBackupPath().setText(settings.getGeneral().getBackupFolder().getPath());
 
 		getCheckDockBackup().setSelected(settings.getAutoDock().isBackup());
-		getCheckDockBackupSelective().setSelected(
-				settings.getAutoDock().isBackupSelective());
+		getCheckDockBackupSelective().setSelected(settings.getAutoDock().isBackupSelective());
 		getCheckDockSync().setSelected(settings.getAutoDock().isSync());
 
 		getPasswordOld().setText(null);
@@ -247,8 +245,7 @@ public class NCUSettingsDialog extends NCUDialog {
 			gbcListen.weightx = 1.0;
 			gbcListen.weighty = 1.0;
 			gbcListen.anchor = GridBagConstraints.WEST;
-			gbcListen.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
-					INSET_CELL_Y, INSET_CELL_X);
+			gbcListen.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 
 			labelPort = new JLabel();
 			labelPort.setText("Serial Port:");
@@ -258,16 +255,14 @@ public class NCUSettingsDialog extends NCUDialog {
 			gbcLabelPort.weightx = 1.0;
 			gbcLabelPort.weighty = 1.0;
 			gbcLabelPort.anchor = GridBagConstraints.EAST;
-			gbcLabelPort.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
-					INSET_CELL_Y, INSET_CELL_X);
+			gbcLabelPort.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 
 			GridBagConstraints gbcListPort = new GridBagConstraints();
 			gbcListPort.gridx = 1;
 			gbcListPort.gridy = 1;
 			gbcListPort.weightx = 1.0;
 			gbcListPort.anchor = GridBagConstraints.WEST;
-			gbcListPort.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
-					INSET_CELL_Y, INSET_CELL_X);
+			gbcListPort.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 
 			labelSpeed = new JLabel();
 			labelSpeed.setText("Speed:");
@@ -277,16 +272,14 @@ public class NCUSettingsDialog extends NCUDialog {
 			gbcLabelSpeed.weightx = 1.0;
 			gbcLabelSpeed.weighty = 1.0;
 			gbcLabelSpeed.anchor = GridBagConstraints.EAST;
-			gbcLabelSpeed.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
-					INSET_CELL_Y, INSET_CELL_X);
+			gbcLabelSpeed.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 
 			GridBagConstraints gbcListSpeed = new GridBagConstraints();
 			gbcListSpeed.gridx = 1;
 			gbcListSpeed.gridy = 2;
 			gbcListSpeed.weightx = 1.0;
 			gbcListSpeed.anchor = GridBagConstraints.WEST;
-			gbcListSpeed.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
-					INSET_CELL_Y, INSET_CELL_X);
+			gbcListSpeed.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 
 			JPanel tab = new JPanel();
 			tab.setLayout(new GridBagLayout());
@@ -295,8 +288,7 @@ public class NCUSettingsDialog extends NCUDialog {
 			tab.add(getListPorts(), gbcListPort);
 			tab.add(labelSpeed, gbcLabelSpeed);
 			tab.add(getListSpeeds(), gbcListSpeed);
-			tab.setBorder(BorderFactory.createEmptyBorder(INSET_TAB, INSET_TAB,
-					INSET_TAB, INSET_TAB));
+			tab.setBorder(BorderFactory.createEmptyBorder(INSET_TAB, INSET_TAB, INSET_TAB, INSET_TAB));
 			tabComm = tab;
 		}
 		return tabComm;
@@ -354,16 +346,14 @@ public class NCUSettingsDialog extends NCUDialog {
 			gbcLabelOld.gridx = 0;
 			gbcLabelOld.gridy = 0;
 			gbcLabelOld.anchor = GridBagConstraints.EAST;
-			gbcLabelOld.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
-					INSET_CELL_Y, INSET_CELL_X);
+			gbcLabelOld.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			gbcLabelOld.weightx = 1.0;
 			gbcLabelOld.weighty = 1.0;
 			GridBagConstraints gbcPassOld = new GridBagConstraints();
 			gbcPassOld.gridx = 1;
 			gbcPassOld.gridy = 0;
 			gbcPassOld.anchor = GridBagConstraints.WEST;
-			gbcPassOld.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
-					INSET_CELL_Y, INSET_CELL_X);
+			gbcPassOld.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			gbcPassOld.weightx = 1.0;
 			gbcPassOld.weighty = 1.0;
 
@@ -372,16 +362,14 @@ public class NCUSettingsDialog extends NCUDialog {
 			gbcLabelNew.gridx = 0;
 			gbcLabelNew.gridy = 1;
 			gbcLabelNew.anchor = GridBagConstraints.EAST;
-			gbcLabelNew.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
-					INSET_CELL_Y, INSET_CELL_X);
+			gbcLabelNew.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			gbcLabelNew.weightx = 1.0;
 			gbcLabelNew.weighty = 1.0;
 			GridBagConstraints gbcPassNew = new GridBagConstraints();
 			gbcPassNew.gridx = 1;
 			gbcPassNew.gridy = 1;
 			gbcPassNew.anchor = GridBagConstraints.WEST;
-			gbcPassNew.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
-					INSET_CELL_Y, INSET_CELL_X);
+			gbcPassNew.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			gbcPassNew.weightx = 1.0;
 			gbcPassNew.weighty = 1.0;
 
@@ -390,23 +378,20 @@ public class NCUSettingsDialog extends NCUDialog {
 			gbcLabelConfirm.gridx = 0;
 			gbcLabelConfirm.gridy = 2;
 			gbcLabelConfirm.anchor = GridBagConstraints.EAST;
-			gbcLabelConfirm.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
-					INSET_CELL_Y, INSET_CELL_X);
+			gbcLabelConfirm.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			gbcLabelConfirm.weightx = 1.0;
 			gbcLabelConfirm.weighty = 1.0;
 			GridBagConstraints gbcPassConfirm = new GridBagConstraints();
 			gbcPassConfirm.gridx = 1;
 			gbcPassConfirm.gridy = 2;
 			gbcPassConfirm.anchor = GridBagConstraints.WEST;
-			gbcPassConfirm.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
-					INSET_CELL_Y, INSET_CELL_X);
+			gbcPassConfirm.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			gbcPassConfirm.weightx = 1.0;
 			gbcPassConfirm.weighty = 1.0;
 
 			JPanel tab = new JPanel();
 			tab.setLayout(new GridBagLayout());
-			tab.setBorder(BorderFactory.createEmptyBorder(INSET_TAB, INSET_TAB,
-					INSET_TAB, INSET_TAB));
+			tab.setBorder(BorderFactory.createEmptyBorder(INSET_TAB, INSET_TAB, INSET_TAB, INSET_TAB));
 			tab.add(labelOld, gbcLabelOld);
 			tab.add(getPasswordOld(), gbcPassOld);
 			tab.add(labelNew, gbcLabelNew);
@@ -431,8 +416,7 @@ public class NCUSettingsDialog extends NCUDialog {
 			gbcLabelFolder.gridx = 0;
 			gbcLabelFolder.gridy = 0;
 			gbcLabelFolder.anchor = GridBagConstraints.WEST;
-			gbcLabelFolder.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
-					INSET_CELL_Y, INSET_CELL_X);
+			gbcLabelFolder.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			gbcLabelFolder.weightx = 1.0;
 			gbcLabelFolder.weighty = 1.0;
 
@@ -440,8 +424,7 @@ public class NCUSettingsDialog extends NCUDialog {
 			gbcValueFolder.gridx = 0;
 			gbcValueFolder.gridy = 1;
 			gbcValueFolder.anchor = GridBagConstraints.WEST;
-			gbcValueFolder.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
-					INSET_CELL_Y, INSET_CELL_X);
+			gbcValueFolder.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			gbcValueFolder.weightx = 1.0;
 			gbcValueFolder.weighty = 1.0;
 			gbcValueFolder.fill = GridBagConstraints.HORIZONTAL;
@@ -450,8 +433,7 @@ public class NCUSettingsDialog extends NCUDialog {
 			gbcBrowseFolder.gridx = 0;
 			gbcBrowseFolder.gridy = 2;
 			gbcBrowseFolder.anchor = GridBagConstraints.EAST;
-			gbcBrowseFolder.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
-					INSET_CELL_Y, INSET_CELL_X);
+			gbcBrowseFolder.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			gbcBrowseFolder.weightx = 1.0;
 			gbcBrowseFolder.weighty = 1.0;
 
@@ -460,8 +442,7 @@ public class NCUSettingsDialog extends NCUDialog {
 			tab.add(labelFolder, gbcLabelFolder);
 			tab.add(getBackupPath(), gbcValueFolder);
 			tab.add(getBrowseButton(), gbcBrowseFolder);
-			tab.setBorder(BorderFactory.createEmptyBorder(INSET_TAB, INSET_TAB,
-					INSET_TAB, INSET_TAB));
+			tab.setBorder(BorderFactory.createEmptyBorder(INSET_TAB, INSET_TAB, INSET_TAB, INSET_TAB));
 			tabGeneral = tab;
 		}
 		return tabGeneral;
@@ -479,8 +460,7 @@ public class NCUSettingsDialog extends NCUDialog {
 			gbcBackup.gridy = 0;
 			gbcBackup.gridwidth = 2;
 			gbcBackup.anchor = GridBagConstraints.WEST;
-			gbcBackup.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
-					INSET_CELL_Y, INSET_CELL_X);
+			gbcBackup.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			gbcBackup.weightx = 1.0;
 			gbcBackup.weighty = 1.0;
 
@@ -488,8 +468,7 @@ public class NCUSettingsDialog extends NCUDialog {
 			gbcBackupSel.gridx = 1;
 			gbcBackupSel.gridy = 1;
 			gbcBackupSel.anchor = GridBagConstraints.WEST;
-			gbcBackupSel.insets = new Insets(INSET_CELL_Y, INSET_CELL_X << 2,
-					INSET_CELL_Y, INSET_CELL_X);
+			gbcBackupSel.insets = new Insets(INSET_CELL_Y, INSET_CELL_X << 2, INSET_CELL_Y, INSET_CELL_X);
 			gbcBackupSel.weightx = 1.0;
 			gbcBackupSel.weighty = 1.0;
 
@@ -498,15 +477,13 @@ public class NCUSettingsDialog extends NCUDialog {
 			gbcSync.gridy = 2;
 			gbcSync.gridwidth = 2;
 			gbcSync.anchor = GridBagConstraints.WEST;
-			gbcSync.insets = new Insets(INSET_CELL_Y, INSET_CELL_X,
-					INSET_CELL_Y, INSET_CELL_X);
+			gbcSync.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			gbcSync.weightx = 1.0;
 			gbcSync.weighty = 1.0;
 
 			JPanel tab = new JPanel();
 			tab.setLayout(new GridBagLayout());
-			tab.setBorder(BorderFactory.createEmptyBorder(INSET_TAB, INSET_TAB,
-					INSET_TAB, INSET_TAB));
+			tab.setBorder(BorderFactory.createEmptyBorder(INSET_TAB, INSET_TAB, INSET_TAB, INSET_TAB));
 			tab.add(getCheckDockBackup(), gbcBackup);
 			tab.add(getCheckDockBackupSelective(), gbcBackupSel);
 			tab.add(getCheckDockSync(), gbcSync);
@@ -597,20 +574,16 @@ public class NCUSettingsDialog extends NCUDialog {
 		Settings settings = getSettings();
 
 		settings.getCommunications().setListen(getCheckListen().isSelected());
-		settings.getCommunications().setPortIdentifier(
-				(String) getListPorts().getSelectedItem());
-		settings.getCommunications().setPortSpeed(
-				(Integer) getListSpeeds().getSelectedItem());
+		settings.getCommunications().setPortIdentifier((String) getListPorts().getSelectedItem());
+		settings.getCommunications().setPortSpeed((Integer) getListSpeeds().getSelectedItem());
 
 		settings.getAutoDock().setBackup(getCheckDockBackup().isSelected());
-		settings.getAutoDock().setBackupSelective(
-				getCheckDockBackupSelective().isSelected());
+		settings.getAutoDock().setBackupSelective(getCheckDockBackupSelective().isSelected());
 		settings.getAutoDock().setSync(getCheckDockSync().isSelected());
 
 		String passwordOld = String.valueOf(getPasswordOld().getPassword());
 		String passwordNew = String.valueOf(getPasswordNew().getPassword());
-		String passwordConfirm = String.valueOf(getPasswordConfirm()
-				.getPassword());
+		String passwordConfirm = String.valueOf(getPasswordConfirm().getPassword());
 		if (passwordNew.equals(passwordConfirm)) {
 			settings.getSecurity().setPasswordOld(passwordOld);
 			settings.getSecurity().setPasswordNew(passwordNew);
@@ -640,16 +613,14 @@ public class NCUSettingsDialog extends NCUDialog {
 				settings.getGeneral().setBackupFolder(selectedFile);
 			}
 		} else if (src == checkDockBackup) {
-			getCheckDockBackupSelective().setEnabled(
-					checkDockBackup.isSelected());
+			getCheckDockBackupSelective().setEnabled(checkDockBackup.isSelected());
 		}
 	}
 
 	private JPasswordField getPasswordConfirm() {
 		if (passwordConfirm == null) {
 			JPasswordField password = new JPasswordField(PASSWORD_LENGTH + 4);
-			((AbstractDocument) password.getDocument())
-					.setDocumentFilter(getPasswordFilter());
+			((AbstractDocument) password.getDocument()).setDocumentFilter(getPasswordFilter());
 			passwordConfirm = password;
 		}
 		return passwordConfirm;
@@ -658,8 +629,7 @@ public class NCUSettingsDialog extends NCUDialog {
 	private JPasswordField getPasswordNew() {
 		if (passwordNew == null) {
 			JPasswordField password = new JPasswordField(PASSWORD_LENGTH + 4);
-			((AbstractDocument) password.getDocument())
-					.setDocumentFilter(getPasswordFilter());
+			((AbstractDocument) password.getDocument()).setDocumentFilter(getPasswordFilter());
 			passwordNew = password;
 		}
 		return passwordNew;
@@ -668,8 +638,7 @@ public class NCUSettingsDialog extends NCUDialog {
 	private JPasswordField getPasswordOld() {
 		if (passwordOld == null) {
 			JPasswordField password = new JPasswordField(PASSWORD_LENGTH + 4);
-			((AbstractDocument) password.getDocument())
-					.setDocumentFilter(getPasswordFilter());
+			((AbstractDocument) password.getDocument()).setDocumentFilter(getPasswordFilter());
 			passwordOld = password;
 		}
 		return passwordOld;

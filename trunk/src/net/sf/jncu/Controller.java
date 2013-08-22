@@ -89,8 +89,7 @@ public class Controller {
 			packageChooser = new JFileChooser();
 			packageChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-			FileFilter filter = new FileNameExtensionFilter("Newton Package",
-					"pkg", "PKG");
+			FileFilter filter = new FileNameExtensionFilter("Newton Package", "pkg", "PKG");
 			packageChooser.setFileFilter(filter);
 			packageChooser.setAcceptAllFileFilterUsed(false);
 		}
@@ -187,8 +186,7 @@ public class Controller {
 	 * @throws PlatformException
 	 * @throws CDILNotInitializedException
 	 */
-	public void start() throws CDILNotInitializedException, PlatformException,
-			ServiceNotSupportedException {
+	public void start() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		if (settings.getCommunications().isListen()) {
 			String portName = settings.getCommunications().getPortIdentifier();
 			int baud = settings.getCommunications().getPortSpeed();
