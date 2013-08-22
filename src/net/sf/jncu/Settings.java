@@ -184,8 +184,7 @@ public class Settings {
 		@Override
 		public void read(Preferences prefs) {
 			setPortIdentifier(prefs.get(KEY_PORT_ID));
-			setPortSpeed(Integer.parseInt(prefs.get(KEY_PORT_SPEED,
-					Integer.toString(MNPSerialPort.BAUD_38400))));
+			setPortSpeed(Integer.parseInt(prefs.get(KEY_PORT_SPEED, Integer.toString(MNPSerialPort.BAUD_38400))));
 			setListen(prefs.getBoolean(KEY_LISTEN, true));
 		}
 
@@ -242,8 +241,7 @@ public class Settings {
 
 		@Override
 		public void read(Preferences prefs) {
-			setBackupFolder(prefs.get(KEY_BACKUP_PATH, getBackupFolder()
-					.getPath()));
+			setBackupFolder(prefs.get(KEY_BACKUP_PATH, getBackupFolder().getPath()));
 		}
 
 		@Override
@@ -371,8 +369,7 @@ public class Settings {
 		@Override
 		public void read(Preferences prefs) {
 			setBackup(prefs.getBoolean(KEY_DOCK_BACKUP, false));
-			setBackupSelective(prefs.getBoolean(KEY_DOCK_BACKUP_SELECTIVE,
-					false));
+			setBackupSelective(prefs.getBoolean(KEY_DOCK_BACKUP_SELECTIVE, false));
 			setSync(prefs.getBoolean(KEY_DOCK_SYNC, false));
 		}
 
