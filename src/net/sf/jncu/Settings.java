@@ -57,6 +57,9 @@ public class Settings {
 		load();
 	}
 
+	/**
+	 * Load the settings from the preferences.
+	 */
 	protected void load() {
 		Preferences prefs = Preferences.getInstance();
 		comm.read(prefs);
@@ -65,6 +68,9 @@ public class Settings {
 		dock.read(prefs);
 	}
 
+	/**
+	 * Persist the settings to the preferences.
+	 */
 	public void save() {
 		Preferences prefs = Preferences.getInstance();
 		comm.write(prefs);
@@ -115,14 +121,26 @@ public class Settings {
 		private int baud;
 		private boolean listen;
 
+		/**
+		 * Constructs a new category.<br>
+		 * Scan for the list of ports.
+		 */
 		public Communications() {
 			rescanPorts();
 		}
 
+		/**
+		 * Get the list of ports.
+		 * 
+		 * @return the list of ports.
+		 */
 		public Collection<String> getPorts() {
 			return portIds;
 		}
 
+		/**
+		 * Rescan for the list of ports.
+		 */
 		public void rescanPorts() {
 			portIds.clear();
 
@@ -131,15 +149,19 @@ public class Settings {
 		}
 
 		/**
-		 * @return the portSelected
+		 * Get the port identifier name.
+		 * 
+		 * @return the port id.
 		 */
 		public String getPortIdentifier() {
 			return portId;
 		}
 
 		/**
+		 * Set the port identifier name.
+		 * 
 		 * @param portName
-		 *            the portSelected to set
+		 *            the port id.
 		 */
 		public void setPortIdentifier(String portName) {
 			this.portId = null;
@@ -152,30 +174,38 @@ public class Settings {
 		}
 
 		/**
-		 * @return the portSpeed
+		 * Get the port speed (baud).
+		 * 
+		 * @return the speed.
 		 */
 		public int getPortSpeed() {
 			return baud;
 		}
 
 		/**
+		 * Set the port speed (baud).
+		 * 
 		 * @param portSpeed
-		 *            the portSpeed to set
+		 *            the speed.
 		 */
 		public void setPortSpeed(int portSpeed) {
 			this.baud = portSpeed;
 		}
 
 		/**
-		 * @return the listen
+		 * Should we listen for Newton device on the port?
+		 * 
+		 * @return listen for Newton?
 		 */
 		public boolean isListen() {
 			return listen;
 		}
 
 		/**
+		 * Listen for Newton device on the port?
+		 * 
 		 * @param listen
-		 *            the listen to set
+		 *            listen for Newton?
 		 */
 		public void setListen(boolean listen) {
 			this.listen = listen;
@@ -196,6 +226,11 @@ public class Settings {
 		}
 	}
 
+	/**
+	 * Get the communications category.
+	 * 
+	 * @return the category.
+	 */
 	public Communications getCommunications() {
 		return comm;
 	}
@@ -211,29 +246,38 @@ public class Settings {
 
 		private File backupFolder;
 
+		/**
+		 * Constructs a new category.
+		 */
 		public General() {
 			this.backupFolder = new File(mainFolder, "Backups");
 			backupFolder.mkdirs();
 		}
 
 		/**
-		 * @return the backupFolder
+		 * Get the backup folder.
+		 * 
+		 * @return the folder.
 		 */
 		public File getBackupFolder() {
 			return backupFolder;
 		}
 
 		/**
+		 * Set the backup folder.
+		 * 
 		 * @param backupFolder
-		 *            the backupFolder to set
+		 *            the folder.
 		 */
 		public void setBackupFolder(File backupFolder) {
 			this.backupFolder = backupFolder;
 		}
 
 		/**
+		 * Set the backup folder.
+		 * 
 		 * @param backupFolder
-		 *            the backupFolder to set
+		 *            the folder path.
 		 */
 		public void setBackupFolder(String backupFolder) {
 			setBackupFolder(new File(backupFolder));
@@ -250,6 +294,11 @@ public class Settings {
 		}
 	}
 
+	/**
+	 * Get the general category.
+	 * 
+	 * @return the category.
+	 */
 	public General getGeneral() {
 		return general;
 	}
@@ -268,21 +317,46 @@ public class Settings {
 		private transient String passwordOld;
 		private transient String passwordNew;
 
+		/**
+		 * Constructs a new category.
+		 */
 		public Security() {
 		}
 
+		/**
+		 * Get the old password.
+		 * 
+		 * @return the password.
+		 */
 		public String getPasswordOld() {
 			return passwordOld;
 		}
 
+		/**
+		 * Set the old password.
+		 * 
+		 * @param password
+		 *            the password.
+		 */
 		public void setPasswordOld(String password) {
 			this.passwordOld = password;
 		}
 
+		/**
+		 * Get the new password.
+		 * 
+		 * @return the password.
+		 */
 		public String getPasswordNew() {
 			return passwordNew;
 		}
 
+		/**
+		 * Set the new password.
+		 * 
+		 * @param password
+		 *            the password.
+		 */
 		public void setPasswordNew(String password) {
 			this.passwordNew = password;
 		}
@@ -304,6 +378,11 @@ public class Settings {
 		}
 	}
 
+	/**
+	 * Get the security category.
+	 * 
+	 * @return the category.
+	 */
 	public Security getSecurity() {
 		return sec;
 	}
@@ -325,42 +404,64 @@ public class Settings {
 		private boolean backupSelective;
 		private boolean sync;
 
+		/**
+		 * Constructs a new category.
+		 */
 		public AutoDock() {
 		}
 
+		/**
+		 * Should backup the Newton device when auto-docked?
+		 * 
+		 * @return whether to backup.
+		 */
 		public boolean isBackup() {
 			return backup;
 		}
 
+		/**
+		 * Set to backup the Newton device when auto-docked.
+		 * 
+		 * @param backup
+		 *            backup?
+		 */
 		public void setBackup(boolean backup) {
 			this.backup = backup;
 		}
 
 		/**
-		 * @return the backupSelective
+		 * Is the auto-dock backup selective?
+		 * 
+		 * @return is selective?
 		 */
 		public boolean isBackupSelective() {
 			return backupSelective;
 		}
 
 		/**
+		 * Set the auto-dock backup as selective.
+		 * 
 		 * @param backupSelective
-		 *            the backupSelective to set
+		 *            is selective?
 		 */
 		public void setBackupSelective(boolean backupSelective) {
 			this.backupSelective = backupSelective;
 		}
 
 		/**
-		 * @return the sync
+		 * Should synchronise the Newton device when auto-docked?
+		 * 
+		 * @return synchronise?
 		 */
 		public boolean isSync() {
 			return sync;
 		}
 
 		/**
+		 * Set to synchronise the Newton device when auto-docked.
+		 * 
 		 * @param sync
-		 *            the sync to set
+		 *            synchronise?
 		 */
 		public void setSync(boolean sync) {
 			this.sync = sync;
@@ -381,6 +482,11 @@ public class Settings {
 		}
 	}
 
+	/**
+	 * Get the auto-dock category.
+	 * 
+	 * @return the category.
+	 */
 	public AutoDock getAutoDock() {
 		return dock;
 	}
