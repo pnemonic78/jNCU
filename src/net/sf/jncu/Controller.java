@@ -37,7 +37,7 @@ import net.sf.jncu.protocol.v2_0.sync.BackupDialog;
 import net.sf.jncu.ui.NCUFrame;
 
 /**
- * NCU controller.
+ * jNCU controller.
  * 
  * @author Moshe
  */
@@ -58,6 +58,7 @@ public class Controller {
 	 * @param frame
 	 *            the UI frame.
 	 * @throws PlatformException
+	 *             if a platform error occurs.
 	 */
 	public Controller(NCUFrame frame) throws PlatformException {
 		this.frame = frame;
@@ -66,9 +67,9 @@ public class Controller {
 			// FIXME create actual pipe
 			this.pipe = new EmptyPipe(layer);
 		} catch (ServiceNotSupportedException e) {
-			e.printStackTrace();
+			JNCU.showError(frame, e);
 		}
-		// FIXME layer.startUp();
+		layer.startUp();
 	}
 
 	/**
@@ -155,6 +156,11 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * Get the settings.
+	 * 
+	 * @return the settings.
+	 */
 	public Settings getSettings() {
 		if (settings == null) {
 			settings = new Settings();
@@ -177,6 +183,7 @@ public class Controller {
 	 */
 	public void stop() {
 		try {
+			// comm.stopListenForNewton();
 			if (pipe != null) {
 				pipe.disconnect();
 			}

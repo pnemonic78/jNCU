@@ -55,7 +55,7 @@ import net.sf.jncu.Settings;
 import net.sf.swing.SwingUtils;
 
 /**
- * Main jNCU frame.
+ * jNCU main frame.
  * 
  * @author moshew
  */
@@ -66,7 +66,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	private static final String TITLE = "jNewton Connection Utility";
-	private static final String HELP = "For help, press F1";
+	// private static final String HELP = "For help, press F1";
 
 	private static final int INSET_X = 20;
 	private static final int INSET_Y = 10;
@@ -107,9 +107,19 @@ public class NCUFrame extends JFrame implements ActionListener {
 	private Icon statusConnected;
 
 	/**
-	 * This method initializes mainMenu
+	 * Create a new frame.
+	 */
+	public NCUFrame() {
+		super();
+		this.frame = this;
+		getControl();
+		init();
+	}
+
+	/**
+	 * Get the main menu.
 	 * 
-	 * @return javax.swing.JMenuBar
+	 * @return the menu bar.
 	 */
 	private JMenuBar getMainMenu() {
 		if (mainMenu == null) {
@@ -122,9 +132,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * This method initializes menuFile
+	 * Get the "File" menu.
 	 * 
-	 * @return javax.swing.JMenu
+	 * @return the menu.
 	 */
 	private JMenu getMenuFile() {
 		if (menuFile == null) {
@@ -142,6 +152,11 @@ public class NCUFrame extends JFrame implements ActionListener {
 		return menuFile;
 	}
 
+	/**
+	 * Get the "File | Import" menu.
+	 * 
+	 * @return the menu item.
+	 */
 	private JMenuItem getMenuImport() {
 		if (menuImport == null) {
 			JMenuItem menuItem = new JMenuItem();
@@ -154,6 +169,11 @@ public class NCUFrame extends JFrame implements ActionListener {
 		return menuImport;
 	}
 
+	/**
+	 * Get the "File | Export" menu.
+	 * 
+	 * @return the menu item.
+	 */
 	private JMenuItem getMenuExport() {
 		if (menuExport == null) {
 			JMenuItem menuItem = new JMenuItem();
@@ -166,6 +186,11 @@ public class NCUFrame extends JFrame implements ActionListener {
 		return menuExport;
 	}
 
+	/**
+	 * Get the "File | Sync" menu.
+	 * 
+	 * @return the menu item.
+	 */
 	private JMenuItem getMenuSync() {
 		if (menuSync == null) {
 			JMenuItem menuItem = new JMenuItem();
@@ -178,6 +203,11 @@ public class NCUFrame extends JFrame implements ActionListener {
 		return menuSync;
 	}
 
+	/**
+	 * Get the "File | Sync Settings" menu.
+	 * 
+	 * @return the menu item.
+	 */
 	private JMenuItem getMenuSyncSettings() {
 		if (menuSyncSettings == null) {
 			JMenuItem menuItem = new JMenuItem();
@@ -191,9 +221,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * This method initializes menuNewton
+	 * Get the "Newton" menu.
 	 * 
-	 * @return javax.swing.JMenu
+	 * @return the menu.
 	 */
 	private JMenu getMenuNewton() {
 		if (menuNewton == null) {
@@ -212,9 +242,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * This method initializes menuHelp
+	 * Get the "Help" menu.
 	 * 
-	 * @return javax.swing.JMenu
+	 * @return the menu.
 	 */
 	private JMenu getMenuHelp() {
 		if (menuHelp == null) {
@@ -227,9 +257,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * This method initializes menuExit
+	 * Get the "File | Exit" menu.
 	 * 
-	 * @return javax.swing.JMenuItem
+	 * @return the menu item.
 	 */
 	private JMenuItem getMenuExit() {
 		if (menuExit == null) {
@@ -244,9 +274,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * This method initializes menuSettings
+	 * Get the "Newton | Settings" menu.
 	 * 
-	 * @return javax.swing.JMenuItem
+	 * @return the menu item.
 	 */
 	private JMenuItem getMenuSettings() {
 		if (menuSettings == null) {
@@ -261,9 +291,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * This method initializes menuBackup
+	 * Get the "Newton | Backup" menu.
 	 * 
-	 * @return javax.swing.JMenuItem
+	 * @return the menu item.
 	 */
 	private JMenuItem getMenuBackup() {
 		if (menuBackup == null) {
@@ -278,9 +308,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * This method initializes menuRestore
+	 * Get the "Newton | Restore" menu.
 	 * 
-	 * @return javax.swing.JMenuItem
+	 * @return the menu item.
 	 */
 	private JMenuItem getMenuRestore() {
 		if (menuRestore == null) {
@@ -295,9 +325,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * This method initializes menuInstall
+	 * Get the "Newton | Install Package" menu.
 	 * 
-	 * @return javax.swing.JMenuItem
+	 * @return the menu item.
 	 */
 	private JMenuItem getMenuInstall() {
 		if (menuInstall == null) {
@@ -312,9 +342,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * This method initializes menuKeyboard
+	 * Get the "Newton | Keyboard" menu.
 	 * 
-	 * @return javax.swing.JMenuItem
+	 * @return the menu item.
 	 */
 	private JMenuItem getMenuKeyboard() {
 		if (menuKeyboard == null) {
@@ -329,9 +359,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * This method initializes menuAbout
+	 * Get the "Help | About" menu.
 	 * 
-	 * @return javax.swing.JMenuItem
+	 * @return the menu item.
 	 */
 	private JMenuItem getMenuAbout() {
 		if (menuAbout == null) {
@@ -347,9 +377,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * This method initializes panelStatus
+	 * Get the status panel.
 	 * 
-	 * @return javax.swing.JPanel
+	 * @return the panel.
 	 */
 	private JPanel getStatusPanel() {
 		if (statusPanel == null) {
@@ -381,6 +411,12 @@ public class NCUFrame extends JFrame implements ActionListener {
 		return statusPanel;
 	}
 
+	/**
+	 * Set the connection status.
+	 * 
+	 * @param connected
+	 *            is connected?
+	 */
 	private void setStatusConnected(boolean connected) {
 		if (connected) {
 			if (statusConnected == null) {
@@ -402,19 +438,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * Create a new frame.
-	 */
-	public NCUFrame() {
-		super();
-		this.frame = this;
-		getControl();
-		init();
-	}
-
-	/**
-	 * This method initializes this
-	 * 
-	 * @return void
+	 * Initialize.
 	 */
 	private void init() {
 		setTitle(TITLE);
@@ -449,13 +473,13 @@ public class NCUFrame extends JFrame implements ActionListener {
 		SwingUtils.centreInOwner(this);
 
 		setStatusConnected(false);
-		setStatus(HELP);
+		// TODO setStatus(HELP);
 	}
 
 	/**
-	 * This method initializes jContentPane
+	 * Get the main content pane.
 	 * 
-	 * @return javax.swing.JPanel
+	 * @return the panel.
 	 */
 	private JPanel getMainContentPane() {
 		if (contentPane == null) {
@@ -467,6 +491,11 @@ public class NCUFrame extends JFrame implements ActionListener {
 		return contentPane;
 	}
 
+	/**
+	 * Get the settings dialog.
+	 * 
+	 * @return the dialog.
+	 */
 	private NCUSettingsDialog getSettingsDialog() {
 		if (settingsDialog == null) {
 			settingsDialog = new NCUSettingsDialog(this);
@@ -475,6 +504,11 @@ public class NCUFrame extends JFrame implements ActionListener {
 		return settingsDialog;
 	}
 
+	/**
+	 * Get the settings.
+	 * 
+	 * @return the settings.
+	 */
 	private Settings getSettings() {
 		return getControl().getSettings();
 	}
@@ -483,7 +517,6 @@ public class NCUFrame extends JFrame implements ActionListener {
 	 * Close jNCU.
 	 */
 	public void close() {
-		// comm.stopListenForNewton();
 		if (isShowing()) {
 			getControl().close();
 			SwingUtils.postWindowClosing(frame);
@@ -519,6 +552,11 @@ public class NCUFrame extends JFrame implements ActionListener {
 		}
 	}
 
+	/**
+	 * Get the quick menu pane with big icon buttons.
+	 * 
+	 * @return the panel.
+	 */
 	private JPanel getQuickMenuPane() {
 		if (quickMenuPane == null) {
 			JPanel utilsGroup = new JPanel();
@@ -575,7 +613,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * @return the syncButton
+	 * Get the "Sync" icon button.
+	 * 
+	 * @return the button.
 	 */
 	private JButton getSyncButton() {
 		if (syncButton == null) {
@@ -592,7 +632,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * @return the insallButton
+	 * Get the "Install Package" icon button.
+	 * 
+	 * @return the button.
 	 */
 	private JButton getInstallButton() {
 		if (installButton == null) {
@@ -609,7 +651,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * @return the keyboardButton
+	 * Get the "Use Keyboard" icon button.
+	 * 
+	 * @return the button.
 	 */
 	private JButton getKeyboardButton() {
 		if (keyboardButton == null) {
@@ -626,7 +670,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * @return the backupButton
+	 * Get the "Backup" icon button.
+	 * 
+	 * @return the button.
 	 */
 	private JButton getBackupButton() {
 		if (backupButton == null) {
@@ -643,7 +689,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * @return the restoreButton
+	 * Get the "Restore" icon button.
+	 * 
+	 * @return the button.
 	 */
 	private JButton getRestoreButton() {
 		if (restoreButton == null) {
@@ -660,7 +708,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * @return the importButton
+	 * Get the "Import" icon button.
+	 * 
+	 * @return the button.
 	 */
 	private JButton getImportButton() {
 		if (importButton == null) {
@@ -677,7 +727,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * @return the exportButton
+	 * Get the "Export" icon button.
+	 * 
+	 * @return the button.
 	 */
 	private JButton getExportButton() {
 		if (exportButton == null) {
@@ -742,6 +794,11 @@ public class NCUFrame extends JFrame implements ActionListener {
 		getControl().importToNewton();
 	}
 
+	/**
+	 * Get the "about jNCU" dialog.
+	 * 
+	 * @return the dialog.
+	 */
 	private NCUAboutDialog getAboutDialog() {
 		if (aboutDialog == null) {
 			aboutDialog = new NCUAboutDialog(this);
@@ -750,7 +807,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * Show the 'about' dialog.
+	 * Show the "about jNCU" dialog.
 	 */
 	private void about() {
 		getAboutDialog().setVisible(true);
@@ -772,18 +829,41 @@ public class NCUFrame extends JFrame implements ActionListener {
 		}
 	}
 
+	/**
+	 * Set the controller.
+	 * 
+	 * @param control
+	 *            the controller.
+	 */
 	public void setController(Controller control) {
 		this.control = control;
 	}
 
+	/**
+	 * Get the controller.
+	 * 
+	 * @return the controller.
+	 */
 	protected Controller getControl() {
 		return control;
 	}
 
-	private void showError(Exception e) {
+	/**
+	 * Show an error to the user.
+	 * 
+	 * @param e
+	 *            the error.
+	 */
+	protected void showError(Exception e) {
 		JNCU.showError(this, e);
 	}
 
+	/**
+	 * Set the status label.
+	 * 
+	 * @param status
+	 *            the status text.
+	 */
 	public void setStatus(String status) {
 		statusLabel.setText(status);
 	}

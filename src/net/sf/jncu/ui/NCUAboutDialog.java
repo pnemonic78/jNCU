@@ -39,7 +39,7 @@ import javax.swing.text.html.HTMLEditorKit;
 import net.sf.swing.SwingUtils;
 
 /**
- * jNCU about dialog.
+ * jNCU "about" dialog.
  * 
  * @author moshew
  */
@@ -64,9 +64,7 @@ public class NCUAboutDialog extends NCUDialog implements HyperlinkListener {
 	}
 
 	/**
-	 * This method initializes this
-	 * 
-	 * @return void
+	 * Initialize.
 	 */
 	private void init() {
 		setTitle(TITLE);
@@ -78,9 +76,9 @@ public class NCUAboutDialog extends NCUDialog implements HyperlinkListener {
 	}
 
 	/**
-	 * This method initializes jContentPane
+	 * Get the main content pane.
 	 * 
-	 * @return javax.swing.JPanel
+	 * @return the panel.
 	 */
 	private JPanel getMainContentPane() {
 		if (contentPane == null) {
@@ -92,6 +90,11 @@ public class NCUAboutDialog extends NCUDialog implements HyperlinkListener {
 		return contentPane;
 	}
 
+	/**
+	 * Get the description.
+	 * 
+	 * @return the description text.
+	 */
 	private JTextComponent getDescription() {
 		if (description == null) {
 			JTextPane text = new JTextPane();
@@ -127,9 +130,9 @@ public class NCUAboutDialog extends NCUDialog implements HyperlinkListener {
 	}
 
 	/**
-	 * This method initializes buttons
+	 * Get the buttons panel.
 	 * 
-	 * @return javax.swing.JPanel
+	 * @return the panel.
 	 */
 	private JPanel getButtons() {
 		if (buttons == null) {
@@ -140,9 +143,9 @@ public class NCUAboutDialog extends NCUDialog implements HyperlinkListener {
 	}
 
 	/**
-	 * This method initializes buttonOk
+	 * Get the OK button.
 	 * 
-	 * @return javax.swing.JButton
+	 * @return the button.
 	 */
 	private JButton getOkButton() {
 		if (okButton == null) {
@@ -160,6 +163,9 @@ public class NCUAboutDialog extends NCUDialog implements HyperlinkListener {
 		}
 	}
 
+	/**
+	 * Close the dialog.
+	 */
 	public void close() {
 		if (isShowing()) {
 			SwingUtils.postWindowClosing(this);

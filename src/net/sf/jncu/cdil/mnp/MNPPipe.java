@@ -96,7 +96,7 @@ public class MNPPipe extends CDPipe<MNPPacket> {
 	 * @param baud
 	 *            the baud rate to communicate at in bytes per second.
 	 * @throws PlatformException
-	 *             if a platform error occurs,
+	 *             if a platform error occurs.
 	 * @throws ServiceNotSupportedException
 	 *             if the service is not supported.
 	 */
