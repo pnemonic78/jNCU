@@ -25,7 +25,7 @@ import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 
 /**
- * document filter that has a maximum length to limit the number of characters.
+ * Document filter that has a maximum length to limit the number of characters.
  * 
  * @author Moshe
  * 

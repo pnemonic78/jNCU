@@ -28,7 +28,7 @@ import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.ui.NCUFrame;
 
 /**
- * jNCU entry point.
+ * jNCU main application.
  * 
  * @author Moshe
  */
@@ -86,7 +86,7 @@ public class JNCU {
 	public static void showError(Frame frame, Exception e) {
 		e.printStackTrace();
 		JOptionPane.showMessageDialog(frame, "Error: " + e.getLocalizedMessage(), frame.getTitle(), JOptionPane.ERROR_MESSAGE);
-		// TODO Log the error using SourceForge
+		// TODO Log the error using SourceForge bugzilla.
 	}
 
 }

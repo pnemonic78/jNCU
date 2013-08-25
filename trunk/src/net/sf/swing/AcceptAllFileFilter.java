@@ -31,13 +31,18 @@ import javax.swing.filechooser.FileFilter;
  */
 public class AcceptAllFileFilter extends FileFilter {
 
+	/**
+	 * Constructs a new filter.
+	 */
 	public AcceptAllFileFilter() {
 	}
 
+	@Override
 	public boolean accept(File f) {
 		return true;
 	}
 
+	@Override
 	public String getDescription() {
 		return UIManager.getString("FileChooser.acceptAllFileFilterText");
 	}

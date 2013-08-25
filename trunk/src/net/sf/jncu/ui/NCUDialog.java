@@ -48,6 +48,7 @@ public class NCUDialog extends JDialog implements ActionListener {
 		SwingUtils.init();
 	}
 
+	/** Minimum button size. */
 	private Dimension buttonMinimumSize;
 
 	/**
@@ -69,6 +70,9 @@ public class NCUDialog extends JDialog implements ActionListener {
 		init();
 	}
 
+	/**
+	 * Initialize.
+	 */
 	private void init() {
 		setModalityType(ModalityType.APPLICATION_MODAL);
 

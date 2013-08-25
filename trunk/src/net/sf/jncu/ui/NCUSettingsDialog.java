@@ -60,7 +60,7 @@ public class NCUSettingsDialog extends NCUDialog {
 	private static final int INSET_TAB = 10;
 	private static final int INSET_CELL_Y = 0;
 	private static final int INSET_CELL_X = 10;
-	/** Maximum number of password characters. */
+	/** Maximum number of password characters (64 bits). */
 	private static final int PASSWORD_LENGTH = 8;
 
 	private JPanel contentPane;
@@ -77,8 +77,8 @@ public class NCUSettingsDialog extends NCUDialog {
 	private JPanel tabDock;
 	private JLabel labelPort;
 	private JLabel labelSpeed;
-	private JComboBox/* <String> */listPort;
-	private JComboBox/* <Integer> */listSpeed;
+	private JComboBox<String> listPort;
+	private JComboBox<Integer> listSpeed;
 	private JCheckBox checkListen;
 	private JLabel labelBackupPath;
 	private JButton browseButton;
@@ -115,9 +115,9 @@ public class NCUSettingsDialog extends NCUDialog {
 	}
 
 	/**
-	 * This method initializes jContentPane
+	 * Get the main content pane.
 	 * 
-	 * @return javax.swing.JPanel
+	 * @return the panel.
 	 */
 	private JPanel getMainContentPane() {
 		if (contentPane == null) {
@@ -131,9 +131,9 @@ public class NCUSettingsDialog extends NCUDialog {
 	}
 
 	/**
-	 * This method initializes buttons
+	 * Get the button pane.
 	 * 
-	 * @return javax.swing.JPanel
+	 * @return the panel.
 	 */
 	private JPanel getButtons() {
 		if (buttons == null) {
@@ -147,9 +147,9 @@ public class NCUSettingsDialog extends NCUDialog {
 	}
 
 	/**
-	 * This method initializes buttonOk
+	 * Get the OK button.
 	 * 
-	 * @return javax.swing.JButton
+	 * @return the button.
 	 */
 	private JButton getOkButton() {
 		if (okButton == null) {
@@ -159,9 +159,9 @@ public class NCUSettingsDialog extends NCUDialog {
 	}
 
 	/**
-	 * This method initializes buttonCancel
+	 * Get the cancel button.
 	 * 
-	 * @return javax.swing.JButton
+	 * @return the button.
 	 */
 	private JButton getCancelButton() {
 		if (cancelButton == null) {
@@ -171,20 +171,24 @@ public class NCUSettingsDialog extends NCUDialog {
 	}
 
 	/**
-	 * @return the settings
+	 * Get the settings to populate.
+	 * 
+	 * @return the settings.
 	 */
 	public Settings getSettings() {
 		return settings;
 	}
 
 	/**
+	 * Set the settings with updated values.
+	 * 
 	 * @param settings
-	 *            the settings to set
+	 *            the settings to set.
 	 */
 	public void setSettings(Settings settings) {
 		this.settings = settings;
 
-		JComboBox/* <String> */ports = getListPorts();
+		JComboBox<String> ports = getListPorts();
 		ports.removeAllItems();
 		String portSet = settings.getCommunications().getPortIdentifier();
 		int portIndex = 0;
@@ -197,7 +201,7 @@ public class NCUSettingsDialog extends NCUDialog {
 			i++;
 		}
 		ports.setSelectedIndex(portIndex);
-		JComboBox/* <Integer> */speeds = getListSpeeds();
+		JComboBox<Integer> speeds = getListSpeeds();
 		speeds.setSelectedItem(settings.getCommunications().getPortSpeed());
 		getCheckListen().setSelected(settings.getCommunications().isListen());
 
@@ -213,9 +217,9 @@ public class NCUSettingsDialog extends NCUDialog {
 	}
 
 	/**
-	 * This method initializes tabbedPane
+	 * Get the categories tabs.
 	 * 
-	 * @return javax.swing.JTabbedPane
+	 * @return the tabs.
 	 */
 	private JTabbedPane getTabbedPane() {
 		if (tabbedPane == null) {
@@ -232,9 +236,9 @@ public class NCUSettingsDialog extends NCUDialog {
 	}
 
 	/**
-	 * This method initializes tabComm
+	 * Get the communications category tab.
 	 * 
-	 * @return javax.swing.JPanel
+	 * @return the tab.
 	 */
 	private JPanel getTabComm() {
 		if (tabComm == null) {
@@ -295,9 +299,9 @@ public class NCUSettingsDialog extends NCUDialog {
 	}
 
 	/**
-	 * This method initializes buttonApply
+	 * Get the apply button.
 	 * 
-	 * @return javax.swing.JButton
+	 * @return the button.
 	 */
 	private JButton getApplyButton() {
 		if (applyButton == null) {
@@ -315,9 +319,9 @@ public class NCUSettingsDialog extends NCUDialog {
 	}
 
 	/**
-	 * This method initializes buttonHelp
+	 * Get the help button.
 	 * 
-	 * @return javax.swing.JButton
+	 * @return the button.
 	 */
 	private JButton getHelpButton() {
 		if (buttonHelp == null) {
@@ -335,9 +339,9 @@ public class NCUSettingsDialog extends NCUDialog {
 	}
 
 	/**
-	 * This method initializes tabPassword
+	 * Get the security category tab.
 	 * 
-	 * @return javax.swing.JPanel
+	 * @return the tab.
 	 */
 	private JPanel getTabSecurity() {
 		if (tabSecurity == null) {
@@ -404,9 +408,9 @@ public class NCUSettingsDialog extends NCUDialog {
 	}
 
 	/**
-	 * This method initializes tabPassword
+	 * Get the general category tab.
 	 * 
-	 * @return javax.swing.JPanel
+	 * @return the tab.
 	 */
 	private JPanel getTabGeneral() {
 		if (tabGeneral == null) {
@@ -449,9 +453,9 @@ public class NCUSettingsDialog extends NCUDialog {
 	}
 
 	/**
-	 * This method initializes tabDock
+	 * Get the auto-dock category tab.
 	 * 
-	 * @return javax.swing.JPanel
+	 * @return the tab.
 	 */
 	private JPanel getTabDock() {
 		if (tabDock == null) {
@@ -493,26 +497,26 @@ public class NCUSettingsDialog extends NCUDialog {
 	}
 
 	/**
-	 * This method initializes listPort
+	 * Get the list of port names.
 	 * 
-	 * @return javax.swing.JComboBox
+	 * @return the list.
 	 */
-	private JComboBox/* <String> */getListPorts() {
+	private JComboBox<String> getListPorts() {
 		if (listPort == null) {
-			JComboBox list = new JComboBox/* <String> */();
+			JComboBox<String> list = new JComboBox<String>();
 			listPort = list;
 		}
 		return listPort;
 	}
 
 	/**
-	 * This method initializes listSpeed
+	 * Get the list of port speeds.
 	 * 
-	 * @return javax.swing.JComboBox
+	 * @return the list.
 	 */
-	private JComboBox/* <Integer> */getListSpeeds() {
+	private JComboBox<Integer> getListSpeeds() {
 		if (listSpeed == null) {
-			JComboBox list = new JComboBox/* <Integer> */();
+			JComboBox<Integer> list = new JComboBox<Integer>();
 			list.addItem(MNPSerialPort.BAUD_2400);
 			list.addItem(MNPSerialPort.BAUD_4800);
 			list.addItem(MNPSerialPort.BAUD_9600);
@@ -524,23 +528,23 @@ public class NCUSettingsDialog extends NCUDialog {
 	}
 
 	/**
-	 * This method initializes checkListen
+	 * Get the check box to enable listening for Newton.
 	 * 
-	 * @return javax.swing.JCheckBox
+	 * @return the check box.
 	 */
 	private JCheckBox getCheckListen() {
 		if (checkListen == null) {
 			checkListen = new JCheckBox();
-			checkListen.setText("Always listen for Netwon Device");
+			checkListen.setText("Always listen for Newton Device");
 			checkListen.setOpaque(false);
 		}
 		return checkListen;
 	}
 
 	/**
-	 * This method initializes buttonBrowse
+	 * GEt the button to browse for backup folder.
 	 * 
-	 * @return javax.swing.JButton
+	 * @return the button.
 	 */
 	private JButton getBrowseButton() {
 		if (browseButton == null) {
@@ -556,6 +560,11 @@ public class NCUSettingsDialog extends NCUDialog {
 		return browseButton;
 	}
 
+	/**
+	 * Get the browser for backup folder.
+	 * 
+	 * @return the chooser.
+	 */
 	private JFileChooser getBrowser() {
 		if (browser == null) {
 			browser = new JFileChooser();
@@ -564,12 +573,18 @@ public class NCUSettingsDialog extends NCUDialog {
 		return browser;
 	}
 
+	/**
+	 * Close the dialog.
+	 */
 	public void close() {
 		if (isShowing()) {
 			SwingUtils.postWindowClosing(this);
 		}
 	}
 
+	/**
+	 * Save the settings.
+	 */
 	public void save() {
 		Settings settings = getSettings();
 
@@ -617,6 +632,11 @@ public class NCUSettingsDialog extends NCUDialog {
 		}
 	}
 
+	/**
+	 * Get the confirmation password.
+	 * 
+	 * @return the password.
+	 */
 	private JPasswordField getPasswordConfirm() {
 		if (passwordConfirm == null) {
 			JPasswordField password = new JPasswordField(PASSWORD_LENGTH + 4);
@@ -626,6 +646,11 @@ public class NCUSettingsDialog extends NCUDialog {
 		return passwordConfirm;
 	}
 
+	/**
+	 * Get the new password.
+	 * 
+	 * @return the password.
+	 */
 	private JPasswordField getPasswordNew() {
 		if (passwordNew == null) {
 			JPasswordField password = new JPasswordField(PASSWORD_LENGTH + 4);
@@ -635,6 +660,11 @@ public class NCUSettingsDialog extends NCUDialog {
 		return passwordNew;
 	}
 
+	/**
+	 * Get the old password.
+	 * 
+	 * @return the password.
+	 */
 	private JPasswordField getPasswordOld() {
 		if (passwordOld == null) {
 			JPasswordField password = new JPasswordField(PASSWORD_LENGTH + 4);
@@ -644,6 +674,11 @@ public class NCUSettingsDialog extends NCUDialog {
 		return passwordOld;
 	}
 
+	/**
+	 * Get the check box to backup on auto-dock.
+	 * 
+	 * @return the check box.
+	 */
 	private JCheckBox getCheckDockBackup() {
 		if (checkDockBackup == null) {
 			JCheckBox check = new JCheckBox();
@@ -655,6 +690,11 @@ public class NCUSettingsDialog extends NCUDialog {
 		return checkDockBackup;
 	}
 
+	/**
+	 * Get the check box to backup selectively on auto-dock.
+	 * 
+	 * @return the check box.
+	 */
 	private JCheckBox getCheckDockBackupSelective() {
 		if (checkDockBackupSelective == null) {
 			JCheckBox check = new JCheckBox();
@@ -666,6 +706,11 @@ public class NCUSettingsDialog extends NCUDialog {
 		return checkDockBackupSelective;
 	}
 
+	/**
+	 * Get the check box to sync on auto-dock.
+	 * 
+	 * @return the check box.
+	 */
 	private JCheckBox getCheckDockSync() {
 		if (checkDockSync == null) {
 			JCheckBox check = new JCheckBox();
@@ -676,6 +721,11 @@ public class NCUSettingsDialog extends NCUDialog {
 		return checkDockSync;
 	}
 
+	/**
+	 * Get the password filter.
+	 * 
+	 * @return the filter.
+	 */
 	private DocumentFilter getPasswordFilter() {
 		if (passwordFilter == null) {
 			passwordFilter = new DocumentLengthFilter(PASSWORD_LENGTH);
@@ -684,7 +734,9 @@ public class NCUSettingsDialog extends NCUDialog {
 	}
 
 	/**
-	 * @return the labelFolderPath
+	 * Get the backup path label.
+	 * 
+	 * @return the label.
 	 */
 	private JLabel getBackupPath() {
 		if (labelBackupPath == null) {
@@ -693,5 +745,4 @@ public class NCUSettingsDialog extends NCUDialog {
 		}
 		return labelBackupPath;
 	}
-
 }
