@@ -60,6 +60,7 @@ public class NCUSettingsDialog extends NCUDialog {
 	private static final int INSET_TAB = 10;
 	private static final int INSET_CELL_Y = 0;
 	private static final int INSET_CELL_X = 10;
+	/** Maximum number of password characters. */
 	private static final int PASSWORD_LENGTH = 8;
 
 	private JPanel contentPane;
@@ -102,9 +103,7 @@ public class NCUSettingsDialog extends NCUDialog {
 	}
 
 	/**
-	 * This method initializes this
-	 * 
-	 * @return void
+	 * Initialize.
 	 */
 	private void init() {
 		setTitle(TITLE);
@@ -122,10 +121,11 @@ public class NCUSettingsDialog extends NCUDialog {
 	 */
 	private JPanel getMainContentPane() {
 		if (contentPane == null) {
-			contentPane = new JPanel();
-			contentPane.setLayout(new BorderLayout());
-			contentPane.add(getTabbedPane(), BorderLayout.CENTER);
-			contentPane.add(getButtons(), BorderLayout.SOUTH);
+			JPanel panel = new JPanel();
+			panel.setLayout(new BorderLayout());
+			panel.add(getTabbedPane(), BorderLayout.CENTER);
+			panel.add(getButtons(), BorderLayout.SOUTH);
+			contentPane = panel;
 		}
 		return contentPane;
 	}

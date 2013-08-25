@@ -46,14 +46,12 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 
 import net.sf.jncu.Controller;
+import net.sf.jncu.JNCU;
 import net.sf.jncu.Settings;
-import net.sf.jncu.cdil.PlatformException;
 import net.sf.swing.SwingUtils;
 
 /**
@@ -386,7 +384,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 	private void setStatusConnected(boolean connected) {
 		if (connected) {
 			if (statusConnected == null) {
-				URL url = getClass().getResource("/199.png");
+				URL url = getClass().getResource("/connected.png");
 				statusConnected = new ImageIcon(url);
 			}
 
@@ -394,30 +392,13 @@ public class NCUFrame extends JFrame implements ActionListener {
 			statusConnection.setText("Connected to Newton device.");
 		} else {
 			if (statusDisconnected == null) {
-				URL url = getClass().getResource("/200.png");
+				URL url = getClass().getResource("/disconnected.png");
 				statusDisconnected = new ImageIcon(url);
 			}
 
 			statusConnection.setIcon(statusDisconnected);
 			statusConnection.setText("Please connect your Newton device.");
 		}
-	}
-
-	/**
-	 * Main method.<br>
-	 * TODO move this method to Controller.
-	 * 
-	 * @param args
-	 *            the array of arguments.
-	 */
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				NCUFrame frame = new NCUFrame();
-				frame.setVisible(true);
-			}
-		});
 	}
 
 	/**
@@ -791,20 +772,16 @@ public class NCUFrame extends JFrame implements ActionListener {
 		}
 	}
 
-	private Controller getControl() {
-		if (control == null) {
-			try {
-				control = new Controller(frame);
-			} catch (PlatformException e) {
-				showError(e);
-			}
-		}
+	public void setController(Controller control) {
+		this.control = control;
+	}
+
+	protected Controller getControl() {
 		return control;
 	}
 
 	private void showError(Exception e) {
-		e.printStackTrace();
-		JOptionPane.showMessageDialog(frame, "Error: " + e.getLocalizedMessage(), frame.getTitle(), JOptionPane.ERROR_MESSAGE);
+		JNCU.showError(this, e);
 	}
 
 	public void setStatus(String status) {

@@ -43,7 +43,7 @@ import net.sf.jncu.ui.NCUFrame;
  */
 public class Controller {
 
-	private NCUFrame frame;
+	private final NCUFrame frame;
 	private CDLayer layer;
 	private MNPPipe pipe;
 	private Settings settings;
@@ -162,6 +162,12 @@ public class Controller {
 		return settings;
 	}
 
+	/**
+	 * Set the settings.
+	 * 
+	 * @param settings
+	 *            the settings.
+	 */
 	public void setSettings(Settings settings) {
 		this.settings = settings;
 	}
@@ -184,7 +190,9 @@ public class Controller {
 	 * 
 	 * @throws ServiceNotSupportedException
 	 * @throws PlatformException
+	 *             if a platform error occurs.
 	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
 	 */
 	public void start() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		if (settings.getCommunications().isListen()) {

@@ -52,7 +52,7 @@ public class Preferences {
 	}
 
 	/**
-	 * Get the preferences instance.
+	 * Get the preferences instance. Loads the preferences from a file.
 	 * 
 	 * @return the preferences.
 	 */
