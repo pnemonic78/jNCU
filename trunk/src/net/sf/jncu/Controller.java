@@ -34,7 +34,7 @@ import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.protocol.v2_0.app.LoadPackage;
 import net.sf.jncu.protocol.v2_0.io.KeyboardInput;
 import net.sf.jncu.protocol.v2_0.sync.BackupDialog;
-import net.sf.jncu.ui.NCUFrame;
+import net.sf.jncu.ui.JNCUFrame;
 
 /**
  * jNCU controller.
@@ -43,7 +43,7 @@ import net.sf.jncu.ui.NCUFrame;
  */
 public class Controller {
 
-	private final NCUFrame frame;
+	private final JNCUFrame frame;
 	private CDLayer layer;
 	private MNPPipe pipe;
 	private Settings settings;
@@ -60,14 +60,14 @@ public class Controller {
 	 * @throws PlatformException
 	 *             if a platform error occurs.
 	 */
-	public Controller(NCUFrame frame) throws PlatformException {
+	public Controller(JNCUFrame frame) throws PlatformException {
 		this.frame = frame;
 		this.layer = CDLayer.getInstance();
 		try {
 			// FIXME create actual pipe
 			this.pipe = new EmptyPipe(layer);
 		} catch (ServiceNotSupportedException e) {
-			JNCU.showError(frame, e);
+			JNCUApp.showError(frame, e);
 		}
 		layer.startUp();
 	}

@@ -43,7 +43,7 @@ import net.sf.swing.SwingUtils;
  * 
  * @author moshew
  */
-public class NCUAboutDialog extends NCUDialog implements HyperlinkListener {
+public class JNCUAboutDialog extends JNCUDialog implements HyperlinkListener {
 
 	private static final String TITLE = "About jNewton Connection Utility";
 
@@ -58,7 +58,7 @@ public class NCUAboutDialog extends NCUDialog implements HyperlinkListener {
 	 * @param owner
 	 *            the owner.
 	 */
-	public NCUAboutDialog(Window owner) {
+	public JNCUAboutDialog(Window owner) {
 		super(owner);
 		init();
 	}

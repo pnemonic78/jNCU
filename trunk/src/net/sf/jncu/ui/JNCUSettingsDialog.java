@@ -53,7 +53,7 @@ import net.sf.swing.text.DocumentLengthFilter;
  * 
  * @author moshew
  */
-public class NCUSettingsDialog extends NCUDialog {
+public class JNCUSettingsDialog extends JNCUDialog {
 
 	private static final String TITLE = "jNewton Connection Utility";
 
@@ -97,7 +97,7 @@ public class NCUSettingsDialog extends NCUDialog {
 	 * @param owner
 	 *            the owner.
 	 */
-	public NCUSettingsDialog(Window owner) {
+	public JNCUSettingsDialog(Window owner) {
 		super(owner);
 		init();
 	}

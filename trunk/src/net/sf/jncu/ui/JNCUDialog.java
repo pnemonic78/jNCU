@@ -42,7 +42,7 @@ import net.sf.swing.SwingUtils;
  * 
  * @author Moshe
  */
-public class NCUDialog extends JDialog implements ActionListener {
+public class JNCUDialog extends JDialog implements ActionListener {
 
 	static {
 		SwingUtils.init();
@@ -54,7 +54,7 @@ public class NCUDialog extends JDialog implements ActionListener {
 	/**
 	 * Create a new dialog.
 	 */
-	public NCUDialog() {
+	public JNCUDialog() {
 		super();
 		init();
 	}
@@ -65,7 +65,7 @@ public class NCUDialog extends JDialog implements ActionListener {
 	 * @param owner
 	 *            the owner.
 	 */
-	public NCUDialog(Window owner) {
+	public JNCUDialog(Window owner) {
 		super(owner);
 		init();
 	}
