@@ -46,7 +46,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import net.sf.jncu.ui.NCUDialog;
+import net.sf.jncu.ui.JNCUDialog;
 import net.sf.swing.SwingUtils;
 
 /**
@@ -56,7 +56,7 @@ import net.sf.swing.SwingUtils;
  * 
  * @author Moshe
  */
-public class KeyboardInputDialog extends NCUDialog implements KeyListener {
+public class KeyboardInputDialog extends JNCUDialog implements KeyListener {
 
 	private static final String TITLE = "Keyboard Passthrough";
 

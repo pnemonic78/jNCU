@@ -50,7 +50,7 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import net.sf.jncu.Controller;
-import net.sf.jncu.JNCU;
+import net.sf.jncu.JNCUApp;
 import net.sf.jncu.Settings;
 import net.sf.swing.SwingUtils;
 
@@ -59,7 +59,7 @@ import net.sf.swing.SwingUtils;
  * 
  * @author moshew
  */
-public class NCUFrame extends JFrame implements ActionListener {
+public class JNCUFrame extends JFrame implements ActionListener {
 
 	static {
 		SwingUtils.init();
@@ -72,7 +72,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 	private static final int INSET_Y = 10;
 	private static final int INSET_BUTTON = 10;
 
-	private final NCUFrame frame;
+	private final JNCUFrame frame;
 	private JPanel contentPane;
 	private JMenuBar mainMenu;
 	private JMenu menuFile;
@@ -89,7 +89,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 	private JMenuItem menuExport;
 	private JMenuItem menuSync;
 	private JMenuItem menuSyncSettings;
-	private NCUSettingsDialog settingsDialog;
+	private JNCUSettingsDialog settingsDialog;
 	private JPanel statusPanel;
 	private JLabel statusLabel;
 	private JLabel statusConnection;
@@ -101,7 +101,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 	private JButton restoreButton;
 	private JButton importButton;
 	private JButton exportButton;
-	private NCUAboutDialog aboutDialog;
+	private JNCUAboutDialog aboutDialog;
 	private Controller control;
 	private Icon statusDisconnected;
 	private Icon statusConnected;
@@ -109,7 +109,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 	/**
 	 * Create a new frame.
 	 */
-	public NCUFrame() {
+	public JNCUFrame() {
 		super();
 		this.frame = this;
 		getControl();
@@ -496,9 +496,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	 * 
 	 * @return the dialog.
 	 */
-	private NCUSettingsDialog getSettingsDialog() {
+	private JNCUSettingsDialog getSettingsDialog() {
 		if (settingsDialog == null) {
-			settingsDialog = new NCUSettingsDialog(this);
+			settingsDialog = new JNCUSettingsDialog(this);
 			settingsDialog.setSettings(getSettings());
 		}
 		return settingsDialog;
@@ -799,9 +799,9 @@ public class NCUFrame extends JFrame implements ActionListener {
 	 * 
 	 * @return the dialog.
 	 */
-	private NCUAboutDialog getAboutDialog() {
+	private JNCUAboutDialog getAboutDialog() {
 		if (aboutDialog == null) {
-			aboutDialog = new NCUAboutDialog(this);
+			aboutDialog = new JNCUAboutDialog(this);
 		}
 		return aboutDialog;
 	}
@@ -855,7 +855,7 @@ public class NCUFrame extends JFrame implements ActionListener {
 	 *            the error.
 	 */
 	protected void showError(Exception e) {
-		JNCU.showError(this, e);
+		JNCUApp.showError(this, e);
 	}
 
 	/**

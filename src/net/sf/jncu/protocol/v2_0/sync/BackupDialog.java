@@ -55,7 +55,7 @@ import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.v2_0.app.AppName;
-import net.sf.jncu.ui.NCUDialog;
+import net.sf.jncu.ui.JNCUDialog;
 import net.sf.swing.CheckListCellRenderer;
 import net.sf.swing.SwingUtils;
 
@@ -64,7 +64,7 @@ import net.sf.swing.SwingUtils;
  * 
  * @author mwaisberg
  */
-public class BackupDialog extends NCUDialog {
+public class BackupDialog extends JNCUDialog {
 
 	private static final String TITLE = "Backup";
 

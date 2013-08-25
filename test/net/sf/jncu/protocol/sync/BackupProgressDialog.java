@@ -35,7 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.border.EmptyBorder;
 
-import net.sf.jncu.ui.NCUDialog;
+import net.sf.jncu.ui.JNCUDialog;
 import net.sf.swing.SwingUtils;
 
 /**
@@ -43,7 +43,7 @@ import net.sf.swing.SwingUtils;
  * 
  * @author Moshe
  */
-public class BackupProgressDialog extends NCUDialog {
+public class BackupProgressDialog extends JNCUDialog {
 
 	private JLabel labelNote;
 

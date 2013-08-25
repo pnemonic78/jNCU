@@ -25,17 +25,17 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import net.sf.jncu.cdil.PlatformException;
-import net.sf.jncu.ui.NCUFrame;
+import net.sf.jncu.ui.JNCUFrame;
 
 /**
  * jNCU main application.
  * 
  * @author Moshe
  */
-public class JNCU {
+public class JNCUApp {
 
 	private Controller control;
-	private NCUFrame frame;
+	private JNCUFrame frame;
 
 	/**
 	 * Constructs a new NCU.
@@ -43,9 +43,9 @@ public class JNCU {
 	 * @throws PlatformException
 	 *             if an error occurs.
 	 */
-	public JNCU() throws PlatformException {
+	public JNCUApp() throws PlatformException {
 		super();
-		this.frame = new NCUFrame();
+		this.frame = new JNCUFrame();
 		this.control = new Controller(frame);
 		frame.setController(control);
 	}
@@ -59,7 +59,7 @@ public class JNCU {
 	 *             if an error occurs.
 	 */
 	public static void main(String[] args) throws Exception {
-		JNCU ncu = new JNCU();
+		JNCUApp ncu = new JNCUApp();
 		ncu.run();
 	}
 
