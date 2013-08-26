@@ -30,22 +30,20 @@ import javax.swing.ListCellRenderer;
  * 
  * @author mwaisberg
  */
-public class CheckListCellRenderer extends JCheckBox implements ListCellRenderer {
+public class CheckListCellRenderer extends JCheckBox implements ListCellRenderer<JCheckBox> {
 
 	/**
-	 * Creates a new check box.
+	 * Creates a new check box renderer.
 	 */
 	public CheckListCellRenderer() {
 		super();
 	}
 
 	@Override
-	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-		JCheckBox check = (JCheckBox) value;
-
+	public Component getListCellRendererComponent(JList<? extends JCheckBox> list, JCheckBox value, int index, boolean selected, boolean cellHasFocus) {
 		setEnabled(list.isEnabled());
 		setFont(list.getFont());
-		if (isSelected) {
+		if (selected) {
 			setBackground(list.getSelectionBackground());
 			setForeground(list.getSelectionForeground());
 			setOpaque(true);
@@ -54,8 +52,8 @@ public class CheckListCellRenderer extends JCheckBox implements ListCellRenderer
 			setForeground(list.getForeground());
 			setOpaque(false);
 		}
-		setSelected(check.isSelected());
-		setText(check.getText());
+		setSelected(value.isSelected());
+		setText(value.getText());
 
 		return this;
 	}

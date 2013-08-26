@@ -234,18 +234,21 @@ public class Controller {
 
 	/**
 	 * Show the settings dialog.
+	 * 
+	 * @throws ServiceNotSupportedException
+	 *             if the service is not supported.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
 	 */
-	public void showSettings() {
+	public void showSettings() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		stop();
 		Settings settings = getSettings();
 		getSettingsDialog().setSettings(settings);
 		getSettingsDialog().setVisible(true);
 		setSettings(settings);
-		try {
-			start();
-		} catch (Exception e) {
-			JNCUApp.showError(frame, e);
-		}
+		start();
 	}
 
 	/**

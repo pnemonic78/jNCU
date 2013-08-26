@@ -49,6 +49,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 
+import net.sf.jncu.JNCUResources;
 import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFString;
@@ -70,8 +71,8 @@ public class BackupDialog extends JNCUDialog {
 
 	private JButton cancelButton;
 	private JButton backupButton;
-	private JList listStores;
-	private JList listInformation;
+	private JList<JCheckBox> listStores;
+	private JList<JCheckBox> listInformation;
 	private JButton selectAllStoresButton;
 	private JButton clearAllStoresButton;
 	private JButton selectAllInfoButton;
@@ -185,8 +186,7 @@ public class BackupDialog extends JNCUDialog {
 		panelStores.setOpaque(false);
 		panelContents.add(panelStores, BorderLayout.WEST);
 		panelStores.setLayout(new BorderLayout(5, 5));
-		panelStores.setBorder(BorderFactory
-				.createTitledBorder("Backup From Stores"));
+		panelStores.setBorder(BorderFactory.createTitledBorder("Backup From Stores"));
 
 		JScrollPane scrollStores = new JScrollPane(getListStores());
 		panelStores.add(scrollStores, BorderLayout.CENTER);
@@ -236,9 +236,9 @@ public class BackupDialog extends JNCUDialog {
 	 * 
 	 * @return the list.
 	 */
-	private JList getListStores() {
+	private JList<JCheckBox> getListStores() {
 		if (listStores == null) {
-			JList list = new JList();
+			JList<JCheckBox> list = new JList<JCheckBox>();
 			list.setCellRenderer(new CheckListCellRenderer());
 			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			list.setVisibleRowCount(5);
@@ -254,9 +254,9 @@ public class BackupDialog extends JNCUDialog {
 	 * 
 	 * @return the list.
 	 */
-	private JList getListInformation() {
+	private JList<JCheckBox> getListInformation() {
 		if (listInformation == null) {
-			JList list = new JList();
+			JList<JCheckBox> list = new JList<JCheckBox>();
 			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			list.setVisibleRowCount(5);
 			list.setCellRenderer(new CheckListCellRenderer());
@@ -279,7 +279,7 @@ public class BackupDialog extends JNCUDialog {
 		if (stores == null) {
 			getListStores().removeAll();
 		} else {
-			DefaultListModel modelStores = new DefaultListModel();
+			DefaultListModel<JCheckBox> modelStores = new DefaultListModel<JCheckBox>();
 			for (Store store : stores)
 				this.stores.put(store.getName(), store);
 			for (String name : this.stores.keySet())
@@ -305,7 +305,7 @@ public class BackupDialog extends JNCUDialog {
 		} else {
 			for (AppName name : names)
 				this.apps.put(name.getName(), name);
-			DefaultListModel modelApps = new DefaultListModel();
+			DefaultListModel<JCheckBox> modelApps = new DefaultListModel<JCheckBox>();
 			for (String name : this.apps.keySet()) {
 				modelApps.addElement(new JCheckBox(name, true));
 			}
@@ -431,8 +431,8 @@ public class BackupDialog extends JNCUDialog {
 			Icon icon = new ImageIcon(url);
 
 			JButton button = createButton();
-			button.setText("Backup");
-			button.setMnemonic(KeyEvent.VK_B);
+			button.setText(JNCUResources.getString("JNCU.backup", "Backup"));
+			button.setMnemonic(JNCUResources.getChar("JNCU.backupMnemonic", KeyEvent.VK_B));
 			button.setIcon(icon);
 			backupButton = button;
 		}

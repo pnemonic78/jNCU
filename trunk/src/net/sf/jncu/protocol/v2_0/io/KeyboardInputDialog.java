@@ -46,6 +46,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import net.sf.jncu.JNCUResources;
 import net.sf.jncu.ui.JNCUDialog;
 import net.sf.swing.SwingUtils;
 
@@ -140,7 +141,8 @@ public class KeyboardInputDialog extends JNCUDialog implements KeyListener {
 			Icon icon = new ImageIcon(url);
 
 			JButton button = createButton();
-			button.setText(Toolkit.getProperty("AWT.paste", "Paste"));
+			button.setText(JNCUResources.getString("JNCU.paste", "Paste"));
+			button.setMnemonic(JNCUResources.getChar("JNCU.pasteMnemonic", KeyEvent.VK_P));
 			button.setIcon(icon);
 			pasteButton = button;
 		}
@@ -225,8 +227,7 @@ public class KeyboardInputDialog extends JNCUDialog implements KeyListener {
 	 */
 	protected void fireCharTyped(KeyEvent ke) {
 		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<KeyboardInputListener> listenersCopy = new ArrayList<KeyboardInputListener>(
-				listeners);
+		Collection<KeyboardInputListener> listenersCopy = new ArrayList<KeyboardInputListener>(listeners);
 		for (KeyboardInputListener listener : listenersCopy) {
 			listener.charTyped(ke);
 		}
@@ -240,8 +241,7 @@ public class KeyboardInputDialog extends JNCUDialog implements KeyListener {
 	 */
 	protected void fireStringTyped(String text) {
 		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<KeyboardInputListener> listenersCopy = new ArrayList<KeyboardInputListener>(
-				listeners);
+		Collection<KeyboardInputListener> listenersCopy = new ArrayList<KeyboardInputListener>(listeners);
 		for (KeyboardInputListener listener : listenersCopy) {
 			listener.stringTyped(text);
 		}
