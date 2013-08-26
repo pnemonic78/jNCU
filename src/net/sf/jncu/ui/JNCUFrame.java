@@ -793,7 +793,11 @@ public class JNCUFrame extends JFrame implements ActionListener {
 	 * Show the settings dialog.
 	 */
 	private void settings() {
-		getControl().showSettings();
+		try {
+			getControl().showSettings();
+		} catch (Exception e) {
+			showError(e);
+		}
 	}
 
 	/**

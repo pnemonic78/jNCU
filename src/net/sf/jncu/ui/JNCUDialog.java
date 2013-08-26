@@ -21,7 +21,6 @@ package net.sf.jncu.ui;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,6 +34,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
+import net.sf.jncu.JNCUResources;
 import net.sf.swing.SwingUtils;
 
 /**
@@ -106,7 +106,8 @@ public class JNCUDialog extends JDialog implements ActionListener {
 		Icon icon = new ImageIcon(url);
 
 		JButton button = createButton();
-		button.setText(Toolkit.getProperty("AWT.cancel", "Cancel"));
+		button.setText(JNCUResources.getString("JNCU.cancel", "Cancel"));
+		button.setMnemonic(JNCUResources.getChar("JNCU.cancelMnemonic", KeyEvent.VK_C));
 		button.setIcon(icon);
 
 		return button;
@@ -122,8 +123,8 @@ public class JNCUDialog extends JDialog implements ActionListener {
 		Icon icon = new ImageIcon(url);
 
 		JButton button = createButton();
-		button.setText("OK");
-		button.setMnemonic(KeyEvent.VK_O);
+		button.setText(JNCUResources.getString("JNCU.ok", "OK"));
+		button.setMnemonic(JNCUResources.getChar("JNCU.okMnemonic", KeyEvent.VK_O));
 		button.setIcon(icon);
 
 		return button;
