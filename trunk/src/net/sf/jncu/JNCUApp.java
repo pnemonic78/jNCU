@@ -24,7 +24,9 @@ import java.awt.Frame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.PlatformException;
+import net.sf.jncu.cdil.ServiceNotSupportedException;
 import net.sf.jncu.ui.JNCUFrame;
 
 /**
@@ -65,8 +67,16 @@ public class JNCUApp {
 
 	/**
 	 * Run.
+	 * 
+	 * @throws ServiceNotSupportedException
+	 *             if the service is not supported.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
 	 */
-	public void run() {
+	public void run() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
+		control.start();
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {

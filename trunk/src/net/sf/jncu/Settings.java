@@ -130,7 +130,7 @@ public class Settings {
 		}
 
 		/**
-		 * Get the list of ports.
+		 * Get the list of port names.
 		 * 
 		 * @return the list of ports.
 		 */
@@ -164,13 +164,7 @@ public class Settings {
 		 *            the port id.
 		 */
 		public void setPortIdentifier(String portName) {
-			this.portId = null;
-			for (String portId : portIds) {
-				if (portId.equals(portName)) {
-					this.portId = portId;
-					break;
-				}
-			}
+			this.portId = portName;
 		}
 
 		/**
@@ -364,9 +358,9 @@ public class Settings {
 		@Override
 		public void read(Preferences prefs) {
 			// TODO decrypt the password
-			setPasswordOld(prefs.get(KEY_PASSWORD_OLD));
+			setPasswordOld(prefs.get(KEY_PASSWORD_OLD, ""));
 			// TODO decrypt the password
-			setPasswordNew(prefs.get(KEY_PASSWORD_NEW));
+			setPasswordNew(prefs.get(KEY_PASSWORD_NEW, ""));
 		}
 
 		@Override
