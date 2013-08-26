@@ -29,12 +29,12 @@ import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
-import net.sf.jncu.cdil.mnp.EmptyPipe;
 import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.protocol.v2_0.app.LoadPackage;
 import net.sf.jncu.protocol.v2_0.io.KeyboardInput;
 import net.sf.jncu.protocol.v2_0.sync.BackupDialog;
 import net.sf.jncu.ui.JNCUFrame;
+import net.sf.jncu.ui.JNCUSettingsDialog;
 
 /**
  * jNCU controller.
@@ -51,6 +51,7 @@ public class Controller {
 	private BackupDialog backupDialog;
 	private LoadPackage packageLoader;
 	private JFileChooser packageChooser;
+	private JNCUSettingsDialog settingsDialog;
 
 	/**
 	 * Create a new controller.
@@ -63,13 +64,23 @@ public class Controller {
 	public Controller(JNCUFrame frame) throws PlatformException {
 		this.frame = frame;
 		this.layer = CDLayer.getInstance();
+		layer.startUp();
+	}
+
+	/**
+	 * Connect to MNP.
+	 * 
+	 * @param portId
+	 *            the port name.
+	 * @param portSpeed
+	 *            the port speed.
+	 */
+	public void connectMNP(String portId, int portSpeed) {
 		try {
-			// FIXME create actual pipe
-			this.pipe = new EmptyPipe(layer);
-		} catch (ServiceNotSupportedException e) {
+			this.pipe = layer.createMNPSerial(portId, portSpeed);
+		} catch (Exception e) {
 			JNCUApp.showError(frame, e);
 		}
-		layer.startUp();
 	}
 
 	/**
@@ -186,7 +197,9 @@ public class Controller {
 			// comm.stopListenForNewton();
 			if (pipe != null) {
 				pipe.disconnect();
+				pipe.dispose();
 			}
+			layer.shutDown();
 		} catch (Exception e) {
 			// ignore
 		}
@@ -196,16 +209,55 @@ public class Controller {
 	 * Start listening for Newton.
 	 * 
 	 * @throws ServiceNotSupportedException
+	 *             if the service is not supported.
 	 * @throws PlatformException
 	 *             if a platform error occurs.
 	 * @throws CDILNotInitializedException
 	 *             if CDIL is not initialised.
 	 */
 	public void start() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
-		if (settings.getCommunications().isListen()) {
-			String portName = settings.getCommunications().getPortIdentifier();
-			int baud = settings.getCommunications().getPortSpeed();
-			this.pipe = layer.createMNPSerial(portName, baud);
+		Settings settings = getSettings();
+		// if (settings.getCommunications().isListen()) {
+		String portName = settings.getCommunications().getPortIdentifier();
+		if (portName == null) {
+			settings.getCommunications().setPortIdentifier("");
+			settings.save();
+			showSettings();
+			return;
 		}
+		if (portName.length() > 0) {
+			int baud = settings.getCommunications().getPortSpeed();
+			connectMNP(portName, baud);
+		}
+		// }
+	}
+
+	/**
+	 * Show the settings dialog.
+	 */
+	public void showSettings() {
+		stop();
+		Settings settings = getSettings();
+		getSettingsDialog().setSettings(settings);
+		getSettingsDialog().setVisible(true);
+		setSettings(settings);
+		try {
+			start();
+		} catch (Exception e) {
+			JNCUApp.showError(frame, e);
+		}
+	}
+
+	/**
+	 * Get the settings dialog.
+	 * 
+	 * @return the dialog.
+	 */
+	private JNCUSettingsDialog getSettingsDialog() {
+		if (settingsDialog == null) {
+			settingsDialog = new JNCUSettingsDialog(frame);
+			settingsDialog.setSettings(getSettings());
+		}
+		return settingsDialog;
 	}
 }

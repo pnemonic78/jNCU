@@ -135,7 +135,7 @@ public class CDLayer {
 	 */
 	public void checkMNPSerial() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		checkInitialized();
-		if (serialPorts.size() == 0) {
+		if (serialPorts.isEmpty()) {
 			throw new ServiceNotSupportedException();
 		}
 	}
@@ -213,6 +213,8 @@ public class CDLayer {
 	 *             if CDIL is not initialised.
 	 * @throws PlatformException
 	 *             if a platform error occurs.
+	 * @throws ServiceNotSupportedException
+	 *             if the service is not supported.
 	 */
 	public ADSPPipe createADSP(String name, byte type) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		checkInitialized();
@@ -236,6 +238,8 @@ public class CDLayer {
 	 *             if CDIL is not initialised.
 	 * @throws PlatformException
 	 *             if a platform error occurs.
+	 * @throws ServiceNotSupportedException
+	 *             if the service is not supported.
 	 */
 	public MNPPipe createMNPSerial(int port, int baud) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		return createMNPSerial(serialPorts.get(port), baud);
@@ -258,6 +262,8 @@ public class CDLayer {
 	 *             if CDIL is not initialised.
 	 * @throws PlatformException
 	 *             if a platform error occurs.
+	 * @throws ServiceNotSupportedException
+	 *             if the service is not supported.
 	 */
 	public MNPPipe createMNPSerial(String portName, int baud) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		checkInitialized();
@@ -279,6 +285,8 @@ public class CDLayer {
 	 *             if CDIL is not initialised.
 	 * @throws PlatformException
 	 *             if a platform error occurs.
+	 * @throws ServiceNotSupportedException
+	 *             if the service is not supported.
 	 */
 	public TCPPipe createTCP(int port) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		checkInitialized();
@@ -301,6 +309,8 @@ public class CDLayer {
 	 *             if CDIL is not initialised.
 	 * @throws PlatformException
 	 *             if a platform error occurs.
+	 * @throws ServiceNotSupportedException
+	 *             if the service is not supported.
 	 */
 	public CTBPipe createCTB(String toolName, String configString) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		checkInitialized();

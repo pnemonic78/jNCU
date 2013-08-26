@@ -51,7 +51,6 @@ import javax.swing.KeyStroke;
 
 import net.sf.jncu.Controller;
 import net.sf.jncu.JNCUApp;
-import net.sf.jncu.Settings;
 import net.sf.swing.SwingUtils;
 
 /**
@@ -89,7 +88,6 @@ public class JNCUFrame extends JFrame implements ActionListener {
 	private JMenuItem menuExport;
 	private JMenuItem menuSync;
 	private JMenuItem menuSyncSettings;
-	private JNCUSettingsDialog settingsDialog;
 	private JPanel statusPanel;
 	private JLabel statusLabel;
 	private JLabel statusConnection;
@@ -492,29 +490,7 @@ public class JNCUFrame extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * Get the settings dialog.
-	 * 
-	 * @return the dialog.
-	 */
-	private JNCUSettingsDialog getSettingsDialog() {
-		if (settingsDialog == null) {
-			settingsDialog = new JNCUSettingsDialog(this);
-			settingsDialog.setSettings(getSettings());
-		}
-		return settingsDialog;
-	}
-
-	/**
-	 * Get the settings.
-	 * 
-	 * @return the settings.
-	 */
-	private Settings getSettings() {
-		return getControl().getSettings();
-	}
-
-	/**
-	 * Close jNCU.
+	 * Close the frame.
 	 */
 	public void close() {
 		if (isShowing()) {
@@ -645,7 +621,7 @@ public class JNCUFrame extends JFrame implements ActionListener {
 			installButton.setToolTipText("Install Package");
 			installButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON, INSET_BUTTON, INSET_BUTTON));
 			installButton.addActionListener(this);
-			// TODO installButton.setEnabled(false);
+			installButton.setEnabled(false);
 		}
 		return installButton;
 	}
@@ -664,7 +640,7 @@ public class JNCUFrame extends JFrame implements ActionListener {
 			keyboardButton.setToolTipText("Use Keyboard");
 			keyboardButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON, INSET_BUTTON, INSET_BUTTON));
 			keyboardButton.addActionListener(this);
-			// TODO keyboardButton.setEnabled(false);
+			keyboardButton.setEnabled(false);
 		}
 		return keyboardButton;
 	}
@@ -683,7 +659,7 @@ public class JNCUFrame extends JFrame implements ActionListener {
 			backupButton.setToolTipText("Backup");
 			backupButton.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON, INSET_BUTTON, INSET_BUTTON));
 			backupButton.addActionListener(this);
-			// TODO backupButton.setEnabled(false);
+			backupButton.setEnabled(false);
 		}
 		return backupButton;
 	}
@@ -817,16 +793,7 @@ public class JNCUFrame extends JFrame implements ActionListener {
 	 * Show the settings dialog.
 	 */
 	private void settings() {
-		getControl().stop();
-		Settings settings = getSettings();
-		getSettingsDialog().setSettings(settings);
-		getSettingsDialog().setVisible(true);
-		getControl().setSettings(settings);
-		try {
-			getControl().start();
-		} catch (Exception e) {
-			showError(e);
-		}
+		getControl().showSettings();
 	}
 
 	/**

@@ -188,19 +188,19 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	public void setSettings(Settings settings) {
 		this.settings = settings;
 
-		JComboBox<String> ports = getListPorts();
-		ports.removeAllItems();
+		JComboBox<String> portNames = getListPorts();
+		portNames.removeAllItems();
 		String portSet = settings.getCommunications().getPortIdentifier();
 		int portIndex = 0;
 		int i = 0;
 		for (String portId : settings.getCommunications().getPorts()) {
-			ports.addItem(portId);
+			portNames.addItem(portId);
 			if (portId.equals(portSet)) {
 				portIndex = i;
 			}
 			i++;
 		}
-		ports.setSelectedIndex(portIndex);
+		portNames.setSelectedIndex(portIndex);
 		JComboBox<Integer> speeds = getListSpeeds();
 		speeds.setSelectedItem(settings.getCommunications().getPortSpeed());
 		getCheckListen().setSelected(settings.getCommunications().isListen());
