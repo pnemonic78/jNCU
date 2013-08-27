@@ -64,12 +64,11 @@ public class JNCUAboutDialog extends JNCUDialog implements HyperlinkListener {
 	}
 
 	/**
-	 * Initialize.
+	 * Initialise.
 	 */
 	private void init() {
 		setTitle(TITLE);
 		setContentPane(getMainContentPane());
-		setResizable(false);
 		pack();
 		SwingUtils.centreInOwner(this);
 		getOkButton().requestFocus();
@@ -84,8 +83,8 @@ public class JNCUAboutDialog extends JNCUDialog implements HyperlinkListener {
 		if (contentPane == null) {
 			contentPane = new JPanel();
 			contentPane.setLayout(new BorderLayout());
-			contentPane.add(getButtons(), BorderLayout.SOUTH);
 			contentPane.add(getDescription(), BorderLayout.CENTER);
+			contentPane.add(getButtons(), BorderLayout.SOUTH);
 		}
 		return contentPane;
 	}
@@ -143,7 +142,7 @@ public class JNCUAboutDialog extends JNCUDialog implements HyperlinkListener {
 	}
 
 	/**
-	 * Get the OK button.
+	 * Get the "OK" button.
 	 * 
 	 * @return the button.
 	 */
@@ -160,15 +159,6 @@ public class JNCUAboutDialog extends JNCUDialog implements HyperlinkListener {
 
 		if (src == okButton) {
 			close();
-		}
-	}
-
-	/**
-	 * Close the dialog.
-	 */
-	public void close() {
-		if (isShowing()) {
-			SwingUtils.postWindowClosing(this);
 		}
 	}
 

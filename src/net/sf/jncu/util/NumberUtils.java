@@ -69,4 +69,46 @@ public class NumberUtils {
 		return l;
 	}
 
+	/**
+	 * Formats a content size to be in the form of bytes, kilobytes, megabytes,
+	 * etc.
+	 * 
+	 * @param number
+	 *            size value to be formatted.
+	 * @return formatted string with the number.
+	 */
+	public static String formatFileSize(long number) {
+		float result = number;
+		String suffix = "B";
+		if (result > 900) {
+			suffix = "KB";
+			result = result / 1024;
+		}
+		if (result > 900) {
+			suffix = "MB";
+			result = result / 1024;
+		}
+		if (result > 900) {
+			suffix = "GB";
+			result = result / 1024;
+		}
+		if (result > 900) {
+			suffix = "TB";
+			result = result / 1024;
+		}
+		if (result > 900) {
+			suffix = "PB";
+			result = result / 1024;
+		}
+		if (result < 1) {
+			return String.format("%.2f %s", result, suffix);
+		}
+		if (result < 10) {
+			return String.format("%.2f %s", result, suffix);
+		}
+		if (result < 100) {
+			return String.format("%.2f %s", result, suffix);
+		}
+		return String.format("%.0f %s", result, suffix);
+	}
 }

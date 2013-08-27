@@ -173,7 +173,7 @@ public class BackupTester implements BackupListener, MNPPacketListener,
 		System.out.println("BT successModule module=" + module);
 		BackupProgressDialog monitor = getProgress();
 		if (monitor != null) {
-			monitor.setNote("Done");
+			monitor.setMessage("Done");
 		}
 		closeProgress();
 		exit(false);
@@ -184,7 +184,7 @@ public class BackupTester implements BackupListener, MNPPacketListener,
 		System.out.println("BT cancelModule module=" + module);
 		BackupProgressDialog monitor = getProgress();
 		if (monitor != null) {
-			monitor.setNote("Cancelled");
+			monitor.setMessage("Cancelled");
 		}
 		closeProgress();
 		exit(false);
@@ -196,7 +196,7 @@ public class BackupTester implements BackupListener, MNPPacketListener,
 				+ store);
 		BackupProgressDialog monitor = getProgress();
 		if (monitor != null) {
-			monitor.setNote(String.format("Backing up store %s",
+			monitor.setMessage(String.format("Backing up store %s",
 					store.getName()));
 		}
 	}
@@ -208,7 +208,7 @@ public class BackupTester implements BackupListener, MNPPacketListener,
 				+ " appName=" + appName);
 		BackupProgressDialog monitor = getProgress();
 		if (monitor != null) {
-			monitor.setNote(String.format("Backing up %s on store %s",
+			monitor.setMessage(String.format("Backing up %s on store %s",
 					appName.getName(), store.getName()));
 		}
 	}
@@ -297,7 +297,7 @@ public class BackupTester implements BackupListener, MNPPacketListener,
 	protected BackupProgressDialog getProgress() {
 		if (progressMonitor == null) {
 			progressMonitor = new BackupProgressDialog();
-			progressMonitor.setNote(null);
+			progressMonitor.setMessage(null);
 			// Setting the dialog to visible will not exit this function until
 			// it is hidden.
 			SwingUtilities.invokeLater(new Runnable() {

@@ -30,9 +30,12 @@ import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 import net.sf.jncu.cdil.mnp.MNPPipe;
+import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.protocol.v2_0.app.LoadPackage;
 import net.sf.jncu.protocol.v2_0.io.KeyboardInput;
+import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
 import net.sf.jncu.protocol.v2_0.sync.BackupDialog;
+import net.sf.jncu.ui.JNCUDeviceDialog;
 import net.sf.jncu.ui.JNCUFrame;
 import net.sf.jncu.ui.JNCUSettingsDialog;
 
@@ -52,6 +55,7 @@ public class Controller {
 	private LoadPackage packageLoader;
 	private JFileChooser packageChooser;
 	private JNCUSettingsDialog settingsDialog;
+	private JNCUDeviceDialog deviceDialog;
 
 	/**
 	 * Create a new controller.
@@ -262,5 +266,26 @@ public class Controller {
 			settingsDialog.setSettings(getSettings());
 		}
 		return settingsDialog;
+	}
+
+	/**
+	 * Get the device information dialog.
+	 * 
+	 * @return the dialog.
+	 */
+	private JNCUDeviceDialog getDeviceDialog() {
+		if (deviceDialog == null) {
+			deviceDialog = new JNCUDeviceDialog(frame);
+		}
+		return deviceDialog;
+	}
+
+	/**
+	 * Show the device information dialog.
+	 */
+	public void showDevice() {
+		NewtonInfo info = DockingProtocol.getNewtonInfo();
+		getDeviceDialog().setDeviceInfo(info);
+		getDeviceDialog().setVisible(true);
 	}
 }

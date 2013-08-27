@@ -51,6 +51,7 @@ import javax.swing.KeyStroke;
 
 import net.sf.jncu.Controller;
 import net.sf.jncu.JNCUApp;
+import net.sf.jncu.JNCUResources;
 import net.sf.swing.SwingUtils;
 
 /**
@@ -88,6 +89,7 @@ public class JNCUFrame extends JFrame implements ActionListener {
 	private JMenuItem menuExport;
 	private JMenuItem menuSync;
 	private JMenuItem menuSyncSettings;
+	private JMenuItem menuDeviceInfo;
 	private JPanel statusPanel;
 	private JLabel statusLabel;
 	private JLabel statusConnection;
@@ -225,16 +227,19 @@ public class JNCUFrame extends JFrame implements ActionListener {
 	 */
 	private JMenu getMenuNewton() {
 		if (menuNewton == null) {
-			menuNewton = new JMenu();
-			menuNewton.setText("Newton");
-			menuNewton.setMnemonic(KeyEvent.VK_N);
-			menuNewton.add(getMenuBackup());
-			menuNewton.add(getMenuRestore());
-			menuNewton.addSeparator();
-			menuNewton.add(getMenuInstall());
-			menuNewton.add(getMenuKeyboard());
-			menuNewton.addSeparator();
-			menuNewton.add(getMenuSettings());
+			JMenu menu = new JMenu();
+			menu.setText("Newton");
+			menu.setMnemonic(KeyEvent.VK_N);
+			menu.add(getMenuBackup());
+			menu.add(getMenuRestore());
+			menu.addSeparator();
+			menu.add(getMenuInstall());
+			menu.add(getMenuKeyboard());
+			menu.addSeparator();
+			menu.add(getMenuDeviceInfo());
+			menu.addSeparator();
+			menu.add(getMenuSettings());
+			menuNewton = menu;
 		}
 		return menuNewton;
 	}
@@ -246,10 +251,11 @@ public class JNCUFrame extends JFrame implements ActionListener {
 	 */
 	private JMenu getMenuHelp() {
 		if (menuHelp == null) {
-			menuHelp = new JMenu();
-			menuHelp.setMnemonic(KeyEvent.VK_H);
-			menuHelp.setText(Toolkit.getProperty("AWT.help", "Help"));
-			menuHelp.add(getMenuAbout());
+			JMenu menu = new JMenu();
+			menu.setText(Toolkit.getProperty("JNCU.help", "Help"));
+			menu.setMnemonic(JNCUResources.getChar("JNCU.helpMnemonic", KeyEvent.VK_H));
+			menu.add(getMenuAbout());
+			menuHelp = menu;
 		}
 		return menuHelp;
 	}
@@ -354,6 +360,23 @@ public class JNCUFrame extends JFrame implements ActionListener {
 			menuKeyboard = menuItem;
 		}
 		return menuKeyboard;
+	}
+
+	/**
+	 * Get the "Newton | Device Info" menu.
+	 * 
+	 * @return the menu item.
+	 */
+	private JMenuItem getMenuDeviceInfo() {
+		if (menuDeviceInfo == null) {
+			JMenuItem menuItem = new JMenuItem();
+			menuItem.setMnemonic(KeyEvent.VK_D);
+			menuItem.setText("Device Information...");
+			menuItem.addActionListener(this);
+			menuItem.setEnabled(false);
+			menuDeviceInfo = menuItem;
+		}
+		return menuDeviceInfo;
 	}
 
 	/**
@@ -525,6 +548,8 @@ public class JNCUFrame extends JFrame implements ActionListener {
 			restoreToNewton();
 		} else if (src == importButton) {
 			importToNewton();
+		} else if (src == menuDeviceInfo) {
+			showDevice();
 		}
 	}
 
@@ -837,5 +862,12 @@ public class JNCUFrame extends JFrame implements ActionListener {
 	 */
 	public void setStatus(String status) {
 		statusLabel.setText(status);
+	}
+
+	/**
+	 * Show the device information.
+	 */
+	private void showDevice() {
+		getControl().showDevice();
 	}
 }

@@ -103,12 +103,11 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	}
 
 	/**
-	 * Initialize.
+	 * Initialise.
 	 */
 	private void init() {
 		setTitle(TITLE);
 		setContentPane(getMainContentPane());
-		setResizable(false);
 		setSize(400, 260);
 		SwingUtils.centreInOwner(this);
 		getCancelButton().requestFocus();
@@ -131,7 +130,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	}
 
 	/**
-	 * Get the button pane.
+	 * Get the buttons pane.
 	 * 
 	 * @return the panel.
 	 */
@@ -147,7 +146,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	}
 
 	/**
-	 * Get the OK button.
+	 * Get the "OK" button.
 	 * 
 	 * @return the button.
 	 */
@@ -159,7 +158,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	}
 
 	/**
-	 * Get the cancel button.
+	 * Get the "cancel" button.
 	 * 
 	 * @return the button.
 	 */
@@ -299,7 +298,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	}
 
 	/**
-	 * Get the apply button.
+	 * Get the" apply" button.
 	 * 
 	 * @return the button.
 	 */
@@ -319,7 +318,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	}
 
 	/**
-	 * Get the help button.
+	 * Get the "help" button.
 	 * 
 	 * @return the button.
 	 */
@@ -571,15 +570,6 @@ public class JNCUSettingsDialog extends JNCUDialog {
 			browser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		}
 		return browser;
-	}
-
-	/**
-	 * Close the dialog.
-	 */
-	public void close() {
-		if (isShowing()) {
-			SwingUtils.postWindowClosing(this);
-		}
 	}
 
 	/**

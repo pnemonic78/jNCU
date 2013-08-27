@@ -85,8 +85,10 @@ public class KeyboardInputDialog extends JNCUDialog implements KeyListener {
 		init();
 	}
 
+	/**
+	 * Initialise.
+	 */
 	private void init() {
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle(TITLE);
 
 		JPanel panelContents = new JPanel(new BorderLayout(5, 5));
@@ -222,14 +224,14 @@ public class KeyboardInputDialog extends JNCUDialog implements KeyListener {
 	/**
 	 * Notify all the listeners that a character has been pressed.
 	 * 
-	 * @param ke
+	 * @param event
 	 *            the key event.
 	 */
-	protected void fireCharTyped(KeyEvent ke) {
+	protected void fireCharTyped(KeyEvent event) {
 		// Make copy of listeners to avoid ConcurrentModificationException.
 		Collection<KeyboardInputListener> listenersCopy = new ArrayList<KeyboardInputListener>(listeners);
 		for (KeyboardInputListener listener : listenersCopy) {
-			listener.charTyped(ke);
+			listener.charTyped(event);
 		}
 	}
 
@@ -247,31 +249,21 @@ public class KeyboardInputDialog extends JNCUDialog implements KeyListener {
 		}
 	}
 
-	/**
-	 * Close the window.
-	 */
-	public void close() {
-		if (isVisible()) {
-			setVisible(false);
-			SwingUtils.postWindowClosing(this);
-		}
-	}
-
 	@Override
-	public void keyPressed(KeyEvent ke) {
-		String text = KeyEvent.getKeyText(ke.getKeyCode());
+	public void keyPressed(KeyEvent event) {
+		String text = KeyEvent.getKeyText(event.getKeyCode());
 		getTextInput().setText(text);
-		fireCharTyped(ke);
+		fireCharTyped(event);
 	}
 
 	@Override
-	public void keyReleased(KeyEvent ke) {
-		fireCharTyped(ke);
+	public void keyReleased(KeyEvent event) {
+		fireCharTyped(event);
 	}
 
 	@Override
-	public void keyTyped(KeyEvent ke) {
-		fireCharTyped(ke);
+	public void keyTyped(KeyEvent event) {
+		fireCharTyped(event);
 	}
 
 	@Override

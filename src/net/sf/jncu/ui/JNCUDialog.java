@@ -38,7 +38,7 @@ import net.sf.jncu.JNCUResources;
 import net.sf.swing.SwingUtils;
 
 /**
- * jNCU bae dialog.
+ * jNCU base dialog.
  * 
  * @author Moshe
  */
@@ -71,10 +71,12 @@ public class JNCUDialog extends JDialog implements ActionListener {
 	}
 
 	/**
-	 * Initialize.
+	 * Initialise.
 	 */
 	private void init() {
 		setModalityType(ModalityType.APPLICATION_MODAL);
+		setDefaultCloseOperation(HIDE_ON_CLOSE);
+		setResizable(false);
 
 		int buttonMinimumWidth = UIManager.getInt("OptionPane.buttonMinimumWidth");
 		this.buttonMinimumSize = new Dimension(buttonMinimumWidth, 24);
@@ -140,5 +142,15 @@ public class JNCUDialog extends JDialog implements ActionListener {
 		panel.setOpaque(false);
 		panel.setLayout(new FlowLayout(FlowLayout.TRAILING, 5, 5));
 		return panel;
+	}
+
+	/**
+	 * Close the dialog.
+	 */
+	public void close() {
+		if (isVisible()) {
+			setVisible(false);
+			SwingUtils.postWindowClosing(this);
+		}
 	}
 }
