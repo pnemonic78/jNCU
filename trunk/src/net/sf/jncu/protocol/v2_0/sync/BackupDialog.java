@@ -20,9 +20,7 @@
 package net.sf.jncu.protocol.v2_0.sync;
 
 import java.awt.BorderLayout;
-import java.awt.Dialog;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
@@ -141,28 +139,6 @@ public class BackupDialog extends JNCUDialog {
 	 * @param owner
 	 *            the owner.
 	 */
-	public BackupDialog(Frame owner) {
-		super(owner);
-		init();
-	}
-
-	/**
-	 * Creates a new dialog.
-	 * 
-	 * @param owner
-	 *            the owner.
-	 */
-	public BackupDialog(Dialog owner) {
-		super(owner);
-		init();
-	}
-
-	/**
-	 * Creates a new dialog.
-	 * 
-	 * @param owner
-	 *            the owner.
-	 */
 	public BackupDialog(Window owner) {
 		super(owner);
 		init();
@@ -172,9 +148,7 @@ public class BackupDialog extends JNCUDialog {
 	 * Initialise.
 	 */
 	private void init() {
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle(TITLE);
-		setResizable(false);
 
 		JPanel panelContents = new JPanel();
 		panelContents.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -219,16 +193,6 @@ public class BackupDialog extends JNCUDialog {
 		pack();
 		SwingUtils.centreInOwner(this);
 		getBackupButton().requestFocus();
-	}
-
-	/**
-	 * Close the window.
-	 */
-	public void close() {
-		if (isVisible()) {
-			setVisible(false);
-			SwingUtils.postWindowClosing(this);
-		}
 	}
 
 	/**
@@ -418,6 +382,11 @@ public class BackupDialog extends JNCUDialog {
 		return options;
 	}
 
+	/**
+	 * Get the "cancel" button.
+	 * 
+	 * @return the button.
+	 */
 	private JButton getCancelButton() {
 		if (cancelButton == null) {
 			cancelButton = createCancelButton();
@@ -425,6 +394,11 @@ public class BackupDialog extends JNCUDialog {
 		return cancelButton;
 	}
 
+	/**
+	 * Get the "backup" button.
+	 * 
+	 * @return the button.
+	 */
 	private JButton getBackupButton() {
 		if (backupButton == null) {
 			URL url = getClass().getResource("/dialog-play.png");
@@ -440,7 +414,9 @@ public class BackupDialog extends JNCUDialog {
 	}
 
 	/**
-	 * @return the selectAllStoresButton
+	 * Get the button to select all stores.
+	 * 
+	 * @return the button.
 	 */
 	private JButton getSelectAllStoresButton() {
 		if (selectAllStoresButton == null) {
@@ -456,7 +432,9 @@ public class BackupDialog extends JNCUDialog {
 	}
 
 	/**
-	 * @return the clearAllStoresButton
+	 * Get the button to deselect all stores.
+	 * 
+	 * @return the button.
 	 */
 	private JButton getClearAllStoresButton() {
 		if (clearAllStoresButton == null) {
@@ -472,7 +450,9 @@ public class BackupDialog extends JNCUDialog {
 	}
 
 	/**
-	 * @return the selectAllInfoButton
+	 * Get the button to select all soups.
+	 * 
+	 * @return the button.
 	 */
 	private JButton getSelectAllInfoButton() {
 		if (selectAllInfoButton == null) {
@@ -488,7 +468,9 @@ public class BackupDialog extends JNCUDialog {
 	}
 
 	/**
-	 * @return the clearAllInfoButton
+	 * Get the button to deselect all soups.
+	 * 
+	 * @return the button.
 	 */
 	private JButton getClearAllInfoButton() {
 		if (clearAllInfoButton == null) {

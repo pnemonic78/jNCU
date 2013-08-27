@@ -228,21 +228,21 @@ public class NewtonInfo {
 	}
 
 	/**
-	 * Get the RAM size.
+	 * Get the Random Access Memory size.
 	 * <p>
 	 * The amount of RAM on the Newton device.
 	 * 
-	 * @return the RAM size.
+	 * @return the RAM size in bytes.
 	 */
 	public int getRAMSize() {
 		return ramSize;
 	}
 
 	/**
-	 * Set the RAM size.
+	 * Set the Random Access Memory size.
 	 * 
 	 * @param ramSize
-	 *            the RAM size.
+	 *            the RAM size in bytes.
 	 */
 	public void setRAMSize(int ramSize) {
 		this.ramSize = ramSize;
@@ -362,7 +362,7 @@ public class NewtonInfo {
 	/**
 	 * Get the vertical screen resolution.
 	 * 
-	 * @return the resolution.
+	 * @return the resolution in pixels per inch.
 	 */
 	public int getScreenResolutionVertical() {
 		return screenResolutionVertical;
@@ -374,7 +374,7 @@ public class NewtonInfo {
 	 * The number of horizontal pixels per inch.
 	 * 
 	 * @param screenResolutionVertical
-	 *            the resolution.
+	 *            the resolution in pixels per inch.
 	 */
 	public void setScreenResolutionVertical(int screenResolutionVertical) {
 		this.screenResolutionVertical = screenResolutionVertical;
@@ -383,7 +383,7 @@ public class NewtonInfo {
 	/**
 	 * Get the horizontal screen resolution.
 	 * 
-	 * @return the resolution.
+	 * @return the resolution in pixels per inch.
 	 */
 	public int getScreenResolutionHorizontal() {
 		return screenResolutionHorizontal;
@@ -395,7 +395,7 @@ public class NewtonInfo {
 	 * The number of vertical pixels per inch.
 	 * 
 	 * @param screenResolutionHorizontal
-	 *            the resolution.
+	 *            the resolution in pixels per inch.
 	 */
 	public void setScreenResolutionHorizontal(int screenResolutionHorizontal) {
 		this.screenResolutionHorizontal = screenResolutionHorizontal;

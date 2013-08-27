@@ -84,12 +84,12 @@ public class DNewtonName extends net.sf.jncu.protocol.v1_0.session.DNewtonName {
 			 */
 			int systemFlags = ntohl(data);
 
-			if ((systemFlags & 0x1) == 0x1) {
+			if ((systemFlags & 1) == 1) {
 				long serHi = ntohl(data) & 0xFFFFFFFFL;
 				long serLo = ntohl(data) & 0xFFFFFFFFL;
 				info.setSerialNumber((serHi << 32) | serLo);
 			}
-			if ((systemFlags & 0x2) == 0x2) {
+			if ((systemFlags & 2) == 2) {
 				info.setTargetProtocol(ntohl(data));
 			}
 		}

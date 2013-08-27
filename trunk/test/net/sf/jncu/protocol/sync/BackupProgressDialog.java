@@ -20,14 +20,9 @@
 package net.sf.jncu.protocol.sync;
 
 import java.awt.BorderLayout;
-import java.awt.Dialog;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -39,13 +34,14 @@ import net.sf.jncu.ui.JNCUDialog;
 import net.sf.swing.SwingUtils;
 
 /**
- * Backup progress.
+ * Backup progress dialog.
  * 
  * @author Moshe
  */
 public class BackupProgressDialog extends JNCUDialog {
 
-	private JLabel labelNote;
+	private JLabel messageLabel;
+	private JButton cancelButton;
 
 	/**
 	 * Constructs a new dialog.
@@ -61,73 +57,77 @@ public class BackupProgressDialog extends JNCUDialog {
 	 * @param owner
 	 *            the owner.
 	 */
-	public BackupProgressDialog(Frame owner) {
-		super(owner);
-		init();
-	}
-
-	/**
-	 * Constructs a new dialog.
-	 * 
-	 * @param owner
-	 *            the owner.
-	 */
-	public BackupProgressDialog(Dialog owner) {
-		super(owner);
-		init();
-	}
-
-	/**
-	 * Constructs a new dialog.
-	 * 
-	 * @param owner
-	 *            te owner.
-	 */
 	public BackupProgressDialog(Window owner) {
 		super(owner);
 		init();
 	}
 
+	/**
+	 * Initialise.
+	 */
 	private void init() {
 		setTitle("Backup Progress");
 
-		JPanel panelMain = new JPanel();
-		panelMain.setBorder(new EmptyBorder(10, 5, 5, 5));
-		panelMain.setOpaque(false);
-		panelMain.setLayout(new BorderLayout(10, 10));
-		setContentPane(panelMain);
-
-		JPanel panelButtons = new JPanel();
-		panelButtons.setOpaque(false);
-		FlowLayout flowLayout = (FlowLayout) panelButtons.getLayout();
-		flowLayout.setAlignment(FlowLayout.TRAILING);
-		panelMain.add(panelButtons, BorderLayout.SOUTH);
-
-		JButton btnCancel = new JButton(Toolkit.getProperty("AWT.cancel",
-				"Cancel"));
-		btnCancel.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				BackupProgressDialog.this.setVisible(false);
-			}
-		});
-		panelButtons.add(btnCancel);
-
 		JProgressBar progressBar = new JProgressBar();
-		panelMain.add(progressBar, BorderLayout.NORTH);
 		progressBar.setIndeterminate(true);
 
-		labelNote = new JLabel("Note");
-		panelMain.add(labelNote, BorderLayout.CENTER);
+		JPanel panelButtons = createButtonsPanel();
+		panelButtons.add(getCancelButton());
+
+		JPanel panelMain = new JPanel();
+		panelMain.setBorder(new EmptyBorder(5, 5, 5, 5));
+		panelMain.setOpaque(false);
+		panelMain.setLayout(new BorderLayout(10, 10));
+		panelMain.add(progressBar, BorderLayout.NORTH);
+		panelMain.add(getMessage(), BorderLayout.CENTER);
+		panelMain.add(panelButtons, BorderLayout.SOUTH);
+		setContentPane(panelMain);
 
 		setMinimumSize(new Dimension(320, 140));
+		pack();
 		SwingUtils.centreInOwner(this);
 	}
 
-	protected JLabel getNote() {
-		return labelNote;
+	/**
+	 * Get the "cancel" button.
+	 * 
+	 * @return the button.
+	 */
+	private JButton getCancelButton() {
+		if (cancelButton == null) {
+			cancelButton = createCancelButton();
+		}
+		return cancelButton;
 	}
 
-	public void setNote(String text) {
-		getNote().setText(text);
+	/**
+	 * Get the message label.
+	 * 
+	 * @return the label.
+	 */
+	protected JLabel getMessage() {
+		if (messageLabel == null) {
+			messageLabel = new JLabel("Note");
+		}
+		return messageLabel;
+	}
+
+	/**
+	 * Set the message label text.
+	 * 
+	 * @param text
+	 *            the text.
+	 */
+	public void setMessage(String text) {
+		getMessage().setText(text);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		final Object src = event.getSource();
+
+		if (src == cancelButton) {
+			close();
+		}
 	}
 }
