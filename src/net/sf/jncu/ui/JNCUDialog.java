@@ -108,8 +108,8 @@ public class JNCUDialog extends JDialog implements ActionListener {
 		Icon icon = new ImageIcon(url);
 
 		JButton button = createButton();
-		button.setText(JNCUResources.getString("JNCU.cancel", "Cancel"));
-		button.setMnemonic(JNCUResources.getChar("JNCU.cancelMnemonic", KeyEvent.VK_C));
+		button.setText(JNCUResources.getString("cancel", "Cancel"));
+		button.setMnemonic(JNCUResources.getChar("cancelMnemonic", KeyEvent.VK_C));
 		button.setIcon(icon);
 
 		return button;
@@ -125,8 +125,8 @@ public class JNCUDialog extends JDialog implements ActionListener {
 		Icon icon = new ImageIcon(url);
 
 		JButton button = createButton();
-		button.setText(JNCUResources.getString("JNCU.ok", "OK"));
-		button.setMnemonic(JNCUResources.getChar("JNCU.okMnemonic", KeyEvent.VK_O));
+		button.setText(JNCUResources.getString("ok", "OK"));
+		button.setMnemonic(JNCUResources.getChar("okMnemonic", KeyEvent.VK_O));
 		button.setIcon(icon);
 
 		return button;

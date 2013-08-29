@@ -252,8 +252,8 @@ public class JNCUFrame extends JFrame implements ActionListener {
 	private JMenu getMenuHelp() {
 		if (menuHelp == null) {
 			JMenu menu = new JMenu();
-			menu.setText(Toolkit.getProperty("JNCU.help", "Help"));
-			menu.setMnemonic(JNCUResources.getChar("JNCU.helpMnemonic", KeyEvent.VK_H));
+			menu.setText(Toolkit.getProperty("help", "Help"));
+			menu.setMnemonic(JNCUResources.getChar("helpMnemonic", KeyEvent.VK_H));
 			menu.add(getMenuAbout());
 			menuHelp = menu;
 		}

@@ -405,8 +405,8 @@ public class BackupDialog extends JNCUDialog {
 			Icon icon = new ImageIcon(url);
 
 			JButton button = createButton();
-			button.setText(JNCUResources.getString("JNCU.backup", "Backup"));
-			button.setMnemonic(JNCUResources.getChar("JNCU.backupMnemonic", KeyEvent.VK_B));
+			button.setText(JNCUResources.getString("backup", "Backup"));
+			button.setMnemonic(JNCUResources.getChar("backupMnemonic", KeyEvent.VK_B));
 			button.setIcon(icon);
 			backupButton = button;
 		}

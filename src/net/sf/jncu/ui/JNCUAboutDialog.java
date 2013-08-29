@@ -36,6 +36,7 @@ import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.html.HTMLEditorKit;
 
+import net.sf.jncu.JNCUResources;
 import net.sf.swing.SwingUtils;
 
 /**
@@ -45,7 +46,6 @@ import net.sf.swing.SwingUtils;
  */
 public class JNCUAboutDialog extends JNCUDialog implements HyperlinkListener {
 
-	private static final String TITLE = "About jNewton Connection Utility";
 
 	private JPanel contentPane;
 	private JPanel buttons;
@@ -67,7 +67,7 @@ public class JNCUAboutDialog extends JNCUDialog implements HyperlinkListener {
 	 * Initialise.
 	 */
 	private void init() {
-		setTitle(TITLE);
+		setTitle(JNCUResources.getString("jncuAbout", null));
 		setContentPane(getMainContentPane());
 		pack();
 		SwingUtils.centreInOwner(this);

@@ -52,9 +52,9 @@ public class JNCUResources {
 			return defaultValue;
 		if (bundle == null)
 			bundle = ResourceBundle.getBundle(BUNDLE);
-		String value = bundle.getString(key);
-		if (value == null)
+		if (!bundle.containsKey(key))
 			return defaultValue;
+		String value = bundle.getString(key);
 		if (value.startsWith("@")) {
 			key = value.substring(1);
 			return Toolkit.getProperty(key, defaultValue);
