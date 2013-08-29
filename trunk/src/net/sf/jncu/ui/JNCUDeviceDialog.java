@@ -32,6 +32,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import net.sf.jncu.JNCUResources;
 import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.util.NumberUtils;
 import net.sf.swing.SwingUtils;
@@ -42,8 +43,6 @@ import net.sf.swing.SwingUtils;
  * @author moshew
  */
 public class JNCUDeviceDialog extends JNCUDialog {
-
-	private static final String TITLE = "jNewton Connection Utility";
 
 	private static final int INSET_PANEL = 10;
 	private static final int INSET_CELL_Y = 2;
@@ -85,7 +84,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 	 * Initialise.
 	 */
 	private void init() {
-		setTitle(TITLE);
+		setTitle(JNCUResources.getString("jncu", null));
 		setContentPane(getMainContentPane());
 		pack();
 		SwingUtils.centreInOwner(this);
@@ -124,7 +123,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			GridBagConstraints gbcLabel;
 			GridBagConstraints gbcValue;
 
-			label = new JLabel("Name");
+			label = new JLabel(JNCUResources.getString("deviceName", "Name"));
 			gbcLabel = new GridBagConstraints();
 			gbcLabel.gridx = 0;
 			gbcLabel.gridy = y;
@@ -138,7 +137,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			gbcValue.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			panel.add(getNameLabel(), gbcValue);
 
-			label = new JLabel("Newton ID");
+			label = new JLabel(JNCUResources.getString("deviceID", "Newton ID"));
 			gbcLabel = new GridBagConstraints();
 			gbcLabel.gridx = 0;
 			gbcLabel.gridy = y;
@@ -152,7 +151,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			gbcValue.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			panel.add(getNewtonIdLabel(), gbcValue);
 
-			label = new JLabel("Serial number");
+			label = new JLabel(JNCUResources.getString("deviceSerial", "Serial number"));
 			gbcLabel = new GridBagConstraints();
 			gbcLabel.gridx = 0;
 			gbcLabel.gridy = y;
@@ -166,7 +165,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			gbcValue.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			panel.add(getSerialNumberLabel(), gbcValue);
 
-			label = new JLabel("Internal store signature");
+			label = new JLabel(JNCUResources.getString("deviceStore", "Internal store signature"));
 			gbcLabel = new GridBagConstraints();
 			gbcLabel.gridx = 0;
 			gbcLabel.gridy = y;
@@ -180,7 +179,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			gbcValue.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			panel.add(getInternalStoreSignatureLabel(), gbcValue);
 
-			label = new JLabel("Manufacturer ID");
+			label = new JLabel(JNCUResources.getString("deviceManufacturer", "Manufacturer ID"));
 			gbcLabel = new GridBagConstraints();
 			gbcLabel.gridx = 0;
 			gbcLabel.gridy = y;
@@ -194,7 +193,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			gbcValue.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			panel.add(getManufacturerIdLabel(), gbcValue);
 
-			label = new JLabel("Machine type ID");
+			label = new JLabel(JNCUResources.getString("deviceMachine", "Machine type ID"));
 			gbcLabel = new GridBagConstraints();
 			gbcLabel.gridx = 0;
 			gbcLabel.gridy = y;
@@ -208,7 +207,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			gbcValue.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			panel.add(getMachineTypeLabel(), gbcValue);
 
-			label = new JLabel("ROM version");
+			label = new JLabel(JNCUResources.getString("deviceROMVersion", "ROM version"));
 			gbcLabel = new GridBagConstraints();
 			gbcLabel.gridx = 0;
 			gbcLabel.gridy = y;
@@ -222,7 +221,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			gbcValue.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			panel.add(getRomVersionLabel(), gbcValue);
 
-			label = new JLabel("ROM stage");
+			label = new JLabel(JNCUResources.getString("deviceROMStage", "ROM stage"));
 			gbcLabel = new GridBagConstraints();
 			gbcLabel.gridx = 0;
 			gbcLabel.gridy = y;
@@ -236,7 +235,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			gbcValue.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			panel.add(getRomStageLabel(), gbcValue);
 
-			label = new JLabel("Patch version");
+			label = new JLabel(JNCUResources.getString("devicePatch", "Patch version"));
 			gbcLabel = new GridBagConstraints();
 			gbcLabel.gridx = 0;
 			gbcLabel.gridy = y;
@@ -250,7 +249,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			gbcValue.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			panel.add(getPatchVersionLabel(), gbcValue);
 
-			label = new JLabel("Object system version");
+			label = new JLabel(JNCUResources.getString("deviceObject", "Object system version"));
 			gbcLabel = new GridBagConstraints();
 			gbcLabel.gridx = 0;
 			gbcLabel.gridy = y;
@@ -264,7 +263,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			gbcValue.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			panel.add(getObjectSystemVersionLabel(), gbcValue);
 
-			label = new JLabel("RAM size");
+			label = new JLabel(JNCUResources.getString("deviceRAM", "RAM size"));
 			gbcLabel = new GridBagConstraints();
 			gbcLabel.gridx = 0;
 			gbcLabel.gridy = y;
@@ -278,7 +277,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			gbcValue.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			panel.add(getRamSizeLabel(), gbcValue);
 
-			label = new JLabel("Screen width");
+			label = new JLabel(JNCUResources.getString("deviceScreenWidth", "Screen width"));
 			gbcLabel = new GridBagConstraints();
 			gbcLabel.gridx = 0;
 			gbcLabel.gridy = y;
@@ -292,7 +291,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			gbcValue.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			panel.add(getScreenWidthLabel(), gbcValue);
 
-			label = new JLabel("Screen height");
+			label = new JLabel(JNCUResources.getString("deviceScreenHeight", "Screen height"));
 			gbcLabel = new GridBagConstraints();
 			gbcLabel.gridx = 0;
 			gbcLabel.gridy = y;
@@ -306,7 +305,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			gbcValue.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			panel.add(getScreenHeightLabel(), gbcValue);
 
-			label = new JLabel("Screen depth");
+			label = new JLabel(JNCUResources.getString("deviceScreenDepth", "Screen depth"));
 			gbcLabel = new GridBagConstraints();
 			gbcLabel.gridx = 0;
 			gbcLabel.gridy = y;
@@ -320,7 +319,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			gbcValue.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			panel.add(getScreenDepthLabel(), gbcValue);
 
-			label = new JLabel("Screen resolution horizontal");
+			label = new JLabel(JNCUResources.getString("deviceScreenResX", "Screen resolution horizontal"));
 			gbcLabel = new GridBagConstraints();
 			gbcLabel.gridx = 0;
 			gbcLabel.gridy = y;
@@ -334,7 +333,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			gbcValue.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			panel.add(getScreenResolutionXLabel(), gbcValue);
 
-			label = new JLabel("Screen resolution vertical");
+			label = new JLabel(JNCUResources.getString("deviceScreenResY", "Screen resolution vertical"));
 			gbcLabel = new GridBagConstraints();
 			gbcLabel.gridx = 0;
 			gbcLabel.gridy = y;
@@ -406,13 +405,13 @@ public class JNCUDeviceDialog extends JNCUDialog {
 		String romLang = "";
 		switch (info.getLanguage()) {
 		case NewtonInfo.ENGLISH:
-			romLang = " English";
+			romLang = JNCUResources.getString("English", "English");
 			break;
 		case NewtonInfo.FRENCH:
-			romLang = " French";
+			romLang = JNCUResources.getString("French", "French");
 			break;
 		case NewtonInfo.GERMAN:
-			romLang = " German";
+			romLang = JNCUResources.getString("German", "German");
 			break;
 		}
 
@@ -424,7 +423,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 		getObjectSystemVersionLabel().setText(Integer.toString(info.getObjectSystemVersion()));
 		getPatchVersionLabel().setText(Integer.toString(info.getPatchVersion()));
 		getRamSizeLabel().setText(NumberUtils.formatFileSize(info.getRAMSize()));
-		getRomStageLabel().setText(Integer.toString(info.getStage()) + romLang);
+		getRomStageLabel().setText(Integer.toString(info.getStage()) + " " + romLang);
 		getRomVersionLabel().setText(romVersion);
 		getScreenDepthLabel().setText(Integer.toString(info.getScreenDepth()) + " bits per pixel");
 		getScreenHeightLabel().setText(Integer.toString(info.getScreenHeight()) + " pixels");
@@ -626,5 +625,12 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			serialNumberLabel = new JLabel();
 		}
 		return serialNumberLabel;
+	}
+
+	public static void main(String[] args) {
+		JNCUDeviceDialog dialog = new JNCUDeviceDialog(null);
+		dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);// TODO
+		dialog.setVisible(true);
+		System.exit(0);
 	}
 }

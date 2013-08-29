@@ -79,7 +79,7 @@ public class BackupProgressDialog extends JNCUDialog {
 		panelMain.setOpaque(false);
 		panelMain.setLayout(new BorderLayout(10, 10));
 		panelMain.add(progressBar, BorderLayout.NORTH);
-		panelMain.add(getMessage(), BorderLayout.CENTER);
+		panelMain.add(getNote(), BorderLayout.CENTER);
 		panelMain.add(panelButtons, BorderLayout.SOUTH);
 		setContentPane(panelMain);
 
@@ -105,9 +105,10 @@ public class BackupProgressDialog extends JNCUDialog {
 	 * 
 	 * @return the label.
 	 */
-	protected JLabel getMessage() {
+	protected JLabel getNote() {
 		if (messageLabel == null) {
-			messageLabel = new JLabel("Note");
+			messageLabel = new JLabel();
+			messageLabel.setText("Note");
 		}
 		return messageLabel;
 	}
@@ -118,8 +119,8 @@ public class BackupProgressDialog extends JNCUDialog {
 	 * @param text
 	 *            the text.
 	 */
-	public void setMessage(String text) {
-		getMessage().setText(text);
+	public void setNote(String text) {
+		getNote().setText(text);
 	}
 
 	@Override

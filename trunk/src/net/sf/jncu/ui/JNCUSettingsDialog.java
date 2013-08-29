@@ -344,7 +344,8 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	 */
 	private JPanel getTabSecurity() {
 		if (tabSecurity == null) {
-			JLabel labelOld = new JLabel("Old Password:");
+			JLabel labelOld = new JLabel();
+			labelOld.setText("Old Password:");
 			GridBagConstraints gbcLabelOld = new GridBagConstraints();
 			gbcLabelOld.gridx = 0;
 			gbcLabelOld.gridy = 0;
@@ -360,7 +361,8 @@ public class JNCUSettingsDialog extends JNCUDialog {
 			gbcPassOld.weightx = 1.0;
 			gbcPassOld.weighty = 1.0;
 
-			JLabel labelNew = new JLabel("New Password:");
+			JLabel labelNew = new JLabel();
+			labelNew.setText("New Password:");
 			GridBagConstraints gbcLabelNew = new GridBagConstraints();
 			gbcLabelNew.gridx = 0;
 			gbcLabelNew.gridy = 1;
@@ -376,7 +378,8 @@ public class JNCUSettingsDialog extends JNCUDialog {
 			gbcPassNew.weightx = 1.0;
 			gbcPassNew.weighty = 1.0;
 
-			JLabel labelConfirm = new JLabel("Confirm Password:");
+			JLabel labelConfirm = new JLabel();
+			labelConfirm.setText("Confirm Password:");
 			GridBagConstraints gbcLabelConfirm = new GridBagConstraints();
 			gbcLabelConfirm.gridx = 0;
 			gbcLabelConfirm.gridy = 2;
