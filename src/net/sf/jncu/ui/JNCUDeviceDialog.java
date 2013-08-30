@@ -84,7 +84,6 @@ public class JNCUDeviceDialog extends JNCUDialog {
 	 * Initialise.
 	 */
 	private void init() {
-		setTitle(JNCUResources.getString("jncu", null));
 		setContentPane(getMainContentPane());
 		pack();
 		SwingUtils.centreInOwner(this);
@@ -625,12 +624,5 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			serialNumberLabel = new JLabel();
 		}
 		return serialNumberLabel;
-	}
-
-	public static void main(String[] args) {
-		JNCUDeviceDialog dialog = new JNCUDeviceDialog(null);
-		dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);// TODO
-		dialog.setVisible(true);
-		System.exit(0);
 	}
 }
