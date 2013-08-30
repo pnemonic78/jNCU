@@ -77,6 +77,7 @@ public class JNCUDialog extends JDialog implements ActionListener {
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
 		setResizable(false);
+		setTitle(JNCUResources.getString("jncu", null));
 
 		int buttonMinimumWidth = UIManager.getInt("OptionPane.buttonMinimumWidth");
 		this.buttonMinimumSize = new Dimension(buttonMinimumWidth, 24);

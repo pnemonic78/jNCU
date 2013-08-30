@@ -46,7 +46,6 @@ import net.sf.swing.SwingUtils;
  */
 public class JNCUAboutDialog extends JNCUDialog implements HyperlinkListener {
 
-
 	private JPanel contentPane;
 	private JPanel buttons;
 	private JButton okButton;
@@ -67,7 +66,7 @@ public class JNCUAboutDialog extends JNCUDialog implements HyperlinkListener {
 	 * Initialise.
 	 */
 	private void init() {
-		setTitle(JNCUResources.getString("jncuAbout", null));
+		setTitle(JNCUResources.getString("jncuAbout", super.getTitle()));
 		setContentPane(getMainContentPane());
 		pack();
 		SwingUtils.centreInOwner(this);
