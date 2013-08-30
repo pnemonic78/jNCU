@@ -65,8 +65,6 @@ import net.sf.swing.SwingUtils;
  */
 public class BackupDialog extends JNCUDialog {
 
-	private static final String TITLE = "Backup";
-
 	private JButton cancelButton;
 	private JButton backupButton;
 	private JList<JCheckBox> listStores;
@@ -148,7 +146,7 @@ public class BackupDialog extends JNCUDialog {
 	 * Initialise.
 	 */
 	private void init() {
-		setTitle(TITLE);
+		setTitle(JNCUResources.getString("backup", super.getTitle()));
 
 		JPanel panelContents = new JPanel();
 		panelContents.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -160,7 +158,7 @@ public class BackupDialog extends JNCUDialog {
 		panelStores.setOpaque(false);
 		panelContents.add(panelStores, BorderLayout.WEST);
 		panelStores.setLayout(new BorderLayout(5, 5));
-		panelStores.setBorder(BorderFactory.createTitledBorder("Backup From Stores"));
+		panelStores.setBorder(BorderFactory.createTitledBorder(JNCUResources.getString("backupStores", "Stores")));
 
 		JScrollPane scrollStores = new JScrollPane(getListStores());
 		panelStores.add(scrollStores, BorderLayout.CENTER);
@@ -174,7 +172,7 @@ public class BackupDialog extends JNCUDialog {
 		panelInfo.setOpaque(false);
 		panelContents.add(panelInfo, BorderLayout.CENTER);
 		panelInfo.setLayout(new BorderLayout(5, 5));
-		panelInfo.setBorder(BorderFactory.createTitledBorder("Information"));
+		panelInfo.setBorder(BorderFactory.createTitledBorder(JNCUResources.getString("backupSoups", "Soups")));
 
 		JScrollPane scrollInfo = new JScrollPane(getListInformation());
 		panelInfo.add(scrollInfo, BorderLayout.CENTER);
@@ -424,7 +422,7 @@ public class BackupDialog extends JNCUDialog {
 			Icon icon = new ImageIcon(url);
 
 			JButton button = createButton();
-			button.setText("Select All");
+			button.setText(JNCUResources.getString("selectAll", "Select All"));
 			button.setIcon(icon);
 			selectAllStoresButton = button;
 		}
@@ -442,7 +440,7 @@ public class BackupDialog extends JNCUDialog {
 			Icon icon = new ImageIcon(url);
 
 			JButton button = createButton();
-			button.setText("Clear All");
+			button.setText(JNCUResources.getString("clearAll", "Clear All"));
 			button.setIcon(icon);
 			clearAllStoresButton = button;
 		}
@@ -460,7 +458,7 @@ public class BackupDialog extends JNCUDialog {
 			Icon icon = new ImageIcon(url);
 
 			JButton button = createButton();
-			button.setText("Select All");
+			button.setText(JNCUResources.getString("selectAll", "Select All"));
 			button.setIcon(icon);
 			selectAllInfoButton = button;
 		}
@@ -478,7 +476,7 @@ public class BackupDialog extends JNCUDialog {
 			Icon icon = new ImageIcon(url);
 
 			JButton button = createButton();
-			button.setText("Clear All");
+			button.setText(JNCUResources.getString("clearAll", "Clear All"));
 			button.setIcon(icon);
 			clearAllInfoButton = button;
 		}

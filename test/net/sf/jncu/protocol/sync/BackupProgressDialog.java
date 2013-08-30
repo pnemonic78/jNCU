@@ -30,6 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.border.EmptyBorder;
 
+import net.sf.jncu.JNCUResources;
 import net.sf.jncu.ui.JNCUDialog;
 import net.sf.swing.SwingUtils;
 
@@ -66,7 +67,7 @@ public class BackupProgressDialog extends JNCUDialog {
 	 * Initialise.
 	 */
 	private void init() {
-		setTitle("Backup Progress");
+		setTitle(JNCUResources.getString("backupProgress", "Backup Progress"));
 
 		JProgressBar progressBar = new JProgressBar();
 		progressBar.setIndeterminate(true);
@@ -108,7 +109,7 @@ public class BackupProgressDialog extends JNCUDialog {
 	protected JLabel getNote() {
 		if (messageLabel == null) {
 			messageLabel = new JLabel();
-			messageLabel.setText("Note");
+			messageLabel.setText(JNCUResources.getString("note", "Note"));
 		}
 		return messageLabel;
 	}

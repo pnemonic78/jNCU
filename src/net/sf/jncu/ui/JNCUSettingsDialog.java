@@ -732,8 +732,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	 */
 	private JLabel getBackupPath() {
 		if (labelBackupPath == null) {
-			labelBackupPath = new JLabel();
-			labelBackupPath.setText(".");
+			labelBackupPath = new JLabel(".");
 		}
 		return labelBackupPath;
 	}

@@ -59,8 +59,6 @@ import net.sf.swing.SwingUtils;
  */
 public class KeyboardInputDialog extends JNCUDialog implements KeyListener {
 
-	private static final String TITLE = "Keyboard Passthrough";
-
 	private JTextArea input;
 	private JButton pasteButton;
 	private JButton cancelButton;
@@ -89,7 +87,7 @@ public class KeyboardInputDialog extends JNCUDialog implements KeyListener {
 	 * Initialise.
 	 */
 	private void init() {
-		setTitle(TITLE);
+		setTitle(JNCUResources.getString("keyboard", super.getTitle()));
 
 		JPanel panelContents = new JPanel(new BorderLayout(5, 5));
 		panelContents.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -97,7 +95,7 @@ public class KeyboardInputDialog extends JNCUDialog implements KeyListener {
 		setContentPane(panelContents);
 
 		JLabel inputLabel = new JLabel();
-		inputLabel.setText("Text typed:");
+		inputLabel.setText(JNCUResources.getString("textTyped", "Text typed:"));
 		panelContents.add(inputLabel, BorderLayout.NORTH);
 
 		panelContents.add(new JScrollPane(getTextInput()), BorderLayout.CENTER);
