@@ -83,7 +83,7 @@ public class Controller {
 		try {
 			this.pipe = layer.createMNPSerial(portId, portSpeed);
 		} catch (Exception e) {
-			JNCUApp.showError(frame, e);
+			JNCUApp.showError(frame, "Connect to MNP", e);
 		}
 	}
 

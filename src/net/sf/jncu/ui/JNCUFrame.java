@@ -30,6 +30,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -58,7 +60,7 @@ import net.sf.swing.SwingUtils;
  * 
  * @author moshew
  */
-public class JNCUFrame extends JFrame implements ActionListener {
+public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 
 	static {
 		SwingUtils.init();
@@ -415,6 +417,7 @@ public class JNCUFrame extends JFrame implements ActionListener {
 
 			label = new JLabel();
 			label.setMinimumSize(new Dimension(0, 24));
+			label.setPreferredSize(new Dimension(Integer.MAX_VALUE, 24));
 			label.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 			statusLabel = label;
 
@@ -816,7 +819,7 @@ public class JNCUFrame extends JFrame implements ActionListener {
 		try {
 			getControl().showSettings();
 		} catch (Exception e) {
-			showError(e);
+			showError("Show settings", e);
 		}
 	}
 
@@ -842,11 +845,13 @@ public class JNCUFrame extends JFrame implements ActionListener {
 	/**
 	 * Show an error to the user.
 	 * 
+	 * @param message
+	 *            the message.
 	 * @param e
 	 *            the error.
 	 */
-	protected void showError(Exception e) {
-		JNCUApp.showError(this, e);
+	protected void showError(String message, Exception e) {
+		JNCUApp.showError(this, message, e);
 	}
 
 	/**
@@ -864,5 +869,31 @@ public class JNCUFrame extends JFrame implements ActionListener {
 	 */
 	private void showDevice() {
 		getControl().showDevice();
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent event) {
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent event) {
+		final Object src = event.getSource();
+		if (src instanceof JMenuItem) {
+			JMenuItem menuItem = (JMenuItem) src;
+			setStatus(menuItem.getToolTipText());
+		}
+	}
+
+	@Override
+	public void mouseExited(MouseEvent event) {
+		setStatus(null);
+	}
+
+	@Override
+	public void mousePressed(MouseEvent event) {
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent event) {
 	}
 }

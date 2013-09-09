@@ -90,12 +90,15 @@ public class JNCUApp {
 	 * 
 	 * @param frame
 	 *            the owner frame.
+	 * @param message
+	 *            the message.
 	 * @param e
 	 *            the error.
 	 */
-	public static void showError(Frame frame, Exception e) {
+	public static void showError(Frame frame, String message, Exception e) {
 		e.printStackTrace();
-		JOptionPane.showMessageDialog(frame, "Error: " + e.getLocalizedMessage(), frame.getTitle(), JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(frame, "Error: " + (message == null ? "" : message) + "\n" + e.getLocalizedMessage(), (frame == null) ? null : frame.getTitle(),
+				JOptionPane.ERROR_MESSAGE);
 		// TODO Log the error using SourceForge bugzilla.
 	}
 

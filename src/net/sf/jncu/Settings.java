@@ -20,6 +20,8 @@
 package net.sf.jncu;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -303,13 +305,10 @@ public class Settings {
 	 * @author Moshe
 	 */
 	public class Security implements SettingsCategory {
-		/** Property key for old password. */
-		private static final String KEY_PASSWORD_OLD = "jncu.password.old";
-		/** Property key for new password. */
-		private static final String KEY_PASSWORD_NEW = "jncu.password.new";
+		/** Property key for the password. */
+		private static final String KEY_PASSWORD = "jncu.password";
 
-		private transient String passwordOld;
-		private transient String passwordNew;
+		private transient String password;
 
 		/**
 		 * Constructs a new category.
@@ -318,57 +317,60 @@ public class Settings {
 		}
 
 		/**
-		 * Get the old password.
+		 * Get the password.
 		 * 
 		 * @return the password.
 		 */
-		public String getPasswordOld() {
-			return passwordOld;
+		public String getPassword() {
+			return password;
 		}
 
 		/**
-		 * Set the old password.
+		 * Set the password.
 		 * 
 		 * @param password
 		 *            the password.
 		 */
-		public void setPasswordOld(String password) {
-			this.passwordOld = password;
-		}
-
-		/**
-		 * Get the new password.
-		 * 
-		 * @return the password.
-		 */
-		public String getPasswordNew() {
-			return passwordNew;
-		}
-
-		/**
-		 * Set the new password.
-		 * 
-		 * @param password
-		 *            the password.
-		 */
-		public void setPasswordNew(String password) {
-			this.passwordNew = password;
+		public void setPassword(String password) {
+			this.password = password;
 		}
 
 		@Override
 		public void read(Preferences prefs) {
-			// TODO decrypt the password
-			setPasswordOld(prefs.get(KEY_PASSWORD_OLD, ""));
-			// TODO decrypt the password
-			setPasswordNew(prefs.get(KEY_PASSWORD_NEW, ""));
+			// Decrypt the password.
+			String passwordBigInt = prefs.get(KEY_PASSWORD, null);
+			if ((passwordBigInt == null) || passwordBigInt.length() == 0) {
+				setPassword(null);
+			} else {
+				try {
+					BigInteger big = new BigInteger(passwordBigInt);
+					byte[] bytes = big.toByteArray();
+					String password = new String(bytes, "UTF-16");
+					setPassword(password);
+				} catch (NumberFormatException nfe) {
+					JNCUApp.showError(null, "Read password", nfe);
+				} catch (UnsupportedEncodingException uee) {
+					// UTF-16 should always be supported!
+				}
+			}
 		}
 
 		@Override
 		public void write(Preferences prefs) {
-			// TODO encrypt the password
-			prefs.set(KEY_PASSWORD_OLD, getPasswordOld());
-			// TODO encrypt the password
-			prefs.set(KEY_PASSWORD_NEW, getPasswordNew());
+			// Encrypt the password.
+			String password = getPassword();
+			if ((password == null) || (password.length() == 0)) {
+				prefs.set(KEY_PASSWORD, "");
+			} else {
+				try {
+					byte[] bytes = password.getBytes("UTF-16");
+					BigInteger big = new BigInteger(bytes);
+					String passwordBigInt = big.toString();
+					prefs.set(KEY_PASSWORD, passwordBigInt);
+				} catch (UnsupportedEncodingException e) {
+					// UTF-16 should always be supported!
+				}
+			}
 		}
 	}
 

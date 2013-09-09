@@ -553,7 +553,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 			Icon icon = new ImageIcon(url);
 
 			JButton button = createButton();
-			button.setText(JNCUResources.getString("browse", "Browse")+ ELLIPSIS);
+			button.setText(JNCUResources.getString("browse", "Browse") + ELLIPSIS);
 			button.setMnemonic(JNCUResources.getChar("browseMnemonic", KeyEvent.VK_B));
 			button.setIcon(icon);
 			browseButton = button;
@@ -588,12 +588,12 @@ public class JNCUSettingsDialog extends JNCUDialog {
 		settings.getAutoDock().setBackupSelective(getCheckDockBackupSelective().isSelected());
 		settings.getAutoDock().setSync(getCheckDockSync().isSelected());
 
+		String passwordStored = settings.getSecurity().getPassword();
 		String passwordOld = String.valueOf(getPasswordOld().getPassword());
 		String passwordNew = String.valueOf(getPasswordNew().getPassword());
 		String passwordConfirm = String.valueOf(getPasswordConfirm().getPassword());
-		if (passwordNew.equals(passwordConfirm)) {
-			settings.getSecurity().setPasswordOld(passwordOld);
-			settings.getSecurity().setPasswordNew(passwordNew);
+		if (passwordStored.equals(passwordOld) && passwordNew.equals(passwordConfirm)) {
+			settings.getSecurity().setPassword(passwordNew);
 		}
 
 		settings.save();
