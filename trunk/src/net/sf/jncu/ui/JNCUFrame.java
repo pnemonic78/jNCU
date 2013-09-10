@@ -53,6 +53,7 @@ import javax.swing.KeyStroke;
 import net.sf.jncu.Controller;
 import net.sf.jncu.JNCUApp;
 import net.sf.jncu.JNCUResources;
+import net.sf.jncu.protocol.v2_0.session.DWhichIcons;
 import net.sf.swing.SwingUtils;
 
 /**
@@ -102,8 +103,8 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	private JButton exportButton;
 	private JNCUAboutDialog aboutDialog;
 	private Controller control;
-	private Icon statusDisconnected;
-	private Icon statusConnected;
+	private Icon statusDisconnectedIcon;
+	private Icon statusConnectedIcon;
 
 	/**
 	 * Create a new frame.
@@ -369,8 +370,8 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	private JMenuItem getMenuDeviceInfo() {
 		if (menuDeviceInfo == null) {
 			JMenuItem menuItem = new JMenuItem();
-			menuItem.setText(JNCUResources.getString("devieInfo", "Device") + ELLIPSIS);
-			menuItem.setMnemonic(JNCUResources.getChar("devieInfoMnemonic", KeyEvent.VK_D));
+			menuItem.setText(JNCUResources.getString("deviceInfo", "Device") + ELLIPSIS);
+			menuItem.setMnemonic(JNCUResources.getChar("deviceInfoMnemonic", KeyEvent.VK_D));
 			menuItem.addActionListener(this);
 			menuItem.setEnabled(false);
 			menuDeviceInfo = menuItem;
@@ -437,22 +438,23 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	 * @param connected
 	 *            is connected?
 	 */
-	private void setStatusConnected(boolean connected) {
+	public void setConnected(boolean connected) {
+		getMenuDeviceInfo().setEnabled(connected);
 		if (connected) {
-			if (statusConnected == null) {
+			if (statusConnectedIcon == null) {
 				URL url = getClass().getResource("/connected.png");
-				statusConnected = new ImageIcon(url);
+				statusConnectedIcon = new ImageIcon(url);
 			}
 
-			statusConnection.setIcon(statusConnected);
+			statusConnection.setIcon(statusConnectedIcon);
 			statusConnection.setText(JNCUResources.getString("connectConnected", "Connected to Newton device."));
 		} else {
-			if (statusDisconnected == null) {
+			if (statusDisconnectedIcon == null) {
 				URL url = getClass().getResource("/disconnected.png");
-				statusDisconnected = new ImageIcon(url);
+				statusDisconnectedIcon = new ImageIcon(url);
 			}
 
-			statusConnection.setIcon(statusDisconnected);
+			statusConnection.setIcon(statusDisconnectedIcon);
 			statusConnection.setText(JNCUResources.getString("connectPlease", "Connect your Newton device."));
 		}
 	}
@@ -492,7 +494,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 		setResizable(false);
 		SwingUtils.centreInOwner(this);
 
-		setStatusConnected(false);
+		setConnected(false);
 	}
 
 	/**
@@ -895,5 +897,43 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 
 	@Override
 	public void mouseReleased(MouseEvent event) {
+	}
+
+	/**
+	 * Set which icons to enable.
+	 * 
+	 * @param icons
+	 *            the icons.
+	 * @see DWhichIcons
+	 */
+	public void setIcons(int icons) {
+		final boolean backupIcon = (icons & DWhichIcons.BACKUP) == DWhichIcons.BACKUP;
+		final boolean importIcon = (icons & DWhichIcons.IMPORT) == DWhichIcons.IMPORT;
+		final boolean installIcon = (icons & DWhichIcons.INSTALL) == DWhichIcons.INSTALL;
+		final boolean keyboardIcon = (icons & DWhichIcons.KEYBOARD) == DWhichIcons.KEYBOARD;
+		final boolean restoreIcon = (icons & DWhichIcons.RESTORE) == DWhichIcons.RESTORE;
+		final boolean syncIcon = (icons & DWhichIcons.SYNC) == DWhichIcons.SYNC;
+
+		getMenuBackup().setEnabled(backupIcon);
+		getBackupButton().setEnabled(backupIcon);
+
+		getMenuExport().setEnabled(importIcon);
+		getExportButton().setEnabled(importIcon);
+
+		getMenuImport().setEnabled(importIcon);
+		getImportButton().setEnabled(importIcon);
+
+		getMenuInstall().setEnabled(installIcon);
+		getInstallButton().setEnabled(installIcon);
+
+		getMenuKeyboard().setEnabled(keyboardIcon);
+		getKeyboardButton().setEnabled(keyboardIcon);
+
+		getMenuRestore().setEnabled(restoreIcon);
+		getRestoreButton().setEnabled(restoreIcon);
+
+		getMenuSync().setEnabled(syncIcon);
+		getMenuSyncSettings().setEnabled(syncIcon);
+		getSyncButton().setEnabled(syncIcon);
 	}
 }
