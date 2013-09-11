@@ -138,7 +138,7 @@ public class KeyboardInputDialog extends JNCUDialog implements KeyListener {
 	 */
 	private JButton getPasteButton() {
 		if (pasteButton == null) {
-			URL url = getClass().getResource("/dialog-paste.png");
+			URL url = getClass().getResource("/dialog/paste.png");
 			Icon icon = new ImageIcon(url);
 
 			JButton button = createButton();
