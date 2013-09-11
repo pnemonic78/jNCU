@@ -25,10 +25,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.net.URL;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -105,13 +102,10 @@ public class JNCUDialog extends JDialog implements ActionListener {
 	 * @return the button.
 	 */
 	protected JButton createCancelButton() {
-		URL url = getClass().getResource("/dialog/cancel.png");
-		Icon icon = new ImageIcon(url);
-
 		JButton button = createButton();
 		button.setText(JNCUResources.getString("cancel", "Cancel"));
 		button.setMnemonic(JNCUResources.getChar("cancelMnemonic", KeyEvent.VK_C));
-		button.setIcon(icon);
+		button.setIcon(JNCUResources.getIcon("/dialog/cancel.png"));
 
 		return button;
 	}
@@ -122,13 +116,10 @@ public class JNCUDialog extends JDialog implements ActionListener {
 	 * @return the button.
 	 */
 	protected JButton createOkButton() {
-		URL url = getClass().getResource("/dialog/ok.png");
-		Icon icon = new ImageIcon(url);
-
 		JButton button = createButton();
 		button.setText(JNCUResources.getString("ok", "OK"));
 		button.setMnemonic(JNCUResources.getChar("okMnemonic", KeyEvent.VK_O));
-		button.setIcon(icon);
+		button.setIcon(JNCUResources.getIcon("/dialog/ok.png"));
 
 		return button;
 	}

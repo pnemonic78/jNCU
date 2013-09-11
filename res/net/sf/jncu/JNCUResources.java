@@ -20,7 +20,10 @@
 package net.sf.jncu;
 
 import java.awt.Toolkit;
+import java.net.URL;
 import java.util.ResourceBundle;
+
+import javax.swing.ImageIcon;
 
 /**
  * jNCU resource bundle.
@@ -94,4 +97,17 @@ public class JNCUResources {
 	public static int getChar(String key, char defaultValue) {
 		return getChar(key, (int) defaultValue);
 	}
+
+	/**
+	 * Get an icon.
+	 * 
+	 * @param path
+	 *            the icon path.
+	 * @return the icon.
+	 */
+	public static ImageIcon getIcon(String path) {
+		URL url = JNCUResources.class.getResource(path);
+		return new ImageIcon(url);
+	}
+
 }
