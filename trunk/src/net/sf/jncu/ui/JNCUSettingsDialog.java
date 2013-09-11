@@ -303,7 +303,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	 */
 	private JButton getApplyButton() {
 		if (applyButton == null) {
-			URL url = getClass().getResource("/dialog-apply.png");
+			URL url = getClass().getResource("/dialog/apply.png");
 			Icon icon = new ImageIcon(url);
 
 			JButton button = createButton();
@@ -323,7 +323,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	 */
 	private JButton getHelpButton() {
 		if (buttonHelp == null) {
-			URL url = getClass().getResource("/dialog-help.png");
+			URL url = getClass().getResource("/dialog/help.png");
 			Icon icon = new ImageIcon(url);
 
 			JButton button = createButton();

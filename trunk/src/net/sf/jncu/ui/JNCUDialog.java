@@ -105,7 +105,7 @@ public class JNCUDialog extends JDialog implements ActionListener {
 	 * @return the button.
 	 */
 	protected JButton createCancelButton() {
-		URL url = getClass().getResource("/dialog-cancel.png");
+		URL url = getClass().getResource("/dialog/cancel.png");
 		Icon icon = new ImageIcon(url);
 
 		JButton button = createButton();
@@ -122,7 +122,7 @@ public class JNCUDialog extends JDialog implements ActionListener {
 	 * @return the button.
 	 */
 	protected JButton createOkButton() {
-		URL url = getClass().getResource("/dialog-ok.png");
+		URL url = getClass().getResource("/dialog/ok.png");
 		Icon icon = new ImageIcon(url);
 
 		JButton button = createButton();

@@ -470,16 +470,16 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 		URL url;
 		Image image;
 		try {
-			url = getClass().getResource("/icon-64.png");
+			url = getClass().getResource("/icon/64.png");
 			image = ImageIO.read(url);
 			images.add(image);
-			url = getClass().getResource("/icon-48.png");
+			url = getClass().getResource("/icon/48.png");
 			image = ImageIO.read(url);
 			images.add(image);
-			url = getClass().getResource("/icon-32.png");
+			url = getClass().getResource("/icon/32.png");
 			image = ImageIO.read(url);
 			images.add(image);
-			url = getClass().getResource("/icon-16.png");
+			url = getClass().getResource("/icon/16.png");
 			image = ImageIO.read(url);
 			images.add(image);
 		} catch (IOException e) {

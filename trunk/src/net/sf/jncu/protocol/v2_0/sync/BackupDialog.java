@@ -399,7 +399,7 @@ public class BackupDialog extends JNCUDialog {
 	 */
 	private JButton getBackupButton() {
 		if (backupButton == null) {
-			URL url = getClass().getResource("/dialog-play.png");
+			URL url = getClass().getResource("/dialog/play.png");
 			Icon icon = new ImageIcon(url);
 
 			JButton button = createButton();
@@ -418,7 +418,7 @@ public class BackupDialog extends JNCUDialog {
 	 */
 	private JButton getSelectAllStoresButton() {
 		if (selectAllStoresButton == null) {
-			URL url = getClass().getResource("/dialog-select-all.png");
+			URL url = getClass().getResource("/dialog/select-all.png");
 			Icon icon = new ImageIcon(url);
 
 			JButton button = createButton();
@@ -436,7 +436,7 @@ public class BackupDialog extends JNCUDialog {
 	 */
 	private JButton getClearAllStoresButton() {
 		if (clearAllStoresButton == null) {
-			URL url = getClass().getResource("/dialog-clear-all.png");
+			URL url = getClass().getResource("/dialog/clear-all.png");
 			Icon icon = new ImageIcon(url);
 
 			JButton button = createButton();
@@ -454,7 +454,7 @@ public class BackupDialog extends JNCUDialog {
 	 */
 	private JButton getSelectAllInfoButton() {
 		if (selectAllInfoButton == null) {
-			URL url = getClass().getResource("/dialog-select-all.png");
+			URL url = getClass().getResource("/dialog/select-all.png");
 			Icon icon = new ImageIcon(url);
 
 			JButton button = createButton();
@@ -472,7 +472,7 @@ public class BackupDialog extends JNCUDialog {
 	 */
 	private JButton getClearAllInfoButton() {
 		if (clearAllInfoButton == null) {
-			URL url = getClass().getResource("/dialog-clear-all.png");
+			URL url = getClass().getResource("/dialog/clear-all.png");
 			Icon icon = new ImageIcon(url);
 
 			JButton button = createButton();
