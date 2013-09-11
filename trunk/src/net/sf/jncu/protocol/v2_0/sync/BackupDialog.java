@@ -29,7 +29,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -37,8 +36,6 @@ import java.util.TreeMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JList;
@@ -399,13 +396,10 @@ public class BackupDialog extends JNCUDialog {
 	 */
 	private JButton getBackupButton() {
 		if (backupButton == null) {
-			URL url = getClass().getResource("/dialog/play.png");
-			Icon icon = new ImageIcon(url);
-
 			JButton button = createButton();
 			button.setText(JNCUResources.getString("backup", "Backup"));
 			button.setMnemonic(JNCUResources.getChar("backupMnemonic", KeyEvent.VK_B));
-			button.setIcon(icon);
+			button.setIcon(JNCUResources.getIcon("/dialog/play.png"));
 			backupButton = button;
 		}
 		return backupButton;
@@ -418,12 +412,9 @@ public class BackupDialog extends JNCUDialog {
 	 */
 	private JButton getSelectAllStoresButton() {
 		if (selectAllStoresButton == null) {
-			URL url = getClass().getResource("/dialog/select-all.png");
-			Icon icon = new ImageIcon(url);
-
 			JButton button = createButton();
 			button.setText(JNCUResources.getString("selectAll", "Select All"));
-			button.setIcon(icon);
+			button.setIcon(JNCUResources.getIcon("/dialog/select-all.png"));
 			selectAllStoresButton = button;
 		}
 		return selectAllStoresButton;
@@ -436,12 +427,9 @@ public class BackupDialog extends JNCUDialog {
 	 */
 	private JButton getClearAllStoresButton() {
 		if (clearAllStoresButton == null) {
-			URL url = getClass().getResource("/dialog/clear-all.png");
-			Icon icon = new ImageIcon(url);
-
 			JButton button = createButton();
 			button.setText(JNCUResources.getString("clearAll", "Clear All"));
-			button.setIcon(icon);
+			button.setIcon(JNCUResources.getIcon("/dialog/clear-all.png"));
 			clearAllStoresButton = button;
 		}
 		return clearAllStoresButton;
@@ -454,12 +442,9 @@ public class BackupDialog extends JNCUDialog {
 	 */
 	private JButton getSelectAllInfoButton() {
 		if (selectAllInfoButton == null) {
-			URL url = getClass().getResource("/dialog/select-all.png");
-			Icon icon = new ImageIcon(url);
-
 			JButton button = createButton();
 			button.setText(JNCUResources.getString("selectAll", "Select All"));
-			button.setIcon(icon);
+			button.setIcon(JNCUResources.getIcon("/dialog/select-all.png"));
 			selectAllInfoButton = button;
 		}
 		return selectAllInfoButton;
@@ -472,12 +457,9 @@ public class BackupDialog extends JNCUDialog {
 	 */
 	private JButton getClearAllInfoButton() {
 		if (clearAllInfoButton == null) {
-			URL url = getClass().getResource("/dialog/clear-all.png");
-			Icon icon = new ImageIcon(url);
-
 			JButton button = createButton();
 			button.setText(JNCUResources.getString("clearAll", "Clear All"));
-			button.setIcon(icon);
+			button.setIcon(JNCUResources.getIcon("/dialog/clear-all.png"));
 			clearAllInfoButton = button;
 		}
 		return clearAllInfoButton;

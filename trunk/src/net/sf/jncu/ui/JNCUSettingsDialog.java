@@ -27,11 +27,8 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.net.URL;
 
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -303,13 +300,10 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	 */
 	private JButton getApplyButton() {
 		if (applyButton == null) {
-			URL url = getClass().getResource("/dialog/apply.png");
-			Icon icon = new ImageIcon(url);
-
 			JButton button = createButton();
 			button.setText(JNCUResources.getString("apply", "Apply"));
 			button.setMnemonic(JNCUResources.getChar("applyMnemonic", KeyEvent.VK_A));
-			button.setIcon(icon);
+			button.setIcon(JNCUResources.getIcon("/dialog/apply.png"));
 			button.setEnabled(false);
 			applyButton = button;
 		}
@@ -323,13 +317,10 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	 */
 	private JButton getHelpButton() {
 		if (buttonHelp == null) {
-			URL url = getClass().getResource("/dialog/help.png");
-			Icon icon = new ImageIcon(url);
-
 			JButton button = createButton();
 			button.setText(JNCUResources.getString("help", "Help"));
 			button.setMnemonic(JNCUResources.getChar("helpMnemonic", KeyEvent.VK_H));
-			button.setIcon(icon);
+			button.setIcon(JNCUResources.getIcon("/dialog/help.png"));
 			button.setEnabled(false);
 			buttonHelp = button;
 		}
@@ -549,13 +540,10 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	 */
 	private JButton getBrowseButton() {
 		if (browseButton == null) {
-			URL url = getClass().getResource("/browse.png");
-			Icon icon = new ImageIcon(url);
-
 			JButton button = createButton();
 			button.setText(JNCUResources.getString("browse", "Browse") + ELLIPSIS);
 			button.setMnemonic(JNCUResources.getChar("browseMnemonic", KeyEvent.VK_B));
-			button.setIcon(icon);
+			button.setIcon(JNCUResources.getIcon("/browse.png"));
 			browseButton = button;
 		}
 		return browseButton;

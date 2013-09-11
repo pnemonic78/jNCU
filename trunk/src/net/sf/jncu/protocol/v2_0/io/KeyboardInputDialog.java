@@ -32,14 +32,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.Reader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -138,13 +135,10 @@ public class KeyboardInputDialog extends JNCUDialog implements KeyListener {
 	 */
 	private JButton getPasteButton() {
 		if (pasteButton == null) {
-			URL url = getClass().getResource("/dialog/paste.png");
-			Icon icon = new ImageIcon(url);
-
 			JButton button = createButton();
 			button.setText(JNCUResources.getString("paste", "Paste"));
 			button.setMnemonic(JNCUResources.getChar("pasteMnemonic", KeyEvent.VK_P));
-			button.setIcon(icon);
+			button.setIcon(JNCUResources.getIcon("/dialog/paste.png"));
 			pasteButton = button;
 		}
 		return pasteButton;
