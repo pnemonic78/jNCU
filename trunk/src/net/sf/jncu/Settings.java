@@ -115,13 +115,10 @@ public class Settings {
 		private static final String KEY_PORT_ID = "jncu.port.id";
 		/** Property key for port speed. */
 		private static final String KEY_PORT_SPEED = "jncu.port.baud";
-		/** Property key for listening. */
-		private static final String KEY_LISTEN = "jncu.listen";
 
 		private final Collection<String> portIds = new ArrayList<String>();
 		private String portId;
 		private int baud;
-		private boolean listen;
 
 		/**
 		 * Constructs a new category.<br>
@@ -188,35 +185,14 @@ public class Settings {
 			this.baud = portSpeed;
 		}
 
-		/**
-		 * Should we listen for Newton device on the port?
-		 * 
-		 * @return listen for Newton?
-		 */
-		public boolean isListen() {
-			return listen;
-		}
-
-		/**
-		 * Listen for Newton device on the port?
-		 * 
-		 * @param listen
-		 *            listen for Newton?
-		 */
-		public void setListen(boolean listen) {
-			this.listen = listen;
-		}
-
 		@Override
 		public void read(Preferences prefs) {
 			setPortIdentifier(prefs.get(KEY_PORT_ID));
 			setPortSpeed(Integer.parseInt(prefs.get(KEY_PORT_SPEED, Integer.toString(MNPSerialPort.BAUD_38400))));
-			setListen(prefs.getBoolean(KEY_LISTEN, true));
 		}
 
 		@Override
 		public void write(Preferences prefs) {
-			prefs.set(KEY_LISTEN, isListen());
 			prefs.set(KEY_PORT_ID, getPortIdentifier());
 			prefs.set(KEY_PORT_SPEED, Integer.toString(getPortSpeed()));
 		}
@@ -332,6 +308,8 @@ public class Settings {
 		 *            the password.
 		 */
 		public void setPassword(String password) {
+			if (password == null)
+				password = "";
 			this.password = password;
 		}
 

@@ -185,4 +185,14 @@ public class Preferences {
 		}
 		return file;
 	}
+
+	/**
+	 * Remove the property.
+	 * 
+	 * @param key
+	 *            the property key.
+	 */
+	public void remove(String key) {
+		props.remove(key);
+	}
 }

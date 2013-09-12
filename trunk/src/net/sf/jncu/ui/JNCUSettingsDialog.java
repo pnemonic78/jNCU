@@ -76,7 +76,6 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	private JLabel labelSpeed;
 	private JComboBox<String> listPort;
 	private JComboBox<Integer> listSpeed;
-	private JCheckBox checkListen;
 	private JLabel labelBackupPath;
 	private JButton browseButton;
 	private JFileChooser browser;
@@ -198,7 +197,6 @@ public class JNCUSettingsDialog extends JNCUDialog {
 		portNames.setSelectedIndex(portIndex);
 		JComboBox<Integer> speeds = getListSpeeds();
 		speeds.setSelectedItem(settings.getCommunications().getPortSpeed());
-		getCheckListen().setSelected(settings.getCommunications().isListen());
 
 		getBackupPath().setText(settings.getGeneral().getBackupFolder().getPath());
 
@@ -237,20 +235,11 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	 */
 	private JPanel getTabComm() {
 		if (tabComm == null) {
-			GridBagConstraints gbcListen = new GridBagConstraints();
-			gbcListen.gridx = 0;
-			gbcListen.gridy = 0;
-			gbcListen.gridwidth = 2;
-			gbcListen.weightx = 1.0;
-			gbcListen.weighty = 1.0;
-			gbcListen.anchor = GridBagConstraints.WEST;
-			gbcListen.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
-
 			labelPort = new JLabel();
 			labelPort.setText(JNCUResources.getString("serialPortName", "Port:"));
 			GridBagConstraints gbcLabelPort = new GridBagConstraints();
 			gbcLabelPort.gridx = 0;
-			gbcLabelPort.gridy = 1;
+			gbcLabelPort.gridy = 0;
 			gbcLabelPort.weightx = 1.0;
 			gbcLabelPort.weighty = 1.0;
 			gbcLabelPort.anchor = GridBagConstraints.EAST;
@@ -258,7 +247,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 
 			GridBagConstraints gbcListPort = new GridBagConstraints();
 			gbcListPort.gridx = 1;
-			gbcListPort.gridy = 1;
+			gbcListPort.gridy = 0;
 			gbcListPort.weightx = 1.0;
 			gbcListPort.anchor = GridBagConstraints.WEST;
 			gbcListPort.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
@@ -267,7 +256,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 			labelSpeed.setText(JNCUResources.getString("serialPortSpeed", "Speed:"));
 			GridBagConstraints gbcLabelSpeed = new GridBagConstraints();
 			gbcLabelSpeed.gridx = 0;
-			gbcLabelSpeed.gridy = 2;
+			gbcLabelSpeed.gridy = 1;
 			gbcLabelSpeed.weightx = 1.0;
 			gbcLabelSpeed.weighty = 1.0;
 			gbcLabelSpeed.anchor = GridBagConstraints.EAST;
@@ -275,14 +264,13 @@ public class JNCUSettingsDialog extends JNCUDialog {
 
 			GridBagConstraints gbcListSpeed = new GridBagConstraints();
 			gbcListSpeed.gridx = 1;
-			gbcListSpeed.gridy = 2;
+			gbcListSpeed.gridy = 1;
 			gbcListSpeed.weightx = 1.0;
 			gbcListSpeed.anchor = GridBagConstraints.WEST;
 			gbcListSpeed.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 
 			JPanel tab = new JPanel();
 			tab.setLayout(new GridBagLayout());
-			tab.add(getCheckListen(), gbcListen);
 			tab.add(labelPort, gbcLabelPort);
 			tab.add(getListPorts(), gbcListPort);
 			tab.add(labelSpeed, gbcLabelSpeed);
@@ -520,21 +508,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	}
 
 	/**
-	 * Get the check box to enable listening for Newton.
-	 * 
-	 * @return the check box.
-	 */
-	private JCheckBox getCheckListen() {
-		if (checkListen == null) {
-			checkListen = new JCheckBox();
-			checkListen.setText(JNCUResources.getString("listen", "Listen"));
-			checkListen.setOpaque(false);
-		}
-		return checkListen;
-	}
-
-	/**
-	 * GEt the button to browse for backup folder.
+	 * Get the button to browse for backup folder.
 	 * 
 	 * @return the button.
 	 */
@@ -568,7 +542,6 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	public void save() {
 		Settings settings = getSettings();
 
-		settings.getCommunications().setListen(getCheckListen().isSelected());
 		settings.getCommunications().setPortIdentifier((String) getListPorts().getSelectedItem());
 		settings.getCommunications().setPortSpeed((Integer) getListSpeeds().getSelectedItem());
 
