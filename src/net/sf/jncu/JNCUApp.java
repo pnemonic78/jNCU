@@ -57,12 +57,14 @@ public class JNCUApp {
 	 * 
 	 * @param args
 	 *            the array of arguments.
-	 * @throws Exception
-	 *             if an error occurs.
 	 */
-	public static void main(String[] args) throws Exception {
-		JNCUApp ncu = new JNCUApp();
-		ncu.run();
+	public static void main(String[] args) {
+		try {
+			JNCUApp ncu = new JNCUApp();
+			ncu.run();
+		} catch (Exception e) {
+			showError(null, "main", e);
+		}
 	}
 
 	/**
@@ -95,11 +97,11 @@ public class JNCUApp {
 	 * @param e
 	 *            the error.
 	 */
-	public static void showError(Frame frame, String message, Exception e) {
+	public static void showError(Frame frame, String message, Throwable e) {
 		e.printStackTrace();
 		JOptionPane.showMessageDialog(frame, "Error: " + (message == null ? "" : message) + "\n" + e.getLocalizedMessage(), (frame == null) ? null : frame.getTitle(),
 				JOptionPane.ERROR_MESSAGE);
-		// TODO Log the error using SourceForge bugzilla.
+		// TODO Log the error using SourceForge "bugzilla".
 	}
 
 }

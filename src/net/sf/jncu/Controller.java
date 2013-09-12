@@ -25,6 +25,7 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import jssc.SerialPortException;
 import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.PlatformException;
@@ -78,13 +79,15 @@ public class Controller {
 	 *            the port name.
 	 * @param portSpeed
 	 *            the port speed.
+	 * @throws ServiceNotSupportedException
+	 *             if the service is not supported.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
 	 */
-	public void connectMNP(String portId, int portSpeed) {
-		try {
-			this.pipe = layer.createMNPSerial(portId, portSpeed);
-		} catch (Exception e) {
-			JNCUApp.showError(frame, "Connect to MNP", e);
-		}
+	private void connectMNP(String portId, int portSpeed) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
+		this.pipe = layer.createMNPSerial(portId, portSpeed);
 	}
 
 	/**
@@ -221,7 +224,6 @@ public class Controller {
 	 */
 	public void start() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
 		Settings settings = getSettings();
-		// if (settings.getCommunications().isListen()) {
 		String portName = settings.getCommunications().getPortIdentifier();
 		if (portName == null) {
 			settings.getCommunications().setPortIdentifier("");
@@ -231,9 +233,17 @@ public class Controller {
 		}
 		if (portName.length() > 0) {
 			int baud = settings.getCommunications().getPortSpeed();
-			connectMNP(portName, baud);
+			try {
+				connectMNP(portName, baud);
+			} catch (PlatformException pe) {
+				Throwable cause = pe.getCause();
+				// Ignore serial port errors and give user chance to change its
+				// settings.
+				if ((cause == null) || !(cause instanceof SerialPortException)) {
+					throw pe;
+				}
+			}
 		}
-		// }
 	}
 
 	/**
