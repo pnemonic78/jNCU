@@ -22,7 +22,8 @@ package net.sf.jncu.protocol.io;
 import java.io.File;
 
 import net.sf.jncu.cdil.CDLayer;
-import net.sf.jncu.cdil.CDState;
+import net.sf.jncu.cdil.CDPipe;
+import net.sf.jncu.cdil.CDPipeListener;
 import net.sf.jncu.cdil.mnp.MNPPacket;
 import net.sf.jncu.cdil.mnp.MNPPacketListener;
 import net.sf.jncu.cdil.mnp.MNPPipe;
@@ -44,8 +45,7 @@ import net.sf.jncu.protocol.v2_0.io.win.WindowsFileChooser;
  * 
  * @author moshew
  */
-public class FileChooserTester implements IconModuleListener,
-		MNPPacketListener, DockCommandListener {
+public class FileChooserTester implements IconModuleListener, MNPPacketListener, DockCommandListener, CDPipeListener<MNPPacket> {
 
 	private String portName;
 	private boolean choosing;
@@ -95,15 +95,9 @@ public class FileChooserTester implements IconModuleListener,
 		layer.startUp();
 		// Create a connection object
 		pipe = layer.createMNPSerial(portName, MNPSerialPort.BAUD_38400);
-		// pipe.setTimeout();
-		pipe.startListening();
 		pipe.addPacketListener(this);
 		pipe.addCommandListener(this);
-		// Wait for a connect request
-		while (layer.getState() == CDState.LISTENING) {
-			Thread.yield();
-		}
-		pipe.accept();
+		pipe.startListening(this);
 	}
 
 	public void run() throws Exception {
@@ -155,8 +149,7 @@ public class FileChooserTester implements IconModuleListener,
 	}
 
 	@Override
-	public void commandReceiving(IDockCommandFromNewton command, int progress,
-			int total) {
+	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
 	}
 
 	@Override
@@ -167,8 +160,7 @@ public class FileChooserTester implements IconModuleListener,
 			choosing = false;
 		} else if (DRequestToBrowse.COMMAND.equals(cmd)) {
 			if (File.separatorChar == '\\')
-				chooser = new WindowsFileChooser(pipe, FileChooser.PACKAGES,
-						null);
+				chooser = new WindowsFileChooser(pipe, FileChooser.PACKAGES, null);
 			else
 				// if (File.separatorChar == '/')
 				chooser = new UnixFileChooser(pipe, FileChooser.PACKAGES, null);
@@ -176,8 +168,7 @@ public class FileChooserTester implements IconModuleListener,
 	}
 
 	@Override
-	public void commandSending(IDockCommandToNewton command, int progress,
-			int total) {
+	public void commandSending(IDockCommandToNewton command, int progress, int total) {
 	}
 
 	@Override
@@ -187,6 +178,42 @@ public class FileChooserTester implements IconModuleListener,
 	@Override
 	public void commandEOF() {
 		choosing = false;
+	}
+
+	@Override
+	public void pipeDisconnected(CDPipe<MNPPacket> pipe) {
+	}
+
+	@Override
+	public void pipeDisconnectFailed(CDPipe<MNPPacket> pipe, Exception e) {
+		System.exit(100);
+	}
+
+	@Override
+	public void pipeConnectionListening(CDPipe<MNPPacket> pipe) {
+	}
+
+	@Override
+	public void pipeConnectionListenFailed(CDPipe<MNPPacket> pipe, Exception e) {
+		System.exit(101);
+	}
+
+	@Override
+	public void pipeConnectionPending(CDPipe<MNPPacket> pipe) {
+	}
+
+	@Override
+	public void pipeConnectionPendingFailed(CDPipe<MNPPacket> pipe, Exception e) {
+		System.exit(102);
+	}
+
+	@Override
+	public void pipeConnected(CDPipe<MNPPacket> pipe) {
+	}
+
+	@Override
+	public void pipeConnectionFailed(CDPipe<MNPPacket> pipe, Exception e) {
+		System.exit(103);
 	}
 
 }

@@ -23,7 +23,6 @@ import net.sf.jncu.cdil.CDPacketFilter;
 
 /**
  * @author mwaisberg
- *
  */
 public class TraceDecodePacketFilter implements CDPacketFilter<MNPPacket> {
 

@@ -50,6 +50,10 @@ public class DWhichIcons extends DockCommandToNewtonLong {
 	public static final String COMMAND = "wicn";
 
 	/**
+	 * No icons.
+	 */
+	public static final int NONE = 0;
+	/**
 	 * "Backup" icon.<br>
 	 * <tt>kBackupIcon</tt>
 	 */
@@ -82,7 +86,7 @@ public class DWhichIcons extends DockCommandToNewtonLong {
 	/**
 	 * All icons.
 	 */
-	public static final int ALL = BACKUP | IMPORT | INSTALL | KEYBOARD | RESTORE | SYNC;
+	public static final int ALL = INSTALL | KEYBOARD;
 
 	/**
 	 * Creates a new command.

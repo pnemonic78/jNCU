@@ -36,7 +36,6 @@ import net.sf.jncu.fdil.NSOFSmallRect;
  * <tt>{unhilited={bounds={top: 0, left: 0, bottom: 32, right: 32}, colordata=[{bitdepth=4, cbits='cbits}, {bitdepth=1, cbits='bits}], mask='mask}, hilited={bounds={top: 0, left: 0, bottom: 32, right: 32}, colordata=[{bitdepth=4, cbits='cbits}, {bitdepth=1, cbits='bits}], mask='mask}}</tt>
  * 
  * @author mwaisberg
- * 
  */
 public class ATAIconTest {
 

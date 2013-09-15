@@ -20,11 +20,14 @@
 package net.sf.jncu;
 
 import java.awt.Frame;
+import java.util.concurrent.TimeoutException;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDILNotInitializedException;
+import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 import net.sf.jncu.ui.JNCUFrame;
@@ -76,8 +79,14 @@ public class JNCUApp {
 	 *             if a platform error occurs.
 	 * @throws CDILNotInitializedException
 	 *             if CDIL is not initialised.
+	 * @throws BadPipeStateException
+	 *             if pipe is in an incorrect state.
+	 * @throws PipeDisconnectedException
+	 *             if the pipe is disconnected.
+	 * @throws TimeoutException
+	 *             if timeout occurs.
 	 */
-	public void run() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
+	public void run() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		control.start();
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override

@@ -20,6 +20,7 @@
 package net.sf.jncu.cdil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import net.sf.jncu.cdil.adsp.ADSPPipe;
@@ -37,13 +38,15 @@ public class CDLayer {
 
 	private static CDLayer instance;
 	private final List<String> serialPorts = new ArrayList<String>();
-	private CDState state = CDState.UNINITIALIZED;
+	private CDState state = CDState.UNKNOWN;
+	private final List<CDStateListener> stateListeners = new ArrayList<CDStateListener>();
 
 	/**
 	 * Creates a new CDIL layer.
 	 */
 	protected CDLayer() {
 		super();
+		setState(CDState.UNINITIALIZED);
 	}
 
 	/**
@@ -77,6 +80,7 @@ public class CDLayer {
 		initCTB();
 		initMNP();
 		initTCP();
+		stateListeners.clear();
 		setState(CDState.DISCONNECTED);
 	}
 
@@ -422,6 +426,7 @@ public class CDLayer {
 	 */
 	protected void setState(CDState state) {
 		this.state = state;
+		fireStateChanged(state);
 	}
 
 	/**
@@ -436,5 +441,40 @@ public class CDLayer {
 		if (pipe == null)
 			throw new NullPointerException("pipe required");
 		setState(state);
+	}
+
+	/**
+	 * Add the CDIL state listener.
+	 * 
+	 * @param listener
+	 *            the listener.
+	 */
+	public void addStateListener(CDStateListener listener) {
+		if (!stateListeners.contains(listener))
+			stateListeners.add(listener);
+	}
+
+	/**
+	 * Remove the CDIL state listener.
+	 * 
+	 * @param listener
+	 *            the listener.
+	 */
+	public void removeStateListener(CDStateListener listener) {
+		stateListeners.remove(listener);
+	}
+
+	/**
+	 * Notify all the listeners that the state changed.
+	 * 
+	 * @param newState
+	 *            the new state.
+	 */
+	protected void fireStateChanged(CDState newState) {
+		// Make copy of listeners to avoid ConcurrentModificationException.
+		Collection<CDStateListener> listenersCopy = new ArrayList<CDStateListener>(stateListeners);
+		for (CDStateListener listener : listenersCopy) {
+			listener.stateChanged(this, newState);
+		}
 	}
 }

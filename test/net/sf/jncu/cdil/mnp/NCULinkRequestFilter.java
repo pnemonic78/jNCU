@@ -27,7 +27,6 @@ import net.sf.jncu.io.ReplaceOutputStream;
  * NCU serial packet filter.
  * 
  * @author mwaisberg
- * 
  */
 public class NCULinkRequestFilter extends ReplaceOutputStream {
 

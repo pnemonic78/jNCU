@@ -205,8 +205,7 @@ public class DockingProtocol<P extends CDPacket> implements DockCommandListener 
 				this.challengeNewtonCiphered = crypto.cipher(challengeNewton);
 
 				DWhichIcons cmdWhichIcons = new DWhichIcons();
-				// TODO cmdWhichIcons.setIcons(DWhichIcons.ALL);
-				cmdWhichIcons.setIcons(DWhichIcons.BACKUP | DWhichIcons.INSTALL | DWhichIcons.KEYBOARD);
+				cmdWhichIcons.setIcons(DWhichIcons.ALL);
 				setState(DockingState.HANDSHAKE_ICONS);
 				pipe.write(cmdWhichIcons);
 				break;

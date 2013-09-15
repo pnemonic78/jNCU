@@ -25,6 +25,7 @@ import javax.swing.SwingUtilities;
 
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDState;
+import net.sf.jncu.cdil.CDStateListener;
 import net.sf.jncu.cdil.mnp.MNPPacket;
 import net.sf.jncu.cdil.mnp.MNPPacketListener;
 import net.sf.jncu.cdil.mnp.MNPPipe;
@@ -50,8 +51,7 @@ import net.sf.jncu.protocol.v2_0.sync.DSynchronize;
  * 
  * @author moshew
  */
-public class BackupTester implements BackupListener, MNPPacketListener,
-		DockCommandListener {
+public class BackupTester implements BackupListener, MNPPacketListener, DockCommandListener, CDStateListener {
 
 	private String portName;
 	private boolean running = false;
@@ -105,10 +105,10 @@ public class BackupTester implements BackupListener, MNPPacketListener,
 		layer.startUp();
 		// Create a connection object
 		pipe = layer.createMNPSerial(portName, MNPSerialPort.BAUD_38400);
-		pipe.setTimeout(30);
-		pipe.startListening();
 		pipe.addPacketListener(this);
 		pipe.addCommandListener(this);
+		pipe.setTimeout(30);
+		pipe.startListening();
 		// Wait for a connect request
 		while (layer.getState() == CDState.LISTENING) {
 			Thread.yield();
@@ -192,30 +192,24 @@ public class BackupTester implements BackupListener, MNPPacketListener,
 
 	@Override
 	public void backupStore(BackupModule module, Store store) {
-		System.out.println("BT backupStore module=" + module + " store="
-				+ store);
+		System.out.println("BT backupStore module=" + module + " store=" + store);
 		BackupProgressDialog monitor = getProgress();
 		if (monitor != null) {
-			monitor.setNote(String.format("Backing up store %s",
-					store.getName()));
+			monitor.setNote(String.format("Backing up store %s", store.getName()));
 		}
 	}
 
 	@Override
-	public void backupApplication(BackupModule module, Store store,
-			AppName appName) {
-		System.out.println("BT backupApplication module=" + module
-				+ " appName=" + appName);
+	public void backupApplication(BackupModule module, Store store, AppName appName) {
+		System.out.println("BT backupApplication module=" + module + " appName=" + appName);
 		BackupProgressDialog monitor = getProgress();
 		if (monitor != null) {
-			monitor.setNote(String.format("Backing up %s on store %s",
-					appName.getName(), store.getName()));
+			monitor.setNote(String.format("Backing up %s on store %s", appName.getName(), store.getName()));
 		}
 	}
 
 	@Override
-	public void backupSoup(BackupModule module, Store store, AppName appName,
-			Soup soup) {
+	public void backupSoup(BackupModule module, Store store, AppName appName, Soup soup) {
 		System.out.println("BT backupSoup module=" + module + " soup=" + soup);
 	}
 
@@ -240,8 +234,7 @@ public class BackupTester implements BackupListener, MNPPacketListener,
 	}
 
 	@Override
-	public void commandReceiving(IDockCommandFromNewton command, int progress,
-			int total) {
+	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
 	}
 
 	@Override
@@ -271,8 +264,7 @@ public class BackupTester implements BackupListener, MNPPacketListener,
 	}
 
 	@Override
-	public void commandSending(IDockCommandToNewton command, int progress,
-			int total) {
+	public void commandSending(IDockCommandToNewton command, int progress, int total) {
 	}
 
 	@Override
@@ -320,5 +312,9 @@ public class BackupTester implements BackupListener, MNPPacketListener,
 			progressMonitor.setVisible(false);
 			progressMonitor = null;
 		}
+	}
+
+	@Override
+	public void stateChanged(CDLayer layer, CDState newState) {
 	}
 }
