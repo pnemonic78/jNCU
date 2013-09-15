@@ -37,7 +37,7 @@ import net.sf.jncu.protocol.v2_0.session.DockingState;
  * 
  * @author moshew
  */
-public abstract class CDPipe<P extends CDPacket> extends Thread implements DockCommandListener, CDPacketListener<P> {
+public abstract class CDPipe<P extends CDPacket> extends Thread implements CDStateListener, CDPacketListener<P>, DockCommandListener {
 
 	protected static final long PING_TIME = 10000L;
 
@@ -54,6 +54,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	private final Timer timer = new Timer();
 	private CDPing pingTask;
 	private boolean pingFixed;
+	private CDPipeListener<P> listener;
 
 	/**
 	 * Creates a new pipe.
@@ -69,6 +70,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 		if (layer == null)
 			throw new ServiceNotSupportedException("layer required");
 		this.layer = layer;
+		layer.addStateListener(this);
 		this.pipeSource = new PipedOutputStream();
 		layer.setState(CDState.DISCONNECTED);
 	}
@@ -147,16 +149,9 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	public void disconnectQuiet() {
 		try {
 			disconnect();
-		} catch (BadPipeStateException bpse) {
-			// ignore
-		} catch (CDILNotInitializedException cnie) {
-			// ignore
-		} catch (PlatformException pe) {
-			// ignore
-		} catch (PipeDisconnectedException pde) {
-			// ignore
-		} catch (TimeoutException te) {
-			// ignore
+		} catch (Exception e) {
+			if (listener != null)
+				listener.pipeDisconnectFailed(this, e);
 		}
 	}
 
@@ -186,6 +181,32 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 		this.docking = createDockingProtocol();
 		start();
 		layer.setState(CDState.LISTENING);
+	}
+
+	/**
+	 * Makes the pipe start listening for a connection for a Newton device.<br>
+	 * <tt>DIL_Error CD_StartListening(CD_Handle pipe)</tt>
+	 * <p>
+	 * After the successful completion of this call, the pipe is put in the
+	 * <tt>kCD_Connected</tt> state.
+	 * 
+	 * @param listener
+	 *            the listener.
+	 * @throws CDILNotInitializedException
+	 *             if CDIL is not initialised.
+	 * @throws PlatformException
+	 *             if a platform error occurs.
+	 * @throws BadPipeStateException
+	 *             if pipe is in an incorrect state.
+	 * @throws PipeDisconnectedException
+	 *             if the pipe is disconnected.
+	 * @throws TimeoutException
+	 *             if timeout occurs.
+	 * @see #startListening()
+	 */
+	public void startListening(CDPipeListener<P> listener) throws BadPipeStateException, CDILNotInitializedException, PlatformException, PipeDisconnectedException, TimeoutException {
+		this.listener = listener;
+		startListening();
 	}
 
 	@Override
@@ -722,5 +743,42 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements DockC
 	 */
 	public void notifyTimeout(TimeoutException te) {
 		disconnectQuiet();
+	}
+
+	@Override
+	public void stateChanged(CDLayer layer, CDState newState) {
+		if (listener == null)
+			return;
+
+		switch (newState) {
+		case CONNECT_PENDING:
+			try {
+				listener.pipeConnectionPending(this);
+				accept();
+			} catch (Exception e) {
+				listener.pipeConnectionPendingFailed(this, e);
+			}
+			break;
+		case CONNECTED:
+			try {
+				idle();
+				listener.pipeConnected(this);
+			} catch (Exception e) {
+				listener.pipeConnectionFailed(this, e);
+			}
+			break;
+		case DISCONNECT_PENDING:
+			break;
+		case DISCONNECTED:
+			listener.pipeDisconnected(this);
+			break;
+		case LISTENING:
+			listener.pipeConnectionListening(this);
+			break;
+		case UNINITIALIZED:
+			break;
+		case UNKNOWN:
+			break;
+		}
 	}
 }

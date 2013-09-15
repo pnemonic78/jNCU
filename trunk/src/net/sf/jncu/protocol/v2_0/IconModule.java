@@ -33,6 +33,7 @@ import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommand;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
@@ -83,8 +84,7 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	 * @param owner
 	 *            the owner window.
 	 */
-	public IconModule(String title, CDPipe<? extends CDPacket> pipe,
-			Window owner) {
+	public IconModule(String title, CDPipe<? extends CDPacket> pipe, Window owner) {
 		super();
 		setName("IconModule-" + getId());
 		this.title = title;
@@ -147,8 +147,7 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	protected void showError(final String msg) {
 		new Thread() {
 			public void run() {
-				JOptionPane.showMessageDialog(getOwner(), msg, title,
-						JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(getOwner(), msg, title, JOptionPane.ERROR_MESSAGE);
 			}
 		}.start();
 	}
@@ -191,8 +190,7 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	}
 
 	@Override
-	public void commandReceiving(IDockCommandFromNewton command, int progress,
-			int total) {
+	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
 		if (!isEnabled())
 			return;
 		progressCommandFrom = command;
@@ -200,8 +198,7 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 		if (monitor != null) {
 			monitor.setMaximum(total);
 			monitor.setProgress(progress);
-			monitor.setNote(String.format("Receiving %d%%", (progress * 100)
-					/ total));
+			monitor.setNote(String.format("Receiving %d%%", (progress * 100) / total));
 		}
 	}
 
@@ -219,12 +216,13 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 		if (DOperationCanceled.COMMAND.equals(cmd)) {
 			DOperationCanceledAck ack = new DOperationCanceledAck();
 			write(ack);
+		} else if (DDisconnect.COMMAND.equals(cmd)) {
+			fireCancelled();
 		}
 	}
 
 	@Override
-	public void commandSending(IDockCommandToNewton command, int progress,
-			int total) {
+	public void commandSending(IDockCommandToNewton command, int progress, int total) {
 		if (!isEnabled())
 			return;
 		progressCommandTo = command;
@@ -232,8 +230,7 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 		if (monitor != null) {
 			monitor.setMaximum(total);
 			monitor.setProgress(progress);
-			monitor.setNote(String.format("Sending %d%%", (progress * 100)
-					/ total));
+			monitor.setNote(String.format("Sending %d%%", (progress * 100) / total));
 		}
 	}
 
@@ -287,8 +284,7 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	 */
 	protected void fireDone() {
 		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<IconModuleListener> listenersCopy = new ArrayList<IconModuleListener>(
-				listeners);
+		Collection<IconModuleListener> listenersCopy = new ArrayList<IconModuleListener>(listeners);
 		for (IconModuleListener listener : listenersCopy) {
 			listener.successModule(this);
 		}
@@ -299,8 +295,7 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	 */
 	protected void fireCancelled() {
 		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<IconModuleListener> listenersCopy = new ArrayList<IconModuleListener>(
-				listeners);
+		Collection<IconModuleListener> listenersCopy = new ArrayList<IconModuleListener>(listeners);
 		for (IconModuleListener listener : listenersCopy) {
 			listener.cancelModule(this);
 		}
@@ -314,8 +309,7 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	protected ProgressMonitor getProgress() {
 		if (progressMonitor == null) {
 			synchronized (this) {
-				progressMonitor = new ProgressMonitor(getOwner(), getTitle(),
-						"0%%", 0, IDockCommand.LENGTH_WORD);
+				progressMonitor = new ProgressMonitor(getOwner(), getTitle(), "0%%", 0, IDockCommand.LENGTH_WORD);
 			}
 		}
 		return progressMonitor;

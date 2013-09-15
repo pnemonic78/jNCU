@@ -68,8 +68,7 @@ public abstract class FileChooser extends IconModule {
 		 * @param command
 		 *            the command from the Newton.
 		 */
-		public void approveSelection(FileChooser chooser, File file,
-				IDockCommandFromNewton command);
+		public void approveSelection(FileChooser chooser, File file, IDockCommandFromNewton command);
 
 		/**
 		 * The file browsing was cancelled.
@@ -124,8 +123,7 @@ public abstract class FileChooser extends IconModule {
 	 * @param owner
 	 *            the owner window.
 	 */
-	public FileChooser(CDPipe<? extends CDPacket> pipe,
-			Collection<NSOFString> types, Window owner) {
+	public FileChooser(CDPipe<? extends CDPacket> pipe, Collection<NSOFString> types, Window owner) {
 		super(TITLE, pipe, owner);
 		setName("FileChooser-" + getId());
 
@@ -146,8 +144,7 @@ public abstract class FileChooser extends IconModule {
 	 * @param owner
 	 *            the owner window.
 	 */
-	public FileChooser(CDPipe<? extends CDPacket> pipe, NSOFString type,
-			Window owner) {
+	public FileChooser(CDPipe<? extends CDPacket> pipe, NSOFString type, Window owner) {
 		super(TITLE, pipe, owner);
 		setName("FileChooser-" + getId());
 
@@ -166,8 +163,7 @@ public abstract class FileChooser extends IconModule {
 		Preferences prefs = Preferences.getInstance();
 		String folderPath = prefs.get(KEY_PATH);
 		if (folderPath == null) {
-			folderPath = SwingUtils.getFileSystemView().getDefaultDirectory()
-					.getPath();
+			folderPath = SwingUtils.getFileSystemView().getDefaultDirectory().getPath();
 			prefs.set(KEY_PATH, folderPath);
 			prefs.save();
 		}
@@ -398,8 +394,7 @@ public abstract class FileChooser extends IconModule {
 	 */
 	protected void fireApproved(File file, IDockCommandFromNewton command) {
 		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<FileChooserListener> listenersCopy = new ArrayList<FileChooserListener>(
-				listeners);
+		Collection<FileChooserListener> listenersCopy = new ArrayList<FileChooserListener>(listeners);
 		for (FileChooserListener listener : listenersCopy) {
 			listener.approveSelection(this, file, command);
 		}
@@ -410,8 +405,7 @@ public abstract class FileChooser extends IconModule {
 	 */
 	protected void fireCancelled() {
 		// Make copy of listeners to avoid ConcurrentModificationException.
-		Collection<FileChooserListener> listenersCopy = new ArrayList<FileChooserListener>(
-				listeners);
+		Collection<FileChooserListener> listenersCopy = new ArrayList<FileChooserListener>(listeners);
 		for (FileChooserListener listener : listenersCopy) {
 			listener.cancelSelection(this);
 		}

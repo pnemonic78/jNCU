@@ -22,7 +22,8 @@ package net.sf.jncu.protocol.app;
 import java.io.File;
 
 import net.sf.jncu.cdil.CDLayer;
-import net.sf.jncu.cdil.CDState;
+import net.sf.jncu.cdil.CDPipe;
+import net.sf.jncu.cdil.CDPipeListener;
 import net.sf.jncu.cdil.mnp.MNPPacket;
 import net.sf.jncu.cdil.mnp.MNPPacketListener;
 import net.sf.jncu.cdil.mnp.MNPPipe;
@@ -41,8 +42,7 @@ import net.sf.jncu.protocol.v2_0.app.LoadPackage;
  * 
  * @author moshew
  */
-public class LoadPackageTester implements IconModuleListener,
-		MNPPacketListener, DockCommandListener {
+public class LoadPackageTester implements IconModuleListener, MNPPacketListener, DockCommandListener, CDPipeListener<MNPPacket> {
 
 	private String portName;
 	private String pkgPath;
@@ -98,15 +98,9 @@ public class LoadPackageTester implements IconModuleListener,
 		layer.startUp();
 		// Create a connection object
 		pipe = layer.createMNPSerial(portName, MNPSerialPort.BAUD_38400);
-		// pipe.setTimeout(Integer.MAX_VALUE);
-		pipe.startListening();
 		pipe.addPacketListener(this);
 		pipe.addCommandListener(this);
-		// Wait for a connect request
-		while (layer.getState() == CDState.LISTENING) {
-			Thread.yield();
-		}
-		pipe.accept();
+		pipe.startListening(this);
 	}
 
 	public void run() throws Exception {
@@ -162,8 +156,7 @@ public class LoadPackageTester implements IconModuleListener,
 	}
 
 	@Override
-	public void commandReceiving(IDockCommandFromNewton command, int progress,
-			int total) {
+	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
 	}
 
 	@Override
@@ -176,8 +169,7 @@ public class LoadPackageTester implements IconModuleListener,
 	}
 
 	@Override
-	public void commandSending(IDockCommandToNewton command, int progress,
-			int total) {
+	public void commandSending(IDockCommandToNewton command, int progress, int total) {
 	}
 
 	@Override
@@ -186,6 +178,42 @@ public class LoadPackageTester implements IconModuleListener,
 
 	@Override
 	public void commandEOF() {
+	}
+
+	@Override
+	public void pipeDisconnected(CDPipe<MNPPacket> pipe) {
+	}
+
+	@Override
+	public void pipeDisconnectFailed(CDPipe<MNPPacket> pipe, Exception e) {
+		System.exit(100);
+	}
+
+	@Override
+	public void pipeConnectionListening(CDPipe<MNPPacket> pipe) {
+	}
+
+	@Override
+	public void pipeConnectionListenFailed(CDPipe<MNPPacket> pipe, Exception e) {
+		System.exit(101);
+	}
+
+	@Override
+	public void pipeConnectionPending(CDPipe<MNPPacket> pipe) {
+	}
+
+	@Override
+	public void pipeConnectionPendingFailed(CDPipe<MNPPacket> pipe, Exception e) {
+		System.exit(102);
+	}
+
+	@Override
+	public void pipeConnected(CDPipe<MNPPacket> pipe) {
+	}
+
+	@Override
+	public void pipeConnectionFailed(CDPipe<MNPPacket> pipe, Exception e) {
+		System.exit(103);
 	}
 
 }

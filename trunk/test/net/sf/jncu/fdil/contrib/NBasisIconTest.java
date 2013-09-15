@@ -35,7 +35,6 @@ import net.sf.jncu.fdil.NSOFSmallRect;
  * Decode the nBasis icons.
  * 
  * @author mwaisberg
- * 
  */
 public class NBasisIconTest {
 

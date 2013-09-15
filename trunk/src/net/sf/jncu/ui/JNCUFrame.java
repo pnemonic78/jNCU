@@ -436,7 +436,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 			panel.setLayout(new BorderLayout());
 			panel.setOpaque(false);
 			panel.add(statusConnectionPanel, BorderLayout.CENTER);
-			panel.add(statusLabel, BorderLayout.SOUTH);
+			// TODO panel.add(statusLabel, BorderLayout.SOUTH);
 			statusPanel = panel;
 		}
 		return statusPanel;
@@ -464,6 +464,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 
 			statusConnection.setIcon(statusDisconnectedIcon);
 			statusConnection.setText(JNCUResources.getString("connectPlease", "Connect your Newton device."));
+			setIcons(DWhichIcons.NONE);
 		}
 	}
 
@@ -497,9 +498,9 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 
 		setJMenuBar(getMainMenu());
 		setContentPane(getMainContentPane());
+		setResizable(false);
 		setMinimumSize(new Dimension(450, 440));
 		pack();
-		setResizable(false);
 		SwingUtils.centreInOwner(this);
 
 		setConnected(false);

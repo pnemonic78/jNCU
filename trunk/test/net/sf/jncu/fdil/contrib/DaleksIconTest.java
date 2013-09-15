@@ -34,7 +34,6 @@ import net.sf.jncu.fdil.NSOFSmallRect;
  * <tt>icon={bounds={top: 0, left: 0, bottom: 26, right: 15}, bits='bits, mask='mask}</tt>
  * 
  * @author mwaisberg
- * 
  */
 public class DaleksIconTest {
 

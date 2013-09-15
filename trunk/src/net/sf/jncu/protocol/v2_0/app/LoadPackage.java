@@ -22,6 +22,11 @@ package net.sf.jncu.protocol.v2_0.app;
 import java.awt.Window;
 import java.io.File;
 
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import net.sf.jncu.Preferences;
 import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.protocol.DockCommandListener;
@@ -30,9 +35,11 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.app.DLoadPackage;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 import net.sf.jncu.protocol.v2_0.IconModule;
+import net.sf.jncu.protocol.v2_0.io.FileChooser;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
+import net.sf.swing.SwingUtils;
 
 /**
  * Load package module.
@@ -60,10 +67,18 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 		FINISHED
 	}
 
+	/**
+	 * Property key for default path.
+	 * 
+	 * @see FileChooser#KEY_PATH
+	 */
+	protected static final String KEY_PATH = "jncu.fileChooser.path";
+
 	private static final String TITLE = "Load Package";
 
 	private File file;
 	private State state = State.NONE;
+	private JFileChooser packageChooser;
 
 	/**
 	 * Constructs a new loader.
@@ -75,8 +90,7 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 	 * @param owner
 	 *            the owner window.
 	 */
-	public LoadPackage(CDPipe<? extends CDPacket> pipe, boolean requested,
-			Window owner) {
+	public LoadPackage(CDPipe<? extends CDPacket> pipe, boolean requested, Window owner) {
 		super(TITLE, pipe, owner);
 		setName("LoadPackage-" + getId());
 
@@ -145,8 +159,15 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 	 * Upload the package to the Newton.
 	 * 
 	 * @param file
+	 *            the file to install.
 	 */
 	public void loadPackage(File file) {
+		// Save the folder for next time.
+		Preferences prefs = Preferences.getInstance();
+		String folderPath = file.getParent();
+		prefs.set(KEY_PATH, folderPath);
+		prefs.save();
+
 		this.file = file;
 
 		if (state == State.INITIALISED) {
@@ -174,5 +195,36 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 		if (state == State.FINISHED)
 			return false;
 		return super.isEnabled();
+	}
+
+	/**
+	 * Get the chooser for the package to install.
+	 * 
+	 * @return the file chooser.
+	 */
+	public JFileChooser getFileChooser() {
+		if (packageChooser == null) {
+			// Load the path from the properties file.
+			Preferences prefs = Preferences.getInstance();
+			String folderPath = prefs.get(KEY_PATH);
+			File folder;
+			if (folderPath == null) {
+				folder = SwingUtils.getFileSystemView().getDefaultDirectory();
+				folderPath = folder.getPath();
+				prefs.set(KEY_PATH, folderPath);
+				prefs.save();
+			} else {
+				folder = new File(folderPath);
+			}
+
+			packageChooser = new JFileChooser();
+			packageChooser.setCurrentDirectory(folder);
+
+			FileFilter filter = new FileNameExtensionFilter("Newton Package", "pkg", "PKG");
+			packageChooser.setFileFilter(filter);
+			packageChooser.setAcceptAllFileFilterUsed(false);
+			packageChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		}
+		return packageChooser;
 	}
 }

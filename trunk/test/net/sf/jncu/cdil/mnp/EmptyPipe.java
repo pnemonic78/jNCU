@@ -25,6 +25,7 @@ import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDPacketLayer;
+import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
@@ -64,6 +65,7 @@ public class EmptyPipe extends MNPPipe {
 	@Override
 	protected void acceptImpl() throws PlatformException, PipeDisconnectedException, TimeoutException {
 		docking.setState(DockingState.HANDSHAKE_DONE);
+		setState(MNPState.MNP_HANDSHAKE_DOCK);
 		super.acceptImpl();
 	}
 
@@ -94,5 +96,11 @@ public class EmptyPipe extends MNPPipe {
 		}
 		if (!Boolean.getBoolean("debug"))
 			super.disconnectImpl();
+	}
+
+	@Override
+	public void startListening() throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
+		super.startListening();
+		layer.setState(this, CDState.CONNECT_PENDING);
 	}
 }

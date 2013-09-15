@@ -40,8 +40,7 @@ import net.sf.jncu.protocol.v2_0.session.DOperationDone;
  * 
  * @author Moshe
  */
-public class KeyboardInput extends IconModule implements WindowListener,
-		KeyboardInputListener {
+public class KeyboardInput extends IconModule implements WindowListener, KeyboardInputListener {
 
 	/** Windows EOL. */
 	protected static final String CRLF = "\r\n";
@@ -63,8 +62,7 @@ public class KeyboardInput extends IconModule implements WindowListener,
 		FINISHED
 	}
 
-	private static final String TITLE = Toolkit.getProperty(
-			"AWT.CompositionWindowTitle", "Keyboard Input");
+	private static final String TITLE = Toolkit.getProperty("AWT.CompositionWindowTitle", "Keyboard Input");
 	/**
 	 * Wait to batch several "kbdc" as single "kbds" (unless the key is control
 	 * character).
@@ -171,45 +169,44 @@ public class KeyboardInput extends IconModule implements WindowListener,
 	}
 
 	@Override
-	public void windowOpened(WindowEvent we) {
+	public void windowOpened(WindowEvent event) {
 	}
 
 	@Override
-	public void windowClosing(WindowEvent we) {
+	public void windowClosing(WindowEvent event) {
 		done();
 	}
 
 	@Override
-	public void windowClosed(WindowEvent we) {
+	public void windowClosed(WindowEvent event) {
 	}
 
 	@Override
-	public void windowIconified(WindowEvent e) {
+	public void windowIconified(WindowEvent event) {
 	}
 
 	@Override
-	public void windowDeiconified(WindowEvent we) {
+	public void windowDeiconified(WindowEvent event) {
 	}
 
 	@Override
-	public void windowActivated(WindowEvent we) {
+	public void windowActivated(WindowEvent event) {
 	}
 
 	@Override
-	public void windowDeactivated(WindowEvent we) {
+	public void windowDeactivated(WindowEvent event) {
 	}
 
 	@Override
-	public void charTyped(KeyEvent ke) {
-		if (ke.getID() != KeyEvent.KEY_PRESSED)
+	public void charTyped(KeyEvent event) {
+		if (event.getID() != KeyEvent.KEY_PRESSED)
 			return;
-		char keyChar = DKeyboardChar.toNewtonChar(ke.getKeyChar(),
-				ke.getKeyCode());
+		char keyChar = DKeyboardChar.toNewtonChar(event.getKeyChar(), event.getKeyCode());
 		// Ignore unknown characters.
 		if (keyChar == 0)
 			return;
 
-		int keyFlags = DKeyboardChar.toNewtonState(ke.getModifiers());
+		int keyFlags = DKeyboardChar.toNewtonState(event.getModifiers());
 
 		if (keyFlags == 0) {
 			buffer.append(keyChar);
@@ -291,5 +288,14 @@ public class KeyboardInput extends IconModule implements WindowListener,
 	 */
 	public KeyboardInputDialog getDialog() {
 		return dialog;
+	}
+
+	/**
+	 * Tell the Newton we want to start typing.
+	 */
+	public void initiate() {
+		if (state == State.INITIALISED) {
+			write(new DKeyboardPassthrough());
+		}
 	}
 }

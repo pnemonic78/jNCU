@@ -25,6 +25,7 @@ import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.CDState;
+import net.sf.jncu.cdil.CDStateListener;
 
 /**
  * <code>
@@ -67,7 +68,7 @@ CD_Shutdown(); // Close the library
  * 
  * @author moshew
  */
-public class Connect {
+public class Connect implements CDStateListener {
 
 	/**
 	 * Test connection.
@@ -111,7 +112,6 @@ public class Connect {
 				}
 				if (layer.getState() == CDState.CONNECT_PENDING) {
 					pipe.accept(); // Accept the connect request
-
 					pipe.idle();
 				}
 			} catch (IOException ioe) {
@@ -127,5 +127,9 @@ public class Connect {
 		}
 		System.out.println("Exit");
 		System.exit(0);
+	}
+
+	@Override
+	public void stateChanged(CDLayer layer, CDState newState) {
 	}
 }

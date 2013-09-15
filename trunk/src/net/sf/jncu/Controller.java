@@ -20,20 +20,31 @@
 package net.sf.jncu;
 
 import java.io.File;
+import java.util.concurrent.TimeoutException;
 
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.SwingUtilities;
 
 import jssc.SerialPortException;
+import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.CDLayer;
+import net.sf.jncu.cdil.CDPipe;
+import net.sf.jncu.cdil.CDPipeListener;
+import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
+import net.sf.jncu.cdil.mnp.MNPPacket;
 import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.newton.os.NewtonInfo;
+import net.sf.jncu.protocol.DockCommandListener;
+import net.sf.jncu.protocol.IDockCommandFromNewton;
+import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.app.LoadPackage;
+import net.sf.jncu.protocol.v2_0.io.DKeyboardPassthrough;
 import net.sf.jncu.protocol.v2_0.io.KeyboardInput;
+import net.sf.jncu.protocol.v2_0.session.DOperationDone;
+import net.sf.jncu.protocol.v2_0.session.DWhichIcons;
 import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
 import net.sf.jncu.protocol.v2_0.sync.BackupDialog;
 import net.sf.jncu.ui.JNCUDeviceDialog;
@@ -45,16 +56,15 @@ import net.sf.jncu.ui.JNCUSettingsDialog;
  * 
  * @author Moshe
  */
-public class Controller {
+public class Controller implements CDPipeListener<MNPPacket>, DockCommandListener {
 
 	private final JNCUFrame frame;
 	private CDLayer layer;
-	private MNPPipe pipe;
+	private CDPipe<MNPPacket> pipe;
 	private Settings settings;
-	private KeyboardInput keyboardDialog;
+	private KeyboardInput keyboardInput;
 	private BackupDialog backupDialog;
 	private LoadPackage packageLoader;
-	private JFileChooser packageChooser;
 	private JNCUSettingsDialog settingsDialog;
 	private JNCUDeviceDialog deviceDialog;
 
@@ -85,9 +95,19 @@ public class Controller {
 	 *             if a platform error occurs.
 	 * @throws CDILNotInitializedException
 	 *             if CDIL is not initialised.
+	 * @throws TimeoutException
+	 *             if timeout occurs.
+	 * @throws PipeDisconnectedException
+	 *             if the pipe is disconnected.
+	 * @throws BadPipeStateException
+	 *             if pipe is in an incorrect state.
 	 */
-	private void connectMNP(String portId, int portSpeed) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
-		this.pipe = layer.createMNPSerial(portId, portSpeed);
+	private void connectMNP(String portId, int portSpeed) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException, BadPipeStateException,
+			PipeDisconnectedException, TimeoutException {
+		MNPPipe pipe = layer.createMNPSerial(portId, portSpeed);
+		pipe.addCommandListener(this);
+		this.pipe = pipe;
+		this.pipe.startListening(this);
 	}
 
 	/**
@@ -101,17 +121,8 @@ public class Controller {
 	 * Install package.
 	 */
 	public void install() {
-		if (packageLoader == null) {
-			packageLoader = new LoadPackage(pipe, false, frame);
-		}
-		if (packageChooser == null) {
-			packageChooser = new JFileChooser();
-			packageChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-			FileFilter filter = new FileNameExtensionFilter("Newton Package", "pkg", "PKG");
-			packageChooser.setFileFilter(filter);
-			packageChooser.setAcceptAllFileFilterUsed(false);
-		}
+		packageLoader = new LoadPackage(pipe, false, frame);
+		JFileChooser packageChooser = packageLoader.getFileChooser();
 		int ret = packageChooser.showOpenDialog(frame);
 		if (ret == JFileChooser.APPROVE_OPTION) {
 			File selectedFile = packageChooser.getSelectedFile();
@@ -123,22 +134,23 @@ public class Controller {
 	 * Use keyboard.
 	 */
 	public void keyboard() {
-		if (keyboardDialog == null) {
-			keyboardDialog = new KeyboardInput(pipe, frame);
-		}
-		keyboardDialog.getDialog().setVisible(true);
+		write(new DKeyboardPassthrough());
 	}
 
 	/**
 	 * Backup.
 	 */
 	public void backupToDesktop() {
-		if (backupDialog == null) {
-			backupDialog = new BackupDialog(frame);
-			// TODO backupDialog.setStores(stores);
-			// TODO backupDialog.setApplications(apps);
-		}
-		backupDialog.setVisible(true);
+		backupDialog = new BackupDialog(frame);
+		// TODO backupDialog.setStores(stores);
+		// TODO backupDialog.setApplications(apps);
+		// Don't block the command thread.
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				backupDialog.setVisible(true);
+			}
+		});
 	}
 
 	/**
@@ -201,7 +213,6 @@ public class Controller {
 	 */
 	public void stop() {
 		try {
-			// comm.stopListenForNewton();
 			if (pipe != null) {
 				pipe.disconnect();
 				pipe.dispose();
@@ -221,8 +232,14 @@ public class Controller {
 	 *             if a platform error occurs.
 	 * @throws CDILNotInitializedException
 	 *             if CDIL is not initialised.
+	 * @throws BadPipeStateException
+	 *             if pipe is in an incorrect state.
+	 * @throws PipeDisconnectedException
+	 *             if the pipe is disconnected.
+	 * @throws TimeoutException
+	 *             if timeout occurs.
 	 */
-	public void start() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
+	public void start() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		Settings settings = getSettings();
 		String portName = settings.getCommunications().getPortIdentifier();
 		if (portName == null) {
@@ -255,8 +272,15 @@ public class Controller {
 	 *             if a platform error occurs.
 	 * @throws CDILNotInitializedException
 	 *             if CDIL is not initialised.
+	 * @throws BadPipeStateException
+	 *             if pipe is in an incorrect state.
+	 * @throws PipeDisconnectedException
+	 *             if the pipe is disconnected.
+	 * @throws TimeoutException
+	 *             if timeout occurs.
 	 */
-	public void showSettings() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException {
+	public void showSettings() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException, BadPipeStateException, PipeDisconnectedException,
+			TimeoutException {
 		stop();
 		Settings settings = getSettings();
 		getSettingsDialog().setSettings(settings);
@@ -298,4 +322,99 @@ public class Controller {
 		getDeviceDialog().setDeviceInfo(info);
 		getDeviceDialog().setVisible(true);
 	}
+
+	@Override
+	public void pipeDisconnected(CDPipe<MNPPacket> pipe) {
+		frame.setConnected(false);
+	}
+
+	@Override
+	public void pipeDisconnectFailed(CDPipe<MNPPacket> pipe, Exception e) {
+		frame.setConnected(false);
+	}
+
+	@Override
+	public void pipeConnectionListening(CDPipe<MNPPacket> pipe) {
+		frame.setConnected(false);
+	}
+
+	@Override
+	public void pipeConnectionListenFailed(CDPipe<MNPPacket> pipe, Exception e) {
+		frame.setConnected(false);
+	}
+
+	@Override
+	public void pipeConnectionPending(CDPipe<MNPPacket> pipe) {
+		frame.setConnected(false);
+	}
+
+	@Override
+	public void pipeConnectionPendingFailed(CDPipe<MNPPacket> pipe, Exception e) {
+		frame.setConnected(false);
+	}
+
+	@Override
+	public void pipeConnected(CDPipe<MNPPacket> pipe) {
+		frame.setConnected(true);
+		frame.setIcons(DWhichIcons.ALL);
+	}
+
+	@Override
+	public void pipeConnectionFailed(CDPipe<MNPPacket> pipe, Exception e) {
+		frame.setConnected(false);
+	}
+
+	@Override
+	public void commandReceived(IDockCommandFromNewton command) {
+		final String cmd = command.getCommand();
+
+		if (DKeyboardPassthrough.COMMAND.equals(cmd)) {
+			keyboardInput = new KeyboardInput(pipe, frame);
+			keyboardInput.start();
+			// Don't block the command thread.
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					keyboardInput.getDialog().setVisible(true);
+				}
+			});
+		}
+	}
+
+	@Override
+	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+	}
+
+	@Override
+	public void commandSent(IDockCommandToNewton command) {
+	}
+
+	@Override
+	public void commandSending(IDockCommandToNewton command, int progress, int total) {
+	}
+
+	@Override
+	public void commandEOF() {
+		close();
+	}
+
+	/**
+	 * Send a command.
+	 * 
+	 * @param command
+	 *            the command.
+	 */
+	protected void write(IDockCommandToNewton command) {
+		try {
+			if (pipe.allowSend())
+				pipe.write(command);
+		} catch (Exception e) {
+			JNCUApp.showError(frame, "write command", e);
+			if (!DOperationDone.COMMAND.equals(command.getCommand())) {
+				DOperationDone cancel = new DOperationDone();
+				write(cancel);
+			}
+		}
+	}
+
 }
