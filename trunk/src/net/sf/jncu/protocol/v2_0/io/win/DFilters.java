@@ -102,7 +102,7 @@ public class DFilters extends DockCommandToNewton {
 	 *            the filter extension.
 	 */
 	public void addExtensionFilter(String extension) {
-		addFilter(new FileNameExtensionFilter(extension, extension));
+		addFilter(new FileNameExtensionFilter("*." + extension, extension));
 	}
 
 	/**

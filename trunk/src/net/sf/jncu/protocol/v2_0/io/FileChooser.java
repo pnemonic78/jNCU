@@ -28,6 +28,7 @@ import java.util.List;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import net.sf.jncu.JNCUResources;
 import net.sf.jncu.Preferences;
 import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
@@ -101,8 +102,6 @@ public abstract class FileChooser extends IconModule {
 		FINISHED
 	}
 
-	private static final String TITLE = "File Chooser";
-
 	private final List<NSOFString> types = new ArrayList<NSOFString>();
 	private State state = State.NONE;
 	private File path;
@@ -118,14 +117,26 @@ public abstract class FileChooser extends IconModule {
 	 * 
 	 * @param pipe
 	 *            the pipe.
+	 * @param owner
+	 *            the owner window.
+	 */
+	private FileChooser(CDPipe<? extends CDPacket> pipe, Window owner) {
+		super(JNCUResources.getString("fileChooser", "File Chooser"), pipe, owner);
+		setName("FileChooser-" + getId());
+	}
+
+	/**
+	 * Constructs a new file chooser.
+	 * 
+	 * @param pipe
+	 *            the pipe.
 	 * @param types
 	 *            the chooser types.
 	 * @param owner
 	 *            the owner window.
 	 */
 	public FileChooser(CDPipe<? extends CDPacket> pipe, Collection<NSOFString> types, Window owner) {
-		super(TITLE, pipe, owner);
-		setName("FileChooser-" + getId());
+		this(pipe, owner);
 
 		if ((types == null) || types.isEmpty())
 			throw new IllegalArgumentException("types required");
@@ -145,8 +156,7 @@ public abstract class FileChooser extends IconModule {
 	 *            the owner window.
 	 */
 	public FileChooser(CDPipe<? extends CDPacket> pipe, NSOFString type, Window owner) {
-		super(TITLE, pipe, owner);
-		setName("FileChooser-" + getId());
+		this(pipe, owner);
 
 		if (type == null)
 			throw new IllegalArgumentException("type required");
@@ -287,11 +297,11 @@ public abstract class FileChooser extends IconModule {
 			filters.addAll(TranslatorFactory.getInstance().getFileFilters());
 		}
 		if (types.contains(PACKAGES)) {
-			filter = new FileNameExtensionFilter("Packages", "pkg", "PKG");
+			filter = new FileNameExtensionFilter(JNCUResources.getString("packages", "Packages"), "pkg", "PKG");
 			filters.add(filter);
 		}
 		if (types.contains(SYNC_FILES)) {
-			filter = new FileNameExtensionFilter("Backup Files", "nbk", "NBK");
+			filter = new FileNameExtensionFilter(JNCUResources.getString("backupFiles", "Backup Files"), "nbk", "NBK");
 			filters.add(filter);
 		}
 		filter = new AcceptAllFileFilter();

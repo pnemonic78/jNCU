@@ -26,6 +26,7 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import net.sf.jncu.JNCUResources;
 import net.sf.jncu.Preferences;
 import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
@@ -74,8 +75,6 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 	 */
 	protected static final String KEY_PATH = "jncu.fileChooser.path";
 
-	private static final String TITLE = "Load Package";
-
 	private File file;
 	private State state = State.NONE;
 	private JFileChooser packageChooser;
@@ -91,7 +90,7 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 	 *            the owner window.
 	 */
 	public LoadPackage(CDPipe<? extends CDPacket> pipe, boolean requested, Window owner) {
-		super(TITLE, pipe, owner);
+		super(JNCUResources.getString("loadPackage", "Load Package"), pipe, owner);
 		setName("LoadPackage-" + getId());
 
 		state = State.INITIALISED;
@@ -220,7 +219,7 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 			packageChooser = new JFileChooser();
 			packageChooser.setCurrentDirectory(folder);
 
-			FileFilter filter = new FileNameExtensionFilter("Newton Package", "pkg", "PKG");
+			FileFilter filter = new FileNameExtensionFilter(JNCUResources.getString("packages", "Packages"), "pkg", "PKG");
 			packageChooser.setFileFilter(filter);
 			packageChooser.setAcceptAllFileFilterUsed(false);
 			packageChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);

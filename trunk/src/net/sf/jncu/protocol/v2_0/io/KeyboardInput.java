@@ -19,13 +19,13 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
-import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.Timer;
 
+import net.sf.jncu.JNCUResources;
 import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
@@ -62,7 +62,6 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 		FINISHED
 	}
 
-	private static final String TITLE = Toolkit.getProperty("AWT.CompositionWindowTitle", "Keyboard Input");
 	/**
 	 * Wait to batch several "kbdc" as single "kbds" (unless the key is control
 	 * character).
@@ -84,7 +83,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	 *            the owner window.
 	 */
 	public KeyboardInput(CDPipe<? extends CDPacket> pipe, Window owner) {
-		super(TITLE, pipe, owner);
+		super(JNCUResources.getString("keyboardInput", "Keyboard Input"), pipe, owner);
 		setName("KeyboardInput-" + getId());
 
 		this.state = State.INITIALISED;

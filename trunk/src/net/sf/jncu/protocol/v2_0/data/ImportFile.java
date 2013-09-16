@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import net.sf.jncu.JNCUResources;
 import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.fdil.NSOFFrame;
@@ -79,8 +80,6 @@ public class ImportFile extends IconModule {
 		FINISHED
 	}
 
-	protected static final String TITLE = "Import File";
-
 	private State state = State.NONE;
 	private File file;
 	private Importer importer;
@@ -97,7 +96,7 @@ public class ImportFile extends IconModule {
 	 *            the owner window.
 	 */
 	public ImportFile(CDPipe<? extends CDPacket> pipe, Window owner) {
-		super(TITLE, pipe, owner);
+		super(JNCUResources.getString("importFile", "Import File"), pipe, owner);
 		setName("ImportFile-" + getId());
 		state = State.INITIALISED;
 	}
@@ -146,8 +145,7 @@ public class ImportFile extends IconModule {
 				} else {
 					done();
 					state = State.CANCELLED;
-					showError(result.getError().getMessage() + "\nCode: "
-							+ code);
+					showError(result.getError().getMessage() + "\nCode: " + code);
 				}
 			}
 		} else if (DOperationCanceled2.COMMAND.equals(cmd)) {
@@ -158,8 +156,7 @@ public class ImportFile extends IconModule {
 			write(ack);
 		} else if (DAddedID.COMMAND.equals(cmd)) {
 			DAddedID cmdAdded = (DAddedID) command;
-			SoupChanged soup = DSoupsChanged.createSoup(
-					translator.getApplicationName(), cmdAdded.getId());
+			SoupChanged soup = DSoupsChanged.createSoup(translator.getApplicationName(), cmdAdded.getId());
 
 			if (changed == null)
 				changed = new DSoupsChanged();
@@ -216,8 +213,7 @@ public class ImportFile extends IconModule {
 	@Override
 	public void run() {
 		if (state == State.INITIALISED) {
-			translators = TranslatorFactory.getInstance().getTranslatorsByFile(
-					file);
+			translators = TranslatorFactory.getInstance().getTranslatorsByFile(file);
 			if ((translators == null) || translators.isEmpty()) {
 				showError("No translator found");
 				return;
