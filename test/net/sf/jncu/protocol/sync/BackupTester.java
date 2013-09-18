@@ -215,22 +215,27 @@ public class BackupTester implements BackupListener, MNPPacketListener, DockComm
 
 	@Override
 	public void packetAcknowledged(MNPPacket packet) {
-		logger.log("a", packet, pipe.getDockingState());
+		logger.log("A", packet, pipe.getDockingState());
 	}
 
 	@Override
 	public void packetEOF() {
-		logger.log("e", null, pipe.getDockingState());
+		logger.log("E", null, pipe.getDockingState());
 	}
 
 	@Override
 	public void packetReceived(MNPPacket packet) {
-		logger.log("r", packet, pipe.getDockingState());
+		logger.log("R", packet, pipe.getDockingState());
+	}
+
+	@Override
+	public void packetSending(MNPPacket packet) {
+		logger.log("s", packet, pipe.getDockingState());
 	}
 
 	@Override
 	public void packetSent(MNPPacket packet) {
-		logger.log("s", packet, pipe.getDockingState());
+		logger.log("S", packet, pipe.getDockingState());
 	}
 
 	@Override

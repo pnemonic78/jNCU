@@ -35,6 +35,14 @@ public interface CDPacketListener<T extends CDPacket> {
 	public void packetReceived(T packet);
 
 	/**
+	 * Notification that a packet is being sent.
+	 * 
+	 * @param packet
+	 *            the sending packet.
+	 */
+	public void packetSending(T packet);
+
+	/**
 	 * Notification that a packet was sent.
 	 * 
 	 * @param packet

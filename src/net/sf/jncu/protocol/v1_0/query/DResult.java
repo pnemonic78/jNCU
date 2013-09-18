@@ -69,7 +69,6 @@ public class DResult extends DockCommandFromNewton implements IDockCommandToNewt
 	public InputStream getCommandPayload() throws IOException {
 		if (to == null) {
 			to = new DockCommandToNewtonLong(COMMAND) {
-
 				@Override
 				protected int getValue() {
 					return getErrorCode();

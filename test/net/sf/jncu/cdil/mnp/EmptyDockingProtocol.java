@@ -26,7 +26,7 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
 import net.sf.jncu.protocol.v2_0.session.DockingState;
 
-public class EmptyDockingProtocol extends DockingProtocol<MNPPacket> {
+public class EmptyDockingProtocol extends DockingProtocol<MNPPacket, MNPPacketLayer> {
 
 	public EmptyDockingProtocol(EmptyPipe pipe) {
 		super(pipe);

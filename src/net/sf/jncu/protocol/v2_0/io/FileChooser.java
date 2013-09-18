@@ -30,7 +30,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.Preferences;
-import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.NSOFSymbol;
@@ -120,7 +119,7 @@ public abstract class FileChooser extends IconModule {
 	 * @param owner
 	 *            the owner window.
 	 */
-	private FileChooser(CDPipe<? extends CDPacket> pipe, Window owner) {
+	private FileChooser(CDPipe pipe, Window owner) {
 		super(JNCUResources.getString("fileChooser", "File Chooser"), pipe, owner);
 		setName("FileChooser-" + getId());
 	}
@@ -135,7 +134,7 @@ public abstract class FileChooser extends IconModule {
 	 * @param owner
 	 *            the owner window.
 	 */
-	public FileChooser(CDPipe<? extends CDPacket> pipe, Collection<NSOFString> types, Window owner) {
+	public FileChooser(CDPipe pipe, Collection<NSOFString> types, Window owner) {
 		this(pipe, owner);
 
 		if ((types == null) || types.isEmpty())
@@ -155,7 +154,7 @@ public abstract class FileChooser extends IconModule {
 	 * @param owner
 	 *            the owner window.
 	 */
-	public FileChooser(CDPipe<? extends CDPacket> pipe, NSOFString type, Window owner) {
+	public FileChooser(CDPipe pipe, NSOFString type, Window owner) {
 		this(pipe, owner);
 
 		if (type == null)
@@ -181,11 +180,9 @@ public abstract class FileChooser extends IconModule {
 		populateFilters();
 
 		if (types.contains(IMPORT)) {
-			DGetInternalStore cmdGet = new DGetInternalStore();
-			write(cmdGet);
+			write(new DGetInternalStore());
 		} else {
-			DResult cmdResult = new DResult();
-			write(cmdResult);
+			write(new DResult());
 		}
 		state = State.INITIALISED;
 	}
@@ -291,8 +288,6 @@ public abstract class FileChooser extends IconModule {
 		filters.clear();
 
 		FileFilter filter;
-		// TODO Load the strings from resources bundle like the
-		// AcceptAllFileFilter.
 		if (types.contains(IMPORT)) {
 			filters.addAll(TranslatorFactory.getInstance().getFileFilters());
 		}

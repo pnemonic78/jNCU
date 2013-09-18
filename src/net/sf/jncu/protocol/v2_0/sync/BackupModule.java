@@ -32,10 +32,10 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.swing.ProgressMonitor;
+import javax.swing.SwingUtilities;
 
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.cdil.BadPipeStateException;
-import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFString;
@@ -50,7 +50,6 @@ import net.sf.jncu.protocol.v1_0.data.DSoupNames;
 import net.sf.jncu.protocol.v1_0.io.DGetStoreNames;
 import net.sf.jncu.protocol.v1_0.io.DStoreNames;
 import net.sf.jncu.protocol.v1_0.query.DResult;
-import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v1_0.sync.DCurrentTime;
 import net.sf.jncu.protocol.v1_0.sync.DLastSyncTime;
 import net.sf.jncu.protocol.v2_0.IconModule;
@@ -60,7 +59,6 @@ import net.sf.jncu.protocol.v2_0.app.DGetAppNames;
 import net.sf.jncu.protocol.v2_0.data.DSendSoup;
 import net.sf.jncu.protocol.v2_0.data.DSetSoupGetInfo;
 import net.sf.jncu.protocol.v2_0.io.DSetStoreGetNames;
-import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
@@ -168,7 +166,7 @@ public class BackupModule extends IconModule {
 	 * @param owner
 	 *            the owner window.
 	 */
-	public BackupModule(CDPipe<? extends CDPacket> pipe, boolean requested, Window owner) {
+	public BackupModule(CDPipe pipe, boolean requested, Window owner) {
 		super(JNCUResources.getString("backup", "Backup"), pipe, owner);
 		setName("BackupModule-" + getId());
 
@@ -198,21 +196,14 @@ public class BackupModule extends IconModule {
 				case INITIALISED:
 					// In order to show the dialog, we need to populate it with
 					// stores and applications.
-					DGetStoreNames getStores = new DGetStoreNames();
-					write(getStores);
+					write(new DGetStoreNames());
 					break;
 				}
 			} else {
 				done();
 				state = State.CANCELLED;
-				showError(result.getError().getMessage() + "\nCode: " + code);
+				showError("Error: " + code, result.getError());
 			}
-		} else if (DOperationCanceled.COMMAND.equals(cmd)) {
-			DOperationCanceledAck ack = new DOperationCanceledAck();
-			write(ack);
-		} else if (DOperationCanceled2.COMMAND.equals(cmd)) {
-			DOperationCanceledAck ack = new DOperationCanceledAck();
-			write(ack);
 		} else if (DStoreNames.COMMAND.equals(cmd)) {
 			DStoreNames storeNames = (DStoreNames) command;
 			stores = storeNames.getStores();
@@ -283,7 +274,7 @@ public class BackupModule extends IconModule {
 				try {
 					writer.soupEntry(store.getName(), soup, soupEntry);
 				} catch (BackupException e) {
-					e.printStackTrace();
+					showError("Soup entry", e);
 					writeCancel();
 					return;
 				}
@@ -346,16 +337,18 @@ public class BackupModule extends IconModule {
 		state = BackupModule.State.GET_OPTIONS;
 
 		// Run this in thread to release the commandReceived call.
-		new Thread() {
+		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				dialog = new BackupDialog();
 				dialog.setStores(stores);
 				dialog.setApplications(appNames);
+
 				// Ping the Newton so as not to cause connection timeout.
 				pipe.ping();
 				dialog.setVisible(true);
 				pipe.stopPing();
+
 				options = dialog.getSyncOptions();
 				if (options == null) {
 					cancel();
@@ -363,11 +356,10 @@ public class BackupModule extends IconModule {
 					state = BackupModule.State.OPTIONS;
 
 					// DLastSyncTime -> DCurrentTime
-					DLastSyncTime time = new DLastSyncTime();
-					write(time);
+					write(new DLastSyncTime());
 				}
 			}
-		}.start();
+		});
 	}
 
 	/**
@@ -388,13 +380,11 @@ public class BackupModule extends IconModule {
 
 		switch (state) {
 		case INITIALISED:
-			DRequestToSync req = new DRequestToSync();
-			write(req);
+			write(new DRequestToSync());
 			break;
 		case GET_OPTIONS:
 			// DGetSyncOptions -> DSyncOptions
-			DGetSyncOptions get = new DGetSyncOptions();
-			write(get);
+			write(new DGetSyncOptions());
 			break;
 		default:
 			throw new BadPipeStateException("bad state " + state);
@@ -421,8 +411,7 @@ public class BackupModule extends IconModule {
 
 		if (stores == null) {
 			// DGetStoreNames -> DStoreNames
-			DGetStoreNames getStores = new DGetStoreNames();
-			write(getStores);
+			write(new DGetStoreNames());
 		} else {
 			backupStores();
 		}
@@ -483,7 +472,7 @@ public class BackupModule extends IconModule {
 			try {
 				writer.endStore(store);
 			} catch (BackupException e) {
-				e.printStackTrace();
+				showError("End store", e);
 				writeCancel();
 				return;
 			}
@@ -708,14 +697,13 @@ public class BackupModule extends IconModule {
 			writer.startSoup(store.getName(), soup.getName());
 			writer.soupDefinition(store.getName(), soup);
 		} catch (BackupException e) {
-			e.printStackTrace();
+			showError("Soup info", e);
 			writeCancel();
 			return;
 		}
 
 		// DSendSoup -> DEntry* -> DBackupSoupDone
-		DSendSoup getEntries = new DSendSoup();
-		write(getEntries);
+		write(new DSendSoup());
 	}
 
 	/**
@@ -735,7 +723,7 @@ public class BackupModule extends IconModule {
 		try {
 			writer.endSoup(store.getName(), soup);
 		} catch (BackupException e) {
-			e.printStackTrace();
+			showError("End soup", e);
 			writeCancel();
 			return;
 		}

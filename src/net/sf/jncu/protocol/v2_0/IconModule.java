@@ -24,10 +24,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.swing.JOptionPane;
 import javax.swing.ProgressMonitor;
 
-import net.sf.jncu.cdil.CDPacket;
+import net.sf.jncu.JNCUApp;
+import net.sf.jncu.JNCUResources;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommand;
@@ -35,6 +35,7 @@ import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
+import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 
@@ -67,12 +68,15 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	}
 
 	private final String title;
-	protected final CDPipe<? extends CDPacket> pipe;
+	protected final CDPipe pipe;
 	private final List<IconModuleListener> listeners = new ArrayList<IconModuleListener>();
 	private ProgressMonitor progressMonitor;
 	private IDockCommandFromNewton progressCommandFrom;
 	private IDockCommandToNewton progressCommandTo;
 	private Window owner;
+	private String progressReceivingFormat;
+	private String progressSendingFormat;
+	private boolean cancelled;
 
 	/**
 	 * Constructs a new module.
@@ -84,7 +88,7 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	 * @param owner
 	 *            the owner window.
 	 */
-	public IconModule(String title, CDPipe<? extends CDPacket> pipe, Window owner) {
+	public IconModule(String title, CDPipe pipe, Window owner) {
 		super();
 		setName("IconModule-" + getId());
 		this.title = title;
@@ -129,12 +133,10 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 			if (pipe.allowSend())
 				pipe.write(command);
 		} catch (Exception e) {
-			e.printStackTrace();
+			showError("write", e);
 			if (!DOperationDone.COMMAND.equals(command.getCommand())) {
-				DOperationDone cancel = new DOperationDone();
-				write(cancel);
+				writeDone();
 			}
-			showError(e.getMessage());
 		}
 	}
 
@@ -142,14 +144,12 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	 * Show the error to the user.
 	 * 
 	 * @param msg
-	 *            the error message.
+	 *            the message.
+	 * @param e
+	 *            the error.
 	 */
-	protected void showError(final String msg) {
-		new Thread() {
-			public void run() {
-				JOptionPane.showMessageDialog(getOwner(), msg, title, JOptionPane.ERROR_MESSAGE);
-			}
-		}.start();
+	protected void showError(String msg, Throwable e) {
+		JNCUApp.showError(getOwner(), msg, e);
 	}
 
 	/**
@@ -161,23 +161,22 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 			progressMonitor.close();
 			progressMonitor = null;
 		}
-		interrupt();
+		IconModule.this.interrupt();
 	}
 
 	/**
 	 * Module sends notification to Newton to finish.
 	 */
 	protected void writeDone() {
-		DOperationDone done = new DOperationDone();
-		write(done);
+		write(new DOperationDone());
 	}
 
 	/**
 	 * Module sends notification to Newton to cancel.
 	 */
 	protected void writeCancel() {
-		DOperationCanceled cancel = new DOperationCanceled();
-		write(cancel);
+		pipe.clearCommands();
+		write(new DOperationCanceled());
 	}
 
 	/**
@@ -198,7 +197,10 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 		if (monitor != null) {
 			monitor.setMaximum(total);
 			monitor.setProgress(progress);
-			monitor.setNote(String.format("Receiving %d%%", (progress * 100) / total));
+			monitor.setNote(String.format(progressReceivingFormat, (progress * 100) / total));
+			if (monitor.isCanceled()) {
+				cancel();
+			}
 		}
 	}
 
@@ -211,13 +213,15 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 		if (!isEnabled())
 			return;
 
-		String cmd = command.getCommand();
+		final String cmd = command.getCommand();
 
 		if (DOperationCanceled.COMMAND.equals(cmd)) {
-			DOperationCanceledAck ack = new DOperationCanceledAck();
-			write(ack);
+			cancelReceived();
+		} else if (DOperationCanceled2.COMMAND.equals(cmd)) {
+			cancelReceived();
 		} else if (DDisconnect.COMMAND.equals(cmd)) {
 			fireCancelled();
+			done();
 		}
 	}
 
@@ -226,11 +230,14 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 		if (!isEnabled())
 			return;
 		progressCommandTo = command;
-		ProgressMonitor monitor = getProgress();
+		final ProgressMonitor monitor = getProgress();
 		if (monitor != null) {
 			monitor.setMaximum(total);
 			monitor.setProgress(progress);
-			monitor.setNote(String.format("Sending %d%%", (progress * 100) / total));
+			monitor.setNote(String.format(progressSendingFormat, (progress * 100) / total));
+			if (monitor.isCanceled()) {
+				cancel();
+			}
 		}
 	}
 
@@ -243,16 +250,10 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 		if (!isEnabled())
 			return;
 
-		String cmd = command.getCommand();
+		final String cmd = command.getCommand();
 
 		if (DOperationDone.COMMAND.equals(cmd)) {
 			fireDone();
-			done();
-		} else if (DOperationCanceled.COMMAND.equals(cmd)) {
-			fireCancelled();
-			done();
-		} else if (DOperationCanceledAck.COMMAND.equals(cmd)) {
-			fireCancelled();
 			done();
 		}
 	}
@@ -312,6 +313,8 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 				progressMonitor = new ProgressMonitor(getOwner(), getTitle(), "0%%", 0, IDockCommand.LENGTH_WORD);
 			}
 		}
+		progressReceivingFormat = JNCUResources.getString("progressReceiving", "Receiving %d%%");
+		progressSendingFormat = JNCUResources.getString("progressSending", "Sending %d%%");
 		return progressMonitor;
 	}
 
@@ -330,13 +333,69 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	 * Cancel the operation.
 	 */
 	public void cancel() {
-		DOperationCanceled cancel = new DOperationCanceled();
-		write(cancel);
+		cancelSend();
+	}
+
+	/**
+	 * Send cancellation to Newton.
+	 */
+	protected void cancelSend() {
+		if (cancelled)
+			return;
+		cancelled = true;
+
+		new Thread() {
+			@Override
+			public void run() {
+				cancelSendRun();
+			}
+		}.start();
+	}
+
+	/**
+	 * Send cancellation to Newton.
+	 */
+	protected void cancelSendRun() {
+		writeCancel();
+		fireCancelled();
 		try {
-			// Enough time to send the cancel and receive an acknowledge.
+			// Enough time to send the cancel and receive an
+			// acknowledge.
 			sleep(2000);
 		} catch (InterruptedException e) {
 		}
+		done();
+	}
+
+	/**
+	 * Received cancellation from Newton.
+	 */
+	protected void cancelReceived() {
+		if (cancelled)
+			return;
+		cancelled = true;
+
+		new Thread() {
+			@Override
+			public void run() {
+				cancelReceivedRun();
+			}
+		}.start();
+	}
+
+	/**
+	 * Received cancellation from Newton.
+	 */
+	protected void cancelReceivedRun() {
+		pipe.clearCommands();
+		write(new DOperationCanceledAck());
+		try {
+			// Enough time to send the cancel and receive an
+			// acknowledge.
+			sleep(2000);
+		} catch (InterruptedException e) {
+		}
+		fireCancelled();
 		done();
 	}
 }

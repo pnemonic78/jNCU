@@ -19,10 +19,6 @@
  */
 package net.sf.swing;
 
-import java.awt.DisplayMode;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.WindowEvent;
@@ -89,49 +85,6 @@ public class SwingUtils {
 	 */
 	public static File[] getRoots() {
 		return getFileSystemView().getRoots();
-	}
-
-	/**
-	 * Place the window in the middle of its parent or owner (or screen if not
-	 * owned).
-	 * 
-	 * @param window
-	 *            the window.
-	 */
-	public static void centreInOwner(Window window) {
-		int w = window.getWidth();
-		int h = window.getHeight();
-		int ox = 0;
-		int oy = 0;
-		int ow = 0;
-		int oh = 0;
-		Window owner = window.getOwner();
-		if (owner != null) {
-			if (owner.isShowing()) {
-				ox = owner.getX();
-				oy = owner.getY();
-				ow = owner.getWidth();
-				oh = owner.getHeight();
-				if ((ow == 0) && (oh == 0))
-					owner = null;
-			} else
-				owner = null;
-		}
-		if (owner == null) {
-			GraphicsDevice gd;
-			GraphicsConfiguration gc = window.getGraphicsConfiguration();
-			if (gc == null) {
-				gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-			} else {
-				gd = gc.getDevice();
-			}
-			DisplayMode dm = gd.getDisplayMode();
-			ow = dm.getWidth();
-			oh = dm.getHeight();
-		}
-		int x = Math.max(0, (ox + (ow / 2)) - (w / 2));
-		int y = Math.max(0, (oy + (oh / 2)) - (h / 2));
-		window.setLocation(x, y);
 	}
 
 	/**

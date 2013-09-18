@@ -501,7 +501,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 		setResizable(false);
 		setMinimumSize(new Dimension(450, 440));
 		pack();
-		SwingUtils.centreInOwner(this);
+		setLocationRelativeTo(getOwner());
 
 		setConnected(false);
 	}
@@ -854,7 +854,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	 * @param e
 	 *            the error.
 	 */
-	protected void showError(String message, Exception e) {
+	protected void showError(String message, Throwable e) {
 		JNCUApp.showError(this, message, e);
 	}
 

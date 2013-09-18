@@ -394,7 +394,7 @@ public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 
 	@Override
 	public void packetAcknowledged(MNPPacket packet) {
-		logger.log("a", packet, state);
+		logger.log("A", packet, state);
 	}
 
 	@Override
@@ -404,7 +404,7 @@ public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 
 	@Override
 	public void packetReceived(MNPPacket packet) {
-		logger.log("r", packet, state);
+		logger.log("R", packet, state);
 
 		switch (packet.getType()) {
 		case MNPPacket.LA:
@@ -525,8 +525,13 @@ public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 	}
 
 	@Override
-	public void packetSent(MNPPacket packet) {
+	public void packetSending(MNPPacket packet) {
 		logger.log("s", packet, state);
+	}
+
+	@Override
+	public void packetSent(MNPPacket packet) {
+		logger.log("S", packet, state);
 	}
 
 	@Override

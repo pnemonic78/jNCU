@@ -22,7 +22,6 @@ package net.sf.jncu.cdil.mnp;
 import java.io.IOException;
 
 import net.sf.jncu.cdil.CDLayer;
-import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.cdil.CDStateListener;
@@ -88,7 +87,7 @@ public class Connect implements CDStateListener {
 
 		try {
 			CDLayer layer = CDLayer.getInstance();
-			CDPipe<? extends CDPacket> pipe;
+			CDPipe<?, ?> pipe;
 			// Initialize the library
 			layer.startUp();
 			// Create a connection object

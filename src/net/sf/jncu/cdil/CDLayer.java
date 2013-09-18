@@ -437,7 +437,7 @@ public class CDLayer {
 	 * @param state
 	 *            the state.
 	 */
-	public void setState(CDPipe<? extends CDPacket> pipe, CDState state) {
+	public void setState(CDPipe<? extends CDPacket, ? extends CDPacketLayer<? extends CDPacket>> pipe, CDState state) {
 		if (pipe == null)
 			throw new NullPointerException("pipe required");
 		setState(state);

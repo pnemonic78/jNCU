@@ -53,7 +53,6 @@ import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.v2_0.app.AppName;
 import net.sf.jncu.ui.JNCUDialog;
 import net.sf.swing.CheckListCellRenderer;
-import net.sf.swing.SwingUtils;
 
 /**
  * Backup options dialog.
@@ -186,7 +185,7 @@ public class BackupDialog extends JNCUDialog {
 
 		setMinimumSize(new Dimension(380, 300));
 		pack();
-		SwingUtils.centreInOwner(this);
+		setLocationRelativeTo(getOwner());
 		getBackupButton().requestFocus();
 	}
 
@@ -247,7 +246,7 @@ public class BackupDialog extends JNCUDialog {
 		}
 
 		pack();
-		SwingUtils.centreInOwner(this);
+		setLocationRelativeTo(getOwner());
 	}
 
 	/**
@@ -272,7 +271,7 @@ public class BackupDialog extends JNCUDialog {
 		}
 
 		pack();
-		SwingUtils.centreInOwner(this);
+		setLocationRelativeTo(getOwner());
 	}
 
 	/**

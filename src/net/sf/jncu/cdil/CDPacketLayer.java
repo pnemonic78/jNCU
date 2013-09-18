@@ -40,7 +40,7 @@ public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 
 	/** System property name for a filter class. */
 	public static final String PROPERTY_FILTER = "jncu.cdil.filterClass";
-	protected final CDPipe<P> pipe;
+	protected final CDPipe<P, ? extends CDPacketLayer<P>> pipe;
 	private boolean running;
 	private int timeout;
 	private final Timer timer = new Timer();
@@ -57,7 +57,7 @@ public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 	 *            the pipe.
 	 */
 	@SuppressWarnings("unchecked")
-	public CDPacketLayer(CDPipe<P> pipe) {
+	public CDPacketLayer(CDPipe<P, ? extends CDPacketLayer<P>> pipe) {
 		super();
 		setName("CDPacketLayer-" + getId());
 		this.pipe = pipe;
@@ -141,6 +141,20 @@ public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 		Collection<CDPacketListener<P>> listenersCopy = new ArrayList<CDPacketListener<P>>(listeners);
 		for (CDPacketListener<P> listener : listenersCopy) {
 			listener.packetReceived(packet);
+		}
+	}
+
+	/**
+	 * Notify all the listeners that a packet is being sent.
+	 * 
+	 * @param packet
+	 *            the sending packet.
+	 */
+	protected void firePacketSending(P packet) {
+		// Make copy of listeners to avoid ConcurrentModificationException.
+		Collection<CDPacketListener<P>> listenersCopy = new ArrayList<CDPacketListener<P>>(listeners);
+		for (CDPacketListener<P> listener : listenersCopy) {
+			listener.packetSending(packet);
 		}
 	}
 
@@ -323,6 +337,7 @@ public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 			return;
 		byte[] payload = packet.serialize();
 		try {
+			firePacketSending(packet);
 			write(payload);
 			firePacketSent(packet);
 		} catch (EOFException eof) {
@@ -456,5 +471,11 @@ public abstract class CDPacketLayer<P extends CDPacket> extends Thread {
 				return null;
 		}
 		return packet;
+	}
+
+	/**
+	 * Clear the sending queue.
+	 */
+	public void clearSend() {
 	}
 }

@@ -284,6 +284,8 @@ public class NSOFSmallRect extends NSOFFrame {
 			return super.put(name, value);
 		if (SLOT_TOP.equals(name))
 			return super.put(name, value);
+		if (SLOT_CLASS.equals(name))
+			return super.put(name, value);
 		throw new UnsupportedOperationException("invalid slot: " + name);
 	}
 }

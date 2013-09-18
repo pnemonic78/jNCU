@@ -44,10 +44,10 @@ import net.sf.jncu.protocol.v2_0.DockCommandFactory;
  * @author moshew
  * @param <P>
  */
-public abstract class CDCommandLayer<P extends CDPacket> extends Thread implements CDPacketListener<P> {
+public abstract class CDCommandLayer<P extends CDPacket, L extends CDPacketLayer<P>> extends Thread implements CDPacketListener<P> {
 
 	/** The packet layer. */
-	protected final CDPacketLayer<P> packetLayer;
+	protected final L packetLayer;
 	/** List of command listeners. */
 	protected final Collection<DockCommandListener> listeners = new ArrayList<DockCommandListener>();
 	/** Still listening for incoming commands? */
@@ -59,7 +59,7 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 	 * @param packetLayer
 	 *            the packet layer.
 	 */
-	public CDCommandLayer(CDPacketLayer<P> packetLayer) {
+	public CDCommandLayer(L packetLayer) {
 		super();
 		setName("CDCommandLayer-" + getId());
 		this.packetLayer = packetLayer;
@@ -399,19 +399,30 @@ public abstract class CDCommandLayer<P extends CDPacket> extends Thread implemen
 	}
 
 	@Override
-	public void packetReceived(P packet) {
-	}
-
-	@Override
-	public void packetSent(P packet) {
-	}
-
-	@Override
 	public void packetAcknowledged(P packet) {
 	}
 
 	@Override
 	public void packetEOF() {
 		fireCommandEOF();
+	}
+
+	@Override
+	public void packetReceived(P packet) {
+	}
+
+	@Override
+	public void packetSending(P packet) {
+	}
+
+	@Override
+	public void packetSent(P packet) {
+	}
+
+	/**
+	 * Clear the sending queue.
+	 */
+	public void clearQueue() {
+		packetLayer.clearSend();
 	}
 }

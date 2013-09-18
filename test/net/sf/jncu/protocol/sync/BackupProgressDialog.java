@@ -32,7 +32,6 @@ import javax.swing.border.EmptyBorder;
 
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.ui.JNCUDialog;
-import net.sf.swing.SwingUtils;
 
 /**
  * Backup progress dialog.
@@ -86,7 +85,7 @@ public class BackupProgressDialog extends JNCUDialog {
 
 		setMinimumSize(new Dimension(320, 140));
 		pack();
-		SwingUtils.centreInOwner(this);
+		setLocationRelativeTo(getOwner());
 	}
 
 	/**

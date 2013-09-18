@@ -21,7 +21,6 @@ package net.sf.jncu.cdil.adsp;
 
 import net.sf.jncu.cdil.CDCommandLayer;
 import net.sf.jncu.cdil.CDLayer;
-import net.sf.jncu.cdil.CDPacketLayer;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 
@@ -30,7 +29,7 @@ import net.sf.jncu.cdil.ServiceNotSupportedException;
  * 
  * @author moshew
  */
-public class ADSPPipe extends CDPipe<ADSPPacket> {
+public class ADSPPipe extends CDPipe<ADSPPacket, ADSPPacketLayer> {
 
 	protected final String name;
 	protected final byte type;
@@ -63,12 +62,12 @@ public class ADSPPipe extends CDPipe<ADSPPacket> {
 	}
 
 	@Override
-	protected CDPacketLayer<ADSPPacket> createPacketLayer() {
+	protected ADSPPacketLayer createPacketLayer() {
 		return new ADSPPacketLayer(this);
 	}
 
 	@Override
-	protected CDCommandLayer<ADSPPacket> createCommandLayer(CDPacketLayer<ADSPPacket> packetLayer) {
+	protected CDCommandLayer<ADSPPacket, ADSPPacketLayer> createCommandLayer(ADSPPacketLayer packetLayer) {
 		return null;
 	}
 

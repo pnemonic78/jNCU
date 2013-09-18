@@ -22,9 +22,9 @@ package net.sf.jncu.protocol.v1_0.session;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
+import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.IDockCommandFromNewton;
 
 /**
  * This command is sent when the user cancels an operation. Usually no action is
@@ -35,32 +35,32 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
  * length = 0
  * </pre>
  */
-public class DOperationCanceled extends DockCommandFromNewtonBlank implements IDockCommandToNewton {
+public class DOperationCanceled extends DockCommandToNewtonBlank implements IDockCommandFromNewton {
 
 	/** <tt>kDOperationCanceled</tt> */
 	public static final String COMMAND = "opca";
-
-	private DockCommandToNewtonBlank blank;
 
 	/**
 	 * Creates a new command.
 	 */
 	public DOperationCanceled() {
-		super(COMMAND);
+		this(COMMAND);
+	}
+
+	/**
+	 * Creates a new command.
+	 * 
+	 * @param cmd
+	 *            the command.
+	 */
+	protected DOperationCanceled(String cmd) {
+		super(cmd);
 	}
 
 	@Override
-	public InputStream getCommandPayload() throws IOException {
-		if (blank == null)
-			blank = new DockCommandToNewtonBlank(COMMAND);
-		return blank.getCommandPayload();
-	}
-
-	@Override
-	public int getCommandPayloadLength() throws IOException {
-		if (blank == null)
-			blank = new DockCommandToNewtonBlank(COMMAND);
-		return blank.getCommandPayloadLength();
+	public void decode(InputStream data) throws IOException {
+		// nothing to decode.
+		setLength(DockCommandFromNewton.ntohl(data));
 	}
 
 }

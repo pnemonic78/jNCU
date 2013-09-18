@@ -26,7 +26,6 @@ import java.awt.event.WindowListener;
 import java.util.Timer;
 
 import net.sf.jncu.JNCUResources;
-import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
@@ -82,7 +81,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	 * @param owner
 	 *            the owner window.
 	 */
-	public KeyboardInput(CDPipe<? extends CDPacket> pipe, Window owner) {
+	public KeyboardInput(CDPipe pipe, Window owner) {
 		super(JNCUResources.getString("keyboardInput", "Keyboard Input"), pipe, owner);
 		setName("KeyboardInput-" + getId());
 

@@ -35,7 +35,6 @@ import javax.swing.JPanel;
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.util.NumberUtils;
-import net.sf.swing.SwingUtils;
 
 /**
  * jNCU Newton device information dialog.
@@ -86,7 +85,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 	private void init() {
 		setContentPane(getMainContentPane());
 		pack();
-		SwingUtils.centreInOwner(this);
+		setLocationRelativeTo(getOwner());
 		getOkButton().requestFocus();
 	}
 
@@ -431,7 +430,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 		getScreenWidthLabel().setText(Integer.toString(info.getScreenWidth()) + " pixels");
 		getSerialNumberLabel().setText(serialNumber);
 		pack();
-		SwingUtils.centreInOwner(this);
+		setLocationRelativeTo(getOwner());
 	}
 
 	/**

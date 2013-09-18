@@ -158,6 +158,16 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 	}
 
 	@Override
+	public void packetAcknowledged(MNPPacket packet) {
+		// Nothing to do.
+	}
+
+	@Override
+	public void packetEOF() {
+		cancel();
+	}
+
+	@Override
 	public void packetReceived(MNPPacket packet) {
 		final byte packetType = packet.getType();
 
@@ -178,18 +188,13 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 	}
 
 	@Override
+	public void packetSending(MNPPacket packet) {
+		// Nothing to do.
+	}
+
+	@Override
 	public void packetSent(MNPPacket packet) {
 		// Nothing to do.
-	}
-
-	@Override
-	public void packetAcknowledged(MNPPacket packet) {
-		// Nothing to do.
-	}
-
-	@Override
-	public void packetEOF() {
-		cancel();
 	}
 
 	/**
@@ -214,6 +219,13 @@ public class MNPPacketSender extends Thread implements MNPPacketListener {
 			packetLayer.notifyTimeout(te);
 		}
 		running = false;
+	}
+
+	/**
+	 * Clear the queue.
+	 */
+	public void clear() {
+		queueSend.clear();
 	}
 
 }

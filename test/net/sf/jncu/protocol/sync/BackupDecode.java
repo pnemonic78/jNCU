@@ -121,7 +121,7 @@ public class BackupDecode extends TraceDecode implements DockCommandListener {
 		if (DResult.COMMAND.equals(cmd)) {
 			DResult dResult = (DResult) command;
 			int r = dResult.getErrorCode();
-			if (r != 0) {
+			if (r != DResult.OK) {
 				System.out.println("result=" + r);
 			}
 		} else if (DNewtonName.COMMAND.equals(cmd)) {

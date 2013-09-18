@@ -25,6 +25,7 @@ import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.CDPipeListener;
 import net.sf.jncu.cdil.mnp.MNPPacket;
+import net.sf.jncu.cdil.mnp.MNPPacketLayer;
 import net.sf.jncu.cdil.mnp.MNPPacketListener;
 import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
@@ -42,7 +43,7 @@ import net.sf.jncu.protocol.v2_0.app.LoadPackage;
  * 
  * @author moshew
  */
-public class LoadPackageTester implements IconModuleListener, MNPPacketListener, DockCommandListener, CDPipeListener<MNPPacket> {
+public class LoadPackageTester implements IconModuleListener, MNPPacketListener, DockCommandListener, CDPipeListener<MNPPacket, MNPPacketLayer> {
 
 	private String portName;
 	private String pkgPath;
@@ -137,22 +138,27 @@ public class LoadPackageTester implements IconModuleListener, MNPPacketListener,
 
 	@Override
 	public void packetAcknowledged(MNPPacket packet) {
-		logger.log("a", packet, pipe.getDockingState());
+		logger.log("A", packet, pipe.getDockingState());
 	}
 
 	@Override
 	public void packetEOF() {
-		logger.log("e", null, pipe.getDockingState());
+		logger.log("E", null, pipe.getDockingState());
 	}
 
 	@Override
 	public void packetReceived(MNPPacket packet) {
-		logger.log("r", packet, pipe.getDockingState());
+		logger.log("R", packet, pipe.getDockingState());
+	}
+
+	@Override
+	public void packetSending(MNPPacket packet) {
+		logger.log("s", packet, pipe.getDockingState());
 	}
 
 	@Override
 	public void packetSent(MNPPacket packet) {
-		logger.log("s", packet, pipe.getDockingState());
+		logger.log("S", packet, pipe.getDockingState());
 	}
 
 	@Override
@@ -181,38 +187,38 @@ public class LoadPackageTester implements IconModuleListener, MNPPacketListener,
 	}
 
 	@Override
-	public void pipeDisconnected(CDPipe<MNPPacket> pipe) {
+	public void pipeDisconnected(CDPipe<MNPPacket, MNPPacketLayer> pipe) {
 	}
 
 	@Override
-	public void pipeDisconnectFailed(CDPipe<MNPPacket> pipe, Exception e) {
+	public void pipeDisconnectFailed(CDPipe<MNPPacket, MNPPacketLayer> pipe, Exception e) {
 		System.exit(100);
 	}
 
 	@Override
-	public void pipeConnectionListening(CDPipe<MNPPacket> pipe) {
+	public void pipeConnectionListening(CDPipe<MNPPacket, MNPPacketLayer> pipe) {
 	}
 
 	@Override
-	public void pipeConnectionListenFailed(CDPipe<MNPPacket> pipe, Exception e) {
+	public void pipeConnectionListenFailed(CDPipe<MNPPacket, MNPPacketLayer> pipe, Exception e) {
 		System.exit(101);
 	}
 
 	@Override
-	public void pipeConnectionPending(CDPipe<MNPPacket> pipe) {
+	public void pipeConnectionPending(CDPipe<MNPPacket, MNPPacketLayer> pipe) {
 	}
 
 	@Override
-	public void pipeConnectionPendingFailed(CDPipe<MNPPacket> pipe, Exception e) {
+	public void pipeConnectionPendingFailed(CDPipe<MNPPacket, MNPPacketLayer> pipe, Exception e) {
 		System.exit(102);
 	}
 
 	@Override
-	public void pipeConnected(CDPipe<MNPPacket> pipe) {
+	public void pipeConnected(CDPipe<MNPPacket, MNPPacketLayer> pipe) {
 	}
 
 	@Override
-	public void pipeConnectionFailed(CDPipe<MNPPacket> pipe, Exception e) {
+	public void pipeConnectionFailed(CDPipe<MNPPacket, MNPPacketLayer> pipe, Exception e) {
 		System.exit(103);
 	}
 

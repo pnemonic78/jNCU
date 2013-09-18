@@ -24,7 +24,6 @@ import java.util.concurrent.TimeoutException;
 import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.CDLayer;
-import net.sf.jncu.cdil.CDPacketLayer;
 import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
@@ -43,12 +42,12 @@ public class EmptyPipe extends MNPPipe {
 	}
 
 	@Override
-	protected CDPacketLayer<MNPPacket> createPacketLayer() {
+	protected MNPPacketLayer createPacketLayer() {
 		return new EmptyPacketLayer(this);
 	}
 
 	@Override
-	protected DockingProtocol<MNPPacket> createDockingProtocol() {
+	protected DockingProtocol<MNPPacket, MNPPacketLayer> createDockingProtocol() {
 		return new EmptyDockingProtocol(this);
 	}
 

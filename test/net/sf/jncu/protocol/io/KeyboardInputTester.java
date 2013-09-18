@@ -30,6 +30,7 @@ import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.CDPipeListener;
 import net.sf.jncu.cdil.mnp.EmptyPipe;
 import net.sf.jncu.cdil.mnp.MNPPacket;
+import net.sf.jncu.cdil.mnp.MNPPacketLayer;
 import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
 import net.sf.jncu.protocol.DockCommandListener;
@@ -40,7 +41,7 @@ import net.sf.jncu.protocol.v2_0.io.KeyboardInput;
 import net.sf.jncu.protocol.v2_0.io.KeyboardInputListener;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 
-public class KeyboardInputTester implements WindowListener, KeyboardInputListener, DockCommandListener, CDPipeListener<MNPPacket> {
+public class KeyboardInputTester implements WindowListener, KeyboardInputListener, DockCommandListener, CDPipeListener<MNPPacket, MNPPacketLayer> {
 
 	private String portName;
 	private CDLayer layer;
@@ -163,34 +164,34 @@ public class KeyboardInputTester implements WindowListener, KeyboardInputListene
 	}
 
 	@Override
-	public void pipeDisconnected(CDPipe<MNPPacket> pipe) {
+	public void pipeDisconnected(CDPipe<MNPPacket, MNPPacketLayer> pipe) {
 	}
 
 	@Override
-	public void pipeDisconnectFailed(CDPipe<MNPPacket> pipe, Exception e) {
+	public void pipeDisconnectFailed(CDPipe<MNPPacket, MNPPacketLayer> pipe, Exception e) {
 		System.exit(100);
 	}
 
 	@Override
-	public void pipeConnectionListening(CDPipe<MNPPacket> pipe) {
+	public void pipeConnectionListening(CDPipe<MNPPacket, MNPPacketLayer> pipe) {
 	}
 
 	@Override
-	public void pipeConnectionListenFailed(CDPipe<MNPPacket> pipe, Exception e) {
+	public void pipeConnectionListenFailed(CDPipe<MNPPacket, MNPPacketLayer> pipe, Exception e) {
 		System.exit(101);
 	}
 
 	@Override
-	public void pipeConnectionPending(CDPipe<MNPPacket> pipe) {
+	public void pipeConnectionPending(CDPipe<MNPPacket, MNPPacketLayer> pipe) {
 	}
 
 	@Override
-	public void pipeConnectionPendingFailed(CDPipe<MNPPacket> pipe, Exception e) {
+	public void pipeConnectionPendingFailed(CDPipe<MNPPacket, MNPPacketLayer> pipe, Exception e) {
 		System.exit(102);
 	}
 
 	@Override
-	public void pipeConnected(final CDPipe<MNPPacket> pipe) {
+	public void pipeConnected(final CDPipe<MNPPacket, MNPPacketLayer> pipe) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -204,7 +205,7 @@ public class KeyboardInputTester implements WindowListener, KeyboardInputListene
 	}
 
 	@Override
-	public void pipeConnectionFailed(CDPipe<MNPPacket> pipe, Exception e) {
+	public void pipeConnectionFailed(CDPipe<MNPPacket, MNPPacketLayer> pipe, Exception e) {
 		System.exit(103);
 	}
 }

@@ -35,18 +35,30 @@ import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 import net.sf.jncu.cdil.mnp.MNPPacket;
+import net.sf.jncu.cdil.mnp.MNPPacketLayer;
 import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.v1_0.query.DResult;
+import net.sf.jncu.protocol.v1_0.session.DDisconnect;
+import net.sf.jncu.protocol.v2_0.IconModule;
+import net.sf.jncu.protocol.v2_0.app.DLoadPackageFile;
 import net.sf.jncu.protocol.v2_0.app.LoadPackage;
+import net.sf.jncu.protocol.v2_0.data.DImportFile;
 import net.sf.jncu.protocol.v2_0.io.DKeyboardPassthrough;
+import net.sf.jncu.protocol.v2_0.io.DRequestToBrowse;
+import net.sf.jncu.protocol.v2_0.io.FileChooser;
+import net.sf.jncu.protocol.v2_0.io.FileChooser.FileChooserListener;
 import net.sf.jncu.protocol.v2_0.io.KeyboardInput;
+import net.sf.jncu.protocol.v2_0.io.unix.UnixFileChooser;
+import net.sf.jncu.protocol.v2_0.io.win.WindowsFileChooser;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.jncu.protocol.v2_0.session.DWhichIcons;
 import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
 import net.sf.jncu.protocol.v2_0.sync.BackupDialog;
+import net.sf.jncu.protocol.v2_0.sync.DRestoreFile;
 import net.sf.jncu.ui.JNCUDeviceDialog;
 import net.sf.jncu.ui.JNCUFrame;
 import net.sf.jncu.ui.JNCUSettingsDialog;
@@ -56,17 +68,18 @@ import net.sf.jncu.ui.JNCUSettingsDialog;
  * 
  * @author Moshe
  */
-public class Controller implements CDPipeListener<MNPPacket>, DockCommandListener {
+public class Controller implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockCommandListener, FileChooserListener {
 
 	private final JNCUFrame frame;
 	private CDLayer layer;
-	private CDPipe<MNPPacket> pipe;
+	private CDPipe pipe;
 	private Settings settings;
 	private KeyboardInput keyboardInput;
 	private BackupDialog backupDialog;
 	private LoadPackage packageLoader;
 	private JNCUSettingsDialog settingsDialog;
 	private JNCUDeviceDialog deviceDialog;
+	private FileChooser chooser;
 
 	/**
 	 * Create a new controller.
@@ -122,12 +135,17 @@ public class Controller implements CDPipeListener<MNPPacket>, DockCommandListene
 	 */
 	public void install() {
 		packageLoader = new LoadPackage(pipe, false, frame);
-		JFileChooser packageChooser = packageLoader.getFileChooser();
-		int ret = packageChooser.showOpenDialog(frame);
-		if (ret == JFileChooser.APPROVE_OPTION) {
-			File selectedFile = packageChooser.getSelectedFile();
-			packageLoader.loadPackage(selectedFile);
-		}
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				JFileChooser packageChooser = packageLoader.getFileChooser();
+				int ret = packageChooser.showOpenDialog(frame);
+				if (ret == JFileChooser.APPROVE_OPTION) {
+					File selectedFile = packageChooser.getSelectedFile();
+					packageLoader.loadPackage(selectedFile);
+				}
+			}
+		});
 	}
 
 	/**
@@ -214,6 +232,15 @@ public class Controller implements CDPipeListener<MNPPacket>, DockCommandListene
 	public void stop() {
 		try {
 			if (pipe != null) {
+				if (pipe.isConnected()) {
+					write(new DDisconnect());
+					try {
+						// Enough time to send the cancel and receive an
+						// acknowledge.
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+					}
+				}
 				pipe.disconnect();
 				pipe.dispose();
 			}
@@ -320,65 +347,53 @@ public class Controller implements CDPipeListener<MNPPacket>, DockCommandListene
 	public void showDevice() {
 		NewtonInfo info = DockingProtocol.getNewtonInfo();
 		getDeviceDialog().setDeviceInfo(info);
-		getDeviceDialog().setVisible(true);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				getDeviceDialog().setVisible(true);
+			}
+		});
 	}
 
 	@Override
-	public void pipeDisconnected(CDPipe<MNPPacket> pipe) {
+	public void pipeDisconnected(CDPipe<MNPPacket, MNPPacketLayer> pipe) {
 		frame.setConnected(false);
 	}
 
 	@Override
-	public void pipeDisconnectFailed(CDPipe<MNPPacket> pipe, Exception e) {
+	public void pipeDisconnectFailed(CDPipe<MNPPacket, MNPPacketLayer> pipe, Exception e) {
 		frame.setConnected(false);
 	}
 
 	@Override
-	public void pipeConnectionListening(CDPipe<MNPPacket> pipe) {
+	public void pipeConnectionListening(CDPipe<MNPPacket, MNPPacketLayer> pipe) {
 		frame.setConnected(false);
 	}
 
 	@Override
-	public void pipeConnectionListenFailed(CDPipe<MNPPacket> pipe, Exception e) {
+	public void pipeConnectionListenFailed(CDPipe<MNPPacket, MNPPacketLayer> pipe, Exception e) {
 		frame.setConnected(false);
 	}
 
 	@Override
-	public void pipeConnectionPending(CDPipe<MNPPacket> pipe) {
+	public void pipeConnectionPending(CDPipe<MNPPacket, MNPPacketLayer> pipe) {
 		frame.setConnected(false);
 	}
 
 	@Override
-	public void pipeConnectionPendingFailed(CDPipe<MNPPacket> pipe, Exception e) {
+	public void pipeConnectionPendingFailed(CDPipe<MNPPacket, MNPPacketLayer> pipe, Exception e) {
 		frame.setConnected(false);
 	}
 
 	@Override
-	public void pipeConnected(CDPipe<MNPPacket> pipe) {
+	public void pipeConnected(CDPipe<MNPPacket, MNPPacketLayer> pipe) {
 		frame.setConnected(true);
 		frame.setIcons(DWhichIcons.ALL);
 	}
 
 	@Override
-	public void pipeConnectionFailed(CDPipe<MNPPacket> pipe, Exception e) {
+	public void pipeConnectionFailed(CDPipe<MNPPacket, MNPPacketLayer> pipe, Exception e) {
 		frame.setConnected(false);
-	}
-
-	@Override
-	public void commandReceived(IDockCommandFromNewton command) {
-		final String cmd = command.getCommand();
-
-		if (DKeyboardPassthrough.COMMAND.equals(cmd)) {
-			keyboardInput = new KeyboardInput(pipe, frame);
-			keyboardInput.start();
-			// Don't block the command thread.
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					keyboardInput.getDialog().setVisible(true);
-				}
-			});
-		}
 	}
 
 	@Override
@@ -386,11 +401,34 @@ public class Controller implements CDPipeListener<MNPPacket>, DockCommandListene
 	}
 
 	@Override
-	public void commandSent(IDockCommandToNewton command) {
+	public void commandReceived(IDockCommandFromNewton command) {
+		final String cmd = command.getCommand();
+
+		if (DResult.COMMAND.equals(cmd)) {
+			final DResult res = (DResult) command;
+			if (res.getErrorCode() != DResult.OK) {
+				JNCUApp.showError(frame, "Error: " + res.getErrorCode(), res.getError());
+			}
+		} else if (DKeyboardPassthrough.COMMAND.equals(cmd)) {
+			keyboardInput = new KeyboardInput(pipe, frame);
+			keyboardInput.addListener(this);
+			// Don't block the command thread.
+			keyboardInput.start();
+		} else if (DRequestToBrowse.COMMAND.equals(cmd)) {
+			if (File.separatorChar == '\\')
+				chooser = new WindowsFileChooser(pipe, FileChooser.PACKAGES, frame);
+			else
+				chooser = new UnixFileChooser(pipe, FileChooser.PACKAGES, frame);
+			chooser.addListener(this);
+		}
 	}
 
 	@Override
 	public void commandSending(IDockCommandToNewton command, int progress, int total) {
+	}
+
+	@Override
+	public void commandSent(IDockCommandToNewton command) {
 	}
 
 	@Override
@@ -399,22 +437,49 @@ public class Controller implements CDPipeListener<MNPPacket>, DockCommandListene
 	}
 
 	/**
-	 * Send a command.
+	 * Write a command to the Newton.
 	 * 
 	 * @param command
 	 *            the command.
 	 */
 	protected void write(IDockCommandToNewton command) {
+		if (pipe == null)
+			return;
 		try {
 			if (pipe.allowSend())
 				pipe.write(command);
 		} catch (Exception e) {
 			JNCUApp.showError(frame, "write command", e);
 			if (!DOperationDone.COMMAND.equals(command.getCommand())) {
-				DOperationDone cancel = new DOperationDone();
-				write(cancel);
+				write(new DOperationDone());
 			}
 		}
+	}
+
+	@Override
+	public void successModule(IconModule module) {
+	}
+
+	@Override
+	public void cancelModule(IconModule module) {
+	}
+
+	@Override
+	public void approveSelection(FileChooser chooser, File file, IDockCommandFromNewton command) {
+		final String cmd = command.getCommand();
+
+		if (DImportFile.COMMAND.equals(cmd)) {
+			// TODO implement me!
+		} else if (DRestoreFile.COMMAND.equals(cmd)) {
+			// TODO implement me!
+		} else if (DLoadPackageFile.COMMAND.equals(cmd)) {
+			packageLoader = new LoadPackage(pipe, true, frame);
+			packageLoader.loadPackage(file);
+		}
+	}
+
+	@Override
+	public void cancelSelection(FileChooser chooser) {
 	}
 
 }

@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import net.sf.jncu.JNCUResources;
-import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
@@ -38,7 +37,6 @@ import net.sf.jncu.protocol.v1_0.data.DSetCurrentSoup;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.io.DSetStoreToDefault;
-import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.jncu.protocol.v2_0.sync.DSoupsChanged;
@@ -95,7 +93,7 @@ public class ImportFile extends IconModule {
 	 * @param owner
 	 *            the owner window.
 	 */
-	public ImportFile(CDPipe<? extends CDPacket> pipe, Window owner) {
+	public ImportFile(CDPipe pipe, Window owner) {
 		super(JNCUResources.getString("importFile", "Import File"), pipe, owner);
 		setName("ImportFile-" + getId());
 		state = State.INITIALISED;
@@ -145,15 +143,9 @@ public class ImportFile extends IconModule {
 				} else {
 					done();
 					state = State.CANCELLED;
-					showError(result.getError().getMessage() + "\nCode: " + code);
+					showError("Error: " + code, result.getError());
 				}
 			}
-		} else if (DOperationCanceled2.COMMAND.equals(cmd)) {
-			// TODO Stop sending the file.
-			// pipe.cancel(importer);
-			// importer.kill();
-			DOperationCanceledAck ack = new DOperationCanceledAck();
-			write(ack);
 		} else if (DAddedID.COMMAND.equals(cmd)) {
 			DAddedID cmdAdded = (DAddedID) command;
 			SoupChanged soup = DSoupsChanged.createSoup(translator.getApplicationName(), cmdAdded.getId());
@@ -190,8 +182,7 @@ public class ImportFile extends IconModule {
 			state = State.ADD_ENTRY;
 		} else if (DSoupsChanged.COMMAND.equals(cmd)) {
 			state = State.CHANGED;
-			DOperationDone done = new DOperationDone();
-			write(done);
+			writeDone();
 		} else if (DOperationDone.COMMAND.equals(cmd)) {
 			state = State.FINISHED;
 		} else if (DOperationCanceledAck.COMMAND.equals(cmd)) {
@@ -215,7 +206,7 @@ public class ImportFile extends IconModule {
 		if (state == State.INITIALISED) {
 			translators = TranslatorFactory.getInstance().getTranslatorsByFile(file);
 			if ((translators == null) || translators.isEmpty()) {
-				showError("No translator found");
+				showError(JNCUResources.getString("error.translator.missing", "No translator"), null);
 				return;
 			}
 			translator = translators.get(0);
@@ -235,8 +226,7 @@ public class ImportFile extends IconModule {
 	 * Start importing.
 	 */
 	private void startImport() {
-		DImporting importing = new DImporting();
-		write(importing);
+		write(new DImporting());
 	}
 
 	/**

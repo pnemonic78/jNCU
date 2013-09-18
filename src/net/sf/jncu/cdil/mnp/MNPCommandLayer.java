@@ -37,7 +37,7 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
  * 
  * @author moshew
  */
-public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
+public class MNPCommandLayer extends CDCommandLayer<MNPPacket, MNPPacketLayer> {
 
 	/** Stream for packets to populate commands. */
 	private OutputStream packetsToCommands;
@@ -114,7 +114,7 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 			return;
 		int length = cmd.getCommandPayloadLength();
 		int progress = 0;
-		Integer seq;
+		int seq;
 		CommandPiece piece;
 		try {
 			Iterable<MNPLinkTransferPacket> packets = MNPPacketFactory.getInstance().createTransferPackets(payload, length);
@@ -124,7 +124,7 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket> {
 				piece = new CommandPiece(cmd, packet);
 				piece.progress = progress;
 				queueOut.put(seq, piece);
-				((MNPPacketLayer) packetLayer).sendQueued(packet);
+				packetLayer.sendQueued(packet);
 			}
 		} finally {
 			try {
