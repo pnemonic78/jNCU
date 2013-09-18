@@ -21,7 +21,6 @@ package net.sf.jncu.cdil.ctb;
 
 import net.sf.jncu.cdil.CDCommandLayer;
 import net.sf.jncu.cdil.CDLayer;
-import net.sf.jncu.cdil.CDPacketLayer;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 
@@ -30,7 +29,7 @@ import net.sf.jncu.cdil.ServiceNotSupportedException;
  * 
  * @author moshew
  */
-public class CTBPipe extends CDPipe<CTBPacket> {
+public class CTBPipe extends CDPipe<CTBPacket, CTBPacketLayer> {
 
 	protected final String toolName;
 	protected final String configString;
@@ -55,12 +54,12 @@ public class CTBPipe extends CDPipe<CTBPacket> {
 	}
 
 	@Override
-	protected CDPacketLayer<CTBPacket> createPacketLayer() {
+	protected CTBPacketLayer createPacketLayer() {
 		return new CTBPacketLayer(this);
 	}
 
 	@Override
-	protected CDCommandLayer<CTBPacket> createCommandLayer(CDPacketLayer<CTBPacket> packetLayer) {
+	protected CDCommandLayer<CTBPacket, CTBPacketLayer> createCommandLayer(CTBPacketLayer packetLayer) {
 		return null;
 	}
 

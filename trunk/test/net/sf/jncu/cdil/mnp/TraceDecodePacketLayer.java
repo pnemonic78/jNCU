@@ -44,4 +44,9 @@ public class TraceDecodePacketLayer extends EmptyPacketLayer {
 	public byte[] readSent() throws EOFException, IOException {
 		return read(sentToNewton);
 	}
+
+	@Override
+	protected boolean allowAcknowledge(MNPPacket packet) {
+		return true;
+	}
 }

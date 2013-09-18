@@ -43,7 +43,6 @@ import javax.swing.text.DocumentFilter;
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.Settings;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
-import net.sf.swing.SwingUtils;
 import net.sf.swing.text.DocumentLengthFilter;
 
 /**
@@ -104,7 +103,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	private void init() {
 		setContentPane(getMainContentPane());
 		setSize(400, 260);
-		SwingUtils.centreInOwner(this);
+		setLocationRelativeTo(getOwner());
 		getCancelButton().requestFocus();
 	}
 

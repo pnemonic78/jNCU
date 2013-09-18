@@ -26,6 +26,7 @@ import javax.crypto.Cipher;
 import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.CDPacket;
+import net.sf.jncu.cdil.CDPacketLayer;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
@@ -42,12 +43,12 @@ import net.sf.jncu.protocol.v1_0.query.DResult;
  * 
  * @author moshew
  */
-public class DockingProtocol<P extends CDPacket> implements DockCommandListener {
+public class DockingProtocol<P extends CDPacket, L extends CDPacketLayer<P>> implements DockCommandListener {
 
 	protected static final int ERROR_COMM_TIMEDOUT = -10021;
 	protected static final int ERROR_DISCONNECTED = -16005;
 
-	private final CDPipe<P> pipe;
+	private final CDPipe<P, L> pipe;
 	/** Internal state. */
 	private DockingState state = DockingState.NONE;
 	/** Newton information. */
@@ -78,7 +79,7 @@ public class DockingProtocol<P extends CDPacket> implements DockCommandListener 
 	 * @param pipe
 	 *            the pipe.
 	 */
-	public DockingProtocol(CDPipe<P> pipe) {
+	public DockingProtocol(CDPipe<P, L> pipe) {
 		super();
 		if (pipe == null)
 			throw new NullPointerException("pipe required");

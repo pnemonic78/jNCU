@@ -143,6 +143,16 @@ public class MNPPacketFactory {
 	}
 
 	/**
+	 * Set the sequence.
+	 * 
+	 * @param sequence
+	 *            the sequence.
+	 */
+	void setSequence(byte sequence) {
+		this.sequence = sequence;
+	}
+
+	/**
 	 * Create a Link Acknowledgement packet.
 	 * 
 	 * @return the packet.

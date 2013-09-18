@@ -27,7 +27,6 @@ import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDCommandLayer;
 import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.CDLayer;
-import net.sf.jncu.cdil.CDPacketLayer;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.cdil.PipeDisconnectedException;
@@ -56,7 +55,7 @@ import net.sf.jncu.protocol.v2_0.session.DockingState;
  * 
  * @author moshew
  */
-public class MNPPipe extends CDPipe<MNPPacket> {
+public class MNPPipe extends CDPipe<MNPPacket, MNPPacketLayer> {
 
 	/** State for MNP pipe. */
 	protected enum MNPState {
@@ -181,6 +180,10 @@ public class MNPPipe extends CDPipe<MNPPacket> {
 		} catch (TimeoutException te) {
 			te.printStackTrace();
 		}
+	}
+
+	@Override
+	public void packetSending(MNPPacket packet) {
 	}
 
 	@Override
@@ -339,12 +342,12 @@ public class MNPPipe extends CDPipe<MNPPacket> {
 	}
 
 	@Override
-	protected CDPacketLayer<MNPPacket> createPacketLayer() {
+	protected MNPPacketLayer createPacketLayer() {
 		return new MNPSerialPacketLayer(this, port);
 	}
 
 	@Override
-	protected CDCommandLayer<MNPPacket> createCommandLayer(CDPacketLayer<MNPPacket> packetLayer) {
+	protected CDCommandLayer<MNPPacket, MNPPacketLayer> createCommandLayer(MNPPacketLayer packetLayer) {
 		return new MNPSerialCommandLayer((MNPSerialPacketLayer) packetLayer);
 	}
 

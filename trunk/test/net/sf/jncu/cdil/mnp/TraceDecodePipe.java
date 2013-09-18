@@ -22,7 +22,6 @@ package net.sf.jncu.cdil.mnp;
 import java.io.InputStream;
 
 import net.sf.jncu.cdil.CDLayer;
-import net.sf.jncu.cdil.CDPacketLayer;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
@@ -40,12 +39,12 @@ public class TraceDecodePipe extends EmptyPipe {
 	}
 
 	@Override
-	protected CDPacketLayer<MNPPacket> createPacketLayer() {
+	protected MNPPacketLayer createPacketLayer() {
 		return new TraceDecodePacketLayer(this, receivedFromNewton, sentToNewton);
 	}
 
 	@Override
-	protected DockingProtocol<MNPPacket> createDockingProtocol() {
+	protected DockingProtocol<MNPPacket, MNPPacketLayer> createDockingProtocol() {
 		return new TraceDecodeDockingProtocol(this);
 	}
 

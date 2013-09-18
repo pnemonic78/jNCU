@@ -28,13 +28,13 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.Preferences;
-import net.sf.jncu.cdil.CDPacket;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.app.DLoadPackage;
 import net.sf.jncu.protocol.v1_0.query.DResult;
+import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.io.FileChooser;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
@@ -89,7 +89,7 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 	 * @param owner
 	 *            the owner window.
 	 */
-	public LoadPackage(CDPipe<? extends CDPacket> pipe, boolean requested, Window owner) {
+	public LoadPackage(CDPipe pipe, boolean requested, Window owner) {
 		super(JNCUResources.getString("loadPackage", "Load Package"), pipe, owner);
 		setName("LoadPackage-" + getId());
 
@@ -107,13 +107,9 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 
 		super.commandReceived(command);
 
-		String cmd = command.getCommand();
+		final String cmd = command.getCommand();
 
-		if (DOperationCanceled2.COMMAND.equals(cmd)) {
-			// TODO Stop sending the package command.
-			// pipe.cancel(load);
-			// interrupt();
-		} else if (DResult.COMMAND.equals(cmd)) {
+		if (DResult.COMMAND.equals(cmd)) {
 			DResult result = (DResult) command;
 			int code = result.getErrorCode();
 			// Upload can begin or was finished?
@@ -127,7 +123,7 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 			} else {
 				done();
 				state = State.CANCELLED;
-				showError(result.getError().getMessage() + "\nCode: " + code);
+				showError("Error: " + code, result.getError());
 			}
 		} else if (DLoadPackageFile.COMMAND.equals(cmd)) {
 			state = State.LOADING;
@@ -141,7 +137,7 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 
 		super.commandSent(command);
 
-		String cmd = command.getCommand();
+		final String cmd = command.getCommand();
 
 		if (DRequestToInstall.COMMAND.equals(cmd)) {
 			state = State.REQUESTED;
@@ -149,9 +145,25 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 			state = State.LOADED;
 		} else if (DOperationDone.COMMAND.equals(cmd)) {
 			state = State.FINISHED;
+		} else if (DOperationCanceled.COMMAND.equals(cmd)) {
+			state = State.CANCELLED;
+		} else if (DOperationCanceled2.COMMAND.equals(cmd)) {
+			state = State.CANCELLED;
 		} else if (DOperationCanceledAck.COMMAND.equals(cmd)) {
 			state = State.CANCELLED;
 		}
+	}
+
+	@Override
+	protected void cancelReceivedRun() {
+		super.cancelReceivedRun();
+		state = State.CANCELLED;
+	}
+
+	@Override
+	protected void cancelSendRun() {
+		super.cancelSendRun();
+		state = State.CANCELLED;
 	}
 
 	/**
@@ -163,15 +175,13 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 	public void loadPackage(File file) {
 		// Save the folder for next time.
 		Preferences prefs = Preferences.getInstance();
-		String folderPath = file.getParent();
-		prefs.set(KEY_PATH, folderPath);
+		prefs.set(KEY_PATH, file.getParent());
 		prefs.save();
 
 		this.file = file;
 
 		if (state == State.INITIALISED) {
-			DRequestToInstall req = new DRequestToInstall();
-			write(req);
+			write(new DRequestToInstall());
 		} else if (state == State.LOADING) {
 			start();
 		}

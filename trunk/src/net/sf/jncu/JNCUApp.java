@@ -20,6 +20,7 @@
 package net.sf.jncu;
 
 import java.awt.Frame;
+import java.awt.Window;
 import java.util.concurrent.TimeoutException;
 
 import javax.swing.JOptionPane;
@@ -99,18 +100,33 @@ public class JNCUApp {
 	/**
 	 * Show the error.
 	 * 
-	 * @param frame
-	 *            the owner frame.
+	 * @param window
+	 *            the owner window.
 	 * @param message
 	 *            the message.
 	 * @param e
 	 *            the error.
 	 */
-	public static void showError(Frame frame, String message, Throwable e) {
-		e.printStackTrace();
-		JOptionPane.showMessageDialog(frame, "Error: " + (message == null ? "" : message) + "\n" + e.getLocalizedMessage(), (frame == null) ? null : frame.getTitle(),
-				JOptionPane.ERROR_MESSAGE);
-		// TODO Log the error using SourceForge "bugzilla".
+	public static void showError(final Window window, final String message, final Throwable e) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				String msg = (message == null ? "" : message);
+				if (e != null) {
+					e.printStackTrace();
+					msg += "\n" + e.getLocalizedMessage();
+				}
+				String title = null;
+				if (window != null) {
+					if (window instanceof Frame) {
+						title = ((Frame) window).getTitle();
+					}
+				}
+				if (title == null)
+					title = JNCUResources.getString("jncu", "jNCU");
+				JOptionPane.showMessageDialog(window, msg, title, JOptionPane.ERROR_MESSAGE);
+			}
+		});
 	}
 
 }

@@ -166,7 +166,7 @@ public class TraceDecode {
 		private CDLayer layer;
 		private MNPPipe pipe;
 		private final TraceDecodePacketLayer packetLayer;
-		private final CDCommandLayer<MNPPacket> cmdLayer;
+		private final CDCommandLayer<MNPPacket, MNPPacketLayer> cmdLayer;
 		private ProgressMonitor progress;
 		private boolean done;
 
@@ -238,16 +238,6 @@ public class TraceDecode {
 		}
 
 		@Override
-		public void packetReceived(MNPPacket packet) {
-			processPacket(DIRECTION_IN, packet);
-		}
-
-		@Override
-		public void packetSent(MNPPacket packet) {
-			processPacket(DIRECTION_OUT, packet);
-		}
-
-		@Override
 		public void packetAcknowledged(MNPPacket packet) {
 		}
 
@@ -258,6 +248,20 @@ public class TraceDecode {
 			runReceived = false;
 			runSent = false;
 			notifyDone();
+		}
+
+		@Override
+		public void packetReceived(MNPPacket packet) {
+			processPacket(DIRECTION_IN, packet);
+		}
+
+		@Override
+		public void packetSending(MNPPacket packet) {
+		}
+
+		@Override
+		public void packetSent(MNPPacket packet) {
+			processPacket(DIRECTION_OUT, packet);
 		}
 
 		@Override

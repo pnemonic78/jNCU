@@ -37,7 +37,6 @@ import javax.swing.text.JTextComponent;
 import javax.swing.text.html.HTMLEditorKit;
 
 import net.sf.jncu.JNCUResources;
-import net.sf.swing.SwingUtils;
 
 /**
  * jNCU "about" dialog.
@@ -69,7 +68,7 @@ public class JNCUAboutDialog extends JNCUDialog implements HyperlinkListener {
 		setTitle(JNCUResources.getString("jncuAbout", super.getTitle()));
 		setContentPane(getMainContentPane());
 		pack();
-		SwingUtils.centreInOwner(this);
+		setLocationRelativeTo(getOwner());
 		getOkButton().requestFocus();
 	}
 

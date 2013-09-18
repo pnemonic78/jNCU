@@ -49,8 +49,10 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 
 	/** Send packets. */
 	protected MNPPacketSender sender;
-	/** Current LR/LT sequence id. */
-	private int sequence = Integer.MIN_VALUE;
+	/** Current LR/LT sequence id from Newton. */
+	private int sequenceReceived = Integer.MIN_VALUE;
+	/** Current LR/LT sequence id to Newton. */
+	private int sequenceSending = Integer.MIN_VALUE;
 
 	/**
 	 * Creates a new packet layer.
@@ -259,7 +261,8 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 	 *            the packet.
 	 */
 	protected void packetReceivedLR(MNPLinkRequestPacket packet) {
-		this.sequence = 0;
+		this.sequenceReceived = 0;
+		this.sequenceSending = 0;
 	}
 
 	/**
@@ -281,10 +284,29 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 			}
 			// Byte: 0xFF + 1 == 0x00
 			if (seq == 0xFF)
-				this.sequence = -1;
+				this.sequenceReceived = -1;
 			else
-				this.sequence = seq;
+				this.sequenceReceived = seq;
 		}
+	}
+
+	@Override
+	public void packetSending(MNPPacket packet) {
+		switch (packet.getType()) {
+		case MNPPacket.LT:
+			packetSendingLT((MNPLinkTransferPacket) packet);
+			break;
+		}
+	}
+
+	/**
+	 * Sending a link transfer packet.
+	 * 
+	 * @param packet
+	 *            the packet.
+	 */
+	protected void packetSendingLT(MNPLinkTransferPacket packet) {
+		this.sequenceSending = Math.max(this.sequenceSending, packet.getSequence());
 	}
 
 	@Override
@@ -362,10 +384,17 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
 		 *            the packet.
 		 */
 		protected MNPLinkTransferPacket filterLT(MNPLinkTransferPacket packet) {
-			if ((sequence + 1) == packet.getSequence()) {
+			if ((sequenceReceived + 1) == packet.getSequence()) {
 				return packet;
 			}
 			return null;
 		}
+	}
+
+	@Override
+	public void clearSend() {
+		super.clearSend();
+		sender.clear();
+		MNPPacketFactory.getInstance().setSequence((byte) sequenceSending);
 	}
 }

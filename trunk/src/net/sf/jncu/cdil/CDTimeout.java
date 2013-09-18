@@ -29,7 +29,7 @@ import java.util.concurrent.TimeoutException;
  */
 public class CDTimeout extends TimerTask {
 
-	private final CDPipe<? extends CDPacket> pipe;
+	private final CDPipe pipe;
 
 	/**
 	 * Creates a new timeout.
@@ -37,7 +37,7 @@ public class CDTimeout extends TimerTask {
 	 * @param pipe
 	 *            the pipe.
 	 */
-	public CDTimeout(CDPipe<? extends CDPacket> pipe) {
+	public CDTimeout(CDPipe pipe) {
 		super();
 		if (pipe == null)
 			throw new NullPointerException("pipe required");

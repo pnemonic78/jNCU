@@ -45,7 +45,6 @@ import javax.swing.JTextArea;
 
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.ui.JNCUDialog;
-import net.sf.swing.SwingUtils;
 
 /**
  * Keyboard input dialog.
@@ -105,7 +104,7 @@ public class KeyboardInputDialog extends JNCUDialog implements KeyListener {
 		panelContents.add(panelButtons, BorderLayout.SOUTH);
 
 		setSize(320, 160);
-		SwingUtils.centreInOwner(this);
+		setLocationRelativeTo(getOwner());
 	}
 
 	/**

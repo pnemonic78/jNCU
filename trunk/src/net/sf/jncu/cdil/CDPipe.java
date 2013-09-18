@@ -37,7 +37,7 @@ import net.sf.jncu.protocol.v2_0.session.DockingState;
  * 
  * @author moshew
  */
-public abstract class CDPipe<P extends CDPacket> extends Thread implements CDStateListener, CDPacketListener<P>, DockCommandListener {
+public abstract class CDPipe<P extends CDPacket, L extends CDPacketLayer<P>> extends Thread implements CDStateListener, CDPacketListener<P>, DockCommandListener {
 
 	protected static final long PING_TIME = 10000L;
 
@@ -48,13 +48,13 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements CDSta
 	/** @deprecated */
 	@Deprecated
 	private InputStream pipeSink;
-	private CDPacketLayer<P> packetLayer;
-	private CDCommandLayer<P> cmdLayer;
-	protected DockingProtocol<P> docking;
+	private L packetLayer;
+	private CDCommandLayer<P, L> cmdLayer;
+	protected DockingProtocol<P, L> docking;
 	private final Timer timer = new Timer();
 	private CDPing pingTask;
 	private boolean pingFixed;
-	private CDPipeListener<P> listener;
+	private CDPipeListener<P, L> listener;
 
 	/**
 	 * Creates a new pipe.
@@ -204,7 +204,8 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements CDSta
 	 *             if timeout occurs.
 	 * @see #startListening()
 	 */
-	public void startListening(CDPipeListener<P> listener) throws BadPipeStateException, CDILNotInitializedException, PlatformException, PipeDisconnectedException, TimeoutException {
+	public void startListening(CDPipeListener<P, L> listener) throws BadPipeStateException, CDILNotInitializedException, PlatformException, PipeDisconnectedException,
+			TimeoutException {
 		this.listener = listener;
 		startListening();
 	}
@@ -513,20 +514,24 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements CDSta
 	}
 
 	@Override
-	public void packetReceived(P packet) {
-	}
-
-	@Override
-	public void packetSent(P packet) {
-	}
-
-	@Override
 	public void packetAcknowledged(P packet) {
 	}
 
 	@Override
 	public void packetEOF() {
 		disconnectQuiet();
+	}
+
+	@Override
+	public void packetReceived(P packet) {
+	}
+
+	@Override
+	public void packetSending(P packet) {
+	}
+
+	@Override
+	public void packetSent(P packet) {
 	}
 
 	@Override
@@ -570,7 +575,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements CDSta
 	 * 
 	 * @return the command layer.
 	 */
-	protected abstract CDPacketLayer<P> createPacketLayer();
+	protected abstract L createPacketLayer();
 
 	/**
 	 * Create a command layer.
@@ -579,7 +584,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements CDSta
 	 *            the packet layer.
 	 * @return the command layer.
 	 */
-	protected abstract CDCommandLayer<P> createCommandLayer(CDPacketLayer<P> packetLayer);
+	protected abstract CDCommandLayer<P, L> createCommandLayer(L packetLayer);
 
 	/**
 	 * Can send packets to Newton?
@@ -592,11 +597,11 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements CDSta
 	}
 
 	/**
-	 * Get the packet layer. Creates layer if {@code null}.
+	 * Get the packet layer. Creates the layer if {@code null}.
 	 * 
 	 * @return the packet layer.
 	 */
-	public CDPacketLayer<P> getPacketLayer() {
+	public L getPacketLayer() {
 		if (packetLayer == null) {
 			packetLayer = createPacketLayer();
 			packetLayer.addPacketListener(this);
@@ -609,7 +614,7 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements CDSta
 	 * 
 	 * @return the command layer.
 	 */
-	public CDCommandLayer<P> getCommandLayer() {
+	public CDCommandLayer<P, L> getCommandLayer() {
 		if (cmdLayer == null) {
 			cmdLayer = createCommandLayer(getPacketLayer());
 			cmdLayer.addCommandListener(this);
@@ -709,8 +714,8 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements CDSta
 	 * 
 	 * @return the docker.
 	 */
-	protected DockingProtocol<P> createDockingProtocol() {
-		return new DockingProtocol<P>(this);
+	protected DockingProtocol<P, L> createDockingProtocol() {
+		return new DockingProtocol<P, L>(this);
 	}
 
 	/**
@@ -780,5 +785,12 @@ public abstract class CDPipe<P extends CDPacket> extends Thread implements CDSta
 		case UNKNOWN:
 			break;
 		}
+	}
+
+	/**
+	 * Clear the commands queue.
+	 */
+	public void clearCommands() {
+		getCommandLayer().clearQueue();
 	}
 }

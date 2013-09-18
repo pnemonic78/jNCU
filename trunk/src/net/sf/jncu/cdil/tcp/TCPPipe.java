@@ -21,7 +21,6 @@ package net.sf.jncu.cdil.tcp;
 
 import net.sf.jncu.cdil.CDCommandLayer;
 import net.sf.jncu.cdil.CDLayer;
-import net.sf.jncu.cdil.CDPacketLayer;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 
@@ -30,7 +29,7 @@ import net.sf.jncu.cdil.ServiceNotSupportedException;
  * 
  * @author moshew
  */
-public class TCPPipe extends CDPipe<TCPPacket> {
+public class TCPPipe extends CDPipe<TCPPacket, TCPPacketLayer> {
 
 	protected final int port;
 
@@ -54,12 +53,12 @@ public class TCPPipe extends CDPipe<TCPPacket> {
 	}
 
 	@Override
-	protected CDPacketLayer<TCPPacket> createPacketLayer() {
+	protected TCPPacketLayer createPacketLayer() {
 		return new TCPPacketLayer(this);
 	}
 
 	@Override
-	protected CDCommandLayer<TCPPacket> createCommandLayer(CDPacketLayer<TCPPacket> packetLayer) {
+	protected CDCommandLayer<TCPPacket, TCPPacketLayer> createCommandLayer(TCPPacketLayer packetLayer) {
 		return null;
 	}
 
