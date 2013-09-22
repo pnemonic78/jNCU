@@ -148,7 +148,7 @@ public class DockingProtocol<P extends CDPacket, L extends CDPacketLayer<P>> imp
 
 	@Override
 	public void commandReceived(IDockCommandFromNewton command) {
-		String cmd = command.getCommand();
+		final String cmd = command.getCommand();
 
 		try {
 			switch (state) {
@@ -293,7 +293,7 @@ public class DockingProtocol<P extends CDPacket, L extends CDPacketLayer<P>> imp
 
 	@Override
 	public void commandSent(IDockCommandToNewton command) {
-		String cmd = command.getCommand();
+		final String cmd = command.getCommand();
 
 		try {
 			switch (state) {

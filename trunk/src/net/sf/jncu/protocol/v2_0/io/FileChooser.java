@@ -194,7 +194,7 @@ public abstract class FileChooser extends IconModule {
 
 		super.commandReceived(command);
 
-		String cmd = command.getCommand();
+		final String cmd = command.getCommand();
 
 		if (DInternalStore.COMMAND.equals(cmd)) {
 			DInternalStore cmdStore = (DInternalStore) command;
@@ -254,7 +254,7 @@ public abstract class FileChooser extends IconModule {
 
 		super.commandSent(command);
 
-		String cmd = command.getCommand();
+		final String cmd = command.getCommand();
 
 		if (DResult.COMMAND.equals(cmd)) {
 			state = State.BROWSING;

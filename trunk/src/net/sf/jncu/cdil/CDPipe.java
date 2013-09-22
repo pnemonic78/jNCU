@@ -483,6 +483,7 @@ public abstract class CDPipe<P extends CDPacket, L extends CDPacketLayer<P>> ext
 			throw new BadPipeStateException();
 		}
 		layer.setState(CDState.CONNECT_PENDING);
+		removeCommandListener(docking);
 	}
 
 	/**

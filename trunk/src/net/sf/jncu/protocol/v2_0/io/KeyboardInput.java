@@ -110,7 +110,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 
 		super.commandReceived(command);
 
-		String cmd = command.getCommand();
+		final String cmd = command.getCommand();
 
 		if (DOperationCanceled.COMMAND.equals(cmd)) {
 			state = State.CANCELLED;
@@ -124,7 +124,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 
 		super.commandSent(command);
 
-		String cmd = command.getCommand();
+		final String cmd = command.getCommand();
 
 		if (DOperationDone.COMMAND.equals(cmd)) {
 			state = State.FINISHED;
