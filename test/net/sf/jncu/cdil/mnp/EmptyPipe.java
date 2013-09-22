@@ -70,7 +70,7 @@ public class EmptyPipe extends MNPPipe {
 
 	@Override
 	public void commandReceived(IDockCommandFromNewton command) {
-		String cmd = command.getCommand();
+		final String cmd = command.getCommand();
 
 		switch (stateMNP) {
 		case MNP_DISCONNECTED:
