@@ -460,22 +460,22 @@ public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 			MNPLinkTransferPacket lt = (MNPLinkTransferPacket) packet;
 			sendLA(lt.getSequence());
 			DockCommandFactory factory = DockCommandFactory.getInstance();
-			IDockCommandToNewton cmd = null;
-			String name = null;
+			IDockCommandToNewton command = null;
+			String cmd = null;
 			if (userCommand <= 1) {
-				cmd = (IDockCommandToNewton) factory.deserializeCommand(lt.getData());
-				name = cmd.getCommand();
+				command = (IDockCommandToNewton) factory.deserializeCommand(lt.getData());
+				cmd = command.getCommand();
 			}
 
 			switch (state) {
 			case HANDSHAKE_DOCK:
-				if (DInitiateDocking.COMMAND.equals(name)) {
+				if (DInitiateDocking.COMMAND.equals(cmd)) {
 					state = DockingState.HANDSHAKE_NNAME;
 					break;
 				}
 				throw new BadPipeStateException();
 			case HANDSHAKE_DINFO:
-				if (DDesktopInfo.COMMAND.equals(name)) {
+				if (DDesktopInfo.COMMAND.equals(cmd)) {
 					byte[] data = lt.getData();
 					byte[] b = new byte[8];
 					System.arraycopy(data, 24, b, 0, 8);
@@ -486,24 +486,24 @@ public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 				}
 				throw new BadPipeStateException();
 			case HANDSHAKE_ICONS:
-				if (DWhichIcons.COMMAND.equals(name)) {
+				if (DWhichIcons.COMMAND.equals(cmd)) {
 					state = DockingState.HANDSHAKE_ICONS_RESULT;
 					break;
 				}
 				throw new BadPipeStateException();
 			case HANDSHAKE_TIMEOUT:
-				if (DSetTimeout.COMMAND.equals(name)) {
+				if (DSetTimeout.COMMAND.equals(cmd)) {
 					state = DockingState.HANDSHAKE_PASS;
 					break;
 				}
 				throw new BadPipeStateException();
 			case HANDSHAKE_PASS_REPLY:
-				if (DPassword.COMMAND.equals(name)) {
+				if (DPassword.COMMAND.equals(cmd)) {
 					state = DockingState.HANDSHAKE_DONE;
 					break;
 				}
-				if (DResult.COMMAND.equals(name)) {
-					throw new BadPipeStateException((cmd == null) ? null : cmd.toString());
+				if (DResult.COMMAND.equals(cmd)) {
+					throw new BadPipeStateException((command == null) ? null : command.toString());
 				}
 				throw new BadPipeStateException();
 			case HANDSHAKE_DONE:
@@ -537,9 +537,9 @@ public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 	@Override
 	public void commandReceived(IDockCommandFromNewton command) {
 		logger.log("cr", null, command);
-		final String name = command.getCommand();
+		final String cmd = command.getCommand();
 
-		if (DDisconnect.COMMAND.equals(name)) {
+		if (DDisconnect.COMMAND.equals(cmd)) {
 			done();
 		}
 	}
@@ -551,21 +551,21 @@ public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 	@Override
 	public void commandSent(IDockCommandToNewton command) {
 		logger.log("cs", null, command);
-		final String name = command.getCommand();
+		final String cmd = command.getCommand();
 
 		try {
-			if (DRequestToInstall.COMMAND.equals(name)) {
+			if (DRequestToInstall.COMMAND.equals(cmd)) {
 				sendResult();
 				// sendBig();
-			} else if (DGetStoreNames.COMMAND.equals(name)) {
+			} else if (DGetStoreNames.COMMAND.equals(cmd)) {
 				sendStores();
-			} else if (DSetStoreGetNames.COMMAND.equals(name)) {
+			} else if (DSetStoreGetNames.COMMAND.equals(cmd)) {
 				sendSoupNames();
-			} else if (DGetInheritance.COMMAND.equals(name)) {
+			} else if (DGetInheritance.COMMAND.equals(cmd)) {
 				sendInheritance();
-			} else if (DLastSyncTime.COMMAND.equals(name)) {
+			} else if (DLastSyncTime.COMMAND.equals(cmd)) {
 				sendTime();
-			} else if (DDisconnect.COMMAND.equals(name)) {
+			} else if (DDisconnect.COMMAND.equals(cmd)) {
 				done();
 			}
 		} catch (IOException ioe) {
