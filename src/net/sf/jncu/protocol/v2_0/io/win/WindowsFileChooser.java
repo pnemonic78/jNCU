@@ -80,7 +80,7 @@ public class WindowsFileChooser extends FileChooser {
 
 		super.commandReceived(command);
 
-		String cmd = command.getCommand();
+		final String cmd = command.getCommand();
 
 		if (DGetDevices.COMMAND.equals(cmd)) {
 			DDevices cmdDevices = new DDevices();

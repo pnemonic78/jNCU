@@ -133,7 +133,7 @@ public class Controller implements CDPipeListener<MNPPacket, MNPPacketLayer>, Do
 	/**
 	 * Install package.
 	 */
-	public void install() {
+	public void installPackage() {
 		packageLoader = new LoadPackage(pipe, false, frame);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override

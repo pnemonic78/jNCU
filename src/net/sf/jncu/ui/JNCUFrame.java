@@ -759,7 +759,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	 * Install package.
 	 */
 	private void install() {
-		getControl().install();
+		getControl().installPackage();
 	}
 
 	/**

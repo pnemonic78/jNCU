@@ -106,7 +106,7 @@ public class ImportFile extends IconModule {
 
 		super.commandReceived(command);
 
-		String cmd = command.getCommand();
+		final String cmd = command.getCommand();
 
 		if (DSetTranslator.COMMAND.equals(cmd)) {
 			DSetTranslator cmdSet = (DSetTranslator) command;
@@ -166,7 +166,7 @@ public class ImportFile extends IconModule {
 
 		super.commandSent(command);
 
-		String cmd = command.getCommand();
+		final String cmd = command.getCommand();
 
 		if (DImporting.COMMAND.equals(cmd)) {
 			state = State.IMPORTING;

@@ -355,9 +355,9 @@ public class MNPPipe extends CDPipe<MNPPacket, MNPPacketLayer> {
 	protected void processCommand(IDockCommandFromNewton command) {
 		super.processCommand(command);
 
-		String cmdName = command.getCommand();
+		final String cmd = command.getCommand();
 
-		if (DDisconnect.COMMAND.equals(cmdName)) {
+		if (DDisconnect.COMMAND.equals(cmd)) {
 			disconnectQuiet();
 		}
 	}

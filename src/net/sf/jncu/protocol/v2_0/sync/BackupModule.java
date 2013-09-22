@@ -185,7 +185,7 @@ public class BackupModule extends IconModule {
 
 		super.commandReceived(command);
 
-		String cmd = command.getCommand();
+		final String cmd = command.getCommand();
 
 		if (DResult.COMMAND.equals(cmd)) {
 			DResult result = (DResult) command;
@@ -302,7 +302,7 @@ public class BackupModule extends IconModule {
 
 		super.commandSent(command);
 
-		String cmd = command.getCommand();
+		final String cmd = command.getCommand();
 
 		if (DOperationDone.COMMAND.equals(cmd)) {
 			state = State.FINISHED;
