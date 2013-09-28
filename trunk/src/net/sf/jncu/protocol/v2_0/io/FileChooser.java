@@ -120,7 +120,7 @@ public abstract class FileChooser extends IconModule {
 	 *            the owner window.
 	 */
 	private FileChooser(CDPipe pipe, Window owner) {
-		super(JNCUResources.getString("fileChooser", "File Chooser"), pipe, owner);
+		super(JNCUResources.getString("fileChooser"), pipe, owner);
 		setName("FileChooser-" + getId());
 	}
 
@@ -292,11 +292,11 @@ public abstract class FileChooser extends IconModule {
 			filters.addAll(TranslatorFactory.getInstance().getFileFilters());
 		}
 		if (types.contains(PACKAGES)) {
-			filter = new FileNameExtensionFilter(JNCUResources.getString("packages", "Packages"), "pkg", "PKG");
+			filter = new FileNameExtensionFilter(JNCUResources.getString("packages"), "pkg", "PKG");
 			filters.add(filter);
 		}
 		if (types.contains(SYNC_FILES)) {
-			filter = new FileNameExtensionFilter(JNCUResources.getString("backupFiles", "Backup Files"), "nbk", "NBK");
+			filter = new FileNameExtensionFilter(JNCUResources.getString("backupFiles"), "nbk", "NBK");
 			filters.add(filter);
 		}
 		filter = new AcceptAllFileFilter();

@@ -190,10 +190,12 @@ public class JNCUSettingsDialog extends JNCUDialog {
 			portNames.addItem(portId);
 			if (portId.equals(portSet)) {
 				portIndex = i;
+				break;
 			}
 			i++;
 		}
-		portNames.setSelectedIndex(portIndex);
+		if (portNames.getModel().getSize() > 0)
+			portNames.setSelectedIndex(portIndex);
 		JComboBox<Integer> speeds = getListSpeeds();
 		speeds.setSelectedItem(settings.getCommunications().getPortSpeed());
 
@@ -216,10 +218,10 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	private JTabbedPane getTabbedPane() {
 		if (tabbedPane == null) {
 			tabbedPane = new JTabbedPane();
-			tabbedPane.addTab(JNCUResources.getString("communications", "Communications"), getTabComm());
-			tabbedPane.addTab(JNCUResources.getString("security", "Security"), getTabSecurity());
-			tabbedPane.addTab(JNCUResources.getString("general", "General"), getTabGeneral());
-			tabbedPane.addTab(JNCUResources.getString("autoDock", "Auto Dock"), getTabDock());
+			tabbedPane.addTab(JNCUResources.getString("communications"), getTabComm());
+			tabbedPane.addTab(JNCUResources.getString("security"), getTabSecurity());
+			tabbedPane.addTab(JNCUResources.getString("general"), getTabGeneral());
+			tabbedPane.addTab(JNCUResources.getString("autoDock"), getTabDock());
 			tabbedPane.setSelectedIndex(0);
 			tabbedPane.setEnabledAt(1, false);
 			tabbedPane.setEnabledAt(3, false);
@@ -235,7 +237,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	private JPanel getTabComm() {
 		if (tabComm == null) {
 			labelPort = new JLabel();
-			labelPort.setText(JNCUResources.getString("serialPortName", "Port:"));
+			labelPort.setText(JNCUResources.getString("serialPortName"));
 			GridBagConstraints gbcLabelPort = new GridBagConstraints();
 			gbcLabelPort.gridx = 0;
 			gbcLabelPort.gridy = 0;
@@ -252,7 +254,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 			gbcListPort.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 
 			labelSpeed = new JLabel();
-			labelSpeed.setText(JNCUResources.getString("serialPortSpeed", "Speed:"));
+			labelSpeed.setText(JNCUResources.getString("serialPortSpeed"));
 			GridBagConstraints gbcLabelSpeed = new GridBagConstraints();
 			gbcLabelSpeed.gridx = 0;
 			gbcLabelSpeed.gridy = 1;
@@ -288,7 +290,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	private JButton getApplyButton() {
 		if (applyButton == null) {
 			JButton button = createButton();
-			button.setText(JNCUResources.getString("apply", "Apply"));
+			button.setText(JNCUResources.getString("apply"));
 			button.setMnemonic(JNCUResources.getChar("applyMnemonic", KeyEvent.VK_A));
 			button.setIcon(JNCUResources.getIcon("/dialog/apply.png"));
 			button.setEnabled(false);
@@ -305,7 +307,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	private JButton getHelpButton() {
 		if (buttonHelp == null) {
 			JButton button = createButton();
-			button.setText(JNCUResources.getString("help", "Help"));
+			button.setText(JNCUResources.getString("help"));
 			button.setMnemonic(JNCUResources.getChar("helpMnemonic", KeyEvent.VK_H));
 			button.setIcon(JNCUResources.getIcon("/dialog/help.png"));
 			button.setEnabled(false);
@@ -322,7 +324,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	private JPanel getTabSecurity() {
 		if (tabSecurity == null) {
 			JLabel labelOld = new JLabel();
-			labelOld.setText(JNCUResources.getString("passwordOld", "Old Password:"));
+			labelOld.setText(JNCUResources.getString("passwordOld"));
 			GridBagConstraints gbcLabelOld = new GridBagConstraints();
 			gbcLabelOld.gridx = 0;
 			gbcLabelOld.gridy = 0;
@@ -339,7 +341,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 			gbcPassOld.weighty = 1.0;
 
 			JLabel labelNew = new JLabel();
-			labelNew.setText(JNCUResources.getString("passwordNew", "New Password:"));
+			labelNew.setText(JNCUResources.getString("passwordNew"));
 			GridBagConstraints gbcLabelNew = new GridBagConstraints();
 			gbcLabelNew.gridx = 0;
 			gbcLabelNew.gridy = 1;
@@ -356,7 +358,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 			gbcPassNew.weighty = 1.0;
 
 			JLabel labelConfirm = new JLabel();
-			labelConfirm.setText(JNCUResources.getString("passwordConfirm", "Confirm Password:"));
+			labelConfirm.setText(JNCUResources.getString("passwordConfirm"));
 			GridBagConstraints gbcLabelConfirm = new GridBagConstraints();
 			gbcLabelConfirm.gridx = 0;
 			gbcLabelConfirm.gridy = 2;
@@ -394,7 +396,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	private JPanel getTabGeneral() {
 		if (tabGeneral == null) {
 			JLabel labelFolder = new JLabel();
-			labelFolder.setText(JNCUResources.getString("backupFolder", "Folder:"));
+			labelFolder.setText(JNCUResources.getString("backupFolder"));
 			GridBagConstraints gbcLabelFolder = new GridBagConstraints();
 			gbcLabelFolder.gridx = 0;
 			gbcLabelFolder.gridy = 0;
@@ -514,7 +516,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	private JButton getBrowseButton() {
 		if (browseButton == null) {
 			JButton button = createButton();
-			button.setText(JNCUResources.getString("browse", "Browse") + ELLIPSIS);
+			button.setText(JNCUResources.getString("browse") + ELLIPSIS);
 			button.setMnemonic(JNCUResources.getChar("browseMnemonic", KeyEvent.VK_B));
 			button.setIcon(JNCUResources.getIcon("/browse.png"));
 			browseButton = button;
@@ -634,7 +636,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	private JCheckBox getCheckDockBackup() {
 		if (checkDockBackup == null) {
 			JCheckBox check = new JCheckBox();
-			check.setText(JNCUResources.getString("backup", "Backup"));
+			check.setText(JNCUResources.getString("backup"));
 			check.setOpaque(false);
 			check.addActionListener(this);
 			checkDockBackup = check;
@@ -650,7 +652,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	private JCheckBox getCheckDockBackupSelective() {
 		if (checkDockBackupSelective == null) {
 			JCheckBox check = new JCheckBox();
-			check.setText(JNCUResources.getString("backupSelective", "Selective"));
+			check.setText(JNCUResources.getString("backupSelective"));
 			check.setOpaque(false);
 			check.setEnabled(false);
 			checkDockBackupSelective = check;
@@ -666,7 +668,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	private JCheckBox getCheckDockSync() {
 		if (checkDockSync == null) {
 			JCheckBox check = new JCheckBox();
-			check.setText(JNCUResources.getString("sync", "Synchronize"));
+			check.setText(JNCUResources.getString("sync"));
 			check.setOpaque(false);
 			checkDockSync = check;
 		}

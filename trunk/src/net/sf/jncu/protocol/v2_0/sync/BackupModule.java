@@ -167,7 +167,7 @@ public class BackupModule extends IconModule {
 	 *            the owner window.
 	 */
 	public BackupModule(CDPipe pipe, boolean requested, Window owner) {
-		super(JNCUResources.getString("backup", "Backup"), pipe, owner);
+		super(JNCUResources.getString("backup"), pipe, owner);
 		setName("BackupModule-" + getId());
 
 		state = State.INITIALISED;

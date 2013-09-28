@@ -123,7 +123,7 @@ public class JNCUApp {
 					}
 				}
 				if (title == null)
-					title = JNCUResources.getString("jncu", "jNCU");
+					title = JNCUResources.getString("jncu");
 				JOptionPane.showMessageDialog(window, msg, title, JOptionPane.ERROR_MESSAGE);
 			}
 		});

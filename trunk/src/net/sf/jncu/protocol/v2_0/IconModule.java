@@ -314,8 +314,8 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 				progressMonitor.setMillisToDecideToPopup(0);
 			}
 		}
-		progressReceivingFormat = JNCUResources.getString("progressReceiving", "Receiving %d%%");
-		progressSendingFormat = JNCUResources.getString("progressSending", "Sending %d%%");
+		progressReceivingFormat = JNCUResources.getString("progressReceiving");
+		progressSendingFormat = JNCUResources.getString("progressSending");
 		return progressMonitor;
 	}
 
