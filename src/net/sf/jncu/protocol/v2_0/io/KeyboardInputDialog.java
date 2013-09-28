@@ -91,7 +91,7 @@ public class KeyboardInputDialog extends JNCUDialog implements KeyListener {
 		setContentPane(panelContents);
 
 		JLabel inputLabel = new JLabel();
-		inputLabel.setText(JNCUResources.getString("textTyped", "Text typed:"));
+		inputLabel.setText(JNCUResources.getString("textTyped"));
 		panelContents.add(inputLabel, BorderLayout.NORTH);
 
 		panelContents.add(new JScrollPane(getTextInput()), BorderLayout.CENTER);
@@ -135,7 +135,7 @@ public class KeyboardInputDialog extends JNCUDialog implements KeyListener {
 	private JButton getPasteButton() {
 		if (pasteButton == null) {
 			JButton button = createButton();
-			button.setText(JNCUResources.getString("paste", "Paste"));
+			button.setText(JNCUResources.getString("paste"));
 			button.setMnemonic(JNCUResources.getChar("pasteMnemonic", KeyEvent.VK_P));
 			button.setIcon(JNCUResources.getIcon("/dialog/paste.png"));
 			pasteButton = button;

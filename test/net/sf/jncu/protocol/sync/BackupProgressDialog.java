@@ -66,7 +66,7 @@ public class BackupProgressDialog extends JNCUDialog {
 	 * Initialise.
 	 */
 	private void init() {
-		setTitle(JNCUResources.getString("backupProgress", "Backup Progress"));
+		setTitle(JNCUResources.getString("backupProgress", super.getTitle()));
 
 		JProgressBar progressBar = new JProgressBar();
 		progressBar.setIndeterminate(true);
@@ -108,7 +108,7 @@ public class BackupProgressDialog extends JNCUDialog {
 	protected JLabel getNote() {
 		if (messageLabel == null) {
 			messageLabel = new JLabel();
-			messageLabel.setText(JNCUResources.getString("note", "Note"));
+			messageLabel.setText(JNCUResources.getString("note"));
 		}
 		return messageLabel;
 	}

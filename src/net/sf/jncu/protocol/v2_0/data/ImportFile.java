@@ -94,7 +94,7 @@ public class ImportFile extends IconModule {
 	 *            the owner window.
 	 */
 	public ImportFile(CDPipe pipe, Window owner) {
-		super(JNCUResources.getString("importFile", "Import File"), pipe, owner);
+		super(JNCUResources.getString("importFile"), pipe, owner);
 		setName("ImportFile-" + getId());
 		state = State.INITIALISED;
 	}
@@ -206,7 +206,7 @@ public class ImportFile extends IconModule {
 		if (state == State.INITIALISED) {
 			translators = TranslatorFactory.getInstance().getTranslatorsByFile(file);
 			if ((translators == null) || translators.isEmpty()) {
-				showError(JNCUResources.getString("error.translator.missing", "No translator"), null);
+				showError(JNCUResources.getString("error.translator.missing"), null);
 				return;
 			}
 			translator = translators.get(0);

@@ -79,7 +79,7 @@ public class DNewtonName extends net.sf.jncu.protocol.v1_0.session.DNewtonName {
 		if (versionInfoLength > versionSize) {
 			/**
 			 * A bit field. The following two bits are defined:<br>
-			 * 1 = has serial number <br>
+			 * 1 = has serial number<br>
 			 * 2 = has target protocol
 			 */
 			int systemFlags = ntohl(data);

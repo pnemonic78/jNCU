@@ -90,7 +90,7 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 	 *            the owner window.
 	 */
 	public LoadPackage(CDPipe pipe, boolean requested, Window owner) {
-		super(JNCUResources.getString("loadPackage", "Load Package"), pipe, owner);
+		super(JNCUResources.getString("loadPackage"), pipe, owner);
 		setName("LoadPackage-" + getId());
 
 		state = State.INITIALISED;
@@ -158,6 +158,11 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 	protected void cancelReceivedRun() {
 		super.cancelReceivedRun();
 		state = State.CANCELLED;
+	}
+
+	@Override
+	protected void cancelSend() {
+		// FIXME show a progress monitor without a "cancel" button.
 	}
 
 	@Override
@@ -229,7 +234,7 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 			packageChooser = new JFileChooser();
 			packageChooser.setCurrentDirectory(folder);
 
-			FileFilter filter = new FileNameExtensionFilter(JNCUResources.getString("packages", "Packages"), "pkg", "PKG");
+			FileFilter filter = new FileNameExtensionFilter(JNCUResources.getString("packages"), "pkg", "PKG");
 			packageChooser.setFileFilter(filter);
 			packageChooser.setAcceptAllFileFilterUsed(false);
 			packageChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);

@@ -138,7 +138,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	private JMenu getMenuFile() {
 		if (menuFile == null) {
 			menuFile = new JMenu();
-			menuFile.setText(JNCUResources.getString("file", "File"));
+			menuFile.setText(JNCUResources.getString("file"));
 			menuFile.setMnemonic(JNCUResources.getChar("fileMnemonic", KeyEvent.VK_F));
 			menuFile.add(getMenuImport());
 			menuFile.add(getMenuExport());
@@ -159,7 +159,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	private JMenuItem getMenuImport() {
 		if (menuImport == null) {
 			JMenuItem menuItem = new JMenuItem();
-			menuItem.setText(JNCUResources.getString("import", "Import") + ELLIPSIS);
+			menuItem.setText(JNCUResources.getString("import") + ELLIPSIS);
 			menuItem.setMnemonic(JNCUResources.getChar("importMnemonic", KeyEvent.VK_I));
 			menuItem.setIcon(JNCUResources.getIcon("/menu/import.png"));
 			menuItem.addActionListener(this);
@@ -177,7 +177,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	private JMenuItem getMenuExport() {
 		if (menuExport == null) {
 			JMenuItem menuItem = new JMenuItem();
-			menuItem.setText(JNCUResources.getString("export", "Export") + ELLIPSIS);
+			menuItem.setText(JNCUResources.getString("export") + ELLIPSIS);
 			menuItem.setMnemonic(JNCUResources.getChar("exportMnemonic", KeyEvent.VK_E));
 			menuItem.setIcon(JNCUResources.getIcon("/menu/export.png"));
 			menuItem.addActionListener(this);
@@ -195,7 +195,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	private JMenuItem getMenuSync() {
 		if (menuSync == null) {
 			JMenuItem menuItem = new JMenuItem();
-			menuItem.setText(JNCUResources.getString("sync", "Synchronize") + ELLIPSIS);
+			menuItem.setText(JNCUResources.getString("sync") + ELLIPSIS);
 			menuItem.setMnemonic(JNCUResources.getChar("syncMnemonic", KeyEvent.VK_S));
 			menuItem.setIcon(JNCUResources.getIcon("/menu/sync.png"));
 			menuItem.addActionListener(this);
@@ -213,7 +213,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	private JMenuItem getMenuSyncSettings() {
 		if (menuSyncSettings == null) {
 			JMenuItem menuItem = new JMenuItem();
-			menuItem.setText(JNCUResources.getString("synSettings", "Synchronization Settings") + ELLIPSIS);
+			menuItem.setText(JNCUResources.getString("synSettings") + ELLIPSIS);
 			menuItem.setMnemonic(JNCUResources.getChar("synSettingsMnemonic", KeyEvent.VK_T));
 			menuItem.addActionListener(this);
 			menuItem.setEnabled(false);
@@ -230,7 +230,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	private JMenu getMenuNewton() {
 		if (menuNewton == null) {
 			JMenu menu = new JMenu();
-			menu.setText(JNCUResources.getString("newton", "Newton"));
+			menu.setText(JNCUResources.getString("newton"));
 			menu.setMnemonic(JNCUResources.getChar("newtonMnemonic", KeyEvent.VK_N));
 			menu.add(getMenuBackup());
 			menu.add(getMenuRestore());
@@ -254,7 +254,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	private JMenu getMenuHelp() {
 		if (menuHelp == null) {
 			JMenu menu = new JMenu();
-			menu.setText(JNCUResources.getString("help", "Help"));
+			menu.setText(JNCUResources.getString("help"));
 			menu.setMnemonic(JNCUResources.getChar("helpMnemonic", KeyEvent.VK_H));
 			menu.add(getMenuAbout());
 			menuHelp = menu;
@@ -270,7 +270,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	private JMenuItem getMenuExit() {
 		if (menuExit == null) {
 			JMenuItem menuItem = new JMenuItem();
-			menuItem.setText(JNCUResources.getString("exit", "Exit"));
+			menuItem.setText(JNCUResources.getString("exit"));
 			menuItem.setMnemonic(JNCUResources.getChar("exitMnemonic", KeyEvent.VK_X));
 			menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_MASK));
 			menuItem.setIcon(JNCUResources.getIcon("/menu/exit.png"));
@@ -288,7 +288,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	private JMenuItem getMenuSettings() {
 		if (menuSettings == null) {
 			JMenuItem menuItem = new JMenuItem();
-			menuItem.setText(JNCUResources.getString("settings", "Settings") + ELLIPSIS);
+			menuItem.setText(JNCUResources.getString("settings") + ELLIPSIS);
 			menuItem.setMnemonic(JNCUResources.getChar("settingsMnemonic", KeyEvent.VK_S));
 			menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
 			menuItem.setIcon(JNCUResources.getIcon("/menu/settings.png"));
@@ -306,7 +306,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	private JMenuItem getMenuBackup() {
 		if (menuBackup == null) {
 			JMenuItem menuItem = new JMenuItem();
-			menuItem.setText(JNCUResources.getString("backup", "Backup") + ELLIPSIS);
+			menuItem.setText(JNCUResources.getString("backup") + ELLIPSIS);
 			menuItem.setMnemonic(JNCUResources.getChar("backupMnemonic", KeyEvent.VK_B));
 			menuItem.setIcon(JNCUResources.getIcon("/menu/backup.png"));
 			menuItem.addActionListener(this);
@@ -324,7 +324,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	private JMenuItem getMenuRestore() {
 		if (menuRestore == null) {
 			JMenuItem menuItem = new JMenuItem();
-			menuItem.setText(JNCUResources.getString("restore", "Restore") + ELLIPSIS);
+			menuItem.setText(JNCUResources.getString("restore") + ELLIPSIS);
 			menuItem.setMnemonic(JNCUResources.getChar("restoreMnemonic", KeyEvent.VK_R));
 			menuItem.setIcon(JNCUResources.getIcon("/menu/restore.png"));
 			menuItem.addActionListener(this);
@@ -342,7 +342,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	private JMenuItem getMenuInstall() {
 		if (menuInstall == null) {
 			JMenuItem menuItem = new JMenuItem();
-			menuItem.setText(JNCUResources.getString("install", "Install Packages") + ELLIPSIS);
+			menuItem.setText(JNCUResources.getString("install") + ELLIPSIS);
 			menuItem.setMnemonic(JNCUResources.getChar("installMnemonic", KeyEvent.VK_I));
 			menuItem.setIcon(JNCUResources.getIcon("/menu/pkg.png"));
 			menuItem.addActionListener(this);
@@ -360,7 +360,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	private JMenuItem getMenuKeyboard() {
 		if (menuKeyboard == null) {
 			JMenuItem menuItem = new JMenuItem();
-			menuItem.setText(JNCUResources.getString("keyboard", "Keyboard Passthrough") + ELLIPSIS);
+			menuItem.setText(JNCUResources.getString("keyboard") + ELLIPSIS);
 			menuItem.setMnemonic(JNCUResources.getChar("keyboardMnemonic", KeyEvent.VK_K));
 			menuItem.setIcon(JNCUResources.getIcon("/menu/keyboard.png"));
 			menuItem.addActionListener(this);
@@ -378,7 +378,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	private JMenuItem getMenuDeviceInfo() {
 		if (menuDeviceInfo == null) {
 			JMenuItem menuItem = new JMenuItem();
-			menuItem.setText(JNCUResources.getString("deviceInfo", "Device") + ELLIPSIS);
+			menuItem.setText(JNCUResources.getString("deviceInfo") + ELLIPSIS);
 			menuItem.setMnemonic(JNCUResources.getChar("deviceInfoMnemonic", KeyEvent.VK_D));
 			menuItem.setIcon(JNCUResources.getIcon("/menu/pda.png"));
 			menuItem.addActionListener(this);
@@ -396,7 +396,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	private JMenuItem getMenuAbout() {
 		if (menuAbout == null) {
 			JMenuItem menuItem = new JMenuItem();
-			menuItem.setText(JNCUResources.getString("about", "About") + ELLIPSIS);
+			menuItem.setText(JNCUResources.getString("about") + ELLIPSIS);
 			menuItem.setMnemonic(JNCUResources.getChar("aboutMnemonic", KeyEvent.VK_A));
 			menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, InputEvent.ALT_MASK));
 			menuItem.setIcon(JNCUResources.getIcon("/menu/about.png"));
@@ -421,7 +421,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 
 			JPanel panel = new JPanel();
 			panel.setLayout(new BorderLayout());
-			panel.setBorder(BorderFactory.createTitledBorder(JNCUResources.getString("connectStatus", "Status")));
+			panel.setBorder(BorderFactory.createTitledBorder(JNCUResources.getString("connectStatus")));
 			panel.setOpaque(false);
 			panel.add(statusConnection, BorderLayout.CENTER);
 			JPanel statusConnectionPanel = panel;
@@ -456,14 +456,14 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 			}
 
 			statusConnection.setIcon(statusConnectedIcon);
-			statusConnection.setText(JNCUResources.getString("connectConnected", "Connected to Newton device."));
+			statusConnection.setText(JNCUResources.getString("connectConnected"));
 		} else {
 			if (statusDisconnectedIcon == null) {
 				statusDisconnectedIcon = JNCUResources.getIcon("/disconnected.png");
 			}
 
 			statusConnection.setIcon(statusDisconnectedIcon);
-			statusConnection.setText(JNCUResources.getString("connectPlease", "Connect your Newton device."));
+			statusConnection.setText(JNCUResources.getString("connectPlease"));
 			setIcons(DWhichIcons.NONE);
 		}
 	}
@@ -472,7 +472,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	 * Initialize.
 	 */
 	private void init() {
-		setTitle(JNCUResources.getString("jncu", null));
+		setTitle(JNCUResources.getString("jncu"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		List<Image> images = new ArrayList<Image>();
@@ -572,7 +572,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 			JPanel utilsGroup = new JPanel();
 			utilsGroup.setOpaque(false);
 			utilsGroup.setLayout(new GridBagLayout());
-			utilsGroup.setBorder(BorderFactory.createTitledBorder(JNCUResources.getString("basicUtilities", "Basic Utilities")));
+			utilsGroup.setBorder(BorderFactory.createTitledBorder(JNCUResources.getString("basicUtilities")));
 			GridBagConstraints gbcSync = new GridBagConstraints();
 			gbcSync.gridx = 0;
 			gbcSync.insets = new Insets(INSET_Y, INSET_X, INSET_Y, INSET_X);
@@ -589,7 +589,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 			JPanel exportGroup = new JPanel();
 			exportGroup.setOpaque(false);
 			exportGroup.setLayout(new GridBagLayout());
-			exportGroup.setBorder(BorderFactory.createTitledBorder(JNCUResources.getString("moveToDesktop", "Move to PC")));
+			exportGroup.setBorder(BorderFactory.createTitledBorder(JNCUResources.getString("moveToDesktop")));
 			GridBagConstraints gbcBackup = new GridBagConstraints();
 			gbcBackup.gridx = 0;
 			gbcBackup.insets = new Insets(INSET_Y, INSET_X, INSET_Y, INSET_X);
@@ -602,7 +602,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 			JPanel importGroup = new JPanel();
 			importGroup.setOpaque(false);
 			importGroup.setLayout(new GridBagLayout());
-			importGroup.setBorder(BorderFactory.createTitledBorder(JNCUResources.getString("moveToDevice", "Move to device")));
+			importGroup.setBorder(BorderFactory.createTitledBorder(JNCUResources.getString("moveToDevice")));
 			GridBagConstraints gbcRestore = new GridBagConstraints();
 			gbcRestore.gridx = 0;
 			gbcRestore.insets = new Insets(INSET_Y, INSET_X, INSET_Y, INSET_X);
@@ -631,7 +631,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 		if (syncButton == null) {
 			JButton button = new JButton();
 			button.setIcon(JNCUResources.getIcon("/sync.png"));
-			button.setToolTipText(JNCUResources.getString("sync", "Synchronize"));
+			button.setToolTipText(JNCUResources.getString("sync"));
 			button.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON, INSET_BUTTON, INSET_BUTTON));
 			button.addActionListener(this);
 			button.setEnabled(false);
@@ -649,7 +649,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 		if (installButton == null) {
 			JButton button = new JButton();
 			button.setIcon(JNCUResources.getIcon("/pkg.png"));
-			button.setToolTipText(JNCUResources.getString("install", "Install"));
+			button.setToolTipText(JNCUResources.getString("install"));
 			button.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON, INSET_BUTTON, INSET_BUTTON));
 			button.addActionListener(this);
 			button.setEnabled(false);
@@ -667,7 +667,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 		if (keyboardButton == null) {
 			JButton button = new JButton();
 			button.setIcon(JNCUResources.getIcon("/keyboard.png"));
-			button.setToolTipText(JNCUResources.getString("keyboard", "Use Keyboard"));
+			button.setToolTipText(JNCUResources.getString("keyboard"));
 			button.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON, INSET_BUTTON, INSET_BUTTON));
 			button.addActionListener(this);
 			button.setEnabled(false);
@@ -685,7 +685,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 		if (backupButton == null) {
 			JButton button = new JButton();
 			button.setIcon(JNCUResources.getIcon("/backup.png"));
-			button.setToolTipText(JNCUResources.getString("backup", "Backup"));
+			button.setToolTipText(JNCUResources.getString("backup"));
 			button.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON, INSET_BUTTON, INSET_BUTTON));
 			button.addActionListener(this);
 			button.setEnabled(false);
@@ -703,7 +703,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 		if (restoreButton == null) {
 			JButton button = new JButton();
 			button.setIcon(JNCUResources.getIcon("/restore.png"));
-			button.setToolTipText(JNCUResources.getString("restore", "Restore"));
+			button.setToolTipText(JNCUResources.getString("restore"));
 			button.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON, INSET_BUTTON, INSET_BUTTON));
 			button.addActionListener(this);
 			button.setEnabled(false);
@@ -721,7 +721,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 		if (importButton == null) {
 			JButton button = new JButton();
 			button.setIcon(JNCUResources.getIcon("/import.png"));
-			button.setToolTipText(JNCUResources.getString("import", "Import"));
+			button.setToolTipText(JNCUResources.getString("import"));
 			button.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON, INSET_BUTTON, INSET_BUTTON));
 			button.addActionListener(this);
 			button.setEnabled(false);
@@ -739,7 +739,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 		if (exportButton == null) {
 			JButton button = new JButton();
 			button.setIcon(JNCUResources.getIcon("/export.png"));
-			button.setToolTipText(JNCUResources.getString("export", "Export"));
+			button.setToolTipText(JNCUResources.getString("export"));
 			button.setMargin(new Insets(INSET_BUTTON, INSET_BUTTON, INSET_BUTTON, INSET_BUTTON));
 			button.addActionListener(this);
 			button.setEnabled(false);

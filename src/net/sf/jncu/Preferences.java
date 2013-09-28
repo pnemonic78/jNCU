@@ -156,6 +156,10 @@ public class Preferences {
 	 *            the property value.
 	 */
 	public void set(String key, String value) {
+		if (value == null) {
+			props.remove(key);
+			return;
+		}
 		props.setProperty(key, value);
 	}
 

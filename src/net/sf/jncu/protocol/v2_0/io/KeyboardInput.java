@@ -82,7 +82,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	 *            the owner window.
 	 */
 	public KeyboardInput(CDPipe pipe, Window owner) {
-		super(JNCUResources.getString("keyboardInput", "Keyboard Input"), pipe, owner);
+		super(JNCUResources.getString("keyboardInput"), pipe, owner);
 		setName("KeyboardInput-" + getId());
 
 		this.state = State.INITIALISED;

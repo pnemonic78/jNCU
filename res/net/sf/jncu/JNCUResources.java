@@ -58,11 +58,25 @@ public class JNCUResources {
 		if (!bundle.containsKey(key))
 			return defaultValue;
 		String value = bundle.getString(key);
-		if (value.startsWith("@")) {
+		if ("@null".equals(value))
+			return null;
+		if (value.startsWith("@AWT.")) {
 			key = value.substring(1);
 			return Toolkit.getProperty(key, defaultValue);
 		}
 		return value;
+	}
+
+	/**
+	 * Gets a string for the given key from this resource bundle or one of its
+	 * parents.
+	 * 
+	 * @param key
+	 *            the key name.
+	 * @return the string for the given key - {@code null} otherwise.
+	 */
+	public static String getString(String key) {
+		return getString(key, null);
 	}
 
 	/**
@@ -76,7 +90,7 @@ public class JNCUResources {
 	 * @return the character for the given key.
 	 */
 	public static int getChar(String key, int defaultValue) {
-		String value = getString(key, null);
+		String value = getString(key);
 		if (value == null)
 			return defaultValue;
 		if (value.length() > 0)
