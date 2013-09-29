@@ -32,6 +32,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -49,7 +51,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import net.sf.jncu.Controller;
+import net.sf.jncu.JNCUController;
 import net.sf.jncu.JNCUApp;
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.protocol.v2_0.session.DWhichIcons;
@@ -60,7 +62,7 @@ import net.sf.swing.SwingUtils;
  * 
  * @author moshew
  */
-public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
+public class JNCUFrame extends JFrame implements ActionListener, MouseListener, WindowListener {
 
 	static {
 		SwingUtils.init();
@@ -101,7 +103,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	private JButton importButton;
 	private JButton exportButton;
 	private JNCUAboutDialog aboutDialog;
-	private Controller control;
+	private JNCUController controller;
 	private Icon statusDisconnectedIcon;
 	private Icon statusConnectedIcon;
 
@@ -111,7 +113,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	public JNCUFrame() {
 		super();
 		this.frame = this;
-		getControl();
+		getController();
 		init();
 	}
 
@@ -526,7 +528,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	 */
 	public void close() {
 		if (isShowing()) {
-			getControl().close();
+			getController().close();
 			SwingUtils.postWindowClosing(frame);
 		}
 	}
@@ -538,7 +540,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 		if (src == menuExit) {
 			close();
 		} else if (src == menuSettings) {
-			settings();
+			showSettings();
 		} else if (src == menuKeyboard) {
 			keyboard();
 		} else if (src == menuAbout) {
@@ -546,7 +548,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 		} else if (src == syncButton) {
 			sync();
 		} else if (src == installButton) {
-			install();
+			installPackage();
 		} else if (src == keyboardButton) {
 			keyboard();
 		} else if (src == backupButton) {
@@ -752,49 +754,49 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	 * Synchronize.
 	 */
 	private void sync() {
-		getControl().sync();
+		getController().sync();
 	}
 
 	/**
 	 * Install package.
 	 */
-	private void install() {
-		getControl().installPackage();
+	private void installPackage() {
+		getController().installPackage();
 	}
 
 	/**
 	 * Use keyboard.
 	 */
 	private void keyboard() {
-		getControl().keyboard();
+		getController().keyboard();
 	}
 
 	/**
 	 * Backup.
 	 */
 	private void backupToDesktop() {
-		getControl().backupToDesktop();
+		getController().backupToDesktop();
 	}
 
 	/**
 	 * Export.
 	 */
 	private void exportToDesktop() {
-		getControl().exportToDesktop();
+		getController().exportToDesktop();
 	}
 
 	/**
 	 * Restore.
 	 */
 	private void restoreToNewton() {
-		getControl().restoreToNewton();
+		getController().restoreToNewton();
 	}
 
 	/**
 	 * Import.
 	 */
 	private void importToNewton() {
-		getControl().importToNewton();
+		getController().importToNewton();
 	}
 
 	/**
@@ -819,9 +821,9 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	/**
 	 * Show the settings dialog.
 	 */
-	private void settings() {
+	private void showSettings() {
 		try {
-			getControl().showSettings();
+			getController().showSettings();
 		} catch (Exception e) {
 			showError("Show settings", e);
 		}
@@ -833,8 +835,8 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	 * @param control
 	 *            the controller.
 	 */
-	public void setController(Controller control) {
-		this.control = control;
+	public void setController(JNCUController control) {
+		this.controller = control;
 	}
 
 	/**
@@ -842,8 +844,8 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	 * 
 	 * @return the controller.
 	 */
-	protected Controller getControl() {
-		return control;
+	protected JNCUController getController() {
+		return controller;
 	}
 
 	/**
@@ -872,7 +874,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 	 * Show the device information.
 	 */
 	private void showDevice() {
-		getControl().showDevice();
+		getController().showDevice();
 	}
 
 	@Override
@@ -937,5 +939,34 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener {
 		getMenuSync().setEnabled(syncIcon);
 		getMenuSyncSettings().setEnabled(syncIcon);
 		getSyncButton().setEnabled(syncIcon);
+	}
+
+	@Override
+	public void windowOpened(WindowEvent event) {
+	}
+
+	@Override
+	public void windowClosing(WindowEvent event) {
+		getController().close();
+	}
+
+	@Override
+	public void windowClosed(WindowEvent event) {
+	}
+
+	@Override
+	public void windowIconified(WindowEvent event) {
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent event) {
+	}
+
+	@Override
+	public void windowActivated(WindowEvent event) {
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent event) {
 	}
 }
