@@ -27,7 +27,7 @@ import java.io.OutputStream;
 import net.sf.jncu.cdil.CDPacketLayer;
 
 /**
- * AppleTalk packet layer.
+ * Apple Data Stream Protocol (ADSP) for AppleTalk packet layer.
  * 
  * @author Moshe
  */

@@ -25,7 +25,7 @@ import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 
 /**
- * TCP pipe.
+ * Transfer Control Protocol (TCP) pipe.
  * 
  * @author moshew
  */

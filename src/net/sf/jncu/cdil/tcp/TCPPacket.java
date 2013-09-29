@@ -22,7 +22,7 @@ package net.sf.jncu.cdil.tcp;
 import net.sf.jncu.cdil.CDPacket;
 
 /**
- * TCP packet.
+ * Transfer Control Protocol (TCP) packet.
  * 
  * @author Moshe
  */

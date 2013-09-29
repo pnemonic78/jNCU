@@ -27,7 +27,7 @@ import java.io.OutputStream;
 import net.sf.jncu.cdil.CDPacketLayer;
 
 /**
- * TCP packet layer.
+ * Transfer Control Protocol (TCP) packet layer.
  * 
  * @author Moshe
  */
