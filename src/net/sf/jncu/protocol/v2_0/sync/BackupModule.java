@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import javax.swing.ProgressMonitor;
 import javax.swing.SwingUtilities;
 
 import net.sf.jncu.JNCUResources;
@@ -65,6 +64,7 @@ import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
 import net.sf.jncu.sync.BackupException;
 import net.sf.jncu.sync.BackupHandler;
 import net.sf.jncu.sync.BackupWriter;
+import net.sf.swing.ProgressMonitor;
 
 /**
  * Backup module.

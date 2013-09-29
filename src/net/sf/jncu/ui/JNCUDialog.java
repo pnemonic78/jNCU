@@ -68,6 +68,19 @@ public class JNCUDialog extends JDialog implements ActionListener {
 	}
 
 	/**
+	 * Create a new dialog.
+	 * 
+	 * @param owner
+	 *            the owner.
+	 * @param title
+	 *            the title.
+	 */
+	public JNCUDialog(Window owner, String title) {
+		this(owner);
+		setTitle(title);
+	}
+
+	/**
 	 * Initialise.
 	 */
 	private void init() {

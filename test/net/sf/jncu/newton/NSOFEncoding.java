@@ -17,7 +17,7 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.fdil;
+package net.sf.jncu.newton;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,6 +26,14 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 
+import net.sf.jncu.fdil.NSOFDecoder;
+import net.sf.jncu.fdil.NSOFEncoder;
+import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.fdil.NSOFImmediate;
+import net.sf.jncu.fdil.NSOFInteger;
+import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.protocol.IDockCommand;
 import net.sf.jncu.protocol.v1_0.data.DEntry;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;

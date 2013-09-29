@@ -28,14 +28,13 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.Reader;
 
-import javax.swing.ProgressMonitor;
-
 import net.sf.jncu.cdil.CDCommandLayer;
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.swing.ProgressMonitor;
 
 /**
  * Decode trace dumps.

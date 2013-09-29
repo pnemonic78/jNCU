@@ -418,7 +418,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 		}
 
 		getInternalStoreSignatureLabel().setText(Integer.toString(info.getInternalStoreSignature()));
-		getMachineTypeLabel().setText(Integer.toString(info.getMachineType()));
+		getMachineTypeLabel().setText(getMachineValue(info.getMachineType()));
 		getManufacturerIdLabel().setText(Integer.toString(info.getManufacturerId()));
 		getNameLabel().setText(info.getName());
 		getNewtonIdLabel().setText(Integer.toString(info.getNewtonId()));
@@ -627,5 +627,28 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			serialNumberLabel = new JLabel();
 		}
 		return serialNumberLabel;
+	}
+
+	private String getMachineValue(int machineType) {
+		switch (machineType) {
+		case 0:
+			return "Newton MessagePad (OMP), 20 MHz ARM 610";
+		case 1:
+			return "Newton MessagePad 100, 20 MHz ARM 610";
+		case 2:
+			return "Newton MessagePad 110, 20 MHz ARM 610";
+		case 3:
+			return "Newton MessagePad 120, 20 MHz ARM 610";
+		case 4:
+			return "Newton MessagePad 130, 20 MHz ARM 610";
+		case 0x10003000:// 268447744
+			return "Newton MessagePad 2000, 162 MHz StrongARM 110";
+		case 5:
+			return "Newton MessagePad 2100, 162 MHz StrongARM 110";
+		case 6:
+			return "Newton eMate 300, 25 MHz ARM 710a";
+		}
+
+		return "0x" + Integer.toString(machineType, 16);
 	}
 }

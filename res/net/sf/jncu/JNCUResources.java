@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
+import javax.swing.UIManager;
 
 /**
  * jNCU resource bundle.
@@ -63,6 +64,10 @@ public class JNCUResources {
 		if (value.startsWith("@AWT.")) {
 			key = value.substring(1);
 			return Toolkit.getProperty(key, defaultValue);
+		}
+		if (value.startsWith("@OptionPane.")) {
+			key = value.substring(1);
+			return UIManager.getString(key);
 		}
 		return value;
 	}
