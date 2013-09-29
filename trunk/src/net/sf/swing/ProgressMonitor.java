@@ -361,7 +361,7 @@ public class ProgressMonitor {
 
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			cancel();
+			notifyCancel();
 		}
 
 		@Override
@@ -371,7 +371,7 @@ public class ProgressMonitor {
 		@Override
 		public void windowClosing(WindowEvent event) {
 			if (defaultCloseOperation != WindowConstants.DO_NOTHING_ON_CLOSE)
-				cancel();
+				notifyCancel();
 		}
 
 		@Override
@@ -394,7 +394,11 @@ public class ProgressMonitor {
 		public void windowDeactivated(WindowEvent event) {
 		}
 
-		private void cancel() {
+		/**
+		 * Notify the listener of the user's intent to cancel the operation, but
+		 * without closing the dialog.
+		 */
+		private void notifyCancel() {
 			canceled = true;
 			if ((cancelOption != null) && (listener != null))
 				listener.proressMonitorCancel(ProgressMonitor.this);

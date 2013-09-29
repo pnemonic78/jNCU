@@ -25,7 +25,7 @@ import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 
 /**
- * AppleTalk pipe.
+ * Apple Data Stream Protocol (ADSP) for AppleTalk pipe.
  * 
  * @author moshew
  */

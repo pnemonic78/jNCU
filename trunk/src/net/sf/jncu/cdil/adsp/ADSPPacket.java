@@ -22,7 +22,7 @@ package net.sf.jncu.cdil.adsp;
 import net.sf.jncu.cdil.CDPacket;
 
 /**
- * AppleTalk packet.
+ * Apple Data Stream Protocol (ADSP) for AppleTalk packet.
  * 
  * @author Moshe
  */
