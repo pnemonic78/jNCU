@@ -201,7 +201,7 @@ public class JNCUDeviceDialog extends JNCUDialog {
 			gbcValue = new GridBagConstraints();
 			gbcValue.gridx = 1;
 			gbcValue.gridy = y++;
-			gbcValue.anchor = GridBagConstraints.EAST;
+			gbcValue.anchor = GridBagConstraints.WEST;
 			gbcValue.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			panel.add(getMachineTypeLabel(), gbcValue);
 

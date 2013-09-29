@@ -503,6 +503,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 			list.addItem(MNPSerialPort.BAUD_9600);
 			list.addItem(MNPSerialPort.BAUD_38400);
 			list.addItem(MNPSerialPort.BAUD_57600);
+			list.addItem(MNPSerialPort.BAUD_115200);
 			listSpeed = list;
 		}
 		return listSpeed;
