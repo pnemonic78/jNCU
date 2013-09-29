@@ -36,6 +36,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 
 import net.sf.jncu.JNCUResources;
 
@@ -66,7 +67,8 @@ public class ProgressMonitor {
 	private int max;
 	private boolean canceled;
 	private ProgressMonitorListener listener;
-	private Runnable runner;
+	private Runnable runnerShow;
+	private int defaultCloseOperation;
 
 	/**
 	 * Constructs a new progress monitor.
@@ -92,7 +94,36 @@ public class ProgressMonitor {
 	 *            the upper bound of the range.
 	 */
 	public ProgressMonitor(Component parentComponent, Object message, String note, int min, int max) {
-		this(parentComponent, message, note, min, max, null);
+		this(parentComponent, message, note, min, max, WindowConstants.HIDE_ON_CLOSE);
+	}
+
+	/**
+	 * Constructs a new progress monitor.
+	 * 
+	 * @param parentComponent
+	 *            the parent component for the dialog box
+	 * @param message
+	 *            a descriptive message that will be shown to the user to
+	 *            indicate what operation is being monitored. This does not
+	 *            change as the operation progresses. See the message parameters
+	 *            to methods in {@link JOptionPane#message} for the range of
+	 *            values.
+	 * @param note
+	 *            a short note describing the state of the operation. As the
+	 *            operation progresses, you can call setNote to change the note
+	 *            displayed. This is used, for example, in operations that
+	 *            iterate through a list of files to show the name of the file
+	 *            being processes. If note is initially null, there will be no
+	 *            note line in the dialog box and setNote will be ineffective.
+	 * @param min
+	 *            the lower bound of the range.
+	 * @param max
+	 *            the upper bound of the range.
+	 * @param defaultCloseOperation
+	 *            the default close operation.
+	 */
+	public ProgressMonitor(Component parentComponent, Object message, String note, int min, int max, int defaultCloseOperation) {
+		this(parentComponent, message, note, min, max, defaultCloseOperation, null);
 	}
 
 	/**
@@ -121,12 +152,44 @@ public class ProgressMonitor {
 	 *            the listener.
 	 */
 	public ProgressMonitor(Component parentComponent, Object message, String note, int min, int max, ProgressMonitorListener listener) {
+		this(parentComponent, message, note, min, max, WindowConstants.HIDE_ON_CLOSE, listener);
+	}
+
+	/**
+	 * Constructs a new progress monitor.
+	 * 
+	 * @param parentComponent
+	 *            the parent component for the dialog box
+	 * @param message
+	 *            a descriptive message that will be shown to the user to
+	 *            indicate what operation is being monitored. This does not
+	 *            change as the operation progresses. See the message parameters
+	 *            to methods in {@link JOptionPane#message} for the range of
+	 *            values.
+	 * @param note
+	 *            a short note describing the state of the operation. As the
+	 *            operation progresses, you can call setNote to change the note
+	 *            displayed. This is used, for example, in operations that
+	 *            iterate through a list of files to show the name of the file
+	 *            being processes. If note is initially null, there will be no
+	 *            note line in the dialog box and setNote will be ineffective.
+	 * @param min
+	 *            the lower bound of the range.
+	 * @param max
+	 *            the upper bound of the range.
+	 * @param defaultCloseOperation
+	 *            the default close operation.
+	 * @param listener
+	 *            the listener.
+	 */
+	public ProgressMonitor(Component parentComponent, Object message, String note, int min, int max, int defaultCloseOperation, ProgressMonitorListener listener) {
 		super();
 		this.parentComponent = parentComponent;
 		this.message = message;
 		this.note = note;
 		this.min = min;
 		this.max = max;
+		this.defaultCloseOperation = defaultCloseOperation;
 		this.listener = listener;
 
 		int buttonMinimumWidth = UIManager.getInt("OptionPane.buttonMinimumWidth");
@@ -231,23 +294,30 @@ public class ProgressMonitor {
 		bar.setValue(nv);
 		if (note != null)
 			noteLabel = new JLabel(note);
-		JPanel buttons = createButtonsPanel();
-		cancelOption = createCancelButton();
-		buttons.add(cancelOption);
-
-		pane = new ProgressOptionPane(new Object[] { message, noteLabel, bar, buttons });
-		cancelOption.addActionListener(pane);
+		if (defaultCloseOperation == WindowConstants.DO_NOTHING_ON_CLOSE) {
+			pane = new ProgressOptionPane(new Object[] { message, noteLabel, bar });
+		} else {
+			JPanel buttons = createButtonsPanel();
+			if (listener == null)
+				cancelOption = createOkButton();
+			else
+				cancelOption = createCancelButton();
+			buttons.add(cancelOption);
+			pane = new ProgressOptionPane(new Object[] { message, noteLabel, bar, buttons });
+			cancelOption.addActionListener(pane);
+		}
 
 		dialog = pane.createDialog(parentComponent, UIManager.getString("ProgressMonitor.progressText"));
+		dialog.setDefaultCloseOperation(defaultCloseOperation);
 		dialog.addWindowListener(pane);
-		if (runner == null) {
-			runner = new Runnable() {
+		if (runnerShow == null) {
+			runnerShow = new Runnable() {
 				@Override
 				public void run() {
 					dialog.setVisible(true);
 				}
 			};
-			SwingUtilities.invokeLater(runner);
+			SwingUtilities.invokeLater(runnerShow);
 		}
 	}
 
@@ -300,7 +370,8 @@ public class ProgressMonitor {
 
 		@Override
 		public void windowClosing(WindowEvent event) {
-			cancel();
+			if (defaultCloseOperation != WindowConstants.DO_NOTHING_ON_CLOSE)
+				cancel();
 		}
 
 		@Override
@@ -325,7 +396,7 @@ public class ProgressMonitor {
 
 		private void cancel() {
 			canceled = true;
-			if (listener != null)
+			if ((cancelOption != null) && (listener != null))
 				listener.proressMonitorCancel(ProgressMonitor.this);
 		}
 	}
@@ -351,6 +422,20 @@ public class ProgressMonitor {
 		button.setText(JNCUResources.getString("cancel", "Cancel"));
 		button.setMnemonic(JNCUResources.getChar("cancelMnemonic", KeyEvent.VK_C));
 		button.setIcon(JNCUResources.getIcon("/dialog/cancel.png"));
+
+		return button;
+	}
+
+	/**
+	 * Create an "OK" button.
+	 * 
+	 * @return the button.
+	 */
+	protected JButton createOkButton() {
+		JButton button = createButton();
+		button.setText(JNCUResources.getString("ok", "OK"));
+		button.setMnemonic(JNCUResources.getChar("okMnemonic", KeyEvent.VK_O));
+		button.setIcon(JNCUResources.getIcon("/dialog/ok.png"));
 
 		return button;
 	}

@@ -158,8 +158,9 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	protected void done() {
 		pipe.removeCommandListener(this);
 		if (progressMonitor != null) {
-			progressMonitor.close();
-			progressMonitor = null;
+			progressCommandFrom = null;
+			progressCommandTo = null;
+			closeProgress();
 		}
 		IconModule.this.interrupt();
 	}
@@ -310,12 +311,21 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	protected ProgressMonitor getProgress() {
 		if (progressMonitor == null) {
 			synchronized (this) {
-				progressMonitor = new ProgressMonitor(getOwner(), getTitle(), "0%%", 0, IDockCommand.LENGTH_WORD, this);
+				progressMonitor = createProgress();
 			}
 		}
 		progressReceivingFormat = JNCUResources.getString("progressReceiving");
 		progressSendingFormat = JNCUResources.getString("progressSending");
 		return progressMonitor;
+	}
+
+	/**
+	 * Create a new progress monitor.
+	 * 
+	 * @return the progress.
+	 */
+	protected ProgressMonitor createProgress() {
+		return new ProgressMonitor(getOwner(), getTitle(), "0%%", 0, IDockCommand.LENGTH_WORD, this);
 	}
 
 	/**
