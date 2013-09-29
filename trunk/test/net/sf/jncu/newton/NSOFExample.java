@@ -17,12 +17,23 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.fdil;
+package net.sf.jncu.newton;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
+import net.sf.jncu.fdil.NSOFBinaryObject;
+import net.sf.jncu.fdil.NSOFDecoder;
+import net.sf.jncu.fdil.NSOFEncoder;
+import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.fdil.NSOFInteger;
+import net.sf.jncu.fdil.NSOFNil;
+import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.fdil.NSOFPlainArray;
+import net.sf.jncu.fdil.NSOFSmallRect;
+import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.fdil.NSOFUnicodeCharacter;
 import net.sf.junit.SFTestCase;
 
 import org.junit.Test;

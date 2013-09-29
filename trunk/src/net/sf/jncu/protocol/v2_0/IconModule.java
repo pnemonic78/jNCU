@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.swing.ProgressMonitor;
-
 import net.sf.jncu.JNCUApp;
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.cdil.CDPipe;
@@ -38,13 +36,15 @@ import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
+import net.sf.swing.ProgressMonitor;
+import net.sf.swing.ProgressMonitor.ProgressMonitorListener;
 
 /**
  * Module that does some function when user clicks an icon.
  * 
  * @author Moshe
  */
-public abstract class IconModule extends Thread implements DockCommandListener {
+public abstract class IconModule extends Thread implements DockCommandListener, ProgressMonitorListener {
 
 	/**
 	 * Icon module event.
@@ -310,8 +310,7 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 	protected ProgressMonitor getProgress() {
 		if (progressMonitor == null) {
 			synchronized (this) {
-				progressMonitor = new ProgressMonitor(getOwner(), getTitle(), "0%%", 0, IDockCommand.LENGTH_WORD);
-				progressMonitor.setMillisToDecideToPopup(0);
+				progressMonitor = new ProgressMonitor(getOwner(), getTitle(), "0%%", 0, IDockCommand.LENGTH_WORD, this);
 			}
 		}
 		progressReceivingFormat = JNCUResources.getString("progressReceiving");
@@ -398,5 +397,10 @@ public abstract class IconModule extends Thread implements DockCommandListener {
 		}
 		fireCancelled();
 		done();
+	}
+
+	@Override
+	public void proressMonitorCancel(ProgressMonitor monitor) {
+		cancel();
 	}
 }
