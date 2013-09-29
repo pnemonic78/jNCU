@@ -101,6 +101,7 @@ public abstract class CDPipe<P extends CDPacket, L extends CDPacketLayer<P>> ext
 		if (getCDState() != CDState.DISCONNECTED) {
 			disconnect();
 		}
+		layer.removeStateListener(this);
 		timer.cancel();
 	}
 
@@ -753,6 +754,7 @@ public abstract class CDPipe<P extends CDPacket, L extends CDPacketLayer<P>> ext
 
 	@Override
 	public void stateChanged(CDLayer layer, CDState newState) {
+		final CDPipeListener<P, L> listener = this.listener;
 		if (listener == null)
 			return;
 
