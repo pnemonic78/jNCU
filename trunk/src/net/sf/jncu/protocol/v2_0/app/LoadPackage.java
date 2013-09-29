@@ -23,6 +23,7 @@ import java.awt.Window;
 import java.io.File;
 
 import javax.swing.JFileChooser;
+import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -30,6 +31,7 @@ import net.sf.jncu.JNCUResources;
 import net.sf.jncu.Preferences;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.protocol.DockCommandListener;
+import net.sf.jncu.protocol.IDockCommand;
 import net.sf.jncu.protocol.IDockCommandFromNewton;
 import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.app.DLoadPackage;
@@ -40,6 +42,7 @@ import net.sf.jncu.protocol.v2_0.io.FileChooser;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
+import net.sf.swing.ProgressMonitor;
 import net.sf.swing.SwingUtils;
 
 /**
@@ -161,11 +164,6 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 	}
 
 	@Override
-	protected void cancelSend() {
-		// FIXME show a progress monitor without a "cancel" button.
-	}
-
-	@Override
 	protected void cancelSendRun() {
 		super.cancelSendRun();
 		state = State.CANCELLED;
@@ -240,5 +238,12 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 			packageChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		}
 		return packageChooser;
+	}
+
+	@Override
+	protected ProgressMonitor createProgress() {
+		// No cancel button because we cannot send cancel midway (Newton will
+		// think that command is part of the package file).
+		return new ProgressMonitor(getOwner(), getTitle(), "0%%", 0, IDockCommand.LENGTH_WORD, WindowConstants.DO_NOTHING_ON_CLOSE);
 	}
 }
