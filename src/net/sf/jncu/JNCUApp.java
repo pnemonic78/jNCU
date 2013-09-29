@@ -73,7 +73,6 @@ import net.sf.jncu.ui.JNCUSettingsDialog;
  */
 public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockCommandListener, FileChooserListener, JNCUController {
 
-	private JNCUController controller;
 	private final JNCUFrame frame;
 	private CDLayer layer;
 	private CDPipe pipe;
@@ -84,6 +83,7 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	private JNCUSettingsDialog settingsDialog;
 	private JNCUDeviceDialog deviceDialog;
 	private FileChooser chooser;
+	private boolean reconnectAfterDisconnect;
 
 	/**
 	 * Constructs a new application.
@@ -94,8 +94,7 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	public JNCUApp() throws PlatformException {
 		super();
 		this.frame = new JNCUFrame();
-		this.controller = this;
-		frame.setController(controller);
+		frame.setController(this);
 		this.layer = CDLayer.getInstance();
 		layer.startUp();
 	}
@@ -132,7 +131,7 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	 *             if timeout occurs.
 	 */
 	public void run() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
-		controller.start();
+		start();
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -193,8 +192,11 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	 * @throws BadPipeStateException
 	 *             if pipe is in an incorrect state.
 	 */
+	@SuppressWarnings("unchecked")
 	private void connectMNP(String portId, int portSpeed) throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException, BadPipeStateException,
 			PipeDisconnectedException, TimeoutException {
+		if (pipe != null)
+			pipe.dispose();
 		MNPPipe pipe = layer.createMNPSerial(portId, portSpeed);
 		pipe.addCommandListener(this);
 		this.pipe = pipe;
@@ -259,11 +261,6 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	@Override
 	public void close() {
 		stop();
-		try {
-			layer.shutDown();
-		} catch (Exception e) {
-			// ignore
-		}
 	}
 
 	/**
@@ -301,8 +298,8 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 					} catch (InterruptedException e) {
 					}
 				}
-				pipe.disconnect();
 				pipe.dispose();
+				pipe = null;
 			}
 			layer.shutDown();
 		} catch (Exception e) {
@@ -338,12 +335,13 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	@Override
 	public void showSettings() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException, BadPipeStateException, PipeDisconnectedException,
 			TimeoutException {
-		controller.stop();
+		reconnectAfterDisconnect = false;
+		stop();
 		Settings settings = getSettings();
 		getSettingsDialog().setSettings(settings);
 		getSettingsDialog().setVisible(true);
 		setSettings(settings);
-		controller.start();
+		start();
 	}
 
 	/**
@@ -386,6 +384,13 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	@Override
 	public void pipeDisconnected(CDPipe<MNPPacket, MNPPacketLayer> pipe) {
 		frame.setConnected(false);
+		if (reconnectAfterDisconnect) {
+			try {
+				start();
+			} catch (Exception e) {
+				showError(frame, "pipe disconnected", e);
+			}
+		}
 	}
 
 	@Override
@@ -415,6 +420,7 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 
 	@Override
 	public void pipeConnected(CDPipe<MNPPacket, MNPPacketLayer> pipe) {
+		reconnectAfterDisconnect = true;
 		frame.setConnected(true);
 		frame.setIcons(DWhichIcons.ALL);
 	}
