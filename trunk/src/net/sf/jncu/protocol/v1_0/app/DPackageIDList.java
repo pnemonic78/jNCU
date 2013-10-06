@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 import net.sf.jncu.protocol.v2_0.app.PackageInfo;
 
 /**
@@ -53,7 +53,7 @@ import net.sf.jncu.protocol.v2_0.app.PackageInfo;
  * package info
  * </pre>
  */
-public class DPackageIDList extends DockCommandFromNewton {
+public class DPackageIDList extends BaseDockCommandFromNewton {
 
 	/** <tt>kDPackageIDList</tt> */
 	public static final String COMMAND = "pids";

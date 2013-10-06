@@ -28,9 +28,9 @@ import net.sf.jncu.JNCUApp;
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.protocol.DockCommandListener;
-import net.sf.jncu.protocol.IDockCommand;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommand;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
@@ -71,8 +71,8 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	protected final CDPipe pipe;
 	private final List<IconModuleListener> listeners = new ArrayList<IconModuleListener>();
 	private ProgressMonitor progressMonitor;
-	private IDockCommandFromNewton progressCommandFrom;
-	private IDockCommandToNewton progressCommandTo;
+	private DockCommandFromNewton progressCommandFrom;
+	private DockCommandToNewton progressCommandTo;
 	private Window owner;
 	private String progressReceivingFormat;
 	private String progressSendingFormat;
@@ -128,7 +128,7 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	 * @param command
 	 *            the command.
 	 */
-	protected void write(IDockCommandToNewton command) {
+	protected void write(DockCommandToNewton command) {
 		try {
 			if (pipe.allowSend())
 				pipe.write(command);
@@ -190,7 +190,7 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	}
 
 	@Override
-	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+	public void commandReceiving(DockCommandFromNewton command, int progress, int total) {
 		if (!isEnabled())
 			return;
 		progressCommandFrom = command;
@@ -206,7 +206,7 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	}
 
 	@Override
-	public void commandReceived(IDockCommandFromNewton command) {
+	public void commandReceived(DockCommandFromNewton command) {
 		if (command == progressCommandFrom) {
 			progressCommandFrom = null;
 			closeProgress();
@@ -227,7 +227,7 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	}
 
 	@Override
-	public void commandSending(IDockCommandToNewton command, int progress, int total) {
+	public void commandSending(DockCommandToNewton command, int progress, int total) {
 		if (!isEnabled())
 			return;
 		progressCommandTo = command;
@@ -243,7 +243,7 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	}
 
 	@Override
-	public void commandSent(IDockCommandToNewton command) {
+	public void commandSent(DockCommandToNewton command) {
 		if (command == progressCommandTo) {
 			progressCommandTo = null;
 			closeProgress();
@@ -325,7 +325,7 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	 * @return the progress.
 	 */
 	protected ProgressMonitor createProgress() {
-		return new ProgressMonitor(getOwner(), getTitle(), "0%%", 0, IDockCommand.LENGTH_WORD, this);
+		return new ProgressMonitor(getOwner(), getTitle(), "0%%", 0, DockCommand.LENGTH_WORD, this);
 	}
 
 	/**

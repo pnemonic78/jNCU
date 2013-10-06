@@ -19,6 +19,11 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandBidi;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
@@ -33,7 +38,7 @@ import net.sf.jncu.protocol.DockCommandToNewtonBlank;
  * length = 0
  * </pre>
  */
-public class DOperationDone extends DockCommandToNewtonBlank {
+public class DOperationDone extends DockCommandToNewtonBlank implements DockCommandBidi {
 
 	/** <tt>kDOperationDone</tt> */
 	public static final String COMMAND = "opdn";
@@ -43,6 +48,12 @@ public class DOperationDone extends DockCommandToNewtonBlank {
 	 */
 	public DOperationDone() {
 		super(COMMAND);
+	}
+
+	@Override
+	public void decode(InputStream data) throws IOException {
+		// nothing to decode.
+		setLength(BaseDockCommandFromNewton.ntohl(data));
 	}
 
 }

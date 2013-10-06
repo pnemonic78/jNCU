@@ -25,7 +25,7 @@ import java.io.InputStream;
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.newton.os.Store;
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command returns a store info frame describing the default store. This
@@ -41,7 +41,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DDefaultStore extends DockCommandFromNewton {
+public class DDefaultStore extends BaseDockCommandFromNewton {
 
 	/** <tt>kDDefaultStore</tt> */
 	public static final String COMMAND = "dfst";

@@ -45,32 +45,38 @@ public class Device implements Comparable<Device> {
 	public static final int DESKTOP = 0;
 	/**
 	 * <tt>kFile</tt><br>
+	 * <tt>kDesktopFile</tt><br>
 	 * File path type type.
 	 */
 	public static final int FILE = 1;
 	/**
 	 * <tt>kFolder</tt><br>
+	 * <tt>kDesktopFolder</tt><br>
 	 * Folder path type.
 	 */
 	public static final int FOLDER = 2;
 	/**
 	 * <tt>kDisk</tt><br>
+	 * <tt>kDesktopDisk</tt><br>
 	 * Disk path type.
 	 */
 	public static final int DISK = 3;
 
 	/**
 	 * <tt>kFloppyDisk</tt><br>
+	 * <tt>kFloppyDrive</tt><br>
 	 * Floppy disk device.
 	 */
 	public static final int FLOPPY_DISK = 0;
 	/**
 	 * <tt>kHardDisk</tt><br>
+	 * <tt>kHardDrive</tt><br>
 	 * Hard disk drive device.
 	 */
 	public static final int HARD_DISK = 1;
 	/**
 	 * <tt>kCdRomDisk</tt><br>
+	 * <tt>kCDROMDrive</tt><br>
 	 * CD-ROM disc device.
 	 */
 	public static final int CDROM_DISK = 2;

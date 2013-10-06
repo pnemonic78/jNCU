@@ -25,7 +25,7 @@ import java.io.OutputStream;
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.contrib.NSOFSoupName;
 import net.sf.jncu.newton.os.Soup;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * Create a soup.
@@ -39,7 +39,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DCreateSoup extends DockCommandToNewton {
+public class DCreateSoup extends BaseDockCommandToNewton {
 
 	/** <tt>kDCreateSoup</tt> */
 	public static final String COMMAND = "csop";

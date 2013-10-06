@@ -24,7 +24,7 @@ import java.io.InputStream;
 
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFString;
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command asks the desktop to return info about the specified file. See
@@ -42,7 +42,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DGetFileInfo extends DockCommandFromNewton {
+public class DGetFileInfo extends BaseDockCommandFromNewton {
 
 	/** <tt>kDGetFileInfo</tt> */
 	public static final String COMMAND = "gfin";

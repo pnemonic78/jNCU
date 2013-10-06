@@ -28,8 +28,8 @@ import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.session.DRequestToDock;
 import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
 import net.sf.jncu.protocol.v2_0.session.DockingState;
@@ -52,7 +52,7 @@ public class EmptyPipe extends MNPPipe {
 	}
 
 	@Override
-	public void write(IDockCommandToNewton cmd) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
+	public void write(DockCommandToNewton cmd) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		// ignore - we only write packets.
 	}
 
@@ -69,7 +69,7 @@ public class EmptyPipe extends MNPPipe {
 	}
 
 	@Override
-	public void commandReceived(IDockCommandFromNewton command) {
+	public void commandReceived(DockCommandFromNewton command) {
 		final String cmd = command.getCommand();
 
 		switch (stateMNP) {

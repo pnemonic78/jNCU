@@ -31,7 +31,7 @@ import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFInteger;
 import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.fdil.NSOFString;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command is used to negotiate the real protocol version. The protocol
@@ -86,7 +86,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * @see #MACINTOSH
  * @see #WINDOWS
  */
-public class DDesktopInfo extends DockCommandToNewton {
+public class DDesktopInfo extends BaseDockCommandToNewton {
 
 	/** <tt>kDDesktopInfo</tt> */
 	public static final String COMMAND = "dinf";
@@ -107,11 +107,13 @@ public class DDesktopInfo extends DockCommandToNewton {
 
 	/**
 	 * <tt>kMacintosh</tt><br>
+	 * <tt>kMacDesktop</tt><br>
 	 * Apple Macintosh desktop type.
 	 */
 	public static final int MACINTOSH = 0;
 	/**
 	 * <tt>kWindows</tt><br>
+	 * <tt>kWindowsDesktop</tt><br>
 	 * Microsoft Windows desktop type.
 	 */
 	public static final int WINDOWS = 1;

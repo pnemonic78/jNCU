@@ -22,7 +22,7 @@ package net.sf.jncu.protocol.v2_0.sync;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command is sent to the desktop if the user elects to restore all
@@ -36,7 +36,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DRestoreAll extends DockCommandFromNewton {
+public class DRestoreAll extends BaseDockCommandFromNewton {
 
 	/** <tt>kDRestoreAll</tt> */
 	public static final String COMMAND = "rall";

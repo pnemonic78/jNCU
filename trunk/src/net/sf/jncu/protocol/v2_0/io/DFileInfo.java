@@ -31,7 +31,7 @@ import net.sf.jncu.fdil.NSOFInteger;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.fdil.contrib.NSOFIcon;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 import net.sf.jncu.util.NewtonDateUtils;
 import net.sf.swing.SwingUtils;
 
@@ -63,7 +63,7 @@ import net.sf.swing.SwingUtils;
  * 
  * @author moshew
  */
-public class DFileInfo extends DockCommandToNewton {
+public class DFileInfo extends BaseDockCommandToNewton {
 
 	/** <tt>kDFileInfo</tt> */
 	public static final String COMMAND = "finf";

@@ -24,7 +24,7 @@ import java.io.OutputStream;
 
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFString;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * The package info for the specified package is returned. See the
@@ -44,7 +44,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * @author Moshe
  * @see DPackageInfo
  */
-public class DGetPackageInfo extends DockCommandToNewton {
+public class DGetPackageInfo extends BaseDockCommandToNewton {
 
 	/** <tt>kDGetPackageInfo</tt> */
 	public static final String COMMAND = "gpin";

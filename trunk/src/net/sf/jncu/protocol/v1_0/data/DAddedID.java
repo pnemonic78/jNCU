@@ -22,7 +22,7 @@ package net.sf.jncu.protocol.v1_0.data;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command is sent in response to a <tt>kDAddEntry</tt> command from the
@@ -35,7 +35,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * id
  * </pre>
  */
-public class DAddedID extends DockCommandFromNewton {
+public class DAddedID extends BaseDockCommandFromNewton {
 
 	/** <tt>kDAddedID</tt> */
 	public static final String COMMAND = "adid";

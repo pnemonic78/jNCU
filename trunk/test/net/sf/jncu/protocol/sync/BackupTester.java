@@ -34,8 +34,8 @@ import net.sf.jncu.cdil.mnp.PacketLogger;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.DockCommandListener;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v2_0.IconModule;
@@ -239,11 +239,11 @@ public class BackupTester implements BackupListener, MNPPacketListener, DockComm
 	}
 
 	@Override
-	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+	public void commandReceiving(DockCommandFromNewton command, int progress, int total) {
 	}
 
 	@Override
-	public void commandReceived(IDockCommandFromNewton command) {
+	public void commandReceived(DockCommandFromNewton command) {
 		System.out.println("rcv: " + command);
 		final String cmd = command.getCommand();
 
@@ -269,11 +269,11 @@ public class BackupTester implements BackupListener, MNPPacketListener, DockComm
 	}
 
 	@Override
-	public void commandSending(IDockCommandToNewton command, int progress, int total) {
+	public void commandSending(DockCommandToNewton command, int progress, int total) {
 	}
 
 	@Override
-	public void commandSent(IDockCommandToNewton command) {
+	public void commandSent(DockCommandToNewton command) {
 		System.out.println("snt: " + command);
 		final String cmd = command.getCommand();
 

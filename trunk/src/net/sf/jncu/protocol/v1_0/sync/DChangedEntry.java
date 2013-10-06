@@ -23,7 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import net.sf.jncu.fdil.NSOFObject;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandBidi;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
@@ -38,12 +39,12 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  * entry
  * </pre>
  */
-public class DChangedEntry extends DockCommandFromNewtonScript<NSOFObject> implements IDockCommandToNewton {
+public class DChangedEntry extends DockCommandFromNewtonScript<NSOFObject> implements DockCommandBidi {
 
 	/** <tt>kDChangedEntry</tt> */
 	public static final String COMMAND = "cent";
 
-	private IDockCommandToNewton to;
+	private DockCommandToNewton to;
 
 	/**
 	 * Creates a new command.

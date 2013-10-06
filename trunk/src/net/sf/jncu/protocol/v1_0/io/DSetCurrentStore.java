@@ -25,7 +25,7 @@ import java.io.OutputStream;
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.newton.os.Store;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command sets the current store on the Newton. A store frame is sent to
@@ -45,7 +45,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DSetCurrentStore extends DockCommandToNewton {
+public class DSetCurrentStore extends BaseDockCommandToNewton {
 
 	/** <tt>kDSetCurrentStore</tt> */
 	public static final String COMMAND = "ssto";

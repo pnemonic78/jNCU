@@ -27,7 +27,7 @@ import java.io.OutputStream;
  * 
  * @author moshe
  */
-public abstract class DockCommandToNewtonLong extends DockCommandToNewton {
+public abstract class DockCommandToNewtonLong extends BaseDockCommandToNewton {
 
 	private int value;
 

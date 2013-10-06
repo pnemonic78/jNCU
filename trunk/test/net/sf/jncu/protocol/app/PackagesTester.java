@@ -37,8 +37,8 @@ import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.DockCommandListener;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.app.DPackageIDList;
 import net.sf.jncu.protocol.v1_0.data.DEntry;
 import net.sf.jncu.protocol.v1_0.data.DGetSoupIDs;
@@ -54,6 +54,7 @@ import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v1_0.sync.DCurrentTime;
 import net.sf.jncu.protocol.v1_0.sync.DLastSyncTime;
+import net.sf.jncu.protocol.v2_0.DUnknownCommand;
 import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.IconModule.IconModuleListener;
 import net.sf.jncu.protocol.v2_0.app.AppName;
@@ -63,7 +64,6 @@ import net.sf.jncu.protocol.v2_0.app.DPackageInfo;
 import net.sf.jncu.protocol.v2_0.app.PackageInfo;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
-import net.sf.jncu.protocol.v2_0.session.DUnknownCommand;
 
 /**
  * Test to backup from the Newton.
@@ -346,11 +346,11 @@ public class PackagesTester implements IconModuleListener, MNPPacketListener, Do
 	}
 
 	@Override
-	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+	public void commandReceiving(DockCommandFromNewton command, int progress, int total) {
 	}
 
 	@Override
-	public void commandReceived(IDockCommandFromNewton command) {
+	public void commandReceived(DockCommandFromNewton command) {
 		System.out.println("rcv: " + command);
 		final String cmd = command.getCommand();
 
@@ -419,11 +419,11 @@ public class PackagesTester implements IconModuleListener, MNPPacketListener, Do
 	}
 
 	@Override
-	public void commandSending(IDockCommandToNewton command, int progress, int total) {
+	public void commandSending(DockCommandToNewton command, int progress, int total) {
 	}
 
 	@Override
-	public void commandSent(IDockCommandToNewton command) {
+	public void commandSent(DockCommandToNewton command) {
 		System.out.println("snt: " + command);
 		final String cmd = command.getCommand();
 

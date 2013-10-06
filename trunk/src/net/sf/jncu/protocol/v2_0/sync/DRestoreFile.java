@@ -24,7 +24,7 @@ import java.io.InputStream;
 
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFString;
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command asks the desktop to restore the file specified by the last path
@@ -40,7 +40,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DRestoreFile extends DockCommandFromNewton {
+public class DRestoreFile extends BaseDockCommandFromNewton {
 
 	/** <tt>kDRestoreFile</tt> */
 	public static final String COMMAND = "rsfl";

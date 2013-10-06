@@ -22,7 +22,7 @@ package net.sf.jncu.protocol.v1_0.sync;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * The current time on the Newton.<br>
@@ -38,7 +38,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DCurrentTime extends DockCommandFromNewton {
+public class DCurrentTime extends BaseDockCommandFromNewton {
 
 	/** <tt>kDCurrentTime</tt> */
 	public static final String COMMAND = "time";

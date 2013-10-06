@@ -25,14 +25,14 @@ import java.io.InputStream;
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFImmediate;
 import net.sf.jncu.fdil.NSOFObject;
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * Command from the Newton with a single NewtonScript object result.
  * 
  * @author moshew
  */
-public abstract class DockCommandFromNewtonScript<T extends NSOFObject> extends DockCommandFromNewton {
+public abstract class DockCommandFromNewtonScript<T extends NSOFObject> extends BaseDockCommandFromNewton {
 
 	private T result;
 

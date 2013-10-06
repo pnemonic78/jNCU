@@ -24,7 +24,9 @@ import java.io.InputStream;
 
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.newton.os.Soup;
+import net.sf.jncu.protocol.DockCommandBidi;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
+import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
  * This command is used to send a soup info frame. When received the info for
@@ -36,12 +38,16 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  * soup info frame
  * </pre>
  */
-public class DSoupInfo extends DockCommandFromNewtonScript<NSOFFrame> {
+public class DSoupInfo extends DockCommandFromNewtonScript<NSOFFrame> implements DockCommandBidi {
 
-	/** <tt>kDSoupInfo</tt> */
+	/**
+	 * <tt>kDSoupInfo</tt><br>
+	 * <tt>kDSetSoupInfo</tt>
+	 */
 	public static final String COMMAND = "sinf";
 
 	private Soup soup;
+	private DockCommandToNewtonScript<NSOFFrame> to;
 
 	/**
 	 * Creates a new command.
@@ -81,6 +87,20 @@ public class DSoupInfo extends DockCommandFromNewtonScript<NSOFFrame> {
 			soup.fromFrame(frame);
 		}
 		setSoup(soup);
+	}
+
+	@Override
+	public InputStream getCommandPayload() throws IOException {
+		if (to == null) {
+			to = new DockCommandToNewtonScript<NSOFFrame>(COMMAND) {
+			};
+		}
+		return to.getCommandPayload();
+	}
+
+	@Override
+	public int getCommandPayloadLength() throws IOException {
+		return to.getCommandPayloadLength();
 	}
 
 }

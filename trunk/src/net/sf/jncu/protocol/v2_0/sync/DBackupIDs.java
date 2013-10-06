@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.util.Set;
 import java.util.TreeSet;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command is sent in response to a <tt>kDBackupSoup</tt> command (see that
@@ -49,7 +49,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DBackupIDs extends DockCommandFromNewton {
+public class DBackupIDs extends BaseDockCommandFromNewton {
 
 	/** <tt>kDBackupIDs</tt> */
 	public static final String COMMAND = "bids";

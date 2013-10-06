@@ -74,7 +74,7 @@ public class DWhichIcons extends DockCommandToNewtonLong {
 	 */
 	public static final int IMPORT = 8;
 	/**
-	 * "Synchronise" icon.<br>
+	 * "Synchronise / Synchronize" icon.<br>
 	 * <tt>kSyncIcon</tt>
 	 */
 	public static final int SYNC = 16;

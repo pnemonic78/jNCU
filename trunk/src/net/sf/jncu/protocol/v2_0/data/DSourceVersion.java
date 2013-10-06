@@ -22,7 +22,7 @@ package net.sf.jncu.protocol.v2_0.data;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * Tells the Newton the version that the subsequent data is from. For example,
@@ -51,7 +51,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DSourceVersion extends DockCommandToNewton {
+public class DSourceVersion extends BaseDockCommandToNewton {
 
 	/** <tt>kDSourceVersion</tt> */
 	public static final String COMMAND = "sver";
@@ -68,12 +68,14 @@ public class DSourceVersion extends DockCommandToNewton {
 		NONE,
 		/**
 		 * <tt>1.x</tt> data file.<br>
-		 * <tt>eOnePointXData</tt>
+		 * <tt>eOnePointXData</tt><br>
+		 * <tt>kOnePointXData</tt>
 		 */
 		ONE_POINT_X_DATA,
 		/**
 		 * <tt>2.x</tt> data file.<br>
-		 * <tt>eTwoPointXData</tt>
+		 * <tt>eTwoPointXData</tt><br>
+		 * <tt>kTwoPointXData</tt>
 		 */
 		TWO_POINT_X_DATA
 	}

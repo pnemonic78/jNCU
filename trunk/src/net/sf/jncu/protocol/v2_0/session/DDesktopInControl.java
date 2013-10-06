@@ -17,30 +17,29 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.protocol.v1_0.app;
+package net.sf.jncu.protocol.v2_0.session;
 
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * Delete package dir.
+ * Desktop is in control while connected.
  * 
  * <pre>
- * 'dpkd'
+ * 'dsnc' 
  * length = 0
  * </pre>
  * 
  * @author moshew
  */
-public class DDeletePkgDir extends DockCommandToNewtonBlank {
+public class DDesktopInControl extends DockCommandToNewtonBlank {
 
-	/** <tt>kDDeletePkgDir</tt> */
-	public static final String COMMAND = "dpkd";
+	/** <tt>kDDesktopInControl</tt> */
+	public static final String COMMAND = "dsnc";
 
 	/**
 	 * Creates a new command.
 	 */
-	public DDeletePkgDir() {
+	public DDesktopInControl() {
 		super(COMMAND);
 	}
-
 }

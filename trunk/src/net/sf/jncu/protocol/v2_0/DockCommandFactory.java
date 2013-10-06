@@ -21,8 +21,8 @@ package net.sf.jncu.protocol.v2_0;
 
 import java.util.Map;
 
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.app.DAppNames;
 import net.sf.jncu.protocol.v2_0.app.DGetAppNames;
 import net.sf.jncu.protocol.v2_0.app.DGetPackageInfo;
@@ -98,15 +98,16 @@ import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.jncu.protocol.v2_0.session.DPassword;
+import net.sf.jncu.protocol.v2_0.session.DPasswordBad;
 import net.sf.jncu.protocol.v2_0.session.DRefTest;
 import net.sf.jncu.protocol.v2_0.session.DRegProtocolExtension;
 import net.sf.jncu.protocol.v2_0.session.DRemoveProtocolExtension;
+import net.sf.jncu.protocol.v2_0.session.DRequestToAutoDock;
 import net.sf.jncu.protocol.v2_0.session.DRequestToDock;
 import net.sf.jncu.protocol.v2_0.session.DResultString;
 import net.sf.jncu.protocol.v2_0.session.DSetTimeout;
 import net.sf.jncu.protocol.v2_0.session.DSetVBOCompression;
 import net.sf.jncu.protocol.v2_0.session.DShowProgress;
-import net.sf.jncu.protocol.v2_0.session.DUnknownCommand;
 import net.sf.jncu.protocol.v2_0.session.DWhichIcons;
 import net.sf.jncu.protocol.v2_0.sync.DBackupIDs;
 import net.sf.jncu.protocol.v2_0.sync.DBackupSoup;
@@ -121,7 +122,6 @@ import net.sf.jncu.protocol.v2_0.sync.DRequestToSync;
 import net.sf.jncu.protocol.v2_0.sync.DRestoreAll;
 import net.sf.jncu.protocol.v2_0.sync.DRestoreFile;
 import net.sf.jncu.protocol.v2_0.sync.DRestoreOptions;
-import net.sf.jncu.protocol.v2_0.sync.DRestorePatch;
 import net.sf.jncu.protocol.v2_0.sync.DSoupsChanged;
 import net.sf.jncu.protocol.v2_0.sync.DSyncOptions;
 import net.sf.jncu.protocol.v2_0.sync.DSyncResults;
@@ -144,51 +144,53 @@ public class DockCommandFactory extends net.sf.jncu.protocol.v1_0.DockCommandFac
 	}
 
 	@Override
-	protected void registerFrom(Map<String, Class<? extends IDockCommandFromNewton>> registry) {
+	protected void registerFrom(Map<String, Class<? extends DockCommandFromNewton>> registry) {
 		super.registerFrom(registry);
+		registry.put(DAppNames.COMMAND, DAppNames.class);
+		registry.put(DBackupIDs.COMMAND, DBackupIDs.class);
+		registry.put(DBackupSoupDone.COMMAND, DBackupSoupDone.class);
+		registry.put(DCallResult.COMMAND, DCallResult.class);
+		registry.put(DDefaultStore.COMMAND, DDefaultStore.class);
+		registry.put(DGetDefaultPath.COMMAND, DGetDefaultPath.class);
+		registry.put(DGetDevices.COMMAND, DGetDevices.class);
+		registry.put(DGetFileInfo.COMMAND, DGetFileInfo.class);
+		registry.put(DGetFilesAndFolders.COMMAND, DGetFilesAndFolders.class);
+		registry.put(DGetFilters.COMMAND, DGetFilters.class);
+		registry.put(DGetRestoreOptions.COMMAND, DGetRestoreOptions.class);
+		registry.put(DImportFile.COMMAND, DImportFile.class);
+		registry.put(DImportParametersSlipResult.COMMAND, DImportParametersSlipResult.class);
+		registry.put(DInternalStore.COMMAND, DInternalStore.class);
+		registry.put(DKeyboardPassthrough.COMMAND, DKeyboardPassthrough.class);
+		registry.put(DLoadPackageFile.COMMAND, DLoadPackageFile.class);
+		registry.put(DLongData.COMMAND, DLongData.class);
 		registry.put(DNewtonInfo.COMMAND, DNewtonInfo.class);
 		registry.put(DNewtonName.COMMAND, DNewtonName.class);
-		registry.put(DRequestToDock.COMMAND, DRequestToDock.class);
 		registry.put(DOperationCanceled2.COMMAND, DOperationCanceled2.class);
-		registry.put(DPassword.COMMAND, DPassword.class);
+		registry.put(DOperationDone.COMMAND, DOperationDone.class);
 		registry.put(DPackageInfo.COMMAND, DPackageInfo.class);
-		registry.put(DLoadPackageFile.COMMAND, DLoadPackageFile.class);
-		registry.put(DAppNames.COMMAND, DAppNames.class);
-		registry.put(DSoupNotDirty.COMMAND, DSoupNotDirty.class);
-		registry.put(DSetBaseID.COMMAND, DSetBaseID.class);
-		registry.put(DRestoreFile.COMMAND, DRestoreFile.class);
-		registry.put(DRestoreAll.COMMAND, DRestoreAll.class);
-		registry.put(DImportParametersSlipResult.COMMAND, DImportParametersSlipResult.class);
-		registry.put(DRequestToBackup.COMMAND, DRequestToBackup.class);
-		registry.put(DGetRestoreOptions.COMMAND, DGetRestoreOptions.class);
-		registry.put(DBackupSoupDone.COMMAND, DBackupSoupDone.class);
-		registry.put(DBackupIDs.COMMAND, DBackupIDs.class);
-		registry.put(DSynchronize.COMMAND, DSynchronize.class);
-		registry.put(DSyncOptions.COMMAND, DSyncOptions.class);
-		registry.put(DSetTranslator.COMMAND, DSetTranslator.class);
-		registry.put(DSetPath.COMMAND, DSetPath.class);
-		registry.put(DResolveAlias.COMMAND, DResolveAlias.class);
-		registry.put(DRequestToBrowse.COMMAND, DRequestToBrowse.class);
-		registry.put(DKeyboardPassthrough.COMMAND, DKeyboardPassthrough.class);
-		registry.put(DInternalStore.COMMAND, DInternalStore.class);
-		registry.put(DImportFile.COMMAND, DImportFile.class);
-		registry.put(DGetFilesAndFolders.COMMAND, DGetFilesAndFolders.class);
-		registry.put(DGetFileInfo.COMMAND, DGetFileInfo.class);
-		registry.put(DGetDefaultPath.COMMAND, DGetDefaultPath.class);
-		registry.put(DDefaultStore.COMMAND, DDefaultStore.class);
-		registry.put(DSetFilter.COMMAND, DSetFilter.class);
-		registry.put(DGetDevices.COMMAND, DGetDevices.class);
-		registry.put(DGetFilters.COMMAND, DGetFilters.class);
-		registry.put(DSetDrive.COMMAND, DSetDrive.class);
-		registry.put(DLongData.COMMAND, DLongData.class);
+		registry.put(DPassword.COMMAND, DPassword.class);
 		registry.put(DRefResult.COMMAND, DRefResult.class);
+		registry.put(DRequestToAutoDock.COMMAND, DRequestToAutoDock.class);
+		registry.put(DRequestToBackup.COMMAND, DRequestToBackup.class);
+		registry.put(DRequestToBrowse.COMMAND, DRequestToBrowse.class);
 		registry.put(DRequestToDock.COMMAND, DRequestToDock.class);
-		registry.put(DCallResult.COMMAND, DCallResult.class);
+		registry.put(DRequestToSync.COMMAND, DRequestToSync.class);
+		registry.put(DResolveAlias.COMMAND, DResolveAlias.class);
+		registry.put(DRestoreAll.COMMAND, DRestoreAll.class);
+		registry.put(DRestoreFile.COMMAND, DRestoreFile.class);
+		registry.put(DSetBaseID.COMMAND, DSetBaseID.class);
+		registry.put(DSetDrive.COMMAND, DSetDrive.class);
+		registry.put(DSetFilter.COMMAND, DSetFilter.class);
+		registry.put(DSetPath.COMMAND, DSetPath.class);
+		registry.put(DSetTranslator.COMMAND, DSetTranslator.class);
+		registry.put(DSoupNotDirty.COMMAND, DSoupNotDirty.class);
+		registry.put(DSyncOptions.COMMAND, DSyncOptions.class);
+		registry.put(DSynchronize.COMMAND, DSynchronize.class);
 		registry.put(DUnknownCommand.COMMAND, DUnknownCommand.class);
 	}
 
 	@Override
-	protected void registerTo(Map<String, Class<? extends IDockCommandToNewton>> registry) {
+	protected void registerTo(Map<String, Class<? extends DockCommandToNewton>> registry) {
 		super.registerTo(registry);
 		registry.put(DAddEntryWithUniqueID.COMMAND, DAddEntryWithUniqueID.class);
 		registry.put(DAliasResolved.COMMAND, DAliasResolved.class);
@@ -229,6 +231,7 @@ public class DockCommandFactory extends net.sf.jncu.protocol.v1_0.DockCommandFac
 		registry.put(DOperationCanceled2.COMMAND, DOperationCanceled2.class);
 		registry.put(DOperationCanceledAck.COMMAND, DOperationCanceledAck.class);
 		registry.put(DOperationDone.COMMAND, DOperationDone.class);
+		registry.put(DPasswordBad.COMMAND, DPasswordBad.class);
 		registry.put(DPath.COMMAND, DPath.class);
 		registry.put(DQuery.COMMAND, DQuery.class);
 		registry.put(DRefTest.COMMAND, DRefTest.class);
@@ -240,7 +243,6 @@ public class DockCommandFactory extends net.sf.jncu.protocol.v1_0.DockCommandFac
 		registry.put(DRequestToSync.COMMAND, DRequestToSync.class);
 		registry.put(DRestoreOptions.COMMAND, DRestoreOptions.class);
 		registry.put(DRestorePackage.COMMAND, DRestorePackage.class);
-		registry.put(DRestorePatch.COMMAND, DRestorePatch.class);
 		registry.put(DResultString.COMMAND, DResultString.class);
 		registry.put(DSendSoup.COMMAND, DSendSoup.class);
 		registry.put(DSetSoupGetInfo.COMMAND, DSetSoupGetInfo.class);

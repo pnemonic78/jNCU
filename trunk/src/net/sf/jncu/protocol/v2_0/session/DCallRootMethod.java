@@ -24,7 +24,7 @@ import java.io.OutputStream;
 
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFSymbol;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command asks the Newton to call the specified root method. The return
@@ -32,7 +32,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * command.
  * 
  * <pre>
- * 'crmd'
+ * 'crmd' ('crmf')
  * length
  * method name symbol
  * args array
@@ -40,10 +40,10 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DCallRootMethod extends DockCommandToNewton {
+public class DCallRootMethod extends BaseDockCommandToNewton {
 
 	/** <tt>kDCallRootMethod</tt> */
-	public static final String COMMAND = "crmd";
+	public static final String COMMAND = "crmf";
 
 	private String methodName;
 	private Object[] args;

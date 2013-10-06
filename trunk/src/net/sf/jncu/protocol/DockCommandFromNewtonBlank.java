@@ -27,7 +27,7 @@ import java.io.InputStream;
  * 
  * @author Moshe
  */
-public abstract class DockCommandFromNewtonBlank extends DockCommandFromNewton {
+public abstract class DockCommandFromNewtonBlank extends BaseDockCommandFromNewton {
 
 	/**
 	 * Constructs a new command.

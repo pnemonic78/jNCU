@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command is sent in response to a <tt>kDGetSoupIDs</tt> command. It
@@ -37,7 +37,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * array of ids for the soup
  * </pre>
  */
-public class DSoupIDs extends DockCommandFromNewton {
+public class DSoupIDs extends BaseDockCommandFromNewton {
 
 	/** <tt>kDSoupIDs</tt> */
 	public static final String COMMAND = "sids";

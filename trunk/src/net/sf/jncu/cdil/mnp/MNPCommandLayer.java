@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import net.sf.jncu.cdil.CDCommandLayer;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
  * MNP command layer.
@@ -53,13 +53,13 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket, MNPPacketLayer> {
 	 */
 	private static class CommandPiece {
 
-		public final IDockCommandToNewton command;
+		public final DockCommandToNewton command;
 		@SuppressWarnings("unused")
 		public final MNPLinkTransferPacket packet;
 		public int length;
 		public int progress;
 
-		public CommandPiece(IDockCommandToNewton command, MNPLinkTransferPacket packet) throws IOException {
+		public CommandPiece(DockCommandToNewton command, MNPLinkTransferPacket packet) throws IOException {
 			this.command = command;
 			this.packet = packet;
 			this.length = command.getCommandPayloadLength();
@@ -108,7 +108,7 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket, MNPPacketLayer> {
 	}
 
 	@Override
-	public void write(IDockCommandToNewton cmd) throws IOException, TimeoutException {
+	public void write(DockCommandToNewton cmd) throws IOException, TimeoutException {
 		final InputStream payload = cmd.getCommandPayload();
 		if (payload == null)
 			return;
@@ -168,7 +168,7 @@ public class MNPCommandLayer extends CDCommandLayer<MNPPacket, MNPPacketLayer> {
 		CommandPiece piece = queueOut.get(seq);
 		if (piece != null) {
 			queueOut.put(seq, null);
-			final IDockCommandToNewton cmd = piece.command;
+			final DockCommandToNewton cmd = piece.command;
 			final int progress = piece.progress;
 			final int total = piece.length;
 			if (progress < total)

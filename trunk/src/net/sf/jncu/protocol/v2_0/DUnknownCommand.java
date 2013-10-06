@@ -17,15 +17,16 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.protocol.v2_0.session;
+package net.sf.jncu.protocol.v2_0;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandBidi;
 import net.sf.jncu.protocol.DockCommandFromNewton;
-import net.sf.jncu.protocol.DockCommandToNewton;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
 
 /**
  * This command is sent when a message is received that is unknown. When the
@@ -42,7 +43,7 @@ import net.sf.jncu.protocol.IDockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DUnknownCommand extends DockCommandToNewton implements IDockCommandFromNewton {
+public class DUnknownCommand extends BaseDockCommandToNewton implements DockCommandBidi {
 
 	/** <tt>kDUnknownCommand</tt> */
 	public static final String COMMAND = "unkn";
@@ -96,7 +97,7 @@ public class DUnknownCommand extends DockCommandToNewton implements IDockCommand
 
 	@Override
 	public void decode(InputStream data) throws IOException {
-		IDockCommandFromNewton cmd = new DockCommandFromNewton(COMMAND) {
+		DockCommandFromNewton cmd = new BaseDockCommandFromNewton(COMMAND) {
 
 			@Override
 			protected void decodeCommandData(InputStream data) throws IOException {

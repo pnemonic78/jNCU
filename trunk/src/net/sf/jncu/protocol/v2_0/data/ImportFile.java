@@ -29,8 +29,8 @@ import java.util.List;
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.fdil.NSOFFrame;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.data.DAddEntry;
 import net.sf.jncu.protocol.v1_0.data.DAddedID;
 import net.sf.jncu.protocol.v1_0.data.DSetCurrentSoup;
@@ -100,7 +100,7 @@ public class ImportFile extends IconModule {
 	}
 
 	@Override
-	public void commandReceived(IDockCommandFromNewton command) {
+	public void commandReceived(DockCommandFromNewton command) {
 		if (!isEnabled())
 			return;
 
@@ -160,7 +160,7 @@ public class ImportFile extends IconModule {
 	}
 
 	@Override
-	public void commandSent(IDockCommandToNewton command) {
+	public void commandSent(DockCommandToNewton command) {
 		if (!isEnabled())
 			return;
 

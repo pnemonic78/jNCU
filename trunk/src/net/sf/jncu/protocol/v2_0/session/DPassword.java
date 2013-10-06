@@ -23,9 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 import net.sf.jncu.protocol.DockCommandToNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
 
 /**
  * This command returns the key received in the <tt>kDInitiateDocking</tt>
@@ -39,7 +39,7 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
  * 
  * @author moshew
  */
-public class DPassword extends DockCommandFromNewton implements IDockCommandToNewton {
+public class DPassword extends BaseDockCommandFromNewton implements DockCommandToNewton {
 
 	/** <tt>kDPassword</tt> */
 	public static final String COMMAND = "pass";
@@ -50,7 +50,7 @@ public class DPassword extends DockCommandFromNewton implements IDockCommandToNe
 	public static final int ERROR_RETRY_PASSWORD = -28023;
 
 	private long encryptedKey;
-	private IDockCommandToNewton to;
+	private DockCommandToNewton to;
 
 	/**
 	 * Creates a new command.
@@ -88,7 +88,7 @@ public class DPassword extends DockCommandFromNewton implements IDockCommandToNe
 	@Override
 	public InputStream getCommandPayload() throws IOException {
 		if (to == null) {
-			to = new DockCommandToNewton(COMMAND) {
+			to = new BaseDockCommandToNewton(COMMAND) {
 
 				@Override
 				public int getLength() {

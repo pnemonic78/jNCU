@@ -58,9 +58,9 @@ public interface JNCUController {
 	public void stop();
 
 	/**
-	 * Shut down the controller.
+	 * Shut down the controller and exit the application.
 	 */
-	public void close();
+	public void exit();
 
 	/**
 	 * Backup from Newton to desktop.

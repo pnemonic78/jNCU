@@ -22,7 +22,7 @@ package net.sf.jncu.protocol.v2_0.data;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command specifies which translator the desktop should use to import the
@@ -38,7 +38,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DSetTranslator extends DockCommandFromNewton {
+public class DSetTranslator extends BaseDockCommandFromNewton {
 
 	/** <tt>kDSetTranslator</tt> */
 	public static final String COMMAND = "tran";

@@ -22,7 +22,7 @@ package net.sf.jncu.protocol.v2_0.io;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command sends a string of characters to the Newton for processing. The
@@ -37,7 +37,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DKeyboardString extends DockCommandToNewton {
+public class DKeyboardString extends BaseDockCommandToNewton {
 
 	/** <tt>kDKeyboardString</tt> */
 	public static final String COMMAND = "kbds";

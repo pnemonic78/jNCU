@@ -51,10 +51,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import net.sf.jncu.JNCUController;
 import net.sf.jncu.JNCUApp;
+import net.sf.jncu.JNCUController;
 import net.sf.jncu.JNCUResources;
+import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.protocol.v2_0.session.DWhichIcons;
+import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
 import net.sf.swing.SwingUtils;
 
 /**
@@ -457,8 +459,10 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener, 
 				statusConnectedIcon = JNCUResources.getIcon("/connected.png");
 			}
 
+			NewtonInfo info = DockingProtocol.getNewtonInfo();
+			String deviceName = info.getName();
 			statusConnection.setIcon(statusConnectedIcon);
-			statusConnection.setText(JNCUResources.getString("connectConnected"));
+			statusConnection.setText(String.format(JNCUResources.getString("connectConnected"), deviceName));
 		} else {
 			if (statusDisconnectedIcon == null) {
 				statusDisconnectedIcon = JNCUResources.getIcon("/disconnected.png");
@@ -528,7 +532,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener, 
 	 */
 	public void close() {
 		if (isShowing()) {
-			getController().close();
+			getController().exit();
 			SwingUtils.postWindowClosing(frame);
 		}
 	}
@@ -947,7 +951,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener, 
 
 	@Override
 	public void windowClosing(WindowEvent event) {
-		getController().close();
+		getController().exit();
 	}
 
 	@Override

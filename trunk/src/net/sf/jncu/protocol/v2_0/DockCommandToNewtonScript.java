@@ -24,14 +24,14 @@ import java.io.OutputStream;
 
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFObject;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * Command to the Newton with a single NewtonScript object request.
  * 
  * @author moshew
  */
-public abstract class DockCommandToNewtonScript<T extends NSOFObject> extends DockCommandToNewton {
+public abstract class DockCommandToNewtonScript<T extends NSOFObject> extends BaseDockCommandToNewton {
 
 	private T object;
 

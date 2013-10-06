@@ -34,8 +34,8 @@ import net.sf.jncu.crypto.DESNewton;
 import net.sf.jncu.newton.NewtonError;
 import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.protocol.DockCommandListener;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 
 /**
@@ -142,12 +142,12 @@ public class DockingProtocol<P extends CDPacket, L extends CDPacketLayer<P>> imp
 	}
 
 	@Override
-	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+	public void commandReceiving(DockCommandFromNewton command, int progress, int total) {
 		// Ignore - commands too small for progress.
 	}
 
 	@Override
-	public void commandReceived(IDockCommandFromNewton command) {
+	public void commandReceived(DockCommandFromNewton command) {
 		final String cmd = command.getCommand();
 
 		try {
@@ -287,12 +287,12 @@ public class DockingProtocol<P extends CDPacket, L extends CDPacketLayer<P>> imp
 	}
 
 	@Override
-	public void commandSending(IDockCommandToNewton command, int progress, int total) {
+	public void commandSending(DockCommandToNewton command, int progress, int total) {
 		// Ignore - commands too small for progress.
 	}
 
 	@Override
-	public void commandSent(IDockCommandToNewton command) {
+	public void commandSent(DockCommandToNewton command) {
 		final String cmd = command.getCommand();
 
 		try {

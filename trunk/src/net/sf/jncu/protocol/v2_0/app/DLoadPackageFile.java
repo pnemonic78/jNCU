@@ -24,7 +24,7 @@ import java.io.InputStream;
 
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFString;
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command asks the desktop to load the package specified by the last path
@@ -40,7 +40,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author Moshe
  */
-public class DLoadPackageFile extends DockCommandFromNewton {
+public class DLoadPackageFile extends BaseDockCommandFromNewton {
 
 	/** <tt>kDLoadPackageFile</tt> */
 	public static final String COMMAND = "lpfl";

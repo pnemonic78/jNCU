@@ -38,8 +38,8 @@ import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.DockCommandListener;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.app.DPackageIDList;
 import net.sf.jncu.protocol.v1_0.data.DEntry;
 import net.sf.jncu.protocol.v1_0.data.DSoupInfo;
@@ -115,7 +115,7 @@ public class BackupDecode extends TraceDecode implements DockCommandListener {
 	}
 
 	@Override
-	public void commandReceived(IDockCommandFromNewton command) {
+	public void commandReceived(DockCommandFromNewton command) {
 		final String cmd = command.getCommand();
 
 		if (DResult.COMMAND.equals(cmd)) {
@@ -222,15 +222,15 @@ public class BackupDecode extends TraceDecode implements DockCommandListener {
 	}
 
 	@Override
-	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+	public void commandReceiving(DockCommandFromNewton command, int progress, int total) {
 	}
 
 	@Override
-	public void commandSent(IDockCommandToNewton command) {
+	public void commandSent(DockCommandToNewton command) {
 	}
 
 	@Override
-	public void commandSending(IDockCommandToNewton command, int progress, int total) {
+	public void commandSending(DockCommandToNewton command, int progress, int total) {
 	}
 
 	@Override

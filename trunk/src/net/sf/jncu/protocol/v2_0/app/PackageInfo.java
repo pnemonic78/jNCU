@@ -24,6 +24,7 @@ import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFImmediate;
 import net.sf.jncu.fdil.NSOFInteger;
 import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.util.NewtonDateUtils;
 
@@ -46,8 +47,6 @@ public class PackageInfo extends NSOFFrame {
 	public static final NSOFSymbol SLOT_COPY_PROTECT = new NSOFSymbol("isCopyProtected");
 	public static final NSOFSymbol SLOT_REMOVE = new NSOFSymbol("safeToRemove");
 	public static final NSOFSymbol SLOT_LENGTH = new NSOFSymbol("length");
-
-	private String name;
 
 	/**
 	 * Creates a new package info.
@@ -279,7 +278,10 @@ public class PackageInfo extends NSOFFrame {
 	 * @return the name.
 	 */
 	public String getName() {
-		return name;
+		NSOFObject value = this.get(SLOT_NAME);
+		if (value != null)
+			return ((NSOFString) value).getValue();
+		return null;
 	}
 
 	/**
@@ -289,7 +291,10 @@ public class PackageInfo extends NSOFFrame {
 	 *            the name.
 	 */
 	public void setName(String name) {
-		this.name = name;
+		if (name == null)
+			this.remove(SLOT_NAME);
+		else
+			this.put(SLOT_NAME, new NSOFString(name));
 	}
 
 	/**

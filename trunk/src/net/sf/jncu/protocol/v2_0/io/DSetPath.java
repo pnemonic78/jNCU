@@ -27,7 +27,7 @@ import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFString;
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command tells the desktop that the user has changed the path. The
@@ -58,7 +58,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DSetPath extends DockCommandFromNewton {
+public class DSetPath extends BaseDockCommandFromNewton {
 
 	/** <tt>kDSetPath</tt> */
 	public static final String COMMAND = "spth";
