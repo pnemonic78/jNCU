@@ -37,13 +37,21 @@ public class DInitiateDocking extends DockCommandToNewtonLong {
 	/** <tt>kDInitiateDocking</tt> */
 	public static final String COMMAND = "dock";
 
+	/** <tt>kNoSession</tt> */
 	public static final int SESSION_NONE = 0;
+	/** <tt>kSettingUpSession</tt> */
 	public static final int SESSION_SETTING_UP = 1;
+	/** <tt>kSynchronizeSession</tt> */
 	public static final int SESSION_SYNCHRONIZE = 2;
+	/** <tt>kRestoreSession</tt> */
 	public static final int SESSION_RESTORE = 3;
+	/** <tt>kLoadPackageSession</tt> */
 	public static final int SESSION_LOAD_PACKAGE = 4;
+	/** <tt>kTestCommSession</tt> */
 	public static final int SESSION_TEST_COMM = 5;
+	/** <tt>kLoadPatchSession</tt> */
 	public static final int SESSION_LOAD_PATCH = 6;
+	/** <tt>kUpdatingStoresSession</tt> */
 	public static final int SESSION_UPDATING_STORES = 7;
 
 	/**

@@ -34,7 +34,7 @@ import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 import net.sf.jncu.io.NoSuchPortException;
 import net.sf.jncu.io.PortInUseException;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v2_0.session.DockingState;
 
@@ -276,7 +276,7 @@ public class MNPPipe extends CDPipe<MNPPacket, MNPPacketLayer> {
 	 * @throws BadPipeStateException
 	 */
 	@Override
-	public void commandReceived(IDockCommandFromNewton command) {
+	public void commandReceived(DockCommandFromNewton command) {
 		super.commandReceived(command);
 
 		switch (stateMNP) {
@@ -352,7 +352,7 @@ public class MNPPipe extends CDPipe<MNPPacket, MNPPacketLayer> {
 	}
 
 	@Override
-	protected void processCommand(IDockCommandFromNewton command) {
+	protected void processCommand(DockCommandFromNewton command) {
 		super.processCommand(command);
 
 		final String cmd = command.getCommand();

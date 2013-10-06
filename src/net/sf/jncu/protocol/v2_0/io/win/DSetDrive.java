@@ -25,7 +25,7 @@ import java.io.InputStream;
 
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFString;
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command asks the desktop to change the drive on the desktop and set the
@@ -40,7 +40,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DSetDrive extends DockCommandFromNewton {
+public class DSetDrive extends BaseDockCommandFromNewton {
 
 	/** <tt>kDSetDrive</tt> */
 	public static final String COMMAND = "sdrv";

@@ -31,9 +31,9 @@ import net.sf.jncu.JNCUResources;
 import net.sf.jncu.Preferences;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.protocol.DockCommandListener;
-import net.sf.jncu.protocol.IDockCommand;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommand;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.app.DLoadPackage;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
@@ -104,7 +104,7 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 	}
 
 	@Override
-	public void commandReceived(IDockCommandFromNewton command) {
+	public void commandReceived(DockCommandFromNewton command) {
 		if (!isEnabled())
 			return;
 
@@ -134,7 +134,7 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 	}
 
 	@Override
-	public void commandSent(IDockCommandToNewton command) {
+	public void commandSent(DockCommandToNewton command) {
 		if (!isEnabled())
 			return;
 
@@ -244,6 +244,6 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 	protected ProgressMonitor createProgress() {
 		// No cancel button because we cannot send cancel midway (Newton will
 		// think that command is part of the package file).
-		return new ProgressMonitor(getOwner(), getTitle(), "0%%", 0, IDockCommand.LENGTH_WORD, WindowConstants.DO_NOTHING_ON_CLOSE);
+		return new ProgressMonitor(getOwner(), getTitle(), "0%%", 0, DockCommand.LENGTH_WORD, WindowConstants.DO_NOTHING_ON_CLOSE);
 	}
 }

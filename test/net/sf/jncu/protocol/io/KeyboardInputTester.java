@@ -34,8 +34,8 @@ import net.sf.jncu.cdil.mnp.MNPPacketLayer;
 import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
 import net.sf.jncu.protocol.DockCommandListener;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.io.DKeyboardChar;
 import net.sf.jncu.protocol.v2_0.io.KeyboardInput;
 import net.sf.jncu.protocol.v2_0.io.KeyboardInputListener;
@@ -141,22 +141,22 @@ public class KeyboardInputTester implements WindowListener, KeyboardInputListene
 	}
 
 	@Override
-	public void commandReceived(IDockCommandFromNewton command) {
+	public void commandReceived(DockCommandFromNewton command) {
 	}
 
 	@Override
-	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+	public void commandReceiving(DockCommandFromNewton command, int progress, int total) {
 	}
 
 	@Override
-	public void commandSent(IDockCommandToNewton command) {
+	public void commandSent(DockCommandToNewton command) {
 		if (DOperationDone.COMMAND.equals(command.getCommand())) {
 			input.getDialog().dispose();
 		}
 	}
 
 	@Override
-	public void commandSending(IDockCommandToNewton command, int progress, int total) {
+	public void commandSending(DockCommandToNewton command, int progress, int total) {
 	}
 
 	@Override

@@ -17,25 +17,30 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.protocol;
+package net.sf.jncu.protocol.v2_0.session;
 
-import java.io.IOException;
-import java.io.InputStream;
+import net.sf.jncu.protocol.DockCommandToNewtonBlank;
 
 /**
- * Docking command interface from Newton to desktop.
+ * The password is wrong.
+ * 
+ * <pre>
+ * 'pwbd'
+ * length
+ * </pre>
  * 
  * @author moshew
  */
-public interface IDockCommandFromNewton extends IDockCommand {
+public class DPasswordBad extends DockCommandToNewtonBlank {
+
+	/** <tt>kDPWWrong</tt> */
+	public static final String COMMAND = "pwbd";
 
 	/**
-	 * Decode the command.
-	 * 
-	 * @param data
-	 *            the command data.
-	 * @throws IOException
-	 *             if read past data buffer.
+	 * Creates a new command.
 	 */
-	public void decode(InputStream data) throws IOException;
+	public DPasswordBad() {
+		super(COMMAND);
+	}
+
 }

@@ -32,7 +32,7 @@ import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFPlainArray;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.io.Device;
 
 /**
@@ -73,17 +73,17 @@ import net.sf.jncu.protocol.v1_0.io.Device;
  * file/folder array
  * </pre>
  * 
- * @see #kCdRomDisk
- * @see #kDesktop
- * @see #kDisk
- * @see #kFile
- * @see #kFloppyDisk
- * @see #kFolder
- * @see #kHardDisk
- * @see #kNetDrive
+ * @see Device#CDROM_DISK
+ * @see Device#DESKTOP
+ * @see Device#DISK
+ * @see Device#FILE
+ * @see Device#FLOPPY_DISK
+ * @see Device#FOLDER
+ * @see Device#HARD_DISK
+ * @see Device#NET_DRIVE
  * @author moshew
  */
-public class DFilesAndFolders extends DockCommandToNewton {
+public class DFilesAndFolders extends BaseDockCommandToNewton {
 
 	/** <tt>kDFilesAndFolders</tt> */
 	public static final String COMMAND = "file";

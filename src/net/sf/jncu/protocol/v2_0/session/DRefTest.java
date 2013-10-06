@@ -19,8 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
-import net.sf.jncu.fdil.NSOFObject;
-import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
+import net.sf.jncu.protocol.v1_0.session.DTest;
 
 /**
  * This command is first sent from the desktop to the Newton. The Newton
@@ -39,7 +38,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  * 
  * @author moshew
  */
-public class DRefTest extends DockCommandToNewtonScript<NSOFObject> {
+public class DRefTest extends DTest {
 
 	/** <tt>kDRefTest</tt> */
 	public static final String COMMAND = "rtst";

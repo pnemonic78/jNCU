@@ -32,8 +32,8 @@ import net.sf.jncu.cdil.CDCommandLayer;
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.protocol.DockCommandListener;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.swing.ProgressMonitor;
 
 /**
@@ -264,7 +264,7 @@ public class TraceDecode {
 		}
 
 		@Override
-		public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+		public void commandReceiving(DockCommandFromNewton command, int progress, int total) {
 			System.out.println(DIRECTION_IN + "\tcmd rcv:" + command + " " + progress + "/" + total);
 			ProgressMonitor monitor = getProgress();
 			if (monitor != null) {
@@ -275,12 +275,12 @@ public class TraceDecode {
 		}
 
 		@Override
-		public void commandReceived(IDockCommandFromNewton command) {
+		public void commandReceived(DockCommandFromNewton command) {
 			System.out.println(DIRECTION_IN + "\tcmd rvd:" + command);
 		}
 
 		@Override
-		public void commandSending(IDockCommandToNewton command, int progress, int total) {
+		public void commandSending(DockCommandToNewton command, int progress, int total) {
 			System.out.println(DIRECTION_OUT + "\tcmd snd:" + command + " " + progress + "/" + total);
 			ProgressMonitor monitor = getProgress();
 			if (monitor != null) {
@@ -291,7 +291,7 @@ public class TraceDecode {
 		}
 
 		@Override
-		public void commandSent(IDockCommandToNewton command) {
+		public void commandSent(DockCommandToNewton command) {
 			System.out.println(DIRECTION_OUT + "\tcmd snt:" + command);
 		}
 

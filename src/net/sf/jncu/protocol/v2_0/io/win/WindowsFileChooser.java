@@ -25,7 +25,7 @@ import java.util.Collection;
 
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.fdil.NSOFString;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.v2_0.io.DPath;
 import net.sf.jncu.protocol.v2_0.io.FileChooser;
 
@@ -74,7 +74,7 @@ public class WindowsFileChooser extends FileChooser {
 	}
 
 	@Override
-	public void commandReceived(IDockCommandFromNewton command) {
+	public void commandReceived(DockCommandFromNewton command) {
 		if (!isEnabled())
 			return;
 

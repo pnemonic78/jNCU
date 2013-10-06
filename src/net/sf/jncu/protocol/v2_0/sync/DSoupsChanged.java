@@ -32,7 +32,7 @@ import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.NSOFSymbol;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command returns information about what was imported into the Newton.
@@ -49,7 +49,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DSoupsChanged extends DockCommandToNewton {
+public class DSoupsChanged extends BaseDockCommandToNewton {
 
 	/** <tt>kDSoupsChanged</tt> */
 	public static final String COMMAND = "schg";

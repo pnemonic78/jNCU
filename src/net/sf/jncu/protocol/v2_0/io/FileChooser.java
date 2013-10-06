@@ -34,8 +34,8 @@ import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.newton.os.Store;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v2_0.IconModule;
@@ -68,7 +68,7 @@ public abstract class FileChooser extends IconModule {
 		 * @param command
 		 *            the command from the Newton.
 		 */
-		public void approveSelection(FileChooser chooser, File file, IDockCommandFromNewton command);
+		public void approveSelection(FileChooser chooser, File file, DockCommandFromNewton command);
 
 		/**
 		 * The file browsing was cancelled.
@@ -105,7 +105,7 @@ public abstract class FileChooser extends IconModule {
 	private State state = State.NONE;
 	private File path;
 	private File file;
-	private IDockCommandFromNewton command;
+	private DockCommandFromNewton command;
 	private final List<FileFilter> filters = new ArrayList<FileFilter>();
 	private FileFilter filter;
 	private final List<FileChooserListener> listeners = new ArrayList<FileChooserListener>();
@@ -188,7 +188,7 @@ public abstract class FileChooser extends IconModule {
 	}
 
 	@Override
-	public void commandReceived(IDockCommandFromNewton command) {
+	public void commandReceived(DockCommandFromNewton command) {
 		if (!isEnabled())
 			return;
 
@@ -248,7 +248,7 @@ public abstract class FileChooser extends IconModule {
 	}
 
 	@Override
-	public void commandSent(IDockCommandToNewton command) {
+	public void commandSent(DockCommandToNewton command) {
 		if (!isEnabled())
 			return;
 
@@ -361,7 +361,7 @@ public abstract class FileChooser extends IconModule {
 	 * 
 	 * @return the command - {@code null} if browsing was cancelled.
 	 */
-	public IDockCommandFromNewton getSelectedCommand() {
+	public DockCommandFromNewton getSelectedCommand() {
 		return command;
 	}
 
@@ -397,7 +397,7 @@ public abstract class FileChooser extends IconModule {
 	 * @param command
 	 *            the received command.
 	 */
-	protected void fireApproved(File file, IDockCommandFromNewton command) {
+	protected void fireApproved(File file, DockCommandFromNewton command) {
 		// Make copy of listeners to avoid ConcurrentModificationException.
 		Collection<FileChooserListener> listenersCopy = new ArrayList<FileChooserListener>(listeners);
 		for (FileChooserListener listener : listenersCopy) {

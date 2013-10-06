@@ -24,7 +24,7 @@ import java.io.OutputStream;
 
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFString;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command requests that the name of the current store be set to the
@@ -38,7 +38,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DSetStoreName extends DockCommandToNewton {
+public class DSetStoreName extends BaseDockCommandToNewton {
 
 	/** <tt>kDSetStoreName</tt> */
 	public static final String COMMAND = "ssna";

@@ -28,14 +28,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.jncu.protocol.BaseDockCommand;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommand;
 import net.sf.jncu.protocol.DockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommand;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.app.DBackupPackages;
 import net.sf.jncu.protocol.v1_0.app.DDeleteAllPackages;
-import net.sf.jncu.protocol.v1_0.app.DDeletePkgDir;
+import net.sf.jncu.protocol.v1_0.app.DDeletePackageDirty;
 import net.sf.jncu.protocol.v1_0.app.DGetPackageIDs;
 import net.sf.jncu.protocol.v1_0.app.DLoadPackage;
 import net.sf.jncu.protocol.v1_0.app.DPackage;
@@ -64,6 +64,7 @@ import net.sf.jncu.protocol.v1_0.query.DGetInheritance;
 import net.sf.jncu.protocol.v1_0.query.DGetPatches;
 import net.sf.jncu.protocol.v1_0.query.DInheritance;
 import net.sf.jncu.protocol.v1_0.query.DPatches;
+import net.sf.jncu.protocol.v1_0.query.DRestorePatch;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v1_0.session.DHello;
@@ -87,13 +88,13 @@ import net.sf.jncu.protocol.v1_0.sync.DReturnChangedEntry;
 public class DockCommandFactory {
 
 	private static DockCommandFactory instance;
-	private static final Map<String, Class<? extends IDockCommand>> registry = new HashMap<String, Class<? extends IDockCommand>>();
+	private static final Map<String, Class<? extends DockCommand>> registry = new HashMap<String, Class<? extends DockCommand>>();
 
 	/**
 	 * Minimum length for command header.<br>
 	 * <tt>minimum length := length(prefix) + length(command name) + length(command data)</tt>
 	 */
-	public static final int MIN_COMMAND_HEADER_LENGTH = IDockCommand.COMMAND_PREFIX_LENGTH + IDockCommand.COMMAND_NAME_LENGTH + IDockCommand.LENGTH_WORD;
+	public static final int MIN_COMMAND_HEADER_LENGTH = DockCommand.COMMAND_PREFIX_LENGTH + DockCommand.COMMAND_NAME_LENGTH + DockCommand.LENGTH_WORD;
 
 	/**
 	 * Creates a new command factory.
@@ -108,7 +109,7 @@ public class DockCommandFactory {
 	 * 
 	 * @return the registry.
 	 */
-	protected Map<String, Class<? extends IDockCommand>> getRegistry() {
+	protected Map<String, Class<? extends DockCommand>> getRegistry() {
 		if (registry.isEmpty()) {
 			register(registry);
 		}
@@ -123,9 +124,9 @@ public class DockCommandFactory {
 	 * @param registry
 	 *            the registry.
 	 */
-	private synchronized void register(Map<String, Class<? extends IDockCommand>> registry) {
-		Map<String, Class<? extends IDockCommandFromNewton>> registryFrom = new HashMap<String, Class<? extends IDockCommandFromNewton>>();
-		Map<String, Class<? extends IDockCommandToNewton>> registryTo = new HashMap<String, Class<? extends IDockCommandToNewton>>();
+	private synchronized void register(Map<String, Class<? extends DockCommand>> registry) {
+		Map<String, Class<? extends DockCommandFromNewton>> registryFrom = new HashMap<String, Class<? extends DockCommandFromNewton>>();
+		Map<String, Class<? extends DockCommandToNewton>> registryTo = new HashMap<String, Class<? extends DockCommandToNewton>>();
 		registerFrom(registryFrom);
 		registerTo(registryTo);
 		registry.putAll(registryFrom);
@@ -138,7 +139,7 @@ public class DockCommandFactory {
 	 * @param registry
 	 *            the registry.
 	 */
-	protected void registerFrom(Map<String, Class<? extends IDockCommandFromNewton>> registry) {
+	protected void registerFrom(Map<String, Class<? extends DockCommandFromNewton>> registry) {
 		registry.put(DAddedID.COMMAND, DAddedID.class);
 		registry.put(DChangedEntry.COMMAND, DChangedEntry.class);
 		registry.put(DChangedIDs.COMMAND, DChangedIDs.class);
@@ -168,14 +169,16 @@ public class DockCommandFactory {
 	 * @param registry
 	 *            the registry.
 	 */
-	protected void registerTo(Map<String, Class<? extends IDockCommandToNewton>> registry) {
+	protected void registerTo(Map<String, Class<? extends DockCommandToNewton>> registry) {
 		registry.put(DAddEntry.COMMAND, DAddEntry.class);
 		registry.put(DBackupPackages.COMMAND, DBackupPackages.class);
+		registry.put(DChangedEntry.COMMAND, DChangedEntry.class);
 		registry.put(DCreateSoup.COMMAND, DCreateSoup.class);
 		registry.put(DDeleteAllPackages.COMMAND, DDeleteAllPackages.class);
 		registry.put(DDeleteEntries.COMMAND, DDeleteEntries.class);
-		registry.put(DDeletePkgDir.COMMAND, DDeletePkgDir.class);
+		registry.put(DDeletePackageDirty.COMMAND, DDeletePackageDirty.class);
 		registry.put(DDeleteSoup.COMMAND, DDeleteSoup.class);
+		registry.put(DDisconnect.COMMAND, DDisconnect.class);
 		registry.put(DEmptySoup.COMMAND, DEmptySoup.class);
 		registry.put(DGetChangedIDs.COMMAND, DGetChangedIDs.class);
 		registry.put(DGetIndexDescription.COMMAND, DGetIndexDescription.class);
@@ -186,13 +189,18 @@ public class DockCommandFactory {
 		registry.put(DGetSoupInfo.COMMAND, DGetSoupInfo.class);
 		registry.put(DGetSoupNames.COMMAND, DGetSoupNames.class);
 		registry.put(DGetStoreNames.COMMAND, DGetStoreNames.class);
+		registry.put(DHello.COMMAND, DHello.class);
 		registry.put(DInitiateDocking.COMMAND, DInitiateDocking.class);
 		registry.put(DLastSyncTime.COMMAND, DLastSyncTime.class);
 		registry.put(DLoadPackage.COMMAND, DLoadPackage.class);
+		registry.put(DOperationCanceled.COMMAND, DOperationCanceled.class);
+		registry.put(DRestorePatch.COMMAND, DRestorePatch.class);
+		registry.put(DResult.COMMAND, DResult.class);
 		registry.put(DReturnChangedEntry.COMMAND, DReturnChangedEntry.class);
 		registry.put(DReturnEntry.COMMAND, DReturnEntry.class);
 		registry.put(DSetCurrentSoup.COMMAND, DSetCurrentSoup.class);
 		registry.put(DSetCurrentStore.COMMAND, DSetCurrentStore.class);
+		registry.put(DSoupInfo.COMMAND, DSoupInfo.class);
 		registry.put(DTest.COMMAND, DTest.class);
 	}
 
@@ -215,7 +223,7 @@ public class DockCommandFactory {
 	 *            the command name.
 	 * @return the command - {@link DRawCommand} otherwise.
 	 */
-	public IDockCommand create(byte[] cmdName) {
+	public DockCommand create(byte[] cmdName) {
 		return create(cmdName, 0);
 	}
 
@@ -228,8 +236,8 @@ public class DockCommandFactory {
 	 *            the offset.
 	 * @return the command - {@link DRawCommand} otherwise.
 	 */
-	public IDockCommand create(byte[] cmdName, int offset) {
-		return create(new String(cmdName, offset, IDockCommand.COMMAND_NAME_LENGTH));
+	public DockCommand create(byte[] cmdName, int offset) {
+		return create(new String(cmdName, offset, DockCommand.COMMAND_NAME_LENGTH));
 	}
 
 	/**
@@ -239,10 +247,10 @@ public class DockCommandFactory {
 	 *            the command name.
 	 * @return the command - {@link DRawCommand} otherwise.
 	 */
-	public IDockCommand create(String cmdName) {
-		Class<? extends IDockCommand> clazz = getRegistry().get(cmdName);
+	public DockCommand create(String cmdName) {
+		Class<? extends DockCommand> clazz = getRegistry().get(cmdName);
 
-		IDockCommand cmd = null;
+		DockCommand cmd = null;
 		if (clazz != null) {
 			try {
 				cmd = clazz.newInstance();
@@ -268,10 +276,10 @@ public class DockCommandFactory {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public IDockCommand create(InputStream in) throws IOException {
-		byte[] cmdName = new byte[IDockCommand.COMMAND_NAME_LENGTH];
+	public DockCommand create(InputStream in) throws IOException {
+		byte[] cmdName = new byte[DockCommand.COMMAND_NAME_LENGTH];
 		int count = in.read(cmdName);
-		if (count < IDockCommand.COMMAND_NAME_LENGTH)
+		if (count < DockCommand.COMMAND_NAME_LENGTH)
 			throw new EOFException();
 		return create(cmdName);
 	}
@@ -283,9 +291,9 @@ public class DockCommandFactory {
 	 *            the data.
 	 * @return the list of commands.
 	 */
-	public List<IDockCommand> deserialize(byte[] data) {
+	public List<DockCommand> deserialize(byte[] data) {
 		if ((data == null) || (data.length < MIN_COMMAND_HEADER_LENGTH)) {
-			return new ArrayList<IDockCommand>();
+			return new ArrayList<DockCommand>();
 		}
 		ByteArrayInputStream in = new ByteArrayInputStream(data);
 		try {
@@ -304,12 +312,12 @@ public class DockCommandFactory {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public List<IDockCommand> deserialize(InputStream data) throws IOException {
-		List<IDockCommand> cmds = new ArrayList<IDockCommand>();
+	public List<DockCommand> deserialize(InputStream data) throws IOException {
+		List<DockCommand> cmds = new ArrayList<DockCommand>();
 		if (data == null) {
 			return cmds;
 		}
-		IDockCommand cmd = null;
+		DockCommand cmd = null;
 		try {
 			do {
 				cmd = deserializeCommand(data);
@@ -330,7 +338,7 @@ public class DockCommandFactory {
 	 *            the data.
 	 * @return the command - {@code null} otherwise.
 	 */
-	public IDockCommand deserializeCommand(byte[] data) {
+	public DockCommand deserializeCommand(byte[] data) {
 		InputStream in = new ByteArrayInputStream(data);
 		try {
 			return deserializeCommand(in);
@@ -348,16 +356,16 @@ public class DockCommandFactory {
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
-	public IDockCommand deserializeCommand(InputStream data) throws IOException {
-		if (!DockCommand.isCommand(data)) {
+	public DockCommand deserializeCommand(InputStream data) throws IOException {
+		if (!BaseDockCommand.isCommand(data)) {
 			return null;
 		}
-		IDockCommand cmd = create(data);
+		DockCommand cmd = create(data);
 		if (cmd != null) {
-			if (cmd instanceof IDockCommandFromNewton) {
-				((IDockCommandFromNewton) cmd).decode(data);
-			} else if (cmd instanceof IDockCommandToNewton) {
-				int length = DockCommandFromNewton.ntohl(data);
+			if (cmd instanceof DockCommandFromNewton) {
+				((DockCommandFromNewton) cmd).decode(data);
+			} else if (cmd instanceof DockCommandToNewton) {
+				int length = BaseDockCommandFromNewton.ntohl(data);
 				switch (length & 3) {
 				case 1:
 					length++;

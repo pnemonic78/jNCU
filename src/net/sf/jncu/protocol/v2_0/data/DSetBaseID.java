@@ -22,7 +22,7 @@ package net.sf.jncu.protocol.v2_0.data;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command sets a new base id for the ids sent with subsequent
@@ -38,7 +38,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DSetBaseID extends DockCommandFromNewton {
+public class DSetBaseID extends BaseDockCommandFromNewton {
 
 	/** <tt>kDSetBaseID</tt> */
 	public static final String COMMAND = "base";

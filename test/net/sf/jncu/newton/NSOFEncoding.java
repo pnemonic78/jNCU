@@ -34,7 +34,7 @@ import net.sf.jncu.fdil.NSOFInteger;
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.NSOFSymbol;
-import net.sf.jncu.protocol.IDockCommand;
+import net.sf.jncu.protocol.DockCommand;
 import net.sf.jncu.protocol.v1_0.data.DEntry;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 import net.sf.junit.SFTestCase;
@@ -428,11 +428,11 @@ public class NSOFEncoding extends SFTestCase {
 		final int length = 442;
 
 		assertNotNull(REPEAT_ENTRY_33);
-		assertEquals(IDockCommand.COMMAND_HEADER_LENGTH + length + 2, REPEAT_ENTRY_33.length);
+		assertEquals(DockCommand.COMMAND_HEADER_LENGTH + length + 2, REPEAT_ENTRY_33.length);
 
 		DockCommandFactory factory = DockCommandFactory.getInstance();
 		assertNotNull(factory);
-		IDockCommand cmd = factory.deserializeCommand(REPEAT_ENTRY_33);
+		DockCommand cmd = factory.deserializeCommand(REPEAT_ENTRY_33);
 		assertNotNull(cmd);
 		assertEquals(length, cmd.getLength());
 		assertTrue(cmd instanceof DEntry);
@@ -452,7 +452,7 @@ public class NSOFEncoding extends SFTestCase {
 		assertFalse(s.length() == 0);
 
 		byte[] nsofEntry = new byte[442];
-		System.arraycopy(REPEAT_ENTRY_33, IDockCommand.COMMAND_HEADER_LENGTH, nsofEntry, 0, length);
+		System.arraycopy(REPEAT_ENTRY_33, DockCommand.COMMAND_HEADER_LENGTH, nsofEntry, 0, length);
 
 		NSOFEncoder encoder = new NSOFEncoder();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();

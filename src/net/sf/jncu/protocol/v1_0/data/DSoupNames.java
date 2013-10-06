@@ -30,7 +30,7 @@ import net.sf.jncu.fdil.NSOFImmediate;
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.newton.os.Soup;
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command is sent in response to a <tt>kDGetSoupNames</tt> command. It
@@ -43,7 +43,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * array of corresponding soup signatures
  * </pre>
  */
-public class DSoupNames extends DockCommandFromNewton {
+public class DSoupNames extends BaseDockCommandFromNewton {
 
 	/** <tt>kDSoupNames</tt> */
 	public static final String COMMAND = "soup";

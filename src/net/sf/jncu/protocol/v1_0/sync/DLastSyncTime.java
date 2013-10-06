@@ -28,7 +28,7 @@ import net.sf.jncu.util.NewtonDateUtils;
  * <pre>
  * 'stme'
  * length
- * time
+ * time in minutes
  * </pre>
  * 
  * @author moshew

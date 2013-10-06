@@ -24,7 +24,7 @@ import java.io.OutputStream;
 
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFSymbol;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command asks the Newton to call the specified function and return it's
@@ -40,7 +40,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DCallGlobalFunction extends DockCommandToNewton {
+public class DCallGlobalFunction extends BaseDockCommandToNewton {
 
 	/** <tt>kDCallGlobalFunction</tt> */
 	public static final String COMMAND = "cgfn";

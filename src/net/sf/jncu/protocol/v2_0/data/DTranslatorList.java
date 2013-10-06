@@ -28,7 +28,7 @@ import java.util.List;
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.fdil.NSOFString;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command returns an array of translators that can be used with the
@@ -44,7 +44,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DTranslatorList extends DockCommandToNewton {
+public class DTranslatorList extends BaseDockCommandToNewton {
 
 	/** <tt>kDTranslatorList</tt> */
 	public static final String COMMAND = "trnl";

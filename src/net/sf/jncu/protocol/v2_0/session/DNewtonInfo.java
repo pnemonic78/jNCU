@@ -22,7 +22,7 @@ package net.sf.jncu.protocol.v2_0.session;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command is used to negotiate the real protocol version. See
@@ -36,7 +36,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * encrypted key
  * </pre>
  */
-public class DNewtonInfo extends DockCommandFromNewton {
+public class DNewtonInfo extends BaseDockCommandFromNewton {
 
 	/** <tt>kDNewtonInfo</tt> */
 	public static final String COMMAND = "ninf";

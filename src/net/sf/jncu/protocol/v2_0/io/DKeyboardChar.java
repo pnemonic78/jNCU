@@ -24,7 +24,7 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command sends 1 character to the Newton for processing. The char is a 2
@@ -42,7 +42,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DKeyboardChar extends DockCommandToNewton {
+public class DKeyboardChar extends BaseDockCommandToNewton {
 
 	/** <tt>kDKeyboardChar</tt> */
 	public static final String COMMAND = "kbdc";

@@ -32,7 +32,7 @@ import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.fdil.NSOFString;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command returns an array of filters to the Newton. It's sent in response
@@ -48,7 +48,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DFilters extends DockCommandToNewton {
+public class DFilters extends BaseDockCommandToNewton {
 
 	/** <tt>kDFilters</tt> */
 	public static final String COMMAND = "filt";

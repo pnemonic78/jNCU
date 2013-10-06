@@ -23,9 +23,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import net.sf.jncu.newton.NewtonError;
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandBidi;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.DockCommandToNewtonLong;
-import net.sf.jncu.protocol.IDockCommandToNewton;
 
 /**
  * This command is sent in response to any of the commands from the desktop that
@@ -41,7 +42,7 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
  * @see http://tools.unna.org/errors/
  * @author moshew
  */
-public class DResult extends DockCommandFromNewton implements IDockCommandToNewton {
+public class DResult extends BaseDockCommandFromNewton implements DockCommandBidi {
 
 	/** <tt>kDResult</tt> */
 	public static final String COMMAND = "dres";
@@ -50,7 +51,7 @@ public class DResult extends DockCommandFromNewton implements IDockCommandToNewt
 	public static final int OK = 0;
 
 	private NewtonError error;
-	private IDockCommandToNewton to;
+	private DockCommandToNewton to;
 
 	/**
 	 * Creates a new command.

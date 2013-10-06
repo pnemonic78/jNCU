@@ -30,7 +30,7 @@ import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFImmediate;
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.newton.os.SoupIndex;
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command specifies the indexes that should be created for the current
@@ -42,7 +42,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * indexes
  * </pre>
  */
-public class DIndexDescription extends DockCommandFromNewton {
+public class DIndexDescription extends BaseDockCommandFromNewton {
 
 	/** <tt>kDIndexDescription</tt> */
 	public static final String COMMAND = "indx";

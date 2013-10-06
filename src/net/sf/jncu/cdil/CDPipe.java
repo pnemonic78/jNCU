@@ -27,8 +27,8 @@ import java.util.Timer;
 import java.util.concurrent.TimeoutException;
 
 import net.sf.jncu.protocol.DockCommandListener;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
 import net.sf.jncu.protocol.v2_0.session.DockingState;
 
@@ -366,7 +366,7 @@ public abstract class CDPipe<P extends CDPacket, L extends CDPacketLayer<P>> ext
 	 * @throws TimeoutException
 	 *             if timeout occurs.
 	 */
-	public void write(IDockCommandToNewton cmd) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
+	public void write(DockCommandToNewton cmd) throws CDILNotInitializedException, PlatformException, BadPipeStateException, PipeDisconnectedException, TimeoutException {
 		layer.checkConnected();
 		try {
 			getCommandLayer().write(cmd);
@@ -537,22 +537,22 @@ public abstract class CDPipe<P extends CDPacket, L extends CDPacketLayer<P>> ext
 	}
 
 	@Override
-	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+	public void commandReceiving(DockCommandFromNewton command, int progress, int total) {
 	}
 
 	@Override
-	public void commandReceived(IDockCommandFromNewton command) {
+	public void commandReceived(DockCommandFromNewton command) {
 		// We keep connection alive either by pinging.
 		if (pingTask != null)
 			restartPing();
 	}
 
 	@Override
-	public void commandSending(IDockCommandToNewton command, int progress, int total) {
+	public void commandSending(DockCommandToNewton command, int progress, int total) {
 	}
 
 	@Override
-	public void commandSent(IDockCommandToNewton command) {
+	public void commandSent(DockCommandToNewton command) {
 		// We keep connection alive either by pinging.
 		if (pingTask != null)
 			restartPing();
@@ -726,7 +726,7 @@ public abstract class CDPipe<P extends CDPacket, L extends CDPacketLayer<P>> ext
 	 * @param command
 	 *            the received command.
 	 */
-	protected void processCommand(IDockCommandFromNewton command) {
+	protected void processCommand(DockCommandFromNewton command) {
 	}
 
 	/**

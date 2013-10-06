@@ -24,7 +24,7 @@ import java.io.OutputStream;
 
 import net.sf.jncu.fdil.contrib.NSOFSoupName;
 import net.sf.jncu.newton.os.Soup;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command is used by restore to delete a soup if it exists on the Newton
@@ -38,7 +38,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DDeleteSoup extends DockCommandToNewton {
+public class DDeleteSoup extends BaseDockCommandToNewton {
 
 	/** <tt>kDDeleteSoup</tt> */
 	public static final String COMMAND = "dsou";

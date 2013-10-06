@@ -30,12 +30,12 @@ import java.util.Collection;
 import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 
+import net.sf.jncu.protocol.BaseDockCommand;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.DockCommand;
 import net.sf.jncu.protocol.DockCommandFromNewton;
-import net.sf.jncu.protocol.DockCommandListener;
-import net.sf.jncu.protocol.IDockCommand;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 
 /**
@@ -94,7 +94,7 @@ public abstract class CDCommandLayer<P extends CDPacket, L extends CDPacketLayer
 	 * @param command
 	 *            the received command.
 	 */
-	protected void fireCommandReceived(IDockCommandFromNewton command) {
+	protected void fireCommandReceived(DockCommandFromNewton command) {
 		// Make copy of listeners to avoid ConcurrentModificationException.
 		Collection<DockCommandListener> listenersCopy = new ArrayList<DockCommandListener>(listeners);
 		for (DockCommandListener listener : listenersCopy) {
@@ -108,7 +108,7 @@ public abstract class CDCommandLayer<P extends CDPacket, L extends CDPacketLayer
 	 * @param command
 	 *            the sent command.
 	 */
-	protected void fireCommandSent(IDockCommandToNewton command) {
+	protected void fireCommandSent(DockCommandToNewton command) {
 		// Make copy of listeners to avoid ConcurrentModificationException.
 		Collection<DockCommandListener> listenersCopy = new ArrayList<DockCommandListener>(listeners);
 		for (DockCommandListener listener : listenersCopy) {
@@ -126,7 +126,7 @@ public abstract class CDCommandLayer<P extends CDPacket, L extends CDPacketLayer
 	 * @param total
 	 *            the total number of bytes to receive.
 	 */
-	protected void fireCommandReceiving(IDockCommandFromNewton command, int progress, int total) {
+	protected void fireCommandReceiving(DockCommandFromNewton command, int progress, int total) {
 		// Avoid "divide by 0" error.
 		if (total == 0)
 			return;
@@ -147,7 +147,7 @@ public abstract class CDCommandLayer<P extends CDPacket, L extends CDPacketLayer
 	 * @param total
 	 *            the total number of bytes to send.
 	 */
-	protected void fireCommandSending(IDockCommandToNewton command, int progress, int total) {
+	protected void fireCommandSending(DockCommandToNewton command, int progress, int total) {
 		// Avoid "divide by 0" error.
 		if (total == 0)
 			return;
@@ -194,7 +194,7 @@ public abstract class CDCommandLayer<P extends CDPacket, L extends CDPacketLayer
 	 * @throws TimeoutException
 	 *             if timeout occurs.
 	 */
-	public abstract void write(IDockCommandToNewton cmd) throws IOException, TimeoutException;
+	public abstract void write(DockCommandToNewton cmd) throws IOException, TimeoutException;
 
 	/**
 	 * Get the blocking input stream with commands.
@@ -220,10 +220,10 @@ public abstract class CDCommandLayer<P extends CDPacket, L extends CDPacketLayer
 		running = true;
 
 		InputStream in;
-		IDockCommand cmd = null;
+		DockCommand cmd = null;
 		boolean hasCommand;
 		int length = 0;
-		final byte[] lengthBytes = new byte[IDockCommand.LENGTH_WORD];
+		final byte[] lengthBytes = new byte[DockCommand.LENGTH_WORD];
 		byte[] data = null;
 		int offset = 0;
 		int available;
@@ -247,9 +247,9 @@ public abstract class CDCommandLayer<P extends CDPacket, L extends CDPacketLayer
 
 				if (running && !isInterrupted()) {
 					if (cmd == null) {
-						if (DockCommand.isCommand(in)) {
+						if (BaseDockCommand.isCommand(in)) {
 							cmd = DockCommandFactory.getInstance().create(in);
-							length = DockCommandFromNewton.ntohl(in);
+							length = BaseDockCommandFromNewton.ntohl(in);
 							if (length == 0x6e657774) { // 'newt'
 								// This command was not sent properly, and
 								// instead we started receiving the next
@@ -263,9 +263,9 @@ public abstract class CDCommandLayer<P extends CDPacket, L extends CDPacketLayer
 								v.add(new ByteArrayInputStream(lengthBytes));
 								v.add(in);
 								in = new SequenceInputStream(v.elements());
-								if (DockCommand.isCommand(in)) {
+								if (BaseDockCommand.isCommand(in)) {
 									cmd = DockCommandFactory.getInstance().create(in);
-									length = DockCommandFromNewton.ntohl(in);
+									length = BaseDockCommandFromNewton.ntohl(in);
 								} else {
 									continue;
 								}
@@ -284,8 +284,8 @@ public abstract class CDCommandLayer<P extends CDPacket, L extends CDPacketLayer
 					if (cmd != null) {
 						hasCommand = true;
 
-						if (cmd instanceof IDockCommandFromNewton) {
-							IDockCommandFromNewton cmdFromNewton = (IDockCommandFromNewton) cmd;
+						if (cmd instanceof DockCommandFromNewton) {
+							DockCommandFromNewton cmdFromNewton = (DockCommandFromNewton) cmd;
 							if (((offset == 0) && (available < length)) || (offset > 0)) {
 								if (data == null) {
 									data = new byte[length];
@@ -314,8 +314,8 @@ public abstract class CDCommandLayer<P extends CDPacket, L extends CDPacketLayer
 								offset = 0;
 								v.clear();
 							}
-						} else if (cmd instanceof IDockCommandToNewton) {
-							IDockCommandToNewton cmdToNewton = (IDockCommandToNewton) cmd;
+						} else if (cmd instanceof DockCommandToNewton) {
+							DockCommandToNewton cmdToNewton = (DockCommandToNewton) cmd;
 							if (((offset == 0) && (available < length)) || (offset > 0)) {
 								count = (int) in.skip(Math.min(available, length - offset));
 								if (count >= 0) {

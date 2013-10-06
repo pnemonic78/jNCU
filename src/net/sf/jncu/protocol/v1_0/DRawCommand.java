@@ -22,14 +22,14 @@ package net.sf.jncu.protocol.v1_0;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * Unknown command from Newton with raw data.
  * 
  * @author Moshe
  */
-public class DRawCommand extends DockCommandFromNewton {
+public class DRawCommand extends BaseDockCommandFromNewton {
 
 	private byte[] data;
 

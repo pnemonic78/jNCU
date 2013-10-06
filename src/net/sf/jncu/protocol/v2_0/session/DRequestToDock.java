@@ -43,22 +43,39 @@ public class DRequestToDock extends net.sf.jncu.protocol.v1_0.session.DRequestTo
 
 	/**
 	 * The protocol version.<br>
-	 * <tt>kProtocolVersion</tt>
+	 * <tt>kProtocolVersion</tt><br>
+	 * <tt>kBaseProtocolVersion</tt>
 	 */
 	public static final int PROTOCOL_VERSION = 9;
+
+	/**
+	 * The Dante protocol version.<br>
+	 * <tt>kDanteProtocolVersion</tt>
+	 */
+	public static final int DANTE_PROTOCOL_VERSION = 10;
 
 	/**
 	 * Creates a new command.
 	 */
 	public DRequestToDock() {
-		super();
+		super(COMMAND);
+	}
+
+	/**
+	 * Creates a new command.
+	 * 
+	 * @param cmd
+	 *            the command.
+	 */
+	protected DRequestToDock(String cmd) {
+		super(cmd);
 	}
 
 	@Override
 	protected void decodeCommandData(InputStream data) throws IOException {
 		int protocol = ntohl(data);
 		setProtocol(protocol);
-		if (protocol != PROTOCOL_VERSION) {
+		if (protocol < PROTOCOL_VERSION) {
 			throw new ProtocolException();
 		}
 	}

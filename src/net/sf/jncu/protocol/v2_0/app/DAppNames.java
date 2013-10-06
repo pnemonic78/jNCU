@@ -29,7 +29,7 @@ import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFImmediate;
 import net.sf.jncu.fdil.NSOFObject;
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command returns the names of the applications present on the Newton. It
@@ -55,7 +55,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author Moshe
  */
-public class DAppNames extends DockCommandFromNewton {
+public class DAppNames extends BaseDockCommandFromNewton {
 
 	/** <tt>kDAppNames</tt> */
 	public static final String COMMAND = "appn";

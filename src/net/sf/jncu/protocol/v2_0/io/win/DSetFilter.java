@@ -22,7 +22,7 @@ package net.sf.jncu.protocol.v2_0.io.win;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command changes the current filter being used. A
@@ -38,7 +38,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DSetFilter extends DockCommandFromNewton {
+public class DSetFilter extends BaseDockCommandFromNewton {
 
 	/** <tt>kDSetFilter</tt> */
 	public static final String COMMAND = "sflt";

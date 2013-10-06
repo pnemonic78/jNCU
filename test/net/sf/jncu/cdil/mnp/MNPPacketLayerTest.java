@@ -28,9 +28,9 @@ import java.util.List;
 
 import org.junit.Test;
 
+import net.sf.jncu.protocol.BaseDockCommand;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 import net.sf.jncu.protocol.DockCommand;
-import net.sf.jncu.protocol.DockCommandToNewton;
-import net.sf.jncu.protocol.IDockCommand;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 import net.sf.jncu.protocol.v2_0.session.DDesktopInfo;
 import net.sf.jncu.protocol.v2_0.session.DNewtonName;
@@ -43,7 +43,7 @@ public class MNPPacketLayerTest extends SFTestCase {
 		byte[] data = { 'n', 'e', 'w', 't', 'd', 'o', 'c', 'k', 'u', 'n', 'k', 'n', 0x00, 0x00, 0x00, 0x04, 'k', 'b', 'd', 'c', 'n', 'e', 'w', 't', 'd', 'o', 'c', 'k', 'd', 'r',
 				'e', 's', 0x00, 0x00, 0x00, 0x04, (byte) 0xff, (byte) 0xff, (byte) 0xb1, (byte) 0xdf };
 		assertNotNull(data);
-		List<IDockCommand> cmds = DockCommandFactory.getInstance().deserialize(data);
+		List<DockCommand> cmds = DockCommandFactory.getInstance().deserialize(data);
 		assertNotNull(cmds);
 		assertEquals(2, cmds.size());
 	}
@@ -123,11 +123,11 @@ public class MNPPacketLayerTest extends SFTestCase {
 				0, 0, 0, 11, 0, 77, 0, 111, 0, 115, 0, 104, 0, 101, 0, 32, 0, 77, 0, 105, 0, 99, 0, 104, 0, 97, 0, 101, 0, 108, 0, 32, 0, 87, 0, 97, 0, 105, 0, 115, 0, 98, 0, 101,
 				0, 114, 0, 103, 0, 0, 0, 0 };
 
-		assertTrue(DockCommand.isCommand(data));
-		List<IDockCommand> cmds = DockCommandFactory.getInstance().deserialize(data);
+		assertTrue(BaseDockCommand.isCommand(data));
+		List<DockCommand> cmds = DockCommandFactory.getInstance().deserialize(data);
 		assertNotNull(cmds);
 		assertEquals(1, cmds.size());
-		IDockCommand cmd = cmds.get(0);
+		DockCommand cmd = cmds.get(0);
 		assertEquals(DNewtonName.COMMAND, cmd.getCommand());
 	}
 
@@ -138,7 +138,7 @@ public class MNPPacketLayerTest extends SFTestCase {
 	 */
 	@Test
 	public void testDesktopInfo() throws Exception {
-		DockCommandToNewton cmd = new DDesktopInfo();
+		BaseDockCommandToNewton cmd = new DDesktopInfo();
 		assertNotNull(cmd);
 		assertEquals(DDesktopInfo.COMMAND, cmd.getCommand());
 		InputStream payload = cmd.getCommandPayload();

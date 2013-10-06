@@ -22,7 +22,7 @@ package net.sf.jncu.protocol.v2_0.session;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command removes a previously installed protocol extension.
@@ -35,7 +35,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DRemoveProtocolExtension extends DockCommandToNewton {
+public class DRemoveProtocolExtension extends BaseDockCommandToNewton {
 
 	/** <tt>kDRemoveProtocolExtension</tt> */
 	public static final String COMMAND = "rpex";

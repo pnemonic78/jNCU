@@ -24,7 +24,7 @@ import java.io.OutputStream;
 
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFString;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * Reports a desktop error to the Newton. The string is included since the
@@ -41,7 +41,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DResultString extends DockCommandToNewton {
+public class DResultString extends BaseDockCommandToNewton {
 
 	/** <tt>kDResultString</tt> */
 	public static final String COMMAND = "ress";

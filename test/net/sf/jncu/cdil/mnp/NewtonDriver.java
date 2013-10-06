@@ -36,10 +36,10 @@ import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFInteger;
 import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.protocol.DockCommandListener;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommand;
+import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandToNewton;
-import net.sf.jncu.protocol.IDockCommand;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.io.DGetStoreNames;
 import net.sf.jncu.protocol.v1_0.query.DGetInheritance;
 import net.sf.jncu.protocol.v1_0.query.DResult;
@@ -460,10 +460,10 @@ public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 			MNPLinkTransferPacket lt = (MNPLinkTransferPacket) packet;
 			sendLA(lt.getSequence());
 			DockCommandFactory factory = DockCommandFactory.getInstance();
-			IDockCommandToNewton command = null;
+			DockCommandToNewton command = null;
 			String cmd = null;
 			if (userCommand <= 1) {
-				command = (IDockCommandToNewton) factory.deserializeCommand(lt.getData());
+				command = (DockCommandToNewton) factory.deserializeCommand(lt.getData());
 				cmd = command.getCommand();
 			}
 
@@ -535,7 +535,7 @@ public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 	}
 
 	@Override
-	public void commandReceived(IDockCommandFromNewton command) {
+	public void commandReceived(DockCommandFromNewton command) {
 		logger.log("cr", null, command);
 		final String cmd = command.getCommand();
 
@@ -545,11 +545,11 @@ public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 	}
 
 	@Override
-	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+	public void commandReceiving(DockCommandFromNewton command, int progress, int total) {
 	}
 
 	@Override
-	public void commandSent(IDockCommandToNewton command) {
+	public void commandSent(DockCommandToNewton command) {
 		logger.log("cs", null, command);
 		final String cmd = command.getCommand();
 
@@ -576,7 +576,7 @@ public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 	}
 
 	@Override
-	public void commandSending(IDockCommandToNewton command, int progress, int total) {
+	public void commandSending(DockCommandToNewton command, int progress, int total) {
 	}
 
 	@Override
@@ -596,7 +596,7 @@ public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 	}
 
 	private void validateCommand(byte[] b) throws IOException {
-		IDockCommandFromNewton cmd = (IDockCommandFromNewton) DockCommandFactory.getInstance().deserializeCommand(b);
+		DockCommandFromNewton cmd = (DockCommandFromNewton) DockCommandFactory.getInstance().deserializeCommand(b);
 		if (cmd == null)
 			throw new NullPointerException();
 	}
@@ -611,12 +611,12 @@ public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 			res.set(i, new NSOFInteger(i));
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		out.write(IDockCommand.COMMAND_PREFIX.getBytes());
+		out.write(DockCommand.COMMAND_PREFIX.getBytes());
 		out.write(DRefResult.COMMAND.getBytes());
 		ByteArrayOutputStream outRes = new ByteArrayOutputStream();
 		NSOFEncoder encoder = new NSOFEncoder();
 		encoder.flatten(res, outRes);
-		DockCommandToNewton.htonl(outRes.size(), out);
+		BaseDockCommandToNewton.htonl(outRes.size(), out);
 		outRes.writeTo(out);
 		switch (out.size() & 3) {
 		case 1:

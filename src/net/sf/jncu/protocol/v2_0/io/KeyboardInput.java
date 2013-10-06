@@ -27,8 +27,8 @@ import java.util.Timer;
 
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.cdil.CDPipe;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
@@ -104,7 +104,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	}
 
 	@Override
-	public void commandReceived(IDockCommandFromNewton command) {
+	public void commandReceived(DockCommandFromNewton command) {
 		if (!isEnabled())
 			return;
 
@@ -118,7 +118,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	}
 
 	@Override
-	public void commandSent(IDockCommandToNewton command) {
+	public void commandSent(DockCommandToNewton command) {
 		if (!isEnabled())
 			return;
 

@@ -26,7 +26,7 @@ import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.NSOFSymbol;
 
 /**
- * Newton version information.
+ * Newton device information.
  * 
  * @author moshew
  */

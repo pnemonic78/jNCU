@@ -29,7 +29,7 @@ import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFPlainArray;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.io.Device;
 
 /**
@@ -52,7 +52,7 @@ import net.sf.jncu.protocol.v1_0.io.Device;
  * 
  * @author moshew
  */
-public class DDevices extends DockCommandToNewton {
+public class DDevices extends BaseDockCommandToNewton {
 
 	/** <tt>kDDevices</tt> */
 	public static final String COMMAND = "devs";

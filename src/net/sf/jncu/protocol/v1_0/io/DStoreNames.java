@@ -29,7 +29,7 @@ import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.newton.os.Store;
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command is sent in response to a <tt>kDGetStoreNames</tt> command. It
@@ -54,7 +54,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * array of frames
  * </pre>
  */
-public class DStoreNames extends DockCommandFromNewton {
+public class DStoreNames extends BaseDockCommandFromNewton {
 
 	/** <tt>kDStoreNames</tt> */
 	public static final String COMMAND = "stor";

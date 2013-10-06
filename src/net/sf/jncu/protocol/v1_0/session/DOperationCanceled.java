@@ -22,9 +22,9 @@ package net.sf.jncu.protocol.v1_0.session;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandBidi;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
 
 /**
  * This command is sent when the user cancels an operation. Usually no action is
@@ -35,7 +35,7 @@ import net.sf.jncu.protocol.IDockCommandFromNewton;
  * length = 0
  * </pre>
  */
-public class DOperationCanceled extends DockCommandToNewtonBlank implements IDockCommandFromNewton {
+public class DOperationCanceled extends DockCommandToNewtonBlank implements DockCommandBidi {
 
 	/** <tt>kDOperationCanceled</tt> */
 	public static final String COMMAND = "opca";
@@ -60,7 +60,7 @@ public class DOperationCanceled extends DockCommandToNewtonBlank implements IDoc
 	@Override
 	public void decode(InputStream data) throws IOException {
 		// nothing to decode.
-		setLength(DockCommandFromNewton.ntohl(data));
+		setLength(BaseDockCommandFromNewton.ntohl(data));
 	}
 
 }

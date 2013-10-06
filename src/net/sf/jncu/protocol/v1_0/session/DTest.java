@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import net.sf.jncu.fdil.NSOFObject;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandBidi;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
@@ -36,7 +36,7 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  * data
  * </pre>
  */
-public class DTest extends DockCommandToNewtonScript<NSOFObject> implements IDockCommandFromNewton {
+public class DTest extends DockCommandToNewtonScript<NSOFObject> implements DockCommandBidi {
 
 	/** <tt>kDTest</tt> */
 	public static final String COMMAND = "test";
@@ -46,6 +46,16 @@ public class DTest extends DockCommandToNewtonScript<NSOFObject> implements IDoc
 	 */
 	public DTest() {
 		super(COMMAND);
+	}
+
+	/**
+	 * Creates a new command.
+	 * 
+	 * @param cmd
+	 *            the command.
+	 */
+	protected DTest(String cmd) {
+		super(cmd);
 	}
 
 	@Override

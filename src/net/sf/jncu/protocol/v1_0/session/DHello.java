@@ -22,9 +22,10 @@ package net.sf.jncu.protocol.v1_0.session;
 import java.io.IOException;
 import java.io.InputStream;
 
+import net.sf.jncu.protocol.DockCommandBidi;
 import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
  * This command is sent during long operations to let the Newton or desktop know
@@ -35,12 +36,12 @@ import net.sf.jncu.protocol.IDockCommandToNewton;
  * length = 0
  * </pre>
  */
-public class DHello extends DockCommandFromNewtonBlank implements IDockCommandToNewton {
+public class DHello extends DockCommandFromNewtonBlank implements DockCommandBidi {
 
 	/** <tt>kDHello</tt> */
 	public static final String COMMAND = "helo";
 
-	private IDockCommandToNewton to;
+	private DockCommandToNewton to;
 
 	/**
 	 * Creates a new command.

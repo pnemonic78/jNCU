@@ -22,14 +22,14 @@ package net.sf.jncu.protocol.v2_0.query;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * Cursor command.
  * 
  * @author moshew
  */
-public abstract class DCursor extends DockCommandToNewton {
+public abstract class DCursor extends BaseDockCommandToNewton {
 
 	private int cursorId;
 

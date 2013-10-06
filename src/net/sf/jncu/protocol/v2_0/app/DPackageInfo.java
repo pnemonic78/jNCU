@@ -29,7 +29,7 @@ import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFImmediate;
 import net.sf.jncu.fdil.NSOFObject;
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command is sent in response to a <tt>kDGetPackageInfo</tt> command. An
@@ -60,7 +60,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author Moshe
  */
-public class DPackageInfo extends DockCommandFromNewton {
+public class DPackageInfo extends BaseDockCommandFromNewton {
 
 	/** <tt>kDPackageInfo</tt> */
 	public static final String COMMAND = "pinf";

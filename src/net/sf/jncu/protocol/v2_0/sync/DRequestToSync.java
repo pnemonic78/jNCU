@@ -22,9 +22,9 @@ package net.sf.jncu.protocol.v2_0.sync;
 import java.io.IOException;
 import java.io.InputStream;
 
+import net.sf.jncu.protocol.DockCommandBidi;
 import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
 
 /**
  * This command is sent from the desktop when the desktop wants to start a sync
@@ -38,7 +38,7 @@ import net.sf.jncu.protocol.IDockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DRequestToSync extends DockCommandToNewtonBlank implements IDockCommandFromNewton {
+public class DRequestToSync extends DockCommandToNewtonBlank implements DockCommandBidi {
 
 	/** <tt>kDRequestToSync</tt> */
 	public static final String COMMAND = "ssyn";

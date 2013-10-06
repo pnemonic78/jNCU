@@ -22,9 +22,9 @@ package net.sf.jncu.protocol.v2_0.io;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
  * This command is sent to enter keyboard pass-through mode. It can be followed
@@ -38,7 +38,7 @@ import net.sf.jncu.protocol.IDockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DKeyboardPassthrough extends DockCommandToNewtonBlank implements IDockCommandFromNewton {
+public class DKeyboardPassthrough extends DockCommandToNewtonBlank implements DockCommandFromNewton {
 
 	/** <tt>kDStartKeyboardPassthrough</tt> */
 	public static final String COMMAND = "kybd";
@@ -53,7 +53,7 @@ public class DKeyboardPassthrough extends DockCommandToNewtonBlank implements ID
 	@Override
 	public void decode(InputStream data) throws IOException {
 		// nothing to decode.
-		setLength(DockCommandFromNewton.ntohl(data));
+		setLength(BaseDockCommandFromNewton.ntohl(data));
 	}
 
 }

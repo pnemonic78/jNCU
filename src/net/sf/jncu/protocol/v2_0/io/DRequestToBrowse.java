@@ -29,7 +29,7 @@ import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.NSOFSymbol;
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command is sent to a desktop that the Newton wishes to browse files on.
@@ -44,7 +44,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DRequestToBrowse extends DockCommandFromNewton {
+public class DRequestToBrowse extends BaseDockCommandFromNewton {
 
 	/** <tt>kDRequestToBrowse</tt> */
 	public static final String COMMAND = "rtbr";

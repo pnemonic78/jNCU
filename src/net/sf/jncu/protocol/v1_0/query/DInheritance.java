@@ -26,7 +26,7 @@ import java.util.TreeMap;
 
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.NSOFSymbol;
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * Inheritance. This is a response to a <tt>kDGetInheritance</tt> request.
@@ -36,8 +36,10 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * length
  * array of class, superclass pairs
  * </pre>
+ * 
+ * @see DGetInheritance
  */
-public class DInheritance extends DockCommandFromNewton {
+public class DInheritance extends BaseDockCommandFromNewton {
 
 	/** <tt>kDInheritance</tt> */
 	public static final String COMMAND = "dinh";

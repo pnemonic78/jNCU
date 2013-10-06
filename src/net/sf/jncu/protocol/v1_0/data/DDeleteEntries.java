@@ -24,7 +24,7 @@ import java.io.OutputStream;
 import java.util.Set;
 import java.util.TreeSet;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command is sent to delete one or more entries from the current soup.
@@ -38,7 +38,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DDeleteEntries extends DockCommandToNewton {
+public class DDeleteEntries extends BaseDockCommandToNewton {
 
 	/** <tt>kDDeleteEntries</tt> */
 	public static final String COMMAND = "dele";

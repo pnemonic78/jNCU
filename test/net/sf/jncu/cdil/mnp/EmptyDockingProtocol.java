@@ -21,8 +21,8 @@ package net.sf.jncu.cdil.mnp;
 
 import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.PipeDisconnectedException;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
 import net.sf.jncu.protocol.v2_0.session.DockingState;
 
@@ -33,12 +33,12 @@ public class EmptyDockingProtocol extends DockingProtocol<MNPPacket, MNPPacketLa
 	}
 
 	@Override
-	public void commandReceived(IDockCommandFromNewton command) {
+	public void commandReceived(DockCommandFromNewton command) {
 		// ignore
 	}
 
 	@Override
-	public void commandSent(IDockCommandToNewton command) {
+	public void commandSent(DockCommandToNewton command) {
 		// ignore
 	}
 

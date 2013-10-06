@@ -24,7 +24,7 @@ import java.io.OutputStream;
 
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFObject;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command installs a protocol extension into the Newton. The extension
@@ -44,7 +44,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DRegProtocolExtension extends DockCommandToNewton {
+public class DRegProtocolExtension extends BaseDockCommandToNewton {
 
 	/** <tt>kDRegProtocolExtension</tt> */
 	public static final String COMMAND = "pext";

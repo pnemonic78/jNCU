@@ -24,7 +24,7 @@ import java.io.OutputStream;
 
 import net.sf.jncu.fdil.contrib.NSOFSoupName;
 import net.sf.jncu.newton.os.Soup;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command is used by restore to remove all entries from a soup before the
@@ -38,7 +38,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DEmptySoup extends DockCommandToNewton {
+public class DEmptySoup extends BaseDockCommandToNewton {
 
 	/** <tt>kDEmptySoup</tt> */
 	public static final String COMMAND = "esou";

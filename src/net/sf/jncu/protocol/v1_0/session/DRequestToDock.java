@@ -22,7 +22,7 @@ package net.sf.jncu.protocol.v1_0.session;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * Ask desktop to start docking process.<br>
@@ -37,7 +37,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * protocol version
  * </pre>
  */
-public class DRequestToDock extends DockCommandFromNewton {
+public class DRequestToDock extends BaseDockCommandFromNewton {
 
 	/** <tt>kDRequestToDock</tt> */
 	public static final String COMMAND = "rtdk";
@@ -49,6 +49,16 @@ public class DRequestToDock extends DockCommandFromNewton {
 	 */
 	public DRequestToDock() {
 		super(COMMAND);
+	}
+
+	/**
+	 * Creates a new command.
+	 * 
+	 * @param cmd
+	 *            the command.
+	 */
+	protected DRequestToDock(String cmd) {
+		super(cmd);
 	}
 
 	/**

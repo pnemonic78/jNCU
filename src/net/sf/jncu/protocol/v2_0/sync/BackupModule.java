@@ -41,8 +41,8 @@ import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.newton.os.Store;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.data.DEntry;
 import net.sf.jncu.protocol.v1_0.data.DSoupInfo;
 import net.sf.jncu.protocol.v1_0.data.DSoupNames;
@@ -179,7 +179,7 @@ public class BackupModule extends IconModule {
 	}
 
 	@Override
-	public void commandReceived(IDockCommandFromNewton command) {
+	public void commandReceived(DockCommandFromNewton command) {
 		if (!isEnabled())
 			return;
 
@@ -296,7 +296,7 @@ public class BackupModule extends IconModule {
 	}
 
 	@Override
-	public void commandSent(IDockCommandToNewton command) {
+	public void commandSent(DockCommandToNewton command) {
 		if (!isEnabled())
 			return;
 

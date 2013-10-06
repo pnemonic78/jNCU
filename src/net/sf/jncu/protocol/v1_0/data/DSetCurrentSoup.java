@@ -24,7 +24,7 @@ import java.io.OutputStream;
 
 import net.sf.jncu.fdil.contrib.NSOFSoupName;
 import net.sf.jncu.newton.os.Soup;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command sets the current soup. Most of the other commands pertain to
@@ -41,7 +41,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DSetCurrentSoup extends DockCommandToNewton {
+public class DSetCurrentSoup extends BaseDockCommandToNewton {
 
 	/** <tt>kDSetCurrentSoup</tt> */
 	public static final String COMMAND = "ssou";

@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import net.sf.jncu.fdil.contrib.NSOFSoupName;
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command creates a soup on the current store. It uses a registered
@@ -39,7 +39,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author moshew
  */
-public class DCreateDefaultSoup extends DockCommandToNewton {
+public class DCreateDefaultSoup extends BaseDockCommandToNewton {
 
 	/** <tt>kDCreateDefaultSoup</tt> */
 	public static final String COMMAND = "cdsp";

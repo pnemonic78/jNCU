@@ -24,7 +24,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command will load a package into the Newton's RAM. The package data
@@ -39,7 +39,7 @@ import net.sf.jncu.protocol.DockCommandToNewton;
  * 
  * @author Moshe
  */
-public class DLoadPackage extends DockCommandToNewton {
+public class DLoadPackage extends BaseDockCommandToNewton {
 
 	/** <tt>kDLoadPackage</tt> */
 	public static final String COMMAND = "lpkg";

@@ -42,8 +42,8 @@ import net.sf.jncu.cdil.mnp.MNPPacketLayer;
 import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.protocol.DockCommandListener;
-import net.sf.jncu.protocol.IDockCommandFromNewton;
-import net.sf.jncu.protocol.IDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v2_0.IconModule;
@@ -259,7 +259,7 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	}
 
 	@Override
-	public void close() {
+	public void exit() {
 		stop();
 	}
 
@@ -431,11 +431,11 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	}
 
 	@Override
-	public void commandReceiving(IDockCommandFromNewton command, int progress, int total) {
+	public void commandReceiving(DockCommandFromNewton command, int progress, int total) {
 	}
 
 	@Override
-	public void commandReceived(IDockCommandFromNewton command) {
+	public void commandReceived(DockCommandFromNewton command) {
 		final String cmd = command.getCommand();
 
 		if (DResult.COMMAND.equals(cmd)) {
@@ -458,16 +458,16 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	}
 
 	@Override
-	public void commandSending(IDockCommandToNewton command, int progress, int total) {
+	public void commandSending(DockCommandToNewton command, int progress, int total) {
 	}
 
 	@Override
-	public void commandSent(IDockCommandToNewton command) {
+	public void commandSent(DockCommandToNewton command) {
 	}
 
 	@Override
 	public void commandEOF() {
-		close();
+		exit();
 	}
 
 	/**
@@ -476,7 +476,7 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	 * @param command
 	 *            the command.
 	 */
-	protected void write(IDockCommandToNewton command) {
+	protected void write(DockCommandToNewton command) {
 		if (pipe == null)
 			return;
 		try {
@@ -499,7 +499,7 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	}
 
 	@Override
-	public void approveSelection(FileChooser chooser, File file, IDockCommandFromNewton command) {
+	public void approveSelection(FileChooser chooser, File file, DockCommandFromNewton command) {
 		final String cmd = command.getCommand();
 
 		if (DImportFile.COMMAND.equals(cmd)) {

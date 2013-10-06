@@ -22,7 +22,7 @@ package net.sf.jncu.protocol.v2_0.query;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * Newton returns a long value. The interpretation of the data depends on the
@@ -36,7 +36,7 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
  * 
  * @author moshew
  */
-public class DLongData extends DockCommandFromNewton {
+public class DLongData extends BaseDockCommandFromNewton {
 
 	/** <tt>kDLongData</tt> */
 	public static final String COMMAND = "ldta";

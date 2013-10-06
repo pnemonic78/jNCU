@@ -44,16 +44,19 @@ public class DSetVBOCompression extends DockCommandToNewtonLong {
 
 	/**
 	 * <tt>eUncompressedVBOs</tt><br>
+	 * <tt>kUncompressedVBOs</tt><br>
 	 * VBO sent uncompressed.
 	 */
 	public static final int UNCOMPRESSED = 0;
 	/**
 	 * <tt>eCompressedPackagesOnly</tt><br>
+	 * <tt>kCompressedPackagesOnly</tt><br>
 	 * Only package VBOs sent compressed.
 	 */
 	public static final int COMPRESSED_PACKAGES = 1;
 	/**
 	 * <tt>eCompressedVBOs</tt><br>
+	 * <tt>kCompressedVBOs</tt><br>
 	 * VBO sent compressed.
 	 */
 	public static final int COMPRESSED_VBO = 2;
