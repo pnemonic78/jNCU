@@ -64,7 +64,6 @@ import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
 import net.sf.jncu.sync.BackupException;
 import net.sf.jncu.sync.BackupHandler;
 import net.sf.jncu.sync.BackupWriter;
-import net.sf.swing.ProgressMonitor;
 
 /**
  * Backup module.
@@ -113,6 +112,9 @@ public class BackupModule extends IconModule {
 		 */
 		public void backupSoup(BackupModule module, Store store, AppName appName, Soup soup);
 	}
+
+	/** The default file extension for backup files. */
+	public static final String EXTENSION = ".zip";
 
 	protected enum State {
 		/** None. */
@@ -274,7 +276,7 @@ public class BackupModule extends IconModule {
 				try {
 					writer.soupEntry(store.getName(), soup, soupEntry);
 				} catch (BackupException e) {
-					showError("Soup entry", e);
+					showError("Backup write soup entry", e);
 					writeCancel();
 					return;
 				}
@@ -395,13 +397,11 @@ public class BackupModule extends IconModule {
 	 * Start the actual backup of data.
 	 */
 	@Override
-	public void run() {
-		if (!isEnabled())
-			return;
+	protected void runImpl() {
 		if (state != State.OPTIONS)
-			throw new BadPipeStateException("bad state " + state);
+			throw new BadPipeStateException("Backup run - bad state " + state);
 		if (options == null)
-			throw new NullPointerException("sync options required");
+			throw new NullPointerException("Backup run - sync options required");
 
 		this.state = State.BACKUP;
 		this.storesIter = null;
@@ -472,7 +472,7 @@ public class BackupModule extends IconModule {
 			try {
 				writer.endStore(store);
 			} catch (BackupException e) {
-				showError("End store", e);
+				showError("Backup next store", e);
 				writeCancel();
 				return;
 			}
@@ -500,7 +500,7 @@ public class BackupModule extends IconModule {
 			writer.startStore(store.getName());
 			writer.storeDefinition(store);
 		} catch (BackupException e) {
-			e.printStackTrace();
+			showError("Backup next store", e);
 			writeCancel();
 			return;
 		}
@@ -697,7 +697,7 @@ public class BackupModule extends IconModule {
 			writer.startSoup(store.getName(), soup.getName());
 			writer.soupDefinition(store.getName(), soup);
 		} catch (BackupException e) {
-			showError("Soup info", e);
+			showError("Backup soup info", e);
 			writeCancel();
 			return;
 		}
@@ -723,17 +723,12 @@ public class BackupModule extends IconModule {
 		try {
 			writer.endSoup(store.getName(), soup);
 		} catch (BackupException e) {
-			showError("End soup", e);
+			showError("Backup soup done", e);
 			writeCancel();
 			return;
 		}
 		state = State.BACKUP_SOUPS;
 		backupNextSoup();
-	}
-
-	@Override
-	protected ProgressMonitor getProgress() {
-		return null;// Never show the progress.
 	}
 
 	/**
@@ -744,9 +739,8 @@ public class BackupModule extends IconModule {
 	 */
 	public void addListener(BackupListener listener) {
 		super.addListener(listener);
-		if (!listeners.contains(listener)) {
+		if (!listeners.contains(listener))
 			listeners.add(listener);
-		}
 	}
 
 	/**
@@ -806,5 +800,15 @@ public class BackupModule extends IconModule {
 		for (BackupListener listener : listenersCopy) {
 			listener.backupSoup(this, store, appName, soup);
 		}
+	}
+
+	@Override
+	protected boolean allowProgressCommandReceiving() {
+		return false;
+	}
+
+	@Override
+	protected boolean allowProgressCommandSending() {
+		return false;
 	}
 }

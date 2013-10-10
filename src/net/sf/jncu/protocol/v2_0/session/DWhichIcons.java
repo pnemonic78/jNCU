@@ -86,7 +86,7 @@ public class DWhichIcons extends DockCommandToNewtonLong {
 	/**
 	 * All icons.
 	 */
-	public static final int ALL = INSTALL | KEYBOARD;
+	public static final int ALL = BACKUP | INSTALL | KEYBOARD;
 
 	/**
 	 * Creates a new command.

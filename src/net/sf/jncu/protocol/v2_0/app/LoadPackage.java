@@ -194,7 +194,7 @@ public class LoadPackage extends IconModule implements DockCommandListener {
 	 * Send the file contents in a non-blocking thread so that the command
 	 * receivers can continue to function.
 	 */
-	public void run() {
+	protected void runImpl() {
 		DLoadPackage load = new DLoadPackage();
 		load.setFile(file);
 		write(load);

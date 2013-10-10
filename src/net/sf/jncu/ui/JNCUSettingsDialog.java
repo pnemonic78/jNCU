@@ -42,6 +42,7 @@ import javax.swing.text.DocumentFilter;
 
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.Settings;
+import net.sf.jncu.Settings.BackupName;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
 import net.sf.swing.text.DocumentLengthFilter;
 
@@ -71,13 +72,12 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	private JPanel tabSecurity;
 	private JPanel tabGeneral;
 	private JPanel tabDock;
-	private JLabel labelPort;
-	private JLabel labelSpeed;
 	private JComboBox<String> listPort;
 	private JComboBox<Integer> listSpeed;
 	private JLabel labelBackupPath;
 	private JButton browseButton;
 	private JFileChooser browser;
+	private JComboBox<BackupName> listBackupName;
 	private JPasswordField passwordOld;
 	private JPasswordField passwordNew;
 	private JPasswordField passwordConfirm;
@@ -236,7 +236,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	 */
 	private JPanel getTabComm() {
 		if (tabComm == null) {
-			labelPort = new JLabel();
+			JLabel labelPort = new JLabel();
 			labelPort.setText(JNCUResources.getString("serialPortName"));
 			GridBagConstraints gbcLabelPort = new GridBagConstraints();
 			gbcLabelPort.gridx = 0;
@@ -253,7 +253,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 			gbcListPort.anchor = GridBagConstraints.WEST;
 			gbcListPort.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 
-			labelSpeed = new JLabel();
+			JLabel labelSpeed = new JLabel();
 			labelSpeed.setText(JNCUResources.getString("serialPortSpeed"));
 			GridBagConstraints gbcLabelSpeed = new GridBagConstraints();
 			gbcLabelSpeed.gridx = 0;
@@ -396,10 +396,11 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	private JPanel getTabGeneral() {
 		if (tabGeneral == null) {
 			JLabel labelFolder = new JLabel();
-			labelFolder.setText(JNCUResources.getString("backupFolder"));
+			labelFolder.setText(JNCUResources.getString("backup.folder"));
 			GridBagConstraints gbcLabelFolder = new GridBagConstraints();
 			gbcLabelFolder.gridx = 0;
 			gbcLabelFolder.gridy = 0;
+			gbcLabelFolder.gridwidth = 2;
 			gbcLabelFolder.anchor = GridBagConstraints.WEST;
 			gbcLabelFolder.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			gbcLabelFolder.weightx = 1.0;
@@ -408,6 +409,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 			GridBagConstraints gbcValueFolder = new GridBagConstraints();
 			gbcValueFolder.gridx = 0;
 			gbcValueFolder.gridy = 1;
+			gbcValueFolder.gridwidth = 2;
 			gbcValueFolder.anchor = GridBagConstraints.WEST;
 			gbcValueFolder.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			gbcValueFolder.weightx = 1.0;
@@ -417,20 +419,56 @@ public class JNCUSettingsDialog extends JNCUDialog {
 			GridBagConstraints gbcBrowseFolder = new GridBagConstraints();
 			gbcBrowseFolder.gridx = 0;
 			gbcBrowseFolder.gridy = 2;
+			gbcBrowseFolder.gridwidth = 2;
 			gbcBrowseFolder.anchor = GridBagConstraints.EAST;
 			gbcBrowseFolder.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 			gbcBrowseFolder.weightx = 1.0;
 			gbcBrowseFolder.weighty = 1.0;
+
+			JLabel labelName = new JLabel();
+			labelName.setText(JNCUResources.getString("backup.nameType"));
+			GridBagConstraints gbcLabelName = new GridBagConstraints();
+			gbcLabelName.gridx = 0;
+			gbcLabelName.gridy = 3;
+			gbcLabelName.weightx = 1.0;
+			gbcLabelName.weighty = 1.0;
+			gbcLabelName.anchor = GridBagConstraints.EAST;
+			gbcLabelName.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
+
+			GridBagConstraints gbcListName = new GridBagConstraints();
+			gbcListName.gridx = 1;
+			gbcListName.gridy = 3;
+			gbcListName.weightx = 1.0;
+			gbcListName.anchor = GridBagConstraints.WEST;
+			gbcListName.insets = new Insets(INSET_CELL_Y, INSET_CELL_X, INSET_CELL_Y, INSET_CELL_X);
 
 			JPanel tab = new JPanel();
 			tab.setLayout(new GridBagLayout());
 			tab.add(labelFolder, gbcLabelFolder);
 			tab.add(getBackupPath(), gbcValueFolder);
 			tab.add(getBrowseButton(), gbcBrowseFolder);
+			tab.add(labelName, gbcLabelName);
+			tab.add(getListBackupName(), gbcListName);
 			tab.setBorder(BorderFactory.createEmptyBorder(INSET_TAB, INSET_TAB, INSET_TAB, INSET_TAB));
 			tabGeneral = tab;
 		}
 		return tabGeneral;
+	}
+
+	/**
+	 * Get the list of backup name types.
+	 * 
+	 * @return the list.
+	 */
+	private JComboBox<BackupName> getListBackupName() {
+		if (listBackupName == null) {
+			JComboBox<BackupName> list = new JComboBox<BackupName>();
+			for (BackupName name : BackupName.values()) {
+				list.addItem(name);
+			}
+			listBackupName = list;
+		}
+		return listBackupName;
 	}
 
 	/**
@@ -547,6 +585,8 @@ public class JNCUSettingsDialog extends JNCUDialog {
 		settings.getCommunications().setPortIdentifier((String) getListPorts().getSelectedItem());
 		settings.getCommunications().setPortSpeed((Integer) getListSpeeds().getSelectedItem());
 
+		settings.getGeneral().setBackupName((BackupName) getListBackupName().getSelectedItem());
+
 		settings.getAutoDock().setBackup(getCheckDockBackup().isSelected());
 		settings.getAutoDock().setBackupSelective(getCheckDockBackupSelective().isSelected());
 		settings.getAutoDock().setSync(getCheckDockSync().isSelected());
@@ -653,7 +693,7 @@ public class JNCUSettingsDialog extends JNCUDialog {
 	private JCheckBox getCheckDockBackupSelective() {
 		if (checkDockBackupSelective == null) {
 			JCheckBox check = new JCheckBox();
-			check.setText(JNCUResources.getString("backupSelective"));
+			check.setText(JNCUResources.getString("backup.selective"));
 			check.setOpaque(false);
 			check.setEnabled(false);
 			checkDockBackupSelective = check;

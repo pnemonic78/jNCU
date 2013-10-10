@@ -22,6 +22,9 @@ package net.sf.jncu;
 import java.awt.Frame;
 import java.awt.Window;
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.TimeoutException;
 
 import javax.swing.JFileChooser;
@@ -29,6 +32,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import jssc.SerialPortException;
+import net.sf.jncu.Settings.BackupName;
 import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.CDLayer;
@@ -41,12 +45,15 @@ import net.sf.jncu.cdil.mnp.MNPPacket;
 import net.sf.jncu.cdil.mnp.MNPPacketLayer;
 import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.newton.os.NewtonInfo;
-import net.sf.jncu.protocol.DockCommandListener;
+import net.sf.jncu.newton.os.Soup;
+import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v2_0.IconModule;
+import net.sf.jncu.protocol.v2_0.app.AppName;
 import net.sf.jncu.protocol.v2_0.app.DLoadPackageFile;
 import net.sf.jncu.protocol.v2_0.app.LoadPackage;
 import net.sf.jncu.protocol.v2_0.data.DImportFile;
@@ -60,7 +67,8 @@ import net.sf.jncu.protocol.v2_0.io.win.WindowsFileChooser;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.jncu.protocol.v2_0.session.DWhichIcons;
 import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
-import net.sf.jncu.protocol.v2_0.sync.BackupDialog;
+import net.sf.jncu.protocol.v2_0.sync.BackupModule;
+import net.sf.jncu.protocol.v2_0.sync.BackupModule.BackupListener;
 import net.sf.jncu.protocol.v2_0.sync.DRestoreFile;
 import net.sf.jncu.ui.JNCUDeviceDialog;
 import net.sf.jncu.ui.JNCUFrame;
@@ -71,19 +79,20 @@ import net.sf.jncu.ui.JNCUSettingsDialog;
  * 
  * @author Moshe
  */
-public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockCommandListener, FileChooserListener, JNCUController {
+public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockCommandListener, FileChooserListener, JNCUController, BackupListener {
 
 	private final JNCUFrame frame;
 	private CDLayer layer;
 	private CDPipe pipe;
 	private Settings settings;
 	private KeyboardInput keyboardInput;
-	private BackupDialog backupDialog;
+	private BackupModule backup;
 	private LoadPackage packageLoader;
 	private JNCUSettingsDialog settingsDialog;
 	private JNCUDeviceDialog deviceDialog;
 	private FileChooser chooser;
 	private boolean reconnectAfterDisconnect;
+	private DateFormat dateFormat;
 
 	/**
 	 * Constructs a new application.
@@ -231,16 +240,30 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 
 	@Override
 	public void backupToDesktop() {
-		backupDialog = new BackupDialog(frame);
-		// TODO backupDialog.setStores(stores);
-		// TODO backupDialog.setApplications(apps);
-		// Don't block the command thread.
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				backupDialog.setVisible(true);
-			}
-		});
+		backup = new BackupModule(pipe, false, frame);
+		backup.addListener(this);
+
+		NewtonInfo info = DockingProtocol.getNewtonInfo();
+		BackupName backupName = getSettings().getGeneral().getBackupName();
+		String name = null;
+		switch (backupName) {
+		case DATE:
+			name = getDateFormat().format(new Date());
+			break;
+		case NEWTON_ID:
+			name = String.valueOf(info.getNewtonId());
+			break;
+		case NEWTON_NAME:
+			name = info.getName();
+			break;
+		}
+		File folder = getSettings().getGeneral().getBackupFolder();
+		File file = new File(folder, name + BackupModule.EXTENSION);
+		try {
+			backup.backup(file);
+		} catch (Exception e) {
+			showError(frame, "Backup", e);
+		}
 	}
 
 	@Override
@@ -261,6 +284,7 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	@Override
 	public void exit() {
 		stop();
+		System.exit(0);
 	}
 
 	/**
@@ -516,4 +540,29 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	public void cancelSelection(FileChooser chooser) {
 	}
 
+	@Override
+	public void backupStore(BackupModule module, Store store) {
+		module.setNote(String.format("Backing up store %s", store.getName()));
+	}
+
+	@Override
+	public void backupApplication(BackupModule module, Store store, AppName appName) {
+		module.setNote(String.format("Backing up %s on store %s", appName.getName(), store.getName()));
+	}
+
+	@Override
+	public void backupSoup(BackupModule module, Store store, AppName appName, Soup soup) {
+	}
+
+	/**
+	 * Get the date format for backup file names.
+	 * 
+	 * @return the format.
+	 */
+	public DateFormat getDateFormat() {
+		if (dateFormat == null) {
+			dateFormat = new SimpleDateFormat("yyyyMMdd");
+		}
+		return dateFormat;
+	}
 }

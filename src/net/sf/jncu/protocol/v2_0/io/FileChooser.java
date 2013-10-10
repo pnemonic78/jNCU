@@ -373,9 +373,8 @@ public abstract class FileChooser extends IconModule {
 	 */
 	public void addListener(FileChooserListener listener) {
 		super.addListener(listener);
-		if (!listeners.contains(listener)) {
+		if (!listeners.contains(listener))
 			listeners.add(listener);
-		}
 	}
 
 	/**
@@ -432,5 +431,9 @@ public abstract class FileChooser extends IconModule {
 		if (state == State.FINISHED)
 			return false;
 		return super.isEnabled();
+	}
+
+	@Override
+	protected void runImpl() {
 	}
 }

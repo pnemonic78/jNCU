@@ -133,7 +133,7 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 			if (pipe.allowSend())
 				pipe.write(command);
 		} catch (Exception e) {
-			showError("write", e);
+			showError("Write command", e);
 			if (!DOperationDone.COMMAND.equals(command.getCommand())) {
 				writeDone();
 			}
@@ -194,22 +194,33 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 		if (!isEnabled())
 			return;
 		progressCommandFrom = command;
-		ProgressMonitor monitor = getProgress();
-		if (monitor != null) {
-			monitor.setMaximum(total);
-			monitor.setProgress(progress);
-			monitor.setNote(String.format(progressReceivingFormat, (progress * 100) / total));
-			if (monitor.isCanceled()) {
-				cancel();
+		if (allowProgressCommandReceiving()) {
+			ProgressMonitor monitor = getProgress();
+			if (monitor != null) {
+				monitor.setMaximum(total);
+				monitor.setProgress(progress);
+				monitor.setNote(String.format(progressReceivingFormat, (progress * 100) / total));
 			}
 		}
+	}
+
+	/**
+	 * Allow updating the progress monitor for each command that is being
+	 * received?
+	 * 
+	 * @return {@code true} to show.
+	 */
+	protected boolean allowProgressCommandReceiving() {
+		return true;
 	}
 
 	@Override
 	public void commandReceived(DockCommandFromNewton command) {
 		if (command == progressCommandFrom) {
 			progressCommandFrom = null;
-			closeProgress();
+			if (allowProgressCommandReceiving()) {
+				closeProgress();
+			}
 		}
 		if (!isEnabled())
 			return;
@@ -231,22 +242,32 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 		if (!isEnabled())
 			return;
 		progressCommandTo = command;
-		final ProgressMonitor monitor = getProgress();
-		if (monitor != null) {
-			monitor.setMaximum(total);
-			monitor.setProgress(progress);
-			monitor.setNote(String.format(progressSendingFormat, (progress * 100) / total));
-			if (monitor.isCanceled()) {
-				cancel();
+		if (allowProgressCommandSending()) {
+			final ProgressMonitor monitor = getProgress();
+			if (monitor != null) {
+				monitor.setMaximum(total);
+				monitor.setProgress(progress);
+				monitor.setNote(String.format(progressSendingFormat, (progress * 100) / total));
 			}
 		}
+	}
+
+	/**
+	 * Allow updating the progress monitor for each command that is being sent?
+	 * 
+	 * @return {@code true} to show.
+	 */
+	protected boolean allowProgressCommandSending() {
+		return true;
 	}
 
 	@Override
 	public void commandSent(DockCommandToNewton command) {
 		if (command == progressCommandTo) {
 			progressCommandTo = null;
-			closeProgress();
+			if (allowProgressCommandSending()) {
+				closeProgress();
+			}
 		}
 		if (!isEnabled())
 			return;
@@ -325,7 +346,7 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	 * @return the progress.
 	 */
 	protected ProgressMonitor createProgress() {
-		return new ProgressMonitor(getOwner(), getTitle(), "0%%", 0, DockCommand.LENGTH_WORD, this);
+		return new ProgressMonitor(getOwner(), getTitle(), "", 0, DockCommand.LENGTH_WORD, this);
 	}
 
 	/**
@@ -413,4 +434,33 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	public void proressMonitorCancel(ProgressMonitor monitor) {
 		cancel();
 	}
+
+	/**
+	 * Set the dialog note.
+	 * 
+	 * @param note
+	 *            the note text.
+	 */
+	public void setNote(String note) {
+		ProgressMonitor monitor = getProgress();
+		if (monitor != null) {
+			monitor.setNote(note);
+		}
+	}
+
+	@Override
+	public void run() {
+		if (!isEnabled())
+			return;
+
+		ProgressMonitor monitor = getProgress();
+		if (monitor != null) {
+			monitor.setProgress(-1);
+		}
+
+		runImpl();
+	}
+
+	/** Run implementation. */
+	protected abstract void runImpl();
 }

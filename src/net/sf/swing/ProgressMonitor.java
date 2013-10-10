@@ -334,6 +334,7 @@ public class ProgressMonitor {
 		this.note = note;
 		if (noteLabel != null) {
 			noteLabel.setText(note);
+			dialog.pack();
 		}
 	}
 

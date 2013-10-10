@@ -208,6 +208,56 @@ public class Settings {
 	}
 
 	/**
+	 * Type of name for the backup file.
+	 * 
+	 * @author Moshe
+	 */
+	public static enum BackupName {
+		/** Date and time. */
+		DATE("backup.date"),
+		/** Newton name. */
+		NEWTON_NAME("device.name"),
+		/** Newton id. */
+		NEWTON_ID("device.id");
+
+		private final String labelKey;
+
+		/**
+		 * Constructs a new backup name.
+		 * 
+		 * @param labelKey
+		 *            the label key.
+		 */
+		private BackupName(String labelKey) {
+			this.labelKey = labelKey;
+		}
+
+		/**
+		 * Get the resource id.
+		 * 
+		 * @return the label key.
+		 */
+		public String getLabelKey() {
+			return labelKey;
+		}
+
+		/**
+		 * Get the user-friendly label.
+		 * 
+		 * @return the label text.
+		 */
+		public String getLabel() {
+			return JNCUResources.getString(labelKey);
+		}
+
+		@Override
+		public String toString() {
+			final String label = getLabel();
+			return (label == null) ? super.toString() : label;
+		}
+	}
+
+	/**
 	 * General settings.
 	 * 
 	 * @author Moshe
@@ -215,8 +265,11 @@ public class Settings {
 	public class General implements SettingsCategory {
 		/** Property key for backup path. */
 		private static final String KEY_BACKUP_PATH = "jncu.backup.path";
+		/** Property key for backup name. */
+		private static final String KEY_BACKUP_NAME = "jncu.backup.name";
 
 		private File backupFolder;
+		private BackupName backupName;
 
 		/**
 		 * Constructs a new category.
@@ -224,6 +277,7 @@ public class Settings {
 		public General() {
 			this.backupFolder = new File(mainFolder, "Backups");
 			backupFolder.mkdirs();
+			this.backupName = BackupName.DATE;
 		}
 
 		/**
@@ -255,14 +309,37 @@ public class Settings {
 			setBackupFolder(new File(backupFolder));
 		}
 
+		/**
+		 * Get the backup name type.
+		 * 
+		 * @return the name type.
+		 */
+		public BackupName getBackupName() {
+			return backupName;
+		}
+
+		/**
+		 * Set the backup name type.
+		 * 
+		 * @param backupName
+		 *            the name type.
+		 */
+		public void setBackupName(BackupName backupName) {
+			this.backupName = backupName;
+		}
+
 		@Override
 		public void read(Preferences prefs) {
 			setBackupFolder(prefs.get(KEY_BACKUP_PATH, getBackupFolder().getPath()));
+			String backupNameValue = prefs.get(KEY_BACKUP_NAME, getBackupName().name());
+			if (backupNameValue != null)
+				setBackupName(BackupName.valueOf(backupNameValue));
 		}
 
 		@Override
 		public void write(Preferences prefs) {
 			prefs.set(KEY_BACKUP_PATH, getBackupFolder().getPath());
+			prefs.set(KEY_BACKUP_NAME, getBackupName().name());
 		}
 	}
 
