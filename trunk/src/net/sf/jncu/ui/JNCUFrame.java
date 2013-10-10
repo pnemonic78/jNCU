@@ -30,8 +30,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
@@ -50,6 +48,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.WindowConstants;
 
 import net.sf.jncu.JNCUApp;
 import net.sf.jncu.JNCUController;
@@ -64,7 +63,7 @@ import net.sf.swing.SwingUtils;
  * 
  * @author moshew
  */
-public class JNCUFrame extends JFrame implements ActionListener, MouseListener, WindowListener {
+public class JNCUFrame extends JFrame implements ActionListener, WindowListener {
 
 	static {
 		SwingUtils.init();
@@ -94,7 +93,6 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener, 
 	private JMenuItem menuSyncSettings;
 	private JMenuItem menuDeviceInfo;
 	private JPanel statusPanel;
-	private JLabel statusLabel;
 	private JLabel statusConnection;
 	private JPanel quickMenuPane;
 	private JButton syncButton;
@@ -141,16 +139,14 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener, 
 	 */
 	private JMenu getMenuFile() {
 		if (menuFile == null) {
-			menuFile = new JMenu();
-			menuFile.setText(JNCUResources.getString("file"));
-			menuFile.setMnemonic(JNCUResources.getChar("fileMnemonic", KeyEvent.VK_F));
-			menuFile.add(getMenuImport());
-			menuFile.add(getMenuExport());
-			menuFile.addSeparator();
-			menuFile.add(getMenuSync());
-			menuFile.add(getMenuSyncSettings());
-			menuFile.addSeparator();
-			menuFile.add(getMenuExit());
+			JMenu menu = new JMenu();
+			menu.setText(JNCUResources.getString("file"));
+			menu.setMnemonic(JNCUResources.getChar("fileMnemonic", KeyEvent.VK_F));
+			menu.add(getMenuImport());
+			menu.add(getMenuExport());
+			menu.addSeparator();
+			menu.add(getMenuExit());
+			menuFile = menu;
 		}
 		return menuFile;
 	}
@@ -236,6 +232,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener, 
 			JMenu menu = new JMenu();
 			menu.setText(JNCUResources.getString("newton"));
 			menu.setMnemonic(JNCUResources.getChar("newtonMnemonic", KeyEvent.VK_N));
+			menu.add(getMenuSync());
 			menu.add(getMenuBackup());
 			menu.add(getMenuRestore());
 			menu.addSeparator();
@@ -245,6 +242,7 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener, 
 			menu.add(getMenuDeviceInfo());
 			menu.addSeparator();
 			menu.add(getMenuSettings());
+			menu.add(getMenuSyncSettings());
 			menuNewton = menu;
 		}
 		return menuNewton;
@@ -428,19 +426,6 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener, 
 			panel.setBorder(BorderFactory.createTitledBorder(JNCUResources.getString("connectStatus")));
 			panel.setOpaque(false);
 			panel.add(statusConnection, BorderLayout.CENTER);
-			JPanel statusConnectionPanel = panel;
-
-			label = new JLabel();
-			label.setMinimumSize(new Dimension(0, 24));
-			label.setPreferredSize(new Dimension(Integer.MAX_VALUE, 24));
-			label.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
-			statusLabel = label;
-
-			panel = new JPanel();
-			panel.setLayout(new BorderLayout());
-			panel.setOpaque(false);
-			panel.add(statusConnectionPanel, BorderLayout.CENTER);
-			// TODO panel.add(statusLabel, BorderLayout.SOUTH);
 			statusPanel = panel;
 		}
 		return statusPanel;
@@ -479,7 +464,8 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener, 
 	 */
 	private void init() {
 		setTitle(JNCUResources.getString("jncu"));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		addWindowListener(this);
 
 		List<Image> images = new ArrayList<Image>();
 		URL url;
@@ -532,7 +518,6 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener, 
 	 */
 	public void close() {
 		if (isShowing()) {
-			getController().exit();
 			SwingUtils.postWindowClosing(frame);
 		}
 	}
@@ -865,46 +850,10 @@ public class JNCUFrame extends JFrame implements ActionListener, MouseListener, 
 	}
 
 	/**
-	 * Set the status label.
-	 * 
-	 * @param status
-	 *            the status text.
-	 */
-	public void setStatus(String status) {
-		statusLabel.setText(status);
-	}
-
-	/**
 	 * Show the device information.
 	 */
 	private void showDevice() {
 		getController().showDevice();
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent event) {
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent event) {
-		final Object src = event.getSource();
-		if (src instanceof JMenuItem) {
-			JMenuItem menuItem = (JMenuItem) src;
-			setStatus(menuItem.getToolTipText());
-		}
-	}
-
-	@Override
-	public void mouseExited(MouseEvent event) {
-		setStatus(null);
-	}
-
-	@Override
-	public void mousePressed(MouseEvent event) {
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent event) {
 	}
 
 	/**

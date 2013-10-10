@@ -202,7 +202,7 @@ public class ImportFile extends IconModule {
 	}
 
 	@Override
-	public void run() {
+	protected void runImpl() {
 		if (state == State.INITIALISED) {
 			translators = TranslatorFactory.getInstance().getTranslatorsByFile(file);
 			if ((translators == null) || translators.isEmpty()) {

@@ -97,7 +97,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	 * Show the input window.
 	 */
 	@Override
-	public void run() {
+	protected void runImpl() {
 		pipe.ping();
 		state = State.INPUT;
 		dialog.setVisible(true);
