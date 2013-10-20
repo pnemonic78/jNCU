@@ -251,9 +251,12 @@ public class NSOFDecoder {
 			imm = new NSOFNil();
 		} else if (NSOFImmediate.isRefTrue(ref)) {
 			imm = new NSOFTrue();
+		} else if (NSOFImmediate.isRefWeird(ref)) {
+			val = ref >> 2;
+			imm = new NSOFWeirdImmediate(val);
 		} else {
 			val = ref >> 2;
-			imm = new NSOFImmediate(val, NSOFImmediate.IMMEDIATE_INTEGER);
+			imm = new NSOFWeirdImmediate(val);
 		}
 
 		return imm;

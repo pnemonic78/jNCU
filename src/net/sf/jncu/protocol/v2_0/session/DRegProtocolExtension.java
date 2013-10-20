@@ -49,7 +49,7 @@ public class DRegProtocolExtension extends BaseDockCommandToNewton {
 	/** <tt>kDRegProtocolExtension</tt> */
 	public static final String COMMAND = "pext";
 
-	private String extension;
+	private int extension;
 	private NSOFObject function;
 
 	/**
@@ -60,21 +60,21 @@ public class DRegProtocolExtension extends BaseDockCommandToNewton {
 	}
 
 	/**
-	 * Get the extension command.
+	 * Get the extension id.
 	 * 
 	 * @return the command.
 	 */
-	public String getExtension() {
+	public int getExtension() {
 		return extension;
 	}
 
 	/**
-	 * Set the extension command.
+	 * Set the extension id.
 	 * 
 	 * @param extension
 	 *            the command.
 	 */
-	public void setExtension(String extension) {
+	public void setExtension(int extension) {
 		this.extension = extension;
 	}
 
@@ -99,11 +99,7 @@ public class DRegProtocolExtension extends BaseDockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
-		char[] cmdName = getExtension().toCharArray();
-		data.write(cmdName[0] & 0xFF);
-		data.write(cmdName[1] & 0xFF);
-		data.write(cmdName[2] & 0xFF);
-		data.write(cmdName[3] & 0xFF);
+		htonl(getExtension(), data);
 		NSOFEncoder encoder = new NSOFEncoder();
 		encoder.flatten(getFunction(), data);
 	}

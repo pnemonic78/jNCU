@@ -26,7 +26,6 @@ import java.io.OutputStream;
 /**
  * Newton Streamed Object Format - Immediate.
  * <p>
- * <p>
  * Other than characters, the only immediate objects that you need are the true
  * object and the nil object, which are specified by the <tt>kFD_True</tt> and
  * <tt>kFD_NIL</tt> constants.
@@ -40,7 +39,7 @@ public class NSOFImmediate extends NSOFObject {
 
 	/**
 	 * Default immediate class.<br>
-	 * <tt>kFD_SymWeird_Immediate</tt>
+	 * <tt>kFD_Sym_Immediate</tt>
 	 */
 	public static final NSOFSymbol CLASS_IMMEDIATE = new NSOFSymbol("immediate");
 
@@ -54,6 +53,8 @@ public class NSOFImmediate extends NSOFObject {
 	public static final int IMMEDIATE_NIL = 0x2;
 	/** Magic Pointer immediate. */
 	public static final int IMMEDIATE_MAGIC_POINTER = 0x3;
+	/** Weird immediate. */
+	public static final int IMMEDIATE_WEIRD = 0x1;
 
 	private int value;
 	private int type;
@@ -112,6 +113,9 @@ public class NSOFImmediate extends NSOFObject {
 			break;
 		case IMMEDIATE_TRUE:
 			ref = 0x1A;
+			break;
+		case IMMEDIATE_WEIRD:
+			ref = (val << 2) | 0x2;
 			break;
 		}
 		XLong.encode(ref, out);
@@ -179,7 +183,7 @@ public class NSOFImmediate extends NSOFObject {
 	 * 
 	 * @param r
 	 *            the Ref of an Immediate.
-	 * @return true if a character.
+	 * @return {@code true} if a character.
 	 */
 	public static boolean isRefCharacter(int r) {
 		return (r & 0xF) == 0x6;
@@ -190,7 +194,7 @@ public class NSOFImmediate extends NSOFObject {
 	 * 
 	 * @param r
 	 *            the Ref of an Immediate.
-	 * @return true if an integer.
+	 * @return {@code true} if an integer.
 	 */
 	public static boolean isRefInteger(int r) {
 		return (r & 0x3) == 0x0;
@@ -201,7 +205,7 @@ public class NSOFImmediate extends NSOFObject {
 	 * 
 	 * @param r
 	 *            the Ref of an Immediate.
-	 * @return true if an integer.
+	 * @return {@code true} if an integer.
 	 */
 	public static boolean isRefMagicPointer(int r) {
 		return (r & 0x3) == 0x3;
@@ -212,7 +216,7 @@ public class NSOFImmediate extends NSOFObject {
 	 * 
 	 * @param r
 	 *            the Ref of an Immediate.
-	 * @return true if NIL.
+	 * @return {@code true} if NIL.
 	 */
 	public static boolean isRefNil(int r) {
 		return r == 0x2;
@@ -223,16 +227,27 @@ public class NSOFImmediate extends NSOFObject {
 	 * 
 	 * @param r
 	 *            the Ref of an Immediate.
-	 * @return true if TRUE.
+	 * @return {@code true} if TRUE.
 	 */
 	public static boolean isRefTrue(int r) {
 		return (r == 0x1A);
 	}
 
 	/**
+	 * Decoder can test if the immediate is TRUE.
+	 * 
+	 * @param r
+	 *            the Ref of an Immediate.
+	 * @return {@code true} if weird.
+	 */
+	public static boolean isRefWeird(int r) {
+		return ((r & 0x2) == 0x2) && (r != 0x2);
+	}
+
+	/**
 	 * Decoder can test if the immediate is a character.
 	 * 
-	 * @return true if a character.
+	 * @return {@code true} if a character.
 	 */
 	public boolean isCharacter() {
 		return type == IMMEDIATE_CHARACTER;
@@ -241,7 +256,7 @@ public class NSOFImmediate extends NSOFObject {
 	/**
 	 * Decoder can test if the immediate is an integer.
 	 * 
-	 * @return true if an integer.
+	 * @return {@code true} if an integer.
 	 */
 	public boolean isInteger() {
 		return type == IMMEDIATE_INTEGER;
@@ -250,7 +265,7 @@ public class NSOFImmediate extends NSOFObject {
 	/**
 	 * Decoder can test if the immediate is an integer.
 	 * 
-	 * @return true if an integer.
+	 * @return {@code true} if an integer.
 	 */
 	public boolean isMagicPointer() {
 		return type == IMMEDIATE_MAGIC_POINTER;
@@ -259,7 +274,7 @@ public class NSOFImmediate extends NSOFObject {
 	/**
 	 * Decoder can test if the immediate is a NIL.
 	 * 
-	 * @return true if NIL.
+	 * @return {@code true} if NIL.
 	 */
 	public boolean isNil() {
 		return type == IMMEDIATE_NIL;
@@ -268,7 +283,7 @@ public class NSOFImmediate extends NSOFObject {
 	/**
 	 * Decoder can test if the immediate is TRUE.
 	 * 
-	 * @return true if TRUE.
+	 * @return {@code true} if TRUE.
 	 */
 	public boolean isTrue() {
 		return type == IMMEDIATE_TRUE;
@@ -289,7 +304,7 @@ public class NSOFImmediate extends NSOFObject {
 	 * 
 	 * @param obj
 	 *            the object to test.
-	 * @return true if NIL.
+	 * @return {@code true} if NIL.
 	 */
 	public static boolean isNil(NSOFObject obj) {
 		if (obj == null)

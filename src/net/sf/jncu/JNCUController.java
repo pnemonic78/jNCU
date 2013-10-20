@@ -26,6 +26,7 @@ import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
+import net.sf.jncu.newton.os.NewtonInfo;
 
 /**
  * jNCU controller interface.
@@ -96,6 +97,13 @@ public interface JNCUController {
 	 * Install package on the Newton.
 	 */
 	public void installPackage();
+
+	/**
+	 * Get the device information.
+	 * 
+	 * @return the Newton information.
+	 */
+	public NewtonInfo getNewtonInfo();
 
 	/**
 	 * Show the Newton information.

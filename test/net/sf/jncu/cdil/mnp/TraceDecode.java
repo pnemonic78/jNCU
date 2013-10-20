@@ -34,7 +34,7 @@ import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandToNewton;
-import net.sf.swing.ProgressMonitor;
+import net.sf.jncu.ui.JNCUModuleDialog;
 
 /**
  * Decode trace dumps.
@@ -166,7 +166,7 @@ public class TraceDecode {
 		private MNPPipe pipe;
 		private final TraceDecodePacketLayer packetLayer;
 		private final CDCommandLayer<MNPPacket, MNPPacketLayer> cmdLayer;
-		private ProgressMonitor progress;
+		private JNCUModuleDialog progress;
 		private boolean done;
 
 		public DecodePayload(InputStream receivedFromNewton, InputStream sentToNewton) throws Exception {
@@ -266,7 +266,7 @@ public class TraceDecode {
 		@Override
 		public void commandReceiving(DockCommandFromNewton command, int progress, int total) {
 			System.out.println(DIRECTION_IN + "\tcmd rcv:" + command + " " + progress + "/" + total);
-			ProgressMonitor monitor = getProgress();
+			JNCUModuleDialog monitor = getProgress();
 			if (monitor != null) {
 				monitor.setMaximum(total);
 				monitor.setProgress(progress);
@@ -282,7 +282,7 @@ public class TraceDecode {
 		@Override
 		public void commandSending(DockCommandToNewton command, int progress, int total) {
 			System.out.println(DIRECTION_OUT + "\tcmd snd:" + command + " " + progress + "/" + total);
-			ProgressMonitor monitor = getProgress();
+			JNCUModuleDialog monitor = getProgress();
 			if (monitor != null) {
 				monitor.setMaximum(total);
 				monitor.setProgress(progress);
@@ -368,9 +368,9 @@ public class TraceDecode {
 		 * 
 		 * @return the progress.
 		 */
-		protected ProgressMonitor getProgress() {
+		protected JNCUModuleDialog getProgress() {
 			if (progress == null) {
-				progress = new ProgressMonitor(null, "Decode Payload", null, 0, 255);
+				progress = new JNCUModuleDialog(null, "Decode Payload", null, 0, 255);
 			}
 			return progress;
 		}

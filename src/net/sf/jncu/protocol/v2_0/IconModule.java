@@ -24,27 +24,29 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.swing.Icon;
+import javax.swing.SwingUtilities;
+
 import net.sf.jncu.JNCUApp;
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.cdil.CDPipe;
-import net.sf.jncu.protocol.DockCommandListener;
-import net.sf.jncu.protocol.DockCommand;
 import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
-import net.sf.swing.ProgressMonitor;
-import net.sf.swing.ProgressMonitor.ProgressMonitorListener;
+import net.sf.jncu.ui.JNCUModuleDialog;
+import net.sf.jncu.ui.JNCUModuleDialog.ModuleProgressListener;
 
 /**
  * Module that does some function when user clicks an icon.
  * 
  * @author Moshe
  */
-public abstract class IconModule extends Thread implements DockCommandListener, ProgressMonitorListener {
+public abstract class IconModule extends Thread implements DockCommandListener, ModuleProgressListener {
 
 	/**
 	 * Icon module event.
@@ -70,9 +72,7 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	private final String title;
 	protected final CDPipe pipe;
 	private final List<IconModuleListener> listeners = new ArrayList<IconModuleListener>();
-	private ProgressMonitor progressMonitor;
-	private DockCommandFromNewton progressCommandFrom;
-	private DockCommandToNewton progressCommandTo;
+	private JNCUModuleDialog progressMonitor;
 	private Window owner;
 	private String progressReceivingFormat;
 	private String progressSendingFormat;
@@ -158,8 +158,6 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	protected void done() {
 		pipe.removeCommandListener(this);
 		if (progressMonitor != null) {
-			progressCommandFrom = null;
-			progressCommandTo = null;
 			closeProgress();
 		}
 		IconModule.this.interrupt();
@@ -193,9 +191,8 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	public void commandReceiving(DockCommandFromNewton command, int progress, int total) {
 		if (!isEnabled())
 			return;
-		progressCommandFrom = command;
 		if (allowProgressCommandReceiving()) {
-			ProgressMonitor monitor = getProgress();
+			JNCUModuleDialog monitor = getProgress();
 			if (monitor != null) {
 				monitor.setMaximum(total);
 				monitor.setProgress(progress);
@@ -216,12 +213,6 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 
 	@Override
 	public void commandReceived(DockCommandFromNewton command) {
-		if (command == progressCommandFrom) {
-			progressCommandFrom = null;
-			if (allowProgressCommandReceiving()) {
-				closeProgress();
-			}
-		}
 		if (!isEnabled())
 			return;
 
@@ -241,9 +232,8 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	public void commandSending(DockCommandToNewton command, int progress, int total) {
 		if (!isEnabled())
 			return;
-		progressCommandTo = command;
 		if (allowProgressCommandSending()) {
-			final ProgressMonitor monitor = getProgress();
+			final JNCUModuleDialog monitor = getProgress();
 			if (monitor != null) {
 				monitor.setMaximum(total);
 				monitor.setProgress(progress);
@@ -263,12 +253,6 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 
 	@Override
 	public void commandSent(DockCommandToNewton command) {
-		if (command == progressCommandTo) {
-			progressCommandTo = null;
-			if (allowProgressCommandSending()) {
-				closeProgress();
-			}
-		}
 		if (!isEnabled())
 			return;
 
@@ -329,7 +313,7 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	 * 
 	 * @return the progress.
 	 */
-	protected ProgressMonitor getProgress() {
+	protected JNCUModuleDialog getProgress() {
 		if (progressMonitor == null) {
 			synchronized (this) {
 				progressMonitor = createProgress();
@@ -345,8 +329,8 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	 * 
 	 * @return the progress.
 	 */
-	protected ProgressMonitor createProgress() {
-		return new ProgressMonitor(getOwner(), getTitle(), "", 0, DockCommand.LENGTH_WORD, this);
+	protected JNCUModuleDialog createProgress() {
+		return new JNCUModuleDialog(getOwner(), createDialogIcon(), getTitle(), null, 0, 0, this);
 	}
 
 	/**
@@ -354,8 +338,7 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	 */
 	protected void closeProgress() {
 		if (progressMonitor != null) {
-			if ((progressCommandFrom == null) && (progressCommandTo == null))
-				progressMonitor.close();
+			progressMonitor.close();
 			progressMonitor = null;
 		}
 	}
@@ -431,8 +414,9 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	}
 
 	@Override
-	public void proressMonitorCancel(ProgressMonitor monitor) {
+	public boolean moduleProgressCancel(JNCUModuleDialog dialog) {
 		cancel();
+		return false;
 	}
 
 	/**
@@ -442,7 +426,7 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 	 *            the note text.
 	 */
 	public void setNote(String note) {
-		ProgressMonitor monitor = getProgress();
+		JNCUModuleDialog monitor = getProgress();
 		if (monitor != null) {
 			monitor.setNote(note);
 		}
@@ -453,14 +437,39 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
 		if (!isEnabled())
 			return;
 
-		ProgressMonitor monitor = getProgress();
+		final JNCUModuleDialog monitor = getProgress();
 		if (monitor != null) {
-			monitor.setProgress(-1);
+			// Dialog is modal, but we need module to run asynchronously.
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					monitor.setVisible(true);
+				}
+			});
 		}
 
-		runImpl();
+		try {
+			runImpl();
+		} catch (Exception e) {
+			showError("Module run", e);
+			writeCancel();
+		}
 	}
 
-	/** Run implementation. */
-	protected abstract void runImpl();
+	/**
+	 * Run implementation.
+	 * 
+	 * @throws Exception
+	 *             if an error occurs.
+	 */
+	protected abstract void runImpl() throws Exception;
+
+	/**
+	 * Get the dialog icon.
+	 * 
+	 * @return the icon - {@code null} otherwise.
+	 */
+	protected Icon createDialogIcon() {
+		return null;
+	}
 }

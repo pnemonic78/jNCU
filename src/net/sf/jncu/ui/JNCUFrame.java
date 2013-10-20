@@ -55,7 +55,6 @@ import net.sf.jncu.JNCUController;
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.protocol.v2_0.session.DWhichIcons;
-import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
 import net.sf.swing.SwingUtils;
 
 /**
@@ -444,7 +443,7 @@ public class JNCUFrame extends JFrame implements ActionListener, WindowListener 
 				statusConnectedIcon = JNCUResources.getIcon("/connected.png");
 			}
 
-			NewtonInfo info = DockingProtocol.getNewtonInfo();
+			NewtonInfo info = getController().getNewtonInfo();
 			String deviceName = info.getName();
 			statusConnection.setIcon(statusConnectedIcon);
 			statusConnection.setText(String.format(JNCUResources.getString("connectConnected"), deviceName));

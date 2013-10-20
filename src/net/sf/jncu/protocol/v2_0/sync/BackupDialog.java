@@ -31,8 +31,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -72,13 +72,14 @@ public class BackupDialog extends JNCUDialog {
 
 	private final MouseListener listMouseClicked = new MouseAdapter() {
 		public void mouseClicked(MouseEvent event) {
-			JList list = (JList) event.getSource();
+			@SuppressWarnings("unchecked")
+			JList<JCheckBox> list = (JList<JCheckBox>) event.getSource();
 
 			// Get index of item clicked
 			int index = list.locationToIndex(event.getPoint());
 			if (index < 0)
 				return;
-			JCheckBox item = (JCheckBox) list.getModel().getElementAt(index);
+			JCheckBox item = list.getModel().getElementAt(index);
 			if (item == null)
 				return;
 
@@ -97,13 +98,14 @@ public class BackupDialog extends JNCUDialog {
 			if ((key != KeyEvent.VK_SPACE) && (key != KeyEvent.VK_ENTER))
 				return;
 
-			JList list = (JList) event.getSource();
+			@SuppressWarnings("unchecked")
+			JList<JCheckBox> list = (JList<JCheckBox>) event.getSource();
 
 			// Get index of item clicked
 			int index = list.getSelectedIndex();
 			if (index < 0)
 				return;
-			JCheckBox item = (JCheckBox) list.getModel().getElementAt(index);
+			JCheckBox item = list.getModel().getElementAt(index);
 			if (item == null)
 				return;
 
@@ -115,8 +117,8 @@ public class BackupDialog extends JNCUDialog {
 		}
 	};
 
-	private final Map<String, Store> stores = new TreeMap<String, Store>();
-	private final Map<String, AppName> apps = new TreeMap<String, AppName>();
+	private final Map<JCheckBox, Store> stores = new HashMap<JCheckBox, Store>();
+	private final Map<JCheckBox, AppName> apps = new HashMap<JCheckBox, AppName>();
 	private boolean success;
 
 	/**
@@ -186,7 +188,7 @@ public class BackupDialog extends JNCUDialog {
 		setMinimumSize(new Dimension(380, 300));
 		pack();
 		setLocationRelativeTo(getOwner());
-		getBackupButton().requestFocus();
+		getCancelButton().requestFocus();
 	}
 
 	/**
@@ -238,11 +240,25 @@ public class BackupDialog extends JNCUDialog {
 			getListStores().removeAll();
 		} else {
 			DefaultListModel<JCheckBox> modelStores = new DefaultListModel<JCheckBox>();
-			for (Store store : stores)
-				this.stores.put(store.getName(), store);
-			for (String name : this.stores.keySet())
-				modelStores.addElement(new JCheckBox(name, true));
+			JCheckBox check;
+			for (Store store : stores) {
+				check = new JCheckBox(store.getName(), true);
+				modelStores.addElement(check);
+				this.stores.put(check, store);
+			}
 			getListStores().setModel(modelStores);
+		}
+
+		boolean hasStores = !this.stores.isEmpty();
+		boolean hasApps = !this.apps.isEmpty();
+		getSelectAllStoresButton().setEnabled(hasStores);
+		getClearAllStoresButton().setEnabled(hasStores);
+		if (hasStores && hasApps) {
+			getBackupButton().setEnabled(true);
+			getBackupButton().requestFocus();
+		} else {
+			getBackupButton().setEnabled(false);
+			getCancelButton().requestFocus();
 		}
 
 		pack();
@@ -252,22 +268,35 @@ public class BackupDialog extends JNCUDialog {
 	/**
 	 * Set the list of application names.
 	 * 
-	 * @param names
+	 * @param appNames
 	 *            the application names.
 	 */
-	public void setApplications(Collection<AppName> names) {
+	public void setApplications(Collection<AppName> appNames) {
 		this.apps.clear();
 
-		if (names == null) {
+		if (appNames == null) {
 			getListInformation().removeAll();
 		} else {
-			for (AppName name : names)
-				this.apps.put(name.getName(), name);
 			DefaultListModel<JCheckBox> modelApps = new DefaultListModel<JCheckBox>();
-			for (String name : this.apps.keySet()) {
-				modelApps.addElement(new JCheckBox(name, true));
+			JCheckBox check;
+			for (AppName appName : appNames) {
+				check = new JCheckBox(appName.getName(), true);
+				modelApps.addElement(check);
+				apps.put(check, appName);
 			}
 			getListInformation().setModel(modelApps);
+		}
+
+		boolean hasStores = !this.stores.isEmpty();
+		boolean hasApps = !this.apps.isEmpty();
+		getSelectAllInfoButton().setEnabled(hasApps);
+		getClearAllInfoButton().setEnabled(hasApps);
+		if (hasStores && hasApps) {
+			getBackupButton().setEnabled(true);
+			getBackupButton().requestFocus();
+		} else {
+			getBackupButton().setEnabled(false);
+			getCancelButton().requestFocus();
 		}
 
 		pack();
@@ -280,12 +309,12 @@ public class BackupDialog extends JNCUDialog {
 	 * @param list
 	 *            the list.
 	 */
-	private void selectAll(JList list) {
-		ListModel model = list.getModel();
+	private void selectAll(JList<JCheckBox> list) {
+		ListModel<JCheckBox> model = list.getModel();
 		int size = model.getSize();
 		JCheckBox check;
 		for (int i = 0; i < size; i++) {
-			check = (JCheckBox) model.getElementAt(i);
+			check = model.getElementAt(i);
 			check.setSelected(true);
 		}
 		list.repaint();
@@ -297,12 +326,12 @@ public class BackupDialog extends JNCUDialog {
 	 * @param list
 	 *            the list.
 	 */
-	private void clearAll(JList list) {
-		ListModel model = list.getModel();
+	private void clearAll(JList<JCheckBox> list) {
+		ListModel<JCheckBox> model = list.getModel();
 		int size = model.getSize();
 		JCheckBox check;
 		for (int i = 0; i < size; i++) {
-			check = (JCheckBox) model.getElementAt(i);
+			check = model.getElementAt(i);
 			check.setSelected(false);
 		}
 		list.repaint();
@@ -318,14 +347,14 @@ public class BackupDialog extends JNCUDialog {
 			return null;
 
 		Collection<Store> storesSelected = new ArrayList<Store>();
-		ListModel modelStores = getListStores().getModel();
-		ListModel modelApps = getListInformation().getModel();
+		ListModel<JCheckBox> modelStores = getListStores().getModel();
+		ListModel<JCheckBox> modelApps = getListInformation().getModel();
 		int sizeStores = modelStores.getSize();
 		int sizeApps = modelApps.getSize();
-		String storeName, appName;
 		JCheckBox check;
+		Store storeNewton;
 		Store store;
-		AppName app;
+		AppName appName;
 		NSOFArray soups;
 		NSOFString soupName;
 		int countStores = 0;
@@ -333,25 +362,27 @@ public class BackupDialog extends JNCUDialog {
 		boolean packages = false;
 
 		for (int i = 0; i < sizeStores; i++) {
-			check = (JCheckBox) modelStores.getElementAt(i);
+			check = modelStores.getElementAt(i);
 			if (check.isSelected()) {
 				countStores++;
-				storeName = check.getText();
-				store = new Store(storeName);
+				storeNewton = stores.get(check);
+				// We don't want to mistakenly populate the Newton store with
+				// fake soups.
+				store = new Store(storeNewton.getName());
+				store.fromFrame(storeNewton.toFrame());
 				storesSelected.add(store);
 
 				countApps = 0;
 				for (int a = 0; a < sizeApps; a++) {
-					check = (JCheckBox) modelApps.getElementAt(a);
+					check = modelApps.getElementAt(a);
 					if (check.isSelected()) {
 						countApps++;
-						appName = check.getText();
+						appName = apps.get(check);
+						soups = appName.getSoups();
 
-						if (!packages && AppName.NAME_PACKAGES.equals(appName))
+						if (!packages && AppName.CLASS_PACKAGES.equals(appName.getObjectClass()))
 							packages = true;
 
-						app = apps.get(appName);
-						soups = app.getSoups();
 						if (soups == null)
 							continue;
 						for (NSOFObject o : soups.toList()) {
@@ -399,6 +430,7 @@ public class BackupDialog extends JNCUDialog {
 			button.setText(JNCUResources.getString("backup"));
 			button.setMnemonic(JNCUResources.getChar("backupMnemonic", KeyEvent.VK_B));
 			button.setIcon(JNCUResources.getIcon("/dialog/play.png"));
+			button.setEnabled(false);
 			backupButton = button;
 		}
 		return backupButton;
@@ -414,6 +446,7 @@ public class BackupDialog extends JNCUDialog {
 			JButton button = createButton();
 			button.setText(JNCUResources.getString("selectAll"));
 			button.setIcon(JNCUResources.getIcon("/dialog/select-all.png"));
+			button.setEnabled(false);
 			selectAllStoresButton = button;
 		}
 		return selectAllStoresButton;
@@ -429,6 +462,7 @@ public class BackupDialog extends JNCUDialog {
 			JButton button = createButton();
 			button.setText(JNCUResources.getString("clearAll"));
 			button.setIcon(JNCUResources.getIcon("/dialog/clear-all.png"));
+			button.setEnabled(false);
 			clearAllStoresButton = button;
 		}
 		return clearAllStoresButton;
@@ -444,6 +478,7 @@ public class BackupDialog extends JNCUDialog {
 			JButton button = createButton();
 			button.setText(JNCUResources.getString("selectAll"));
 			button.setIcon(JNCUResources.getIcon("/dialog/select-all.png"));
+			button.setEnabled(false);
 			selectAllInfoButton = button;
 		}
 		return selectAllInfoButton;
@@ -459,6 +494,7 @@ public class BackupDialog extends JNCUDialog {
 			JButton button = createButton();
 			button.setText(JNCUResources.getString("clearAll"));
 			button.setIcon(JNCUResources.getIcon("/dialog/clear-all.png"));
+			button.setEnabled(false);
 			clearAllInfoButton = button;
 		}
 		return clearAllInfoButton;

@@ -152,13 +152,14 @@ public class NSOFFrame extends NSOFPointer implements NSOFCollection {
 	 */
 	public NSOFObject put(NSOFSymbol name, NSOFObject value) {
 		NSOFObject old = slots.put(name, (value == null) ? NSOFNil.NIL : value);
-		if (SLOT_CLASS.equals(name)) {
+		if ((value != null) && SLOT_CLASS.equals(name)) {
 			NSOFSymbol oClassCurrent = getObjectClass();
 			NSOFSymbol oClass = null;
-			if (value instanceof NSOFSymbol)
+			if (value instanceof NSOFSymbol) {
 				oClass = (NSOFSymbol) value;
-			else
+			} else if (value instanceof NSOFString) {
 				oClass = new NSOFSymbol(((NSOFString) value).getValue());
+			}
 			if (!oClassCurrent.equals(oClass))
 				setObjectClass(oClass);
 		}
@@ -325,7 +326,8 @@ public class NSOFFrame extends NSOFPointer implements NSOFCollection {
 	 *            the source frame.
 	 */
 	public void putAll(NSOFFrame frame) {
-		this.slots.putAll(frame.slots);
+		for (NSOFSymbol key : frame.getKeys())
+			put(key, frame.get(key));
 	}
 
 	/**

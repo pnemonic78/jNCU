@@ -337,6 +337,14 @@ public class Soup implements Comparable<Soup> {
 			Soup that = (Soup) obj;
 			return compareTo(that) == 0;
 		}
+		if (obj instanceof String) {
+			String that = (String) obj;
+			return getName().compareTo(that) == 0;
+		}
+		if (obj instanceof NSOFString) {
+			NSOFString that = (NSOFString) obj;
+			return getName().compareTo(that.getValue()) == 0;
+		}
 		return super.equals(obj);
 	}
 

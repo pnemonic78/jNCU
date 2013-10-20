@@ -31,7 +31,8 @@ package net.sf.jncu.fdil;
 public class NSOFInteger extends NSOFImmediate {
 
 	/**
-	 * Default integer class.
+	 * Default integer class.<br>
+	 * <tt>kFD_SymInteger</tt>
 	 */
 	public static final NSOFSymbol CLASS_INTEGER = new NSOFSymbol("integer");
 

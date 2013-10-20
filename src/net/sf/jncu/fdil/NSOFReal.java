@@ -32,7 +32,10 @@ import net.sf.jncu.util.NumberUtils;
  */
 public class NSOFReal extends NSOFBinaryObject {
 
-	/** Default real number class. */
+	/**
+	 * Default real number class.<br>
+	 * <tt>kFD_SymReal</tt>
+	 */
 	public static final NSOFSymbol CLASS_REAL = new NSOFSymbol("real");
 
 	private double value;

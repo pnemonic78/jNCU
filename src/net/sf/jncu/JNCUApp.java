@@ -64,11 +64,12 @@ import net.sf.jncu.protocol.v2_0.io.FileChooser.FileChooserListener;
 import net.sf.jncu.protocol.v2_0.io.KeyboardInput;
 import net.sf.jncu.protocol.v2_0.io.unix.UnixFileChooser;
 import net.sf.jncu.protocol.v2_0.io.win.WindowsFileChooser;
+import net.sf.jncu.protocol.v2_0.session.DNewtonName;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.jncu.protocol.v2_0.session.DWhichIcons;
-import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
 import net.sf.jncu.protocol.v2_0.sync.BackupModule;
 import net.sf.jncu.protocol.v2_0.sync.BackupModule.BackupListener;
+import net.sf.jncu.protocol.v2_0.sync.DRequestToSync;
 import net.sf.jncu.protocol.v2_0.sync.DRestoreFile;
 import net.sf.jncu.ui.JNCUDeviceDialog;
 import net.sf.jncu.ui.JNCUFrame;
@@ -93,6 +94,7 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	private FileChooser chooser;
 	private boolean reconnectAfterDisconnect;
 	private DateFormat dateFormat;
+	private NewtonInfo deviceInfo;
 
 	/**
 	 * Constructs a new application.
@@ -240,10 +242,20 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 
 	@Override
 	public void backupToDesktop() {
-		backup = new BackupModule(pipe, false, frame);
+		backupToDesktop(false);
+	}
+
+	/**
+	 * Backup from Newton to desktop.
+	 * 
+	 * @param requested
+	 *            was backup requested by Newton?
+	 */
+	protected void backupToDesktop(boolean requested) {
+		backup = new BackupModule(pipe, requested, frame);
 		backup.addListener(this);
 
-		NewtonInfo info = DockingProtocol.getNewtonInfo();
+		NewtonInfo info = deviceInfo;
 		BackupName backupName = getSettings().getGeneral().getBackupName();
 		String name = null;
 		switch (backupName) {
@@ -394,9 +406,13 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	}
 
 	@Override
+	public NewtonInfo getNewtonInfo() {
+		return deviceInfo;
+	}
+
+	@Override
 	public void showDevice() {
-		NewtonInfo info = DockingProtocol.getNewtonInfo();
-		getDeviceDialog().setDeviceInfo(info);
+		getDeviceDialog().setDeviceInfo(deviceInfo);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -408,6 +424,7 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	@Override
 	public void pipeDisconnected(CDPipe<MNPPacket, MNPPacketLayer> pipe) {
 		frame.setConnected(false);
+		deviceInfo = null;
 		if (reconnectAfterDisconnect) {
 			try {
 				start();
@@ -462,7 +479,10 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	public void commandReceived(DockCommandFromNewton command) {
 		final String cmd = command.getCommand();
 
-		if (DResult.COMMAND.equals(cmd)) {
+		if (DNewtonName.COMMAND.equals(cmd)) {
+			final DNewtonName newtonName = (DNewtonName) command;
+			deviceInfo = newtonName.getInformation();
+		} else if (DResult.COMMAND.equals(cmd)) {
 			final DResult res = (DResult) command;
 			if (res.getErrorCode() != DResult.OK) {
 				JNCUApp.showError(frame, "Error: " + res.getErrorCode(), res.getError());
@@ -478,6 +498,8 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 			else
 				chooser = new UnixFileChooser(pipe, FileChooser.PACKAGES, frame);
 			chooser.addListener(this);
+		} else if (DRequestToSync.COMMAND.equals(cmd)) {
+			backupToDesktop(true);
 		}
 	}
 
@@ -491,7 +513,7 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 
 	@Override
 	public void commandEOF() {
-		exit();
+		// Pipe is already disconnected.
 	}
 
 	/**
@@ -542,12 +564,12 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 
 	@Override
 	public void backupStore(BackupModule module, Store store) {
-		module.setNote(String.format("Backing up store %s", store.getName()));
+		module.setNote(String.format(JNCUResources.getString("backupStore"), store.getName()));
 	}
 
 	@Override
 	public void backupApplication(BackupModule module, Store store, AppName appName) {
-		module.setNote(String.format("Backing up %s on store %s", appName.getName(), store.getName()));
+		module.setNote(String.format(JNCUResources.getString("backupApplication"), appName.getName(), store.getName()));
 	}
 
 	@Override
