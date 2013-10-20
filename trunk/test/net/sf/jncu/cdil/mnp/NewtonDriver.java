@@ -47,6 +47,7 @@ import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v1_0.sync.DLastSyncTime;
 import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 import net.sf.jncu.protocol.v2_0.app.DRequestToInstall;
+import net.sf.jncu.protocol.v2_0.io.DKeyboardPassthrough;
 import net.sf.jncu.protocol.v2_0.io.DSetStoreGetNames;
 import net.sf.jncu.protocol.v2_0.query.DRefResult;
 import net.sf.jncu.protocol.v2_0.session.DDesktopInfo;
@@ -142,6 +143,7 @@ public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 			0x73, 0x00, 0x73, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x00, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x00, 0x73, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x00, 0x6e, 0x61, 0x6d, 0x65, 0x00, 0x73,
 			0x74, 0x72, 0x69, 0x6e, 0x67, 0x00, 0x00, 0x00 };
 	private static final byte[] COMMAND_TIME = { 'n', 'e', 'w', 't', 'd', 'o', 'c', 'k', 't', 'i', 'm', 'e', 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00 };
+	private static final byte[] COMMAND_KYBD = { 'n', 'e', 'w', 't', 'd', 'o', 'c', 'k', 'k', 'y', 'b', 'd', 0x00, 0x00, 0x00, 0x00 };
 
 	private SerialPort port;
 	private boolean running = false;
@@ -539,8 +541,16 @@ public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 		logger.log("cr", null, command);
 		final String cmd = command.getCommand();
 
-		if (DDisconnect.COMMAND.equals(cmd)) {
-			done();
+		try {
+			if (DDisconnect.COMMAND.equals(cmd)) {
+				done();
+			} else if (DKeyboardPassthrough.COMMAND.equals(cmd)) {
+				sendKeyboard();
+			}
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} catch (TimeoutException te) {
+			te.printStackTrace();
 		}
 	}
 
@@ -673,6 +683,14 @@ public class NewtonDriver implements MNPPacketListener, DockCommandListener {
 		userCommand++;
 		MNPLinkTransferPacket packet = (MNPLinkTransferPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LT);
 		packet.setData(cmd);
+		send(packet);
+	}
+
+	private void sendKeyboard() throws IOException, TimeoutException {
+		validateCommand(COMMAND_KYBD);
+		userCommand++;
+		MNPLinkTransferPacket packet = (MNPLinkTransferPacket) MNPPacketFactory.getInstance().createLinkPacket(MNPPacket.LT);
+		packet.setData(COMMAND_KYBD);
 		send(packet);
 	}
 }

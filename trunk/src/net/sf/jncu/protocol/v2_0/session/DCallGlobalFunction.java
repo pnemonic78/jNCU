@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import net.sf.jncu.fdil.NSOFEncoder;
-import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
@@ -95,8 +94,8 @@ public class DCallGlobalFunction extends BaseDockCommandToNewton {
 
 	@Override
 	protected void writeCommandData(OutputStream data) throws IOException {
+		writeString(getFunctionName(), data);
 		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.flatten(new NSOFSymbol(getFunctionName()), data);
 		encoder.flatten(NSOFEncoder.toNS(getArguments()), data);
 	}
 }

@@ -19,6 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.app;
 
+import net.sf.jncu.JNCUResources;
 import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFBoolean;
 import net.sf.jncu.fdil.NSOFFrame;
@@ -31,7 +32,6 @@ import net.sf.jncu.fdil.NSOFSymbol;
  * Application name.
  * 
  * @author mwaisberg
- * 
  */
 public class AppName extends NSOFFrame implements Comparable<AppName> {
 
@@ -42,55 +42,59 @@ public class AppName extends NSOFFrame implements Comparable<AppName> {
 	/**
 	 * If there are packages installed, a "Packages" item is listed.
 	 * 
+	 * @see JNCUResources#getString(String)
 	 * @see #CLASS_PACKAGES
 	 */
-	public static final String NAME_PACKAGES = "Packages";
+	public static final String NAME_PACKAGES = "appName.package";
 	/**
 	 * Application name for soups that don't have an associated application,
 	 * there's an "Other information" entry.
 	 * 
+	 * @see JNCUResources#getString(String)
 	 * @see #CLASS_OTHER
 	 */
-	public static final String NAME_OTHER = "Other information";
+	public static final String NAME_OTHER = "appName.other";
 	/**
 	 * "System information" includes the system and directory soups.
 	 * 
+	 * @see JNCUResources#getString(String)
 	 * @see #CLASS_SYSTEM
 	 */
-	public static final String NAME_SYSTEM = "System information";
+	public static final String NAME_SYSTEM = "appName.system";
 	/**
 	 * If a card is present and has a backup there will be a "Card backup" item.
 	 * 
+	 * @see JNCUResources#getString(String)
 	 * @see #CLASS_BACKUP
 	 */
-	public static final String NAME_BACKUP = "Card backup";
+	public static final String NAME_BACKUP = "appName.backup";
 
 	/**
 	 * Object class slot to indicate that this array entry is for the packages.
 	 * 
 	 * @see #NAME_PACKAGES
-	 * */
+	 */
 	public static final NSOFSymbol CLASS_PACKAGES = new NSOFSymbol("packageFrame");
 	/**
 	 * Object class slot to indicate that this array entry is for other
 	 * information.
 	 * 
 	 * @see #NAME_OTHER
-	 * */
+	 */
 	public static final NSOFSymbol CLASS_OTHER = new NSOFSymbol("otherFrame");
 	/**
 	 * Object class slot to indicate that this array entry is for the system
 	 * information.
 	 * 
 	 * @see #NAME_SYSTEM
-	 * */
+	 */
 	public static final NSOFSymbol CLASS_SYSTEM = new NSOFSymbol("systemFrame");
 	/**
 	 * Object class slot to indicate that this array entry is for the card
 	 * backup.
 	 * 
 	 * @see #NAME_BACKUP
-	 * */
+	 */
 	public static final NSOFSymbol CLASS_BACKUP = new NSOFSymbol("backupFrame");
 
 	/**
@@ -147,7 +151,7 @@ public class AppName extends NSOFFrame implements Comparable<AppName> {
 	/**
 	 * Get the application soup names.
 	 * 
-	 * @return the array of names - {@code null} otherwise.
+	 * @return the array of {@code NSOFString} names - {@code null} otherwise.
 	 */
 	public NSOFArray getSoups() {
 		NSOFObject o = get(SLOT_SOUPS);
@@ -162,9 +166,9 @@ public class AppName extends NSOFFrame implements Comparable<AppName> {
 	 * @return {@code true} if there are packages installed.
 	 */
 	public boolean hasPackages() {
-		NSOFImmediate imm = (NSOFImmediate) get(SLOT_PACKAGES);
-		if (imm != null)
-			return imm.isTrue();
+		NSOFObject o = get(SLOT_PACKAGES);
+		if (!NSOFImmediate.isNil(o))
+			return ((NSOFImmediate) o).isTrue();
 		return false;
 	}
 
@@ -175,12 +179,11 @@ public class AppName extends NSOFFrame implements Comparable<AppName> {
 	 *            {@code true} if there are packages installed.
 	 */
 	public void setPackages(boolean packages) {
-		put(SLOT_PACKAGES, packages ? NSOFBoolean.TRUE : NSOFBoolean.FALSE);
+		put(SLOT_PACKAGES, NSOFBoolean.valueOf(packages));
 	}
 
 	@Override
 	public int compareTo(AppName that) {
-		int c = 0;
 		String thisName = this.getName();
 		String thatName = that.getName();
 		if (thisName == null) {
@@ -189,9 +192,8 @@ public class AppName extends NSOFFrame implements Comparable<AppName> {
 			}
 		} else if (thatName == null) {
 			return 1;
-		} else {
-			c = thisName.compareTo(thatName);
 		}
+		int c = thisName.compareTo(thatName);
 		if (c != 0)
 			return c;
 		NSOFArray thisSoups = this.getSoups();

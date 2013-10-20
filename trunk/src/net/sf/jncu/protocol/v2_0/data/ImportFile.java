@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import javax.swing.Icon;
+
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.fdil.NSOFFrame;
@@ -202,12 +204,11 @@ public class ImportFile extends IconModule {
 	}
 
 	@Override
-	protected void runImpl() {
+	protected void runImpl() throws Exception {
 		if (state == State.INITIALISED) {
 			translators = TranslatorFactory.getInstance().getTranslatorsByFile(file);
 			if ((translators == null) || translators.isEmpty()) {
-				showError(JNCUResources.getString("error.translator.missing"), null);
-				return;
+				throw new NullPointerException(JNCUResources.getString("error.translator.missing"));
 			}
 			translator = translators.get(0);
 			if (translators.size() == 1) {
@@ -256,5 +257,10 @@ public class ImportFile extends IconModule {
 			add.setObject(entry);
 			write(add);
 		}
+	}
+
+	@Override
+	protected Icon createDialogIcon() {
+		return JNCUResources.getIcon("/dialog/import.png");
 	}
 }

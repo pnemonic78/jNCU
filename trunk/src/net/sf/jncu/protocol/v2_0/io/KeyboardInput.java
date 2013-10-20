@@ -33,6 +33,7 @@ import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
+import net.sf.jncu.ui.JNCUModuleDialog;
 
 /**
  * Keyboard input for pass-through mode. <br>
@@ -97,7 +98,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	 * Show the input window.
 	 */
 	@Override
-	protected void runImpl() {
+	protected void runImpl() throws Exception {
 		pipe.ping();
 		state = State.INPUT;
 		dialog.setVisible(true);
@@ -229,10 +230,11 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 	protected void done() {
 		if (state == State.INPUT) {
 			writeDone();
-			dialog.close();
 		}
 		timer.cancel();
 		dialog.removeInputListener(this);
+		dialog.removeWindowListener(this);
+		dialog.close();
 		super.done();
 	}
 
@@ -295,5 +297,10 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
 		if (state == State.INITIALISED) {
 			write(new DKeyboardPassthrough());
 		}
+	}
+
+	@Override
+	protected JNCUModuleDialog getProgress() {
+		return null;
 	}
 }

@@ -58,21 +58,41 @@ public class NewtonInfo {
 	public static final NSOFSymbol SLOT_PROTOCOL = new NSOFSymbol("targetProtocol");
 
 	private String name;
+	/** A unique id to identify a particular newton. */
 	private int newtonId;
-	private int manufacturerId;
+	/** A decimal integer indicating the manufacturer of the device. */
+	private int manufacturer;
+	/** A decimal integer indicating the hardware type of the device. */
 	private int machineType;
+	/**
+	 * A decimal number indicating the major and minor ROM version numbers. The
+	 * major number is in front of the decimal, the minor number after
+	 */
 	private int romVersion;
+	/**
+	 * A decimal integer indicating the language (English, German, French) and
+	 * the stage of the ROM (alpha, beta, final).
+	 */
 	private int romStage;
 	private int ramSize;
+	/** An integer representing the height of the screen in pixels. */
 	private int screenHeight;
+	/** An integer representing the width of the screen in pixels. */
 	private int screenWidth;
+	/** 0 on an unpatched Newton and non-zero on a patched Newton. */
 	private int patchVersion;
 	private int objectSystemVersion;
+	/** Signature of the internal store. */
 	private int internalStoreSignature;
+	/** An integer representing the number of vertical pixels per inch. */
 	private int screenResolutionVertical;
+	/** An integer representing the number of horizontal pixels per inch. */
 	private int screenResolutionHorizontal;
+	/** The bit depth of the LCD screen. */
 	private int screenDepth;
+	/** Serial number. */
 	private long serialNumber;
+	/** Target protocol. */
 	private int targetProtocol;
 
 	/**
@@ -112,7 +132,7 @@ public class NewtonInfo {
 	 * @return the manufacturer id.
 	 */
 	public int getManufacturerId() {
-		return manufacturerId;
+		return manufacturer;
 	}
 
 	/**
@@ -122,7 +142,7 @@ public class NewtonInfo {
 	 *            the manufacturer id.
 	 */
 	public void setManufacturerId(int manufacturerId) {
-		this.manufacturerId = manufacturerId;
+		this.manufacturer = manufacturerId;
 	}
 
 	/**

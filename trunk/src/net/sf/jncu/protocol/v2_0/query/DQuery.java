@@ -19,10 +19,11 @@
  */
 package net.sf.jncu.protocol.v2_0.query;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.fdil.NSOFSymbol;
+import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
 
 /**
@@ -48,16 +49,17 @@ public class DQuery extends DockCommandToNewtonScript<NSOFFrame> {
 	/** <tt>kDQuery</tt> */
 	public static final String COMMAND = "qury";
 
+	public static final NSOFSymbol SLOT_QUERYSPEC = new NSOFSymbol("queryspec");
+	public static final NSOFSymbol SLOT_SOUP = new NSOFSymbol("soupname");
+
+	private final NSOFFrame parameters = new NSOFFrame();
+
 	/**
 	 * Creates a new command.
 	 */
 	public DQuery() {
 		super(COMMAND);
-	}
-
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-
+		setObject(parameters);
 	}
 
 	/**
@@ -65,17 +67,58 @@ public class DQuery extends DockCommandToNewtonScript<NSOFFrame> {
 	 * 
 	 * @return the frame.
 	 */
-	public NSOFFrame getParameter() {
-		return getObject();
+	public NSOFFrame getParameters() {
+		return parameters;
 	}
 
 	/**
 	 * Set the parameter frame.
 	 * 
-	 * @param parameter
+	 * @param parameters
 	 *            the frame.
 	 */
-	public void setParameter(NSOFFrame parameter) {
-		setObject(parameter);
+	public void setParameters(NSOFFrame parameters) {
+		this.parameters.clear();
+		this.parameters.putAll(parameters);
+	}
+
+	/**
+	 * Set the soup name.
+	 * 
+	 * @param name
+	 *            the name.
+	 */
+	public void setSoup(String name) {
+		setSoup(new NSOFString(name));
+	}
+
+	/**
+	 * Set the soup name.
+	 * 
+	 * @param name
+	 *            the name.
+	 */
+	public void setSoup(NSOFString name) {
+		parameters.put(SLOT_SOUP, name);
+	}
+
+	/**
+	 * Set the soup name.
+	 * 
+	 * @param soup
+	 *            the soup.
+	 */
+	public void setSoup(Soup soup) {
+		setSoup(soup.getName());
+	}
+
+	/**
+	 * Set the query specification.
+	 * 
+	 * @param querySpec
+	 *            the query specification.
+	 */
+	public void setQuerySpec(NSOFObject querySpec) {
+		parameters.put(SLOT_QUERYSPEC, querySpec);
 	}
 }

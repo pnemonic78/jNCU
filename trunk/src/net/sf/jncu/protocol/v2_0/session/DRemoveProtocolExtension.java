@@ -19,10 +19,7 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import net.sf.jncu.protocol.BaseDockCommandToNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonLong;
 
 /**
  * This command removes a previously installed protocol extension.
@@ -35,12 +32,10 @@ import net.sf.jncu.protocol.BaseDockCommandToNewton;
  * 
  * @author moshew
  */
-public class DRemoveProtocolExtension extends BaseDockCommandToNewton {
+public class DRemoveProtocolExtension extends DockCommandToNewtonLong {
 
 	/** <tt>kDRemoveProtocolExtension</tt> */
 	public static final String COMMAND = "rpex";
-
-	private String extension;
 
 	/**
 	 * Creates a new command.
@@ -50,30 +45,21 @@ public class DRemoveProtocolExtension extends BaseDockCommandToNewton {
 	}
 
 	/**
-	 * Get the extension command.
+	 * Get the extension id.
 	 * 
 	 * @return the command.
 	 */
-	public String getExtension() {
-		return extension;
+	public int getExtension() {
+		return getValue();
 	}
 
 	/**
-	 * Set the extension command.
+	 * Set the extension id.
 	 * 
 	 * @param extension
 	 *            the command.
 	 */
-	public void setExtension(String extension) {
-		this.extension = extension;
-	}
-
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		char[] cmdName = getExtension().toCharArray();
-		data.write(cmdName[0] & 0xFF);
-		data.write(cmdName[1] & 0xFF);
-		data.write(cmdName[2] & 0xFF);
-		data.write(cmdName[3] & 0xFF);
+	public void setExtension(int extension) {
+		setValue(extension);
 	}
 }

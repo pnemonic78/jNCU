@@ -175,7 +175,8 @@ public abstract class CDCommandLayer<P extends CDPacket, L extends CDPacketLayer
 	public void close() {
 		running = false;
 		packetLayer.removePacketListener(this);
-		listeners.clear();
+		// Clearing the listeners here will not permit calling the listeners for
+		// fireCommandEOF later. // listeners.clear();
 		try {
 			getInput().close();
 		} catch (IOException ioe) {

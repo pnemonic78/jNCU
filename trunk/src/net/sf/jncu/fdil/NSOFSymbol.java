@@ -41,7 +41,10 @@ public class NSOFSymbol extends NSOFString {
 	/** Maximum length of a symbol. */
 	public static final int MAX_LENGTH = 254;
 
-	/** Default symbol class. */
+	/**
+	 * Default symbol class.<br>
+	 * <tt>kFD_SymSymbol</tt>
+	 */
 	public static final NSOFSymbol CLASS_SYMBOL = new NSOFSymbol("symbol");
 
 	private String valueLower;
@@ -148,8 +151,13 @@ public class NSOFSymbol extends NSOFString {
 			for (int i = 0; i < len; i++) {
 				c = value.charAt(i);
 
-				if (c == ':')
+				switch (c) {
+				case '.':
+				case ':':
+				case '?':
 					colon = true;
+					break;
+				}
 				buf.append(c);
 			}
 			if (colon) {

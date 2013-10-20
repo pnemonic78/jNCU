@@ -93,7 +93,8 @@ public class Store implements Comparable<Store> {
 	}
 
 	/**
-	 * Get the frame.
+	 * Get the frame.<br>
+	 * Note that the frame should already be populated after each setter method.
 	 * 
 	 * @return the frame.
 	 */
@@ -521,7 +522,6 @@ public class Store implements Comparable<Store> {
 	 *            the soup name.
 	 * @param signature
 	 *            the soup signature.
-	 * 
 	 * @return the soup - {@code null} otherwise.
 	 */
 	public Soup findSoup(String name, int signature) {

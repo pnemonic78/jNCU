@@ -434,6 +434,6 @@ public abstract class FileChooser extends IconModule {
 	}
 
 	@Override
-	protected void runImpl() {
+	protected void runImpl() throws Exception {
 	}
 }
