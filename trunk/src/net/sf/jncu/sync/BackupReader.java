@@ -80,14 +80,18 @@ public class BackupReader {
 	 *            the source file.
 	 * @param handler
 	 *            the backup handler.
-	 * @throws IOException
+	 * @throws BackupException
 	 *             if an I/O error occurs.
 	 */
-	public void read(File file, BackupHandler handler) throws IOException {
+	public void read(File file, BackupHandler handler) throws BackupException {
 		InputStream fin = null;
 		try {
 			fin = new BufferedInputStream(new FileInputStream(file));
 			read(fin, handler);
+		} catch (BackupException be) {
+			throw be;
+		} catch (IOException e) {
+			throw new BackupException(e);
 		} finally {
 			if (fin != null) {
 				try {
@@ -147,19 +151,11 @@ public class BackupReader {
 					soup = null;
 
 					if (Archive.ENTRY_DEVICE.equals(path[DEVICE])) {
-						try {
-							readDevice(handler, zin);
-						} catch (IOException e) {
-							throw new BackupException(e);
-						}
+						readDevice(handler, zin);
 						continue;
 					}
 					if (Archive.ENTRY_MODIFIED.equals(path[MODIFED])) {
-						try {
-							readModified(handler, zin);
-						} catch (IOException e) {
-							throw new BackupException(e);
-						}
+						readModified(handler, zin);
 						continue;
 					}
 				} else if (path.length == 2) {
@@ -217,30 +213,22 @@ public class BackupReader {
 
 								if (path.length >= 5) {
 									if (Archive.ENTRY_SOUP.equals(path[SOUP])) {
-										try {
-											readSoup(handler, zin, store, soup);
-										} catch (IOException e) {
-											throw new BackupException(e);
-										}
+										readSoup(handler, zin, store, soup);
 										continue;
 									}
 									if (Archive.ENTRY_ENTRIES.equals(path[ENTRIES])) {
-										try {
-											readSoupEntries(handler, zin, store, soup);
-										} catch (IOException e) {
-											throw new BackupException(e);
-										}
+										readSoupEntries(handler, zin, store, soup);
+										continue;
+									}
+									if (path[ENTRIES].startsWith(Archive.ENTRY_ENTRY)) {
+										readSoupEntry(handler, zin, store, soup);
 										continue;
 									}
 								}
 							}
 							continue;
 						} else if (Archive.ENTRY_STORE.equals(path[STORE])) {
-							try {
-								readStore(handler, zin, store);
-							} catch (IOException e) {
-								throw new BackupException(e);
-							}
+							readStore(handler, zin, store);
 							continue;
 						}
 					}
@@ -273,12 +261,17 @@ public class BackupReader {
 	 *            the handler.
 	 * @param in
 	 *            the input.
-	 * @throws IOException
+	 * @throws BackupException
 	 *             if an I/O error occurs.
 	 */
-	protected void readModified(BackupHandler handler, ZipInputStream in) throws IOException {
-		long hi = NewtonStreamedObjectFormat.ntohl(in) & 0xFFFFFFFFL;
-		long lo = NewtonStreamedObjectFormat.ntohl(in) & 0xFFFFFFFFL;
+	protected void readModified(BackupHandler handler, ZipInputStream in) throws BackupException {
+		long hi, lo;
+		try {
+			hi = NewtonStreamedObjectFormat.ntohl(in) & 0xFFFFFFFFL;
+			lo = NewtonStreamedObjectFormat.ntohl(in) & 0xFFFFFFFFL;
+		} catch (IOException e) {
+			throw new BackupException(e);
+		}
 		long time = (hi << 32) | lo;
 
 		handler.modified(time);
@@ -291,12 +284,17 @@ public class BackupReader {
 	 *            the handler.
 	 * @param in
 	 *            the input.
-	 * @throws IOException
+	 * @throws BackupException
 	 *             if an I/O error occurs.
 	 */
-	protected void readDevice(BackupHandler handler, ZipInputStream in) throws IOException {
+	protected void readDevice(BackupHandler handler, ZipInputStream in) throws BackupException {
 		NSOFDecoder decoder = new NSOFDecoder();
-		NSOFFrame frame = (NSOFFrame) decoder.inflate(in);
+		NSOFFrame frame;
+		try {
+			frame = (NSOFFrame) decoder.inflate(in);
+		} catch (IOException e) {
+			throw new BackupException(e);
+		}
 
 		NewtonInfo info = new NewtonInfo();
 		info.fromFrame(frame);
@@ -313,12 +311,17 @@ public class BackupReader {
 	 *            the input.
 	 * @param store
 	 *            the store to populate.
-	 * @throws IOException
+	 * @throws BackupException
 	 *             if an I/O error occurs.
 	 */
-	protected void readStore(BackupHandler handler, ZipInputStream in, Store store) throws IOException {
+	protected void readStore(BackupHandler handler, ZipInputStream in, Store store) throws BackupException {
 		NSOFDecoder decoder = new NSOFDecoder();
-		NSOFFrame frame = (NSOFFrame) decoder.inflate(in);
+		NSOFFrame frame;
+		try {
+			frame = (NSOFFrame) decoder.inflate(in);
+		} catch (IOException e) {
+			throw new BackupException(e);
+		}
 		store.fromFrame(frame);
 		handler.storeDefinition(store);
 	}
@@ -334,12 +337,17 @@ public class BackupReader {
 	 *            the store of the soup.
 	 * @param soup
 	 *            the soup to populate.
-	 * @throws IOException
+	 * @throws BackupException
 	 *             if an I/O error occurs.
 	 */
-	protected void readSoup(BackupHandler handler, ZipInputStream in, Store store, Soup soup) throws IOException {
+	protected void readSoup(BackupHandler handler, ZipInputStream in, Store store, Soup soup) throws BackupException {
 		NSOFDecoder decoder = new NSOFDecoder();
-		NSOFFrame frame = (NSOFFrame) decoder.inflate(in);
+		NSOFFrame frame;
+		try {
+			frame = (NSOFFrame) decoder.inflate(in);
+		} catch (IOException e) {
+			throw new BackupException(e);
+		}
 		soup.fromFrame(frame);
 		handler.soupDefinition(store.getName(), soup);
 	}
@@ -355,13 +363,18 @@ public class BackupReader {
 	 *            the store of the soup.
 	 * @param soup
 	 *            the soup to populate.
-	 * @throws IOException
+	 * @throws BackupException
 	 *             if an I/O error occurs.
 	 */
-	protected void readSoupEntries(BackupHandler handler, ZipInputStream in, Store store, Soup soup) throws IOException {
+	protected void readSoupEntries(BackupHandler handler, ZipInputStream in, Store store, Soup soup) throws BackupException {
 		final String storeName = store.getName();
 		NSOFDecoder decoder = new NSOFDecoder();
-		NSOFArray arr = (NSOFArray) decoder.inflate(in);
+		NSOFArray arr;
+		try {
+			arr = (NSOFArray) decoder.inflate(in);
+		} catch (IOException e) {
+			throw new BackupException(e);
+		}
 
 		SoupEntry entry;
 		int size = arr.length();
@@ -371,5 +384,33 @@ public class BackupReader {
 			entry = new SoupEntry(frame);
 			handler.soupEntry(storeName, soup, entry);
 		}
+	}
+
+	/**
+	 * Read a soup entry.
+	 * 
+	 * @param handler
+	 *            the handler.
+	 * @param in
+	 *            the input.
+	 * @param store
+	 *            the store of the soup.
+	 * @param soup
+	 *            the soup to populate.
+	 * @throws BackupException
+	 *             if an I/O error occurs.
+	 */
+	protected void readSoupEntry(BackupHandler handler, ZipInputStream in, Store store, Soup soup) throws BackupException {
+		final String storeName = store.getName();
+		NSOFDecoder decoder = new NSOFDecoder();
+		NSOFFrame frame;
+		try {
+			frame = (NSOFFrame) decoder.inflate(in);
+		} catch (IOException e) {
+			throw new BackupException(e);
+		}
+
+		SoupEntry entry = new SoupEntry(frame);
+		handler.soupEntry(storeName, soup, entry);
 	}
 }

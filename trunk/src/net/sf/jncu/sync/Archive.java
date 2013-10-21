@@ -88,6 +88,8 @@ public class Archive {
 	public static final String ENTRY_SOUP = "soup";
 	/** Entry name for the entries database. */
 	public static final String ENTRY_ENTRIES = "entries";
+	/** Entry name for an entry database. */
+	public static final String ENTRY_ENTRY = "entry.";
 
 	private long modified = System.currentTimeMillis();
 	private NewtonInfo deviceInfo;

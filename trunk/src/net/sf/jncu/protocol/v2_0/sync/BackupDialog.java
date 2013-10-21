@@ -32,6 +32,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
@@ -355,8 +356,10 @@ public class BackupDialog extends JNCUDialog {
 		Store storeNewton;
 		Store store;
 		AppName appName;
+		Soup soup;
 		NSOFArray soups;
 		NSOFString soupName;
+		List<Integer> soupSignatures;
 		int countStores = 0;
 		int countApps = 0;
 		boolean packages = false;
@@ -366,11 +369,12 @@ public class BackupDialog extends JNCUDialog {
 			if (check.isSelected()) {
 				countStores++;
 				storeNewton = stores.get(check);
-				// We don't want to mistakenly populate the Newton store with
-				// fake soups.
+				// We don't want to mistakenly populate the actual Newton store
+				// with fake soups, so clone it.
 				store = new Store(storeNewton.getName());
 				store.fromFrame(storeNewton.toFrame());
 				storesSelected.add(store);
+				soupSignatures = new ArrayList<Integer>();
 
 				countApps = 0;
 				for (int a = 0; a < sizeApps; a++) {
@@ -387,10 +391,13 @@ public class BackupDialog extends JNCUDialog {
 							continue;
 						for (NSOFObject o : soups.toList()) {
 							soupName = (NSOFString) o;
-							store.addSoup(new Soup(soupName.getValue()));
+							soup = new Soup(soupName.getValue());
+							store.addSoup(soup);
+							soupSignatures.add(soup.getSignature());
 						}
 					}
 				}
+				store.setSoupSignatures(soupSignatures);
 			}
 		}
 
