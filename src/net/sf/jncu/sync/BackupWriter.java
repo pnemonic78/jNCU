@@ -25,15 +25,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFObject;
-import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.fdil.NewtonStreamedObjectFormat;
 import net.sf.jncu.newton.os.ApplicationPackage;
 import net.sf.jncu.newton.os.NewtonInfo;
@@ -53,6 +49,7 @@ public class BackupWriter implements BackupHandler {
 	private ZipOutputStream out;
 	private String storeWriting;
 	private String soupWriting;
+	private int soupEntry;
 
 	/**
 	 * Creates a new archive writer.
@@ -183,6 +180,7 @@ public class BackupWriter implements BackupHandler {
 			throw new BackupException("store already started");
 		this.storeWriting = storeName;
 		this.soupWriting = null;
+		this.soupEntry = 0;
 
 		String name = Archive.ENTRY_STORES + Archive.DIRECTORY;
 		name = name + storeName + Archive.DIRECTORY;
@@ -209,13 +207,14 @@ public class BackupWriter implements BackupHandler {
 		if (allowClearStore()) {
 			store.setPackages(null);
 			store.setSoups(null);
+			System.gc();
 		}
 	}
 
 	/**
 	 * Allow the store to be cleared?
 	 * 
-	 * @return allow?
+	 * @return {@code true} to allow.
 	 */
 	protected boolean allowClearStore() {
 		return true;
@@ -233,10 +232,11 @@ public class BackupWriter implements BackupHandler {
 	public void startSoup(String storeName, String soupName) throws BackupException {
 		// Keep track of the current soup for orphaned entries.
 		if (!storeWriting.equals(storeName))
-			throw new BackupException("wrong store");
+			throw new BackupException("Expected store [" + storeWriting + "], but was [" + storeName + "]");
 		if (soupWriting != null)
 			throw new BackupException("soup already started");
 		this.soupWriting = soupName;
+		this.soupEntry = 0;
 
 		String name = Archive.ENTRY_STORES + Archive.DIRECTORY;
 		name = name + storeName + Archive.DIRECTORY;
@@ -259,37 +259,23 @@ public class BackupWriter implements BackupHandler {
 	@Override
 	public void endSoup(String storeName, Soup soup) throws BackupException {
 		if (!storeWriting.equals(storeName))
-			throw new BackupException("wrong store");
+			throw new BackupException("Expected store [" + storeWriting + "], but was [" + storeName + "]");
 		if (!soupWriting.equals(soup.getName()))
-			throw new BackupException("wrong soup");
+			throw new BackupException("Expected soup [" + soupWriting + "], but was [" + soup.getName() + "]");
 		this.soupWriting = null;
-
-		// Write the soup entries.
-		String name = Archive.ENTRY_STORES + Archive.DIRECTORY;
-		name = name + storeName + Archive.DIRECTORY;
-		name = name + Archive.ENTRY_SOUPS + Archive.DIRECTORY;
-		name = name + soup.getName() + Archive.DIRECTORY;
-		name = name + Archive.ENTRY_ENTRIES;
-		putEntry(name);
-
-		// Copy the list to avoid concurrency problems.
-		final Collection<SoupEntry> entries = new ArrayList<SoupEntry>(soup.getEntries());
-		NSOFArray arr = new NSOFPlainArray(entries.size());
-		int i = 0;
-		for (SoupEntry item : entries)
-			arr.set(i++, item);
-		flatten(arr);
+		this.soupEntry = 0;
 
 		// Free up some memory heap.
 		if (allowClearSoup()) {
 			soup.setEntries(null);
+			System.gc();
 		}
 	}
 
 	/**
 	 * Allow the soup to be cleared?
 	 * 
-	 * @return allow?
+	 * @return {@code true} to allow.
 	 */
 	protected boolean allowClearSoup() {
 		return true;
@@ -298,11 +284,19 @@ public class BackupWriter implements BackupHandler {
 	@Override
 	public void soupEntry(String storeName, Soup soup, SoupEntry entry) throws BackupException {
 		if (!storeWriting.equals(storeName))
-			throw new BackupException("wrong store");
+			throw new BackupException("Expected store [" + storeWriting + "], but was [" + storeName + "]");
 		if (!soupWriting.equals(soup.getName()))
-			throw new BackupException("wrong soup");
+			throw new BackupException("Expected soup [" + soupWriting + "], but was [" + soup.getName() + "]");
 
-		// Cache the soup entry.
-		soup.addEntry(entry);
+		// Write the soup entry.
+		String name = Archive.ENTRY_STORES + Archive.DIRECTORY;
+		name = name + storeName + Archive.DIRECTORY;
+		name = name + Archive.ENTRY_SOUPS + Archive.DIRECTORY;
+		name = name + soup.getName() + Archive.DIRECTORY;
+		name = name + Archive.ENTRY_ENTRY + soupEntry;
+		putEntry(name);
+		flatten(entry);
+
+		soupEntry++;
 	}
 }
