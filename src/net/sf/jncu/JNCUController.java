@@ -103,7 +103,7 @@ public interface JNCUController {
 	 * 
 	 * @return the Newton information.
 	 */
-	public NewtonInfo getNewtonInfo();
+	public NewtonInfo getDeviceInformation();
 
 	/**
 	 * Show the Newton information.

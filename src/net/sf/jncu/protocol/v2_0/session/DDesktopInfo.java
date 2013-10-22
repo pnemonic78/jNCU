@@ -95,26 +95,26 @@ public class DDesktopInfo extends BaseDockCommandToNewton {
 	public static final int PROTOCOL_VERSION = 10;
 
 	/**
-	 * <tt>kNBU</tt><br>
-	 * Newton Backup Utility.
+	 * Newton Backup Utility.<br>
+	 * <tt>kNBU</tt>
 	 */
 	public static final int NBU = 1;
 	/**
-	 * <tt>kNCU</tt><br>
-	 * Newton Connection Utilities.
+	 * Newton Connection Utilities.<br>
+	 * <tt>kNCU</tt>
 	 */
 	public static final int NCU = 2;
 
 	/**
-	 * <tt>kMacintosh</tt><br>
-	 * <tt>kMacDesktop</tt><br>
-	 * Apple Macintosh desktop type.
+	 * Apple Macintosh desktop type.<br>
+	 * <tt>kMacintosh</tt> <br>
+	 * <tt>kMacDesktop</tt>
 	 */
 	public static final int MACINTOSH = 0;
 	/**
-	 * <tt>kWindows</tt><br>
-	 * <tt>kWindowsDesktop</tt><br>
-	 * Microsoft Windows desktop type.
+	 * Microsoft Windows desktop type.<br>
+	 * <tt>kWindows</tt> <br>
+	 * <tt>kWindowsDesktop</tt>
 	 */
 	public static final int WINDOWS = 1;
 
@@ -216,7 +216,7 @@ public class DDesktopInfo extends BaseDockCommandToNewton {
 		if (desktopApps == null) {
 			NSOFFrame app = new NSOFFrame();
 			app.put("id", new NSOFInteger(NCU));
-			app.put("name", new NSOFString("Newton Connection Utilities"));
+			app.put("name", new NSOFString("jNewton Connection Utilities"));
 			app.put("version", new NSOFInteger(1));
 			app.put("doesAuto", NSOFBoolean.TRUE);
 

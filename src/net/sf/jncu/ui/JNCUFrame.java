@@ -443,7 +443,7 @@ public class JNCUFrame extends JFrame implements ActionListener, WindowListener 
 				statusConnectedIcon = JNCUResources.getIcon("/connected.png");
 			}
 
-			NewtonInfo info = getController().getNewtonInfo();
+			NewtonInfo info = getController().getDeviceInformation();
 			String deviceName = info.getName();
 			statusConnection.setIcon(statusConnectedIcon);
 			statusConnection.setText(String.format(JNCUResources.getString("connectConnected"), deviceName));
