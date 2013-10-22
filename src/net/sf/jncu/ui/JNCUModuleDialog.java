@@ -1,4 +1,20 @@
-/**
+/*
+ * Source file of the jNCU project.
+ * Copyright (c) 2010. All Rights Reserved.
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * Contributors can be contacted by electronic mail via the project Web pages:
+ * 
+ * http://sourceforge.net/projects/jncu
+ * 
+ * http://jncu.sourceforge.net/
+ *
+ * Contributor(s):
+ *   Moshe Waisberg
  * 
  */
 package net.sf.jncu.ui;
@@ -26,8 +42,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.plaf.basic.BasicOptionPaneUI;
-
-import net.sf.jncu.JNCUResources;
 
 /**
  * A dialog to monitor the progress of a module's operations.
@@ -154,12 +168,14 @@ public class JNCUModuleDialog extends JNCUDialog implements WindowListener {
 	public JNCUModuleDialog(Window owner, Icon icon, Object message, String note, int min, int max, ModuleProgressListener listener) {
 		super(owner);
 		this.iconLabel = new JLabel(icon);
+		iconLabel.setPreferredSize(new Dimension(32, 32));
 		this.message = message;
 		this.noteLabel = new JLabel(note);
 		this.bar = new JProgressBar();
 		bar.setIndeterminate(min >= max);
 		bar.setMinimum(min);
 		bar.setMaximum(max);
+		bar.setPreferredSize(new Dimension(0, 20));
 		this.listener = listener;
 		init();
 	}
@@ -289,14 +305,6 @@ public class JNCUModuleDialog extends JNCUDialog implements WindowListener {
 	 */
 	public String getNote() {
 		return noteLabel.getText();
-	}
-
-	public static void main(String[] args) {
-		Icon icon = JNCUResources.getIcon("/dialog/import.png");
-
-		JNCUModuleDialog d = new JNCUModuleDialog(icon, "msg", "note", 0, 100);
-		d.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		d.setVisible(true);
 	}
 
 	@Override
