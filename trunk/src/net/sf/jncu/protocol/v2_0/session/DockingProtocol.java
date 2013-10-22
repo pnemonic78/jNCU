@@ -32,9 +32,8 @@ import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.crypto.DESNewton;
 import net.sf.jncu.newton.NewtonError;
-import net.sf.jncu.newton.os.NewtonInfo;
-import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.query.DResult;
 
@@ -51,8 +50,6 @@ public class DockingProtocol<P extends CDPacket, L extends CDPacketLayer<P>> imp
 	private final CDPipe<P, L> pipe;
 	/** Internal state. */
 	private DockingState state = DockingState.NONE;
-	/** Newton information. */
-	private static NewtonInfo info;
 	/** Protocol version. */
 	private int protocolVersion = DRequestToDock.PROTOCOL_VERSION;
 	/** The password sent by the Desktop. */
@@ -87,7 +84,6 @@ public class DockingProtocol<P extends CDPacket, L extends CDPacketLayer<P>> imp
 		pipe.addCommandListener(this);
 		this.crypto = new DESNewton();
 		crypto.init(Cipher.ENCRYPT_MODE);
-		info = null;
 	}
 
 	/**
@@ -178,8 +174,6 @@ public class DockingProtocol<P extends CDPacket, L extends CDPacketLayer<P>> imp
 					throw new BadPipeStateException("expected command '" + DNewtonName.COMMAND + "', but received '" + cmd + "'");
 				}
 
-				DNewtonName cmdNewtonName = (DNewtonName) command;
-				info = cmdNewtonName.getInformation();
 				DDesktopInfo cmdDesktopInfo = new DDesktopInfo();
 				this.challengeDesktop = cmdDesktopInfo.getEncryptedKey();
 				this.challengeDesktopCiphered = crypto.cipher(challengeDesktop);
@@ -335,15 +329,6 @@ public class DockingProtocol<P extends CDPacket, L extends CDPacketLayer<P>> imp
 	@Override
 	public void commandEOF() {
 		done();
-	}
-
-	/**
-	 * Get the Newton information.
-	 * 
-	 * @return the info.
-	 */
-	public static NewtonInfo getNewtonInfo() {
-		return info;
 	}
 
 	/**

@@ -36,6 +36,7 @@ import net.sf.jncu.JNCUResources;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.newton.os.Store;
@@ -59,7 +60,6 @@ import net.sf.jncu.protocol.v2_0.data.DSetSoupGetInfo;
 import net.sf.jncu.protocol.v2_0.io.DSetStoreGetNames;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
-import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
 import net.sf.jncu.sync.BackupException;
 import net.sf.jncu.sync.BackupHandler;
 import net.sf.jncu.sync.BackupWriter;
@@ -149,6 +149,7 @@ public class BackupModule extends IconModule {
 	private Iterator<BackupItem> itemsIter;
 	private BackupItem item;
 	private final List<BackupListener> listeners = new ArrayList<BackupListener>();
+	private NewtonInfo deviceInfo;
 
 	private static boolean DEBUG = false;// TODO
 
@@ -163,6 +164,22 @@ public class BackupModule extends IconModule {
 	 *            the owner window.
 	 */
 	public BackupModule(CDPipe pipe, boolean requested, Window owner) {
+		this(pipe, requested, owner, null);
+	}
+
+	/**
+	 * Creates a new module.
+	 * 
+	 * @param pipe
+	 *            the pipe.
+	 * @param requested
+	 *            was backup requested by Newton?
+	 * @param owner
+	 *            the owner window.
+	 * @param deviceInfo
+	 *            the device information.
+	 */
+	public BackupModule(CDPipe pipe, boolean requested, Window owner, NewtonInfo deviceInfo) {
 		super(JNCUResources.getString("backup"), pipe, owner);
 		setName("BackupModule-" + getId());
 
@@ -172,6 +189,16 @@ public class BackupModule extends IconModule {
 		if (requested) {
 			state = State.GET_OPTIONS;
 		}
+	}
+
+	/**
+	 * Set the device information.
+	 * 
+	 * @param deviceInfo
+	 *            the information.
+	 */
+	public void setNewtonInfo(NewtonInfo deviceInfo) {
+		this.deviceInfo = deviceInfo;
 	}
 
 	@Override
@@ -434,7 +461,7 @@ public class BackupModule extends IconModule {
 		this.writer = new BackupWriter(file);
 		writer.startBackup();
 		writer.modified(System.currentTimeMillis());
-		writer.deviceInformation(DockingProtocol.getNewtonInfo());
+		writer.deviceInformation(deviceInfo);
 
 		switch (state) {
 		case INITIALISED:

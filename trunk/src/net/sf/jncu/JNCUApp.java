@@ -252,7 +252,7 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	 *            was backup requested by Newton?
 	 */
 	protected void backupToDesktop(boolean requested) {
-		backup = new BackupModule(pipe, requested, frame);
+		backup = new BackupModule(pipe, requested, frame, getDeviceInformation());
 		backup.addListener(this);
 
 		NewtonInfo info = deviceInfo;
@@ -406,7 +406,7 @@ public class JNCUApp implements CDPipeListener<MNPPacket, MNPPacketLayer>, DockC
 	}
 
 	@Override
-	public NewtonInfo getNewtonInfo() {
+	public NewtonInfo getDeviceInformation() {
 		return deviceInfo;
 	}
 
