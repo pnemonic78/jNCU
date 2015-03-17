@@ -17,7 +17,7 @@
  *   Moshe Waisberg
  * 
  */
-package net.sf.jncu.ui;
+package net.sf.jncu.swing;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;

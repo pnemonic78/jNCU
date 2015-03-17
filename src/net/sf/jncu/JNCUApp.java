@@ -71,9 +71,9 @@ import net.sf.jncu.protocol.v2_0.sync.BackupModule;
 import net.sf.jncu.protocol.v2_0.sync.BackupModule.BackupListener;
 import net.sf.jncu.protocol.v2_0.sync.DRequestToSync;
 import net.sf.jncu.protocol.v2_0.sync.DRestoreFile;
-import net.sf.jncu.ui.JNCUDeviceDialog;
-import net.sf.jncu.ui.JNCUFrame;
-import net.sf.jncu.ui.JNCUSettingsDialog;
+import net.sf.jncu.swing.JNCUDeviceDialog;
+import net.sf.jncu.swing.JNCUFrame;
+import net.sf.jncu.swing.JNCUSettingsDialog;
 
 /**
  * jNCU main application.

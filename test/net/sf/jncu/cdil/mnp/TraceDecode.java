@@ -34,7 +34,7 @@ import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandToNewton;
-import net.sf.jncu.ui.JNCUModuleDialog;
+import net.sf.jncu.swing.JNCUModuleDialog;
 
 /**
  * Decode trace dumps.

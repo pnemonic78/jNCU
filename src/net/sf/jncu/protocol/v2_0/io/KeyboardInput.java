@@ -33,7 +33,7 @@ import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
 import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
-import net.sf.jncu.ui.JNCUModuleDialog;
+import net.sf.jncu.swing.JNCUModuleDialog;
 
 /**
  * Keyboard input for pass-through mode. <br>
