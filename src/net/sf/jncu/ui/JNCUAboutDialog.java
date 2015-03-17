@@ -21,6 +21,7 @@ package net.sf.jncu.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Desktop;
+import java.awt.Desktop.Action;
 import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -49,6 +50,7 @@ public class JNCUAboutDialog extends JNCUDialog implements HyperlinkListener {
 	private JPanel buttons;
 	private JButton okButton;
 	private JTextComponent description;
+	private Desktop desktop;
 
 	/**
 	 * Create an about dialog.
@@ -163,12 +165,18 @@ public class JNCUAboutDialog extends JNCUDialog implements HyperlinkListener {
 	@Override
 	public void hyperlinkUpdate(HyperlinkEvent event) {
 		if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-			// open link in browser.
-			URL url = event.getURL();
-			try {
-				Desktop.getDesktop().browse(url.toURI());
-			} catch (Exception e) {
-				e.printStackTrace();
+			if (Desktop.isDesktopSupported()) {
+				// open link in browser.
+				URL url = event.getURL();
+				if (desktop == null)
+					desktop = Desktop.getDesktop();
+				if (desktop.isSupported(Action.BROWSE)) {
+					try {
+						desktop.browse(url.toURI());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 	}
