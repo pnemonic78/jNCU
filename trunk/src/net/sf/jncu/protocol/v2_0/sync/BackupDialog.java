@@ -52,7 +52,7 @@ import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.v2_0.app.AppName;
-import net.sf.jncu.ui.JNCUDialog;
+import net.sf.jncu.swing.JNCUDialog;
 import net.sf.swing.CheckListCellRenderer;
 
 /**

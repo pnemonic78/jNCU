@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.sf.jncu.ui;
+package net.sf.jncu.swing;
 
 import javax.swing.Icon;
 import javax.swing.WindowConstants;

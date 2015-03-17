@@ -31,7 +31,7 @@ import javax.swing.JProgressBar;
 import javax.swing.border.EmptyBorder;
 
 import net.sf.jncu.JNCUResources;
-import net.sf.jncu.ui.JNCUDialog;
+import net.sf.jncu.swing.JNCUDialog;
 
 /**
  * Backup progress dialog.

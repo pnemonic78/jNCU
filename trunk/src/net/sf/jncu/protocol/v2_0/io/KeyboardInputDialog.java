@@ -44,7 +44,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import net.sf.jncu.JNCUResources;
-import net.sf.jncu.ui.JNCUDialog;
+import net.sf.jncu.swing.JNCUDialog;
 
 /**
  * Keyboard input dialog.
