@@ -27,10 +27,25 @@ public class FrameDump {
 	public static void main(String[] args) throws IOException {
 		File file = new File(args[0]);
 		FrameDump dumper = new FrameDump();
-		dumper.dump(file);
+		if (file.isDirectory())
+			dumper.dumpFolder(file);
+		else
+			dumper.dump(file);
+	}
+
+	public void dumpFolder(File folder) throws IOException {
+		File[] files = folder.listFiles();
+		if ((files == null) || (files.length == 0)) {
+			System.err.println("Folder [" + folder + "] empty");
+			return;
+		}
+
+		for (File file : files)
+			dump(file);
 	}
 
 	public void dump(File file) throws IOException {
+		System.out.println(file + ":");
 		InputStream in = null;
 		NSOFDecoder decoder = new NSOFDecoder();
 		NSOFFrame frame;
