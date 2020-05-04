@@ -6,8 +6,8 @@ application {
 
     sourceSets {
         main {
-            resources.srcDirs = ['../res']
-            java.srcDirs = ['src', '../res']
+            java.srcDirs = ['src', 'res']
+            resources.srcDirs = ['res']
         }
         test {
             java.srcDirs = ['test']
