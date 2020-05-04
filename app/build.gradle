@@ -25,5 +25,5 @@ jar {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation fileTree(dir: '../lib', include: ['*.jar'])
+    implementation fileTree(dir: '../libs', include: ['*.jar'])
 }
