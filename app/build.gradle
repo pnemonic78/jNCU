@@ -7,7 +7,7 @@ application {
     sourceSets {
         main {
             resources.srcDirs = ['../res']
-            java.srcDirs = ['../src', '../res']
+            java.srcDirs = ['src', '../res']
         }
         test {
             java.srcDirs = ['../test']
