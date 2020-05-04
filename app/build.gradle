@@ -25,5 +25,10 @@ jar {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Serial port
+    implementation 'org.scream3r:jssc:2.8.0'
+
+    // Testing
     implementation 'junit:junit:4.12'
 }
