@@ -46,6 +46,6 @@ public interface DILWriteProc {
      *                 data is needed.
      * @throws IOException if an I/O error occurs.
      */
-    public void write(InputStream buf, int amt, Object userData) throws IOException;
+    void write(InputStream buf, int amt, Object userData) throws IOException;
 
 }

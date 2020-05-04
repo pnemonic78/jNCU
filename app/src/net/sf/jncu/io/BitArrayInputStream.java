@@ -36,7 +36,7 @@ public class BitArrayInputStream extends InputStream {
      * that can ever be read from the stream; element <code>buf[pos]</code> is
      * the next byte to be read.
      */
-    protected int buf[];
+    protected int[] buf;
 
     /**
      * The index of the next character to read from the input stream buffer.
@@ -85,7 +85,7 @@ public class BitArrayInputStream extends InputStream {
      *
      * @param buf the input buffer.
      */
-    public BitArrayInputStream(byte buf[]) {
+    public BitArrayInputStream(byte[] buf) {
         int lengthDiv4 = buf.length >> 2; // 4 bytes per integer.
         int lengthMod4 = buf.length & 3;
         int length = lengthDiv4;
@@ -125,7 +125,7 @@ public class BitArrayInputStream extends InputStream {
      *
      * @param buf the input buffer.
      */
-    public BitArrayInputStream(int buf[]) {
+    public BitArrayInputStream(int[] buf) {
         this.buf = buf;
         this.count = buf.length << 5; // 32 bits per integer.
     }

@@ -1871,9 +1871,7 @@ public class FDILibrary implements FDConstants {
         NSOFObject o1 = handles.get(obj1);
         NSOFObject o2 = handles.get(obj2);
         if (o1 == null) {
-            if (o2 == null)
-                return true;
-            return false;
+            return o2 == null;
         }
         return o1.equals(o2);
     }

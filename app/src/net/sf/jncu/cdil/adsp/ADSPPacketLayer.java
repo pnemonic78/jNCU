@@ -61,7 +61,7 @@ public class ADSPPacketLayer extends CDPacketLayer<ADSPPacket> {
     }
 
     @Override
-    protected byte[] read() throws EOFException, IOException {
+    protected byte[] read() throws IOException {
         // TODO Auto-generated method stub
         return null;
     }

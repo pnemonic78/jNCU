@@ -45,64 +45,64 @@ public interface JNCUController {
      * @throws PipeDisconnectedException    if the pipe is disconnected.
      * @throws TimeoutException             if timeout occurs.
      */
-    public void start() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException, BadPipeStateException, PipeDisconnectedException, TimeoutException;
+    void start() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException, BadPipeStateException, PipeDisconnectedException, TimeoutException;
 
     /**
      * Stop listening for Newton.
      */
-    public void stop();
+    void stop();
 
     /**
      * Shut down the controller and exit the application.
      */
-    public void exit();
+    void exit();
 
     /**
      * Backup from Newton to desktop.
      */
-    public void backupToDesktop();
+    void backupToDesktop();
 
     /**
      * Export from Newton to desktop.
      */
-    public void exportToDesktop();
+    void exportToDesktop();
 
     /**
      * Restore from desktop to Newton.
      */
-    public void restoreToNewton();
+    void restoreToNewton();
 
     /**
      * Import from desktop to Newton.
      */
-    public void importToNewton();
+    void importToNewton();
 
     /**
      * Synchronize.
      */
-    public void sync();
+    void sync();
 
     /**
      * Use keyboard passthrough.
      */
-    public void keyboard();
+    void keyboard();
 
     /**
      * Install package on the Newton.
      */
-    public void installPackage();
+    void installPackage();
 
     /**
      * Get the device information.
      *
      * @return the Newton information.
      */
-    public NewtonInfo getDeviceInformation();
+    NewtonInfo getDeviceInformation();
 
     /**
      * Show the Newton information.
      */
-    public void showDevice();
+    void showDevice();
 
     /**
      * Show the settings dialog.
@@ -114,6 +114,6 @@ public interface JNCUController {
      * @throws PipeDisconnectedException    if the pipe is disconnected.
      * @throws TimeoutException             if timeout occurs.
      */
-    public void showSettings() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException, BadPipeStateException, PipeDisconnectedException,
+    void showSettings() throws CDILNotInitializedException, PlatformException, ServiceNotSupportedException, BadPipeStateException, PipeDisconnectedException,
             TimeoutException;
 }

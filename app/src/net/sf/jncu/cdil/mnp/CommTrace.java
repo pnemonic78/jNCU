@@ -125,7 +125,7 @@ public class CommTrace {
         this.baud = baud;
     }
 
-    public void trace(String portNameN, String portNameP) throws NoSuchPortException, PortInUseException, SerialPortException, IOException {
+    public void trace(String portNameN, String portNameP) throws SerialPortException, IOException {
         SerialPort portN = new SerialPort(portNameN);
         SerialPort portP = new SerialPort(portNameP);
         trace(portN, portP);

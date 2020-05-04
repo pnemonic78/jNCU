@@ -74,14 +74,14 @@ public class BackupModule extends IconModule {
     /**
      * Backup events listener.
      */
-    public static interface BackupListener extends IconModuleListener {
+    public interface BackupListener extends IconModuleListener {
         /**
          * The store is about to be backed up.
          *
          * @param module the backup module.
          * @param store  the store.
          */
-        public void backupStore(BackupModule module, Store store);
+        void backupStore(BackupModule module, Store store);
 
         /**
          * The application is about to be backed up.
@@ -90,7 +90,7 @@ public class BackupModule extends IconModule {
          * @param store   the store.
          * @param appName the application.
          */
-        public void backupApplication(BackupModule module, Store store, AppName appName);
+        void backupApplication(BackupModule module, Store store, AppName appName);
 
         /**
          * The soup is about to be backed up.
@@ -100,7 +100,7 @@ public class BackupModule extends IconModule {
          * @param appName the application.
          * @param soup    the soup.
          */
-        public void backupSoup(BackupModule module, Store store, AppName appName, Soup soup);
+        void backupSoup(BackupModule module, Store store, AppName appName, Soup soup);
     }
 
     /**

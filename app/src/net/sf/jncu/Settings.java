@@ -25,6 +25,7 @@ import net.sf.jncu.cdil.mnp.MNPSerialPort;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -95,14 +96,14 @@ public class Settings {
          *
          * @param prefs the preferences.
          */
-        public void read(Preferences prefs);
+        void read(Preferences prefs);
 
         /**
          * Write the settings to the preferences.
          *
          * @param prefs the preferences.
          */
-        public void write(Preferences prefs);
+        void write(Preferences prefs);
     }
 
     /**
@@ -214,7 +215,7 @@ public class Settings {
      *
      * @author Moshe
      */
-    public static enum BackupName {
+    public enum BackupName {
         /**
          * Date and time.
          */
@@ -235,7 +236,7 @@ public class Settings {
          *
          * @param labelKey the label key.
          */
-        private BackupName(String labelKey) {
+        BackupName(String labelKey) {
             this.labelKey = labelKey;
         }
 
@@ -409,12 +410,10 @@ public class Settings {
                 try {
                     BigInteger big = new BigInteger(passwordBigInt);
                     byte[] bytes = big.toByteArray();
-                    String password = new String(bytes, "UTF-16");
+                    String password = new String(bytes, StandardCharsets.UTF_16);
                     setPassword(password);
                 } catch (NumberFormatException nfe) {
                     JNCUApp.showError(null, "Read password", nfe);
-                } catch (UnsupportedEncodingException uee) {
-                    // UTF-16 should always be supported!
                 }
             }
         }
@@ -426,14 +425,10 @@ public class Settings {
             if ((password == null) || (password.length() == 0)) {
                 prefs.set(KEY_PASSWORD, "");
             } else {
-                try {
-                    byte[] bytes = password.getBytes("UTF-16");
-                    BigInteger big = new BigInteger(bytes);
-                    String passwordBigInt = big.toString();
-                    prefs.set(KEY_PASSWORD, passwordBigInt);
-                } catch (UnsupportedEncodingException e) {
-                    // UTF-16 should always be supported!
-                }
+                byte[] bytes = password.getBytes(StandardCharsets.UTF_16);
+                BigInteger big = new BigInteger(bytes);
+                String passwordBigInt = big.toString();
+                prefs.set(KEY_PASSWORD, passwordBigInt);
             }
         }
     }

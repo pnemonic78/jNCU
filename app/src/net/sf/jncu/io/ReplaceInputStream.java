@@ -58,7 +58,7 @@ public class ReplaceInputStream extends BufferedInputStream {
     }
 
     @Override
-    public synchronized int read(byte b[], int off, int len) throws IOException {
+    public synchronized int read(byte[] b, int off, int len) throws IOException {
         if ((off | len | (off + len) | (b.length - (off + len))) < 0) {
             throw new IndexOutOfBoundsException();
         }

@@ -91,7 +91,7 @@ public class MNPPacketLayer extends CDPacketLayer<MNPPacket> implements CDPacket
     }
 
     @Override
-    protected byte[] read() throws EOFException, IOException {
+    protected byte[] read() throws IOException {
         return read(getInput());
     }
 

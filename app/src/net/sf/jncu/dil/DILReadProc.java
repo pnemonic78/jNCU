@@ -43,6 +43,6 @@ public interface DILReadProc {
      *                 data is needed.
      * @throws IOException if an I/O error occurs.
      */
-    public void read(OutputStream buf, int amt, Object userData) throws IOException;
+    void read(OutputStream buf, int amt, Object userData) throws IOException;
 
 }

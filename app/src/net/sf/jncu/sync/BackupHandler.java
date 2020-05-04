@@ -39,14 +39,14 @@ public interface BackupHandler {
      *
      * @throws BackupException if a backup error occurs.
      */
-    public void startBackup() throws BackupException;
+    void startBackup() throws BackupException;
 
     /**
      * Receive notification of the end of the backup archive.
      *
      * @throws BackupException if a backup error occurs.
      */
-    public void endBackup() throws BackupException;
+    void endBackup() throws BackupException;
 
     /**
      * Receive notification of modified time stamp.
@@ -54,7 +54,7 @@ public interface BackupHandler {
      * @param time the time in milliseconds.
      * @throws BackupException if a backup error occurs.
      */
-    public void modified(long time) throws BackupException;
+    void modified(long time) throws BackupException;
 
     /**
      * Receive notification of device information.
@@ -62,7 +62,7 @@ public interface BackupHandler {
      * @param info the Newton device information.
      * @throws BackupException if a backup error occurs.
      */
-    public void deviceInformation(NewtonInfo info) throws BackupException;
+    void deviceInformation(NewtonInfo info) throws BackupException;
 
     /**
      * Receive notification of the start of a store.
@@ -70,7 +70,7 @@ public interface BackupHandler {
      * @param storeName the store name.
      * @throws BackupException if a backup error occurs.
      */
-    public void startStore(String storeName) throws BackupException;
+    void startStore(String storeName) throws BackupException;
 
     /**
      * Receive notification of the store definition.
@@ -78,7 +78,7 @@ public interface BackupHandler {
      * @param store the store.
      * @throws BackupException if a backup error occurs.
      */
-    public void storeDefinition(Store store) throws BackupException;
+    void storeDefinition(Store store) throws BackupException;
 
     /**
      * Receive notification of the end of a store.
@@ -86,7 +86,7 @@ public interface BackupHandler {
      * @param store the store.
      * @throws BackupException if a backup error occurs.
      */
-    public void endStore(Store store) throws BackupException;
+    void endStore(Store store) throws BackupException;
 
     /**
      * Receive notification of the start of a package.
@@ -95,7 +95,7 @@ public interface BackupHandler {
      * @param pkgName   the package name.
      * @throws BackupException if a backup error occurs.
      */
-    public void startPackage(String storeName, String pkgName) throws BackupException;
+    void startPackage(String storeName, String pkgName) throws BackupException;
 
     /**
      * Receive notification of the end of a package.
@@ -104,7 +104,7 @@ public interface BackupHandler {
      * @param pkg       the package.
      * @throws BackupException if a backup error occurs.
      */
-    public void endPackage(String storeName, ApplicationPackage pkg) throws BackupException;
+    void endPackage(String storeName, ApplicationPackage pkg) throws BackupException;
 
     /**
      * Receive notification of the start of a soup.
@@ -113,7 +113,7 @@ public interface BackupHandler {
      * @param soupName  the soup name.
      * @throws BackupException if a backup error occurs.
      */
-    public void startSoup(String storeName, String soupName) throws BackupException;
+    void startSoup(String storeName, String soupName) throws BackupException;
 
     /**
      * Receive notification of the soup definition.
@@ -122,7 +122,7 @@ public interface BackupHandler {
      * @param soup      the soup.
      * @throws BackupException if a backup error occurs.
      */
-    public void soupDefinition(String storeName, Soup soup) throws BackupException;
+    void soupDefinition(String storeName, Soup soup) throws BackupException;
 
     /**
      * Receive notification of the end of a soup.
@@ -131,7 +131,7 @@ public interface BackupHandler {
      * @param soup      the soup.
      * @throws BackupException if a backup error occurs.
      */
-    public void endSoup(String storeName, Soup soup) throws BackupException;
+    void endSoup(String storeName, Soup soup) throws BackupException;
 
     /**
      * Receive notification of a soup entry.
@@ -141,6 +141,6 @@ public interface BackupHandler {
      * @param entry     the entry.
      * @throws BackupException if a backup error occurs.
      */
-    public void soupEntry(String storeName, Soup soup, SoupEntry entry) throws BackupException;
+    void soupEntry(String storeName, Soup soup, SoupEntry entry) throws BackupException;
 
 }

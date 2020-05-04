@@ -33,7 +33,7 @@ public class BitArrayOutputStream extends OutputStream {
     /**
      * The buffer where data is stored.
      */
-    protected int buf[];
+    protected int[] buf;
 
     /**
      * The number of valid bits in the buffer.
@@ -133,7 +133,7 @@ public class BitArrayOutputStream extends OutputStream {
      *
      * @return the current contents of this output stream, as a byte array.
      */
-    public synchronized byte toByteArray()[] {
+    public synchronized byte[] toByteArray() {
         int length = count >> 3;
         if ((count & 7) != 0) {
             length++;
@@ -174,7 +174,7 @@ public class BitArrayOutputStream extends OutputStream {
      *
      * @return the current contents of this output stream, as an int array.
      */
-    public synchronized int toIntArray()[] {
+    public synchronized int[] toIntArray() {
         int length = (count >> 5);
         if ((count & 31) != 0) {
             length++;

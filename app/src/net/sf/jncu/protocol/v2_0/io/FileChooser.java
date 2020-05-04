@@ -57,7 +57,7 @@ public abstract class FileChooser extends IconModule {
     /**
      * File chooser events listener.
      */
-    public static interface FileChooserListener extends IconModuleListener {
+    public interface FileChooserListener extends IconModuleListener {
         /**
          * The file was selected after the user clicked an approval button.
          *
@@ -65,14 +65,14 @@ public abstract class FileChooser extends IconModule {
          * @param file    the selected file.
          * @param command the command from the Newton.
          */
-        public void approveSelection(FileChooser chooser, File file, DockCommandFromNewton command);
+	void approveSelection(FileChooser chooser, File file, DockCommandFromNewton command);
 
         /**
          * The file browsing was cancelled.
          *
          * @param chooser the file chooser.
          */
-        public void cancelSelection(FileChooser chooser);
+	void cancelSelection(FileChooser chooser);
     }
 
     public static final NSOFSymbol IMPORT = DRequestToBrowse.IMPORT;
@@ -84,7 +84,7 @@ public abstract class FileChooser extends IconModule {
      */
     protected static final String KEY_PATH = "jncu.fileChooser.path";
 
-    private static enum State {
+    private enum State {
         /**
          * None.
          */

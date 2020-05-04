@@ -31,7 +31,7 @@ public interface KeyboardInputListener {
      *
      * @param ke the key event.
      */
-    public void charTyped(KeyEvent ke);
+    void charTyped(KeyEvent ke);
 
     /**
      * Some text was inputed. Usually the text that is pasted from the
@@ -39,6 +39,6 @@ public interface KeyboardInputListener {
      *
      * @param text the text.
      */
-    public void stringTyped(String text);
+    void stringTyped(String text);
 
 }

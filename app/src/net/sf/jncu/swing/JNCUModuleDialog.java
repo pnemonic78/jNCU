@@ -56,7 +56,7 @@ public class JNCUModuleDialog extends JNCUDialog implements WindowListener {
      *
      * @author Moshe
      */
-    public static interface ModuleProgressListener {
+    public interface ModuleProgressListener {
         /**
          * The progress dialog is closing.<br>
          * Provide the listener an opportunity to close the dialog after it
@@ -65,7 +65,7 @@ public class JNCUModuleDialog extends JNCUDialog implements WindowListener {
          * @param dialog the progress dialog.
          * @return {@code true} to close the dialog.
          */
-        public boolean moduleProgressCancel(JNCUModuleDialog dialog);
+	boolean moduleProgressCancel(JNCUModuleDialog dialog);
     }
 
     private JPanel mainPane;

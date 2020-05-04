@@ -49,7 +49,7 @@ public interface FDLargeBinaryProcs {
      *
      * @param cookie
      */
-    public void create(Object cookie);
+    void create(Object cookie);
 
     /**
      * <br>
@@ -58,7 +58,7 @@ public interface FDLargeBinaryProcs {
      * @param cookie
      * @param pageCount
      */
-    public void setNumPages(Object cookie, int pageCount);
+    void setNumPages(Object cookie, int pageCount);
 
     /**
      * Your <tt>ReadPage</tt> function should copy over the required page to the
@@ -80,7 +80,7 @@ public interface FDLargeBinaryProcs {
      * @param pageCount
      * @param pageBufPtr
      */
-    public void readPage(Object cookie, int pageCount, Object pageBufPtr);
+    void readPage(Object cookie, int pageCount, Object pageBufPtr);
 
     /**
      * Your <tt>WritePage</tt> function is passed the page number to write and
@@ -97,7 +97,7 @@ public interface FDLargeBinaryProcs {
      * @param pageCount
      * @param pageBufPtr
      */
-    public void writePage(Object cookie, int pageCount, final Object pageBufPtr);
+    void writePage(Object cookie, int pageCount, final Object pageBufPtr);
 
     /**
      * The <tt>Destroy</tt> function is called when the object is no longer
@@ -106,6 +106,6 @@ public interface FDLargeBinaryProcs {
      *
      * @param cookie
      */
-    public void destroy(Object cookie);
+    void destroy(Object cookie);
 
 }

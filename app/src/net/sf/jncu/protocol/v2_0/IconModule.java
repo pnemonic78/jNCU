@@ -51,20 +51,20 @@ public abstract class IconModule extends Thread implements DockCommandListener, 
     /**
      * Icon module event.
      */
-    public static interface IconModuleListener {
+    public interface IconModuleListener {
         /**
          * The operation completed successfully.
          *
          * @param module the module.
          */
-        public void successModule(IconModule module);
+	void successModule(IconModule module);
 
         /**
          * The operation was cancelled.
          *
          * @param module the module.
          */
-        public void cancelModule(IconModule module);
+	void cancelModule(IconModule module);
     }
 
     private final String title;

@@ -40,7 +40,7 @@ public interface DockCommandToNewton extends DockCommand {
      * @return the payload.
      * @throws IOException if an I/O error occurs.
      */
-    public InputStream getCommandPayload() throws IOException;
+    InputStream getCommandPayload() throws IOException;
 
     /**
      * Get the command payload length.
@@ -48,5 +48,5 @@ public interface DockCommandToNewton extends DockCommand {
      * @return the payload length.
      * @throws IOException if an I/O error occurs.
      */
-    public int getCommandPayloadLength() throws IOException;
+    int getCommandPayloadLength() throws IOException;
 }

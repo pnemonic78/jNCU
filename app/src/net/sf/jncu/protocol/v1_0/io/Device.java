@@ -403,9 +403,7 @@ public class Device implements Comparable<Device> {
         if (c != 0)
             return c;
         c = compare(this.alias, that.alias);
-        if (c != 0)
-            return c;
-        return 0;
+	    return c;
     }
 
     protected <T extends Comparable<T>> int compare(T o1, T o2) {

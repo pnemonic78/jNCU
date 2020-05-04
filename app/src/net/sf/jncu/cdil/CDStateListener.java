@@ -32,6 +32,6 @@ public interface CDStateListener {
      * @param layer    the CDIL layer.
      * @param newState the new state.
      */
-    public void stateChanged(CDLayer layer, CDState newState);
+    void stateChanged(CDLayer layer, CDState newState);
 
 }

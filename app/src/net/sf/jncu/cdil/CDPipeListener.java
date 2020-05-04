@@ -31,7 +31,7 @@ public interface CDPipeListener<P extends CDPacket, L extends CDPacketLayer<P>> 
      *
      * @param pipe the CDIL pipe.
      */
-    public void pipeDisconnected(CDPipe<P, L> pipe);
+    void pipeDisconnected(CDPipe<P, L> pipe);
 
     /**
      * Notification that the CDIL pipe failed to disconnect.
@@ -39,14 +39,14 @@ public interface CDPipeListener<P extends CDPacket, L extends CDPacketLayer<P>> 
      * @param pipe the CDIL pipe.
      * @param e    the error.
      */
-    public void pipeDisconnectFailed(CDPipe<P, L> pipe, Exception e);
+    void pipeDisconnectFailed(CDPipe<P, L> pipe, Exception e);
 
     /**
      * Notification that the CDIL pipe is listening for a connection.
      *
      * @param pipe the CDIL pipe.
      */
-    public void pipeConnectionListening(CDPipe<P, L> pipe);
+    void pipeConnectionListening(CDPipe<P, L> pipe);
 
     /**
      * Notification that the CDIL pipe failed to listen for a connection.
@@ -54,14 +54,14 @@ public interface CDPipeListener<P extends CDPacket, L extends CDPacketLayer<P>> 
      * @param pipe the CDIL pipe.
      * @param e    the error.
      */
-    public void pipeConnectionListenFailed(CDPipe<P, L> pipe, Exception e);
+    void pipeConnectionListenFailed(CDPipe<P, L> pipe, Exception e);
 
     /**
      * Notification that the CDIL pipe has a connection pending.
      *
      * @param pipe the CDIL pipe.
      */
-    public void pipeConnectionPending(CDPipe<P, L> pipe);
+    void pipeConnectionPending(CDPipe<P, L> pipe);
 
     /**
      * Notification that the CDIL pipe failed to pend a connection.
@@ -69,14 +69,14 @@ public interface CDPipeListener<P extends CDPacket, L extends CDPacketLayer<P>> 
      * @param pipe the CDIL pipe.
      * @param e    the error.
      */
-    public void pipeConnectionPendingFailed(CDPipe<P, L> pipe, Exception e);
+    void pipeConnectionPendingFailed(CDPipe<P, L> pipe, Exception e);
 
     /**
      * Notification that the CDIL pipe is connected.
      *
      * @param pipe the CDIL pipe.
      */
-    public void pipeConnected(CDPipe<P, L> pipe);
+    void pipeConnected(CDPipe<P, L> pipe);
 
     /**
      * Notification that the CDIL pipe failed to connect.
@@ -84,6 +84,6 @@ public interface CDPipeListener<P extends CDPacket, L extends CDPacketLayer<P>> 
      * @param pipe the CDIL pipe.
      * @param e    the error.
      */
-    public void pipeConnectionFailed(CDPipe<P, L> pipe, Exception e);
+    void pipeConnectionFailed(CDPipe<P, L> pipe, Exception e);
 
 }

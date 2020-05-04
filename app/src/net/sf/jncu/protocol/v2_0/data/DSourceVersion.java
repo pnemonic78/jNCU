@@ -62,7 +62,7 @@ public class DSourceVersion extends BaseDockCommandToNewton {
      * Source versions.<br>
      * <tt>eSourceVersion</tt>
      */
-    public static enum SourceVersion {
+    public enum SourceVersion {
         /**
          * Unknown version.<br>
          * <tt>eNone</tt>

@@ -41,7 +41,7 @@ public class DCursorWhichEnd extends DCursor {
     /**
      * <tt>eCursorWhichEnd</tt>
      */
-    public static enum CursorWhichEnd {
+    public enum CursorWhichEnd {
         /**
          * Cursor is at unknown position.
          */
@@ -53,7 +53,7 @@ public class DCursorWhichEnd extends DCursor {
         /**
          * Cursor is at end position.
          */
-        END;
+        END
     }
 
     /**

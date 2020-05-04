@@ -44,7 +44,7 @@ public class ReplaceOutputStream extends BufferedOutputStream {
     }
 
     @Override
-    public synchronized void write(byte b[], int off, int len) throws IOException {
+    public synchronized void write(byte[] b, int off, int len) throws IOException {
         if (len >= buf.length) {
             /*
              * If the request length exceeds the size of the output buffer,

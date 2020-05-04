@@ -32,6 +32,6 @@ public interface CDPacketFilter<P extends CDPacket> {
      * @param packet the packet.
      * @return the filtered packet- {@code null} to ignore the packet.
      */
-    public P filterPacket(P packet);
+    P filterPacket(P packet);
 
 }

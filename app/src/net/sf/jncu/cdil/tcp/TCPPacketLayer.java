@@ -61,7 +61,7 @@ public class TCPPacketLayer extends CDPacketLayer<TCPPacket> {
     }
 
     @Override
-    protected byte[] read() throws EOFException, IOException {
+    protected byte[] read() throws IOException {
         // TODO Auto-generated method stub
         return null;
     }

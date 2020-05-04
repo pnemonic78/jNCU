@@ -41,6 +41,6 @@ public interface DILStatusProc {
      * @return the number of bytes available.
      * @throws IOException if an I/O error occurs.
      */
-    public int status(Object userData) throws IOException;
+    int status(Object userData) throws IOException;
 
 }

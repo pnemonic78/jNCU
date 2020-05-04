@@ -31,21 +31,21 @@ public interface CDPacketListener<T extends CDPacket> {
      *
      * @param packet the received packet.
      */
-    public void packetReceived(T packet);
+    void packetReceived(T packet);
 
     /**
      * Notification that a packet is being sent.
      *
      * @param packet the sending packet.
      */
-    public void packetSending(T packet);
+    void packetSending(T packet);
 
     /**
      * Notification that a packet was sent.
      *
      * @param packet the sent packet.
      */
-    public void packetSent(T packet);
+    void packetSent(T packet);
 
     /**
      * Notification that a packet was acknowledged by the receiver after we sent
@@ -53,11 +53,11 @@ public interface CDPacketListener<T extends CDPacket> {
      *
      * @param packet the sent packet.
      */
-    public void packetAcknowledged(T packet);
+    void packetAcknowledged(T packet);
 
     /**
      * Notification that no more packets will be available.
      */
-    public void packetEOF();
+    void packetEOF();
 
 }

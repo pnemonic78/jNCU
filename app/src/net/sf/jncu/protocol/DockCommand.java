@@ -31,43 +31,43 @@ public interface DockCommand {
      *
      * @return the command.
      */
-    public String getCommand();
+    String getCommand();
 
     /**
      * Get the length.
      *
      * @return the length. Default value is {@code 0}.
      */
-    public int getLength();
+    int getLength();
 
     /**
      * Number of bytes for a word.
      */
-    public static final int LENGTH_WORD = 4;
+    int LENGTH_WORD = 4;
 
     /**
      * False.
      */
-    public static final int FALSE = 0;
+    int FALSE = 0;
     /**
      * True.
      */
-    public static final int TRUE = 1;
+    int TRUE = 1;
 
     /**
      * Command prefix.<br>
      * <tt>kDNewtonDock</tt>
      */
-    public static final String COMMAND_PREFIX = "newtdock";
+    String COMMAND_PREFIX = "newtdock";
     /**
      * Command prefix length.<br>
      * <tt>kDNewtonDockLength</tt>
      */
-    public static final int COMMAND_PREFIX_LENGTH = COMMAND_PREFIX.length();
+    int COMMAND_PREFIX_LENGTH = COMMAND_PREFIX.length();
     /**
      * Number of characters for command name.
      */
-    public static final int COMMAND_NAME_LENGTH = LENGTH_WORD;
+    int COMMAND_NAME_LENGTH = LENGTH_WORD;
 
     /**
      * Length of a docking command header.<br>
@@ -77,5 +77,5 @@ public interface DockCommand {
      * <li>data length = 4
      * </ol>
      */
-    public static final int COMMAND_HEADER_LENGTH = COMMAND_PREFIX_LENGTH + COMMAND_NAME_LENGTH + 4;
+    int COMMAND_HEADER_LENGTH = COMMAND_PREFIX_LENGTH + COMMAND_NAME_LENGTH + 4;
 }

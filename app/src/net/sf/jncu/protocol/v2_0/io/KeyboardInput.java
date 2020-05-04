@@ -55,7 +55,7 @@ public class KeyboardInput extends IconModule implements WindowListener, Keyboar
      */
     protected static final char LF = '\n';
 
-    private static enum State {
+    private enum State {
         /**
          * None.
          */

@@ -31,7 +31,7 @@ public interface DockCommandListener {
      *
      * @param command the command.
      */
-    public void commandReceived(DockCommandFromNewton command);
+    void commandReceived(DockCommandFromNewton command);
 
     /**
      * Notification that a command is being received.<br>
@@ -43,14 +43,14 @@ public interface DockCommandListener {
      * @param progress the number of bytes received.
      * @param total    the total number of bytes to receive.
      */
-    public void commandReceiving(DockCommandFromNewton command, int progress, int total);
+    void commandReceiving(DockCommandFromNewton command, int progress, int total);
 
     /**
      * Notification that a command was sent.
      *
      * @param command the command.
      */
-    public void commandSent(DockCommandToNewton command);
+    void commandSent(DockCommandToNewton command);
 
     /**
      * Notification that a command is being received.<br>
@@ -62,11 +62,11 @@ public interface DockCommandListener {
      * @param progress the number of bytes sent.
      * @param total    the total number of bytes to send.
      */
-    public void commandSending(DockCommandToNewton command, int progress, int total);
+    void commandSending(DockCommandToNewton command, int progress, int total);
 
     /**
      * Notification that no more commands will be available.
      */
-    public void commandEOF();
+    void commandEOF();
 
 }

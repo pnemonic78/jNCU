@@ -35,5 +35,5 @@ public interface DockCommandFromNewton extends DockCommand {
      * @param data the command data.
      * @throws IOException if read past data buffer.
      */
-    public void decode(InputStream data) throws IOException;
+    void decode(InputStream data) throws IOException;
 }
