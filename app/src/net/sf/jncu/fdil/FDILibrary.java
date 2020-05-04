@@ -32,6 +32,7 @@ import java.io.InvalidClassException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -105,7 +106,7 @@ public class FDILibrary implements FDConstants {
 
     private static FDHandles handles;
     private static long usedMemory;
-    private static String charset;
+    private static Charset charset;
     private static Map<NSOFSymbol, FDHandle> symbols;
     private static FDLargeBinaryProcs blobProcs;
 
@@ -395,12 +396,7 @@ public class FDILibrary implements FDConstants {
         if (numChars < 0)
             throw new ExpectedNonNegativeValueException();
         String s = new String(src, 0, numChars);
-        byte[] b;
-        try {
-            b = s.getBytes(charset);
-        } catch (UnsupportedEncodingException uee) {
-            throw new ExpectedNonNegativeValueException(uee.getMessage());
-        }
+        byte[] b = s.getBytes(charset);
         return b;
     }
 
@@ -428,12 +424,7 @@ public class FDILibrary implements FDConstants {
         checkInitialized();
         if (numChars < 0)
             throw new ExpectedNonNegativeValueException();
-        String s;
-        try {
-            s = new String(src, 0, numChars, charset);
-        } catch (UnsupportedEncodingException uee) {
-            throw new ExpectedNonNegativeValueException(uee.getMessage());
-        }
+        String s = new String(src, 0, numChars, charset);
         return s;
     }
 
@@ -800,12 +791,7 @@ public class FDILibrary implements FDConstants {
                 break;
             }
         }
-        String val;
-        try {
-            val = new String(str, 0, length, charset);
-        } catch (UnsupportedEncodingException uee) {
-            throw new ExpectedStringException(uee.getMessage());
-        }
+        String val = new String(str, 0, length, charset);
         NSOFSymbol s = new NSOFSymbol(val);
         FDHandle obj = symbols.get(s);
         if (obj == null) {
@@ -940,12 +926,7 @@ public class FDILibrary implements FDConstants {
                 break;
             }
         }
-        String val;
-        try {
-            val = new String(str, 0, length, charset);
-        } catch (UnsupportedEncodingException uee) {
-            throw new ExpectedStringException(uee.getMessage());
-        }
+        String val = new String(str, 0, length, charset);
         NSOFString s = new NSOFString(val);
         FDHandle obj = handles.create(s);
         usedMemory += Runtime.getRuntime().totalMemory() - memBefore;
@@ -1110,12 +1091,7 @@ public class FDILibrary implements FDConstants {
             buffer[0] = '\u0000';
             return;
         }
-        byte[] b;
-        try {
-            b = val.getBytes(NSOFString.CHARSET_UTF16);
-        } catch (UnsupportedEncodingException uee) {
-            throw new ExpectedStringException(uee.getMessage());
-        }
+        byte[] b = val.getBytes(NSOFString.CHARSET_UTF16);
         final int length = Math.min(bufLen, b.length - 2);
         // The 1st and 2nd bytes are UTF-16 header 0xFE and 0xFF.
         System.arraycopy(b, 2, buffer, 0, length);
@@ -1217,12 +1193,7 @@ public class FDILibrary implements FDConstants {
         String str = s.getValue();
         if (str == null)
             str = "";
-        byte[] ascii;
-        try {
-            ascii = str.getBytes(NSOFString.CHARSET_ASCII);
-        } catch (UnsupportedEncodingException uee) {
-            throw new ExpectedStringException();
-        }
+        byte[] ascii = str.getBytes(NSOFString.CHARSET_ASCII);
         // Append NULL-terminator
         byte[] val = new byte[ascii.length + 1];
         System.arraycopy(ascii, 0, val, 0, ascii.length);

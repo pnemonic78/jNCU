@@ -101,8 +101,7 @@ public class DNewtonName extends BaseDockCommandFromNewton {
     /**
      * Decode the owner name.
      *
-     * @param data              the data.
-     * @param versionInfoLength the version information size.
+     * @param data the data.
      * @throws IOException if an I/O error occurs.
      */
     protected String decodeName(InputStream data) throws IOException {
@@ -113,13 +112,8 @@ public class DNewtonName extends BaseDockCommandFromNewton {
         nameLength -= versionInfoLength;
         byte[] nameBytes = new byte[nameLength];
         data.read(nameBytes);
-        try {
-            // remove 2 bytes for null-terminated string.
-            return new String(nameBytes, 0, nameLength - 2, NSOFString.CHARSET_UTF16);
-        } catch (UnsupportedEncodingException uee) {
-            uee.printStackTrace();
-        }
-        return null;
+        // remove 2 bytes for null-terminated string.
+        return new String(nameBytes, 0, nameLength - 2, NSOFString.CHARSET_UTF16);
     }
 
     /**

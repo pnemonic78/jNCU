@@ -24,7 +24,8 @@ import net.sf.lang.ControlCharacter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -60,19 +61,19 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
     /**
      * 8-bit ASCII character encoding.
      */
-    public static final String CHARSET_ASCII = "ASCII";
+    public static final Charset CHARSET_ASCII = StandardCharsets.US_ASCII;
     /**
      * 16-bit Unicode character encoding.
      */
-    public static final String CHARSET_UTF16 = "UTF-16";
+    public static final Charset CHARSET_UTF16 = StandardCharsets.UTF_16;
     /**
      * MacRoman character encoding.
      */
-    public static final String CHARSET_MAC = "MacRoman";
+    public static final Charset CHARSET_MAC = Charset.forName("MacRoman");
     /**
      * Windows character encoding.
      */
-    public static final String CHARSET_WIN = "windows-1252";
+    public static final Charset CHARSET_WIN = Charset.forName("windows-1252");
 
     /**
      * Character in place of the embedded ink for 16-bit strings.<br>
@@ -247,13 +248,7 @@ public class NSOFString extends NSOFPointer implements Comparable<NSOFString>, C
                 break;
             }
         }
-        String s;
-        try {
-            s = new String(value, 0, length, CHARSET_MAC);
-        } catch (UnsupportedEncodingException uee) {
-            // Should never arrive here!
-            s = new String(value, 0, length);
-        }
+        String s = new String(value, 0, length, CHARSET_MAC);
         s = s.replace(INK8, INK);
         setValue(s);
     }
