@@ -29,6 +29,9 @@ dependencies {
     // Serial port
     implementation 'org.scream3r:jssc:2.8.0'
 
+    // Calendar
+    implementation 'net.fortuna.ical4j:ical4j:1.0-rc3-atlassian-11'
+
     // Testing
     implementation 'junit:junit:4.12'
 }
