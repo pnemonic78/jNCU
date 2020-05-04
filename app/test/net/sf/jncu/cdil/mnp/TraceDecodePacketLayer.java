@@ -41,7 +41,7 @@ public class TraceDecodePacketLayer extends EmptyPacketLayer {
         return receivedFromNewton;
     }
 
-    public byte[] readSent() throws EOFException, IOException {
+    public byte[] readSent() throws IOException {
         return read(sentToNewton);
     }
 

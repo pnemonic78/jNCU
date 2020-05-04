@@ -37,7 +37,7 @@ import java.util.concurrent.TimeoutException;
 public class EmptyPipe extends MNPPipe {
 
     public EmptyPipe(CDLayer layer) throws PlatformException, ServiceNotSupportedException {
-        super(layer, (String) null, 0);
+        super(layer, null, 0);
         setName("EmptyPipe-" + getId());
     }
 

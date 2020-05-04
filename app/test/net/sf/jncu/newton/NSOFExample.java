@@ -37,6 +37,7 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * <pre>
@@ -130,7 +131,7 @@ public class NSOFExample extends SFTestCase {
     @Test
     public void testEncode() throws Exception {
         NSOFObject[] phones = new NSOFObject[]{new NSOFString("408-996-1010"), NSOFNil.NIL};
-        byte[] utf16 = "408-974-9094".getBytes("UTF-16");
+        byte[] utf16 = "408-974-9094".getBytes(StandardCharsets.UTF_16);
         System.arraycopy(utf16, 2, utf16, 0, utf16.length - 2);
         utf16[utf16.length - 2] = 0;
         utf16[utf16.length - 1] = 0;
