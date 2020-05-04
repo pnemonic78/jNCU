@@ -19,15 +19,15 @@
  */
 package net.sf.jncu.cdil;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import net.sf.jncu.cdil.adsp.ADSPPipe;
 import net.sf.jncu.cdil.ctb.CTBPipe;
 import net.sf.jncu.cdil.mnp.CommPorts;
 import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.cdil.tcp.TCPPipe;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * CDIL layer. Manages CDIL connections.

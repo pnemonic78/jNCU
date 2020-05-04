@@ -19,14 +19,14 @@
  */
 package net.sf.jncu;
 
-import java.util.concurrent.TimeoutException;
-
 import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.PipeDisconnectedException;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 import net.sf.jncu.newton.os.NewtonInfo;
+
+import java.util.concurrent.TimeoutException;
 
 /**
  * jNCU controller interface.

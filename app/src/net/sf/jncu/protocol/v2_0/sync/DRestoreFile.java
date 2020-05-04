@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.protocol.v2_0.sync;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This command asks the desktop to restore the file specified by the last path

@@ -19,9 +19,9 @@
  */
 package net.sf.jncu.cdil;
 
-import java.util.TimerTask;
-
 import net.sf.jncu.protocol.v1_0.session.DHello;
+
+import java.util.TimerTask;
 
 /**
  * Ping the Newton.

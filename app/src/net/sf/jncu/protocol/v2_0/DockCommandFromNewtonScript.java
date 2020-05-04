@@ -19,13 +19,13 @@
  */
 package net.sf.jncu.protocol.v2_0;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFImmediate;
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Command from the Newton with a single NewtonScript object result.

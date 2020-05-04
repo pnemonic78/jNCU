@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.protocol.v1_0.data;
 
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Set;
 import java.util.TreeSet;
-
-import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command is sent to delete one or more entries from the current soup.

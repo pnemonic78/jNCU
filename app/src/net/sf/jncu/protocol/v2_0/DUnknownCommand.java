@@ -19,14 +19,14 @@
  */
 package net.sf.jncu.protocol.v2_0;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 import net.sf.jncu.protocol.BaseDockCommandToNewton;
 import net.sf.jncu.protocol.DockCommandBidi;
 import net.sf.jncu.protocol.DockCommandFromNewton;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * This command is sent when a message is received that is unknown. When the

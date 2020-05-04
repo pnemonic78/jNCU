@@ -19,16 +19,16 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
+import net.sf.jncu.fdil.NSOFEncoder;
+import net.sf.jncu.fdil.NSOFPlainArray;
+import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import net.sf.jncu.fdil.NSOFEncoder;
-import net.sf.jncu.fdil.NSOFPlainArray;
-import net.sf.jncu.fdil.NSOFString;
-import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command returns an array of translators that can be used with the

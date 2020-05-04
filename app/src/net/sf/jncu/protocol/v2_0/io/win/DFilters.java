@@ -19,6 +19,12 @@
  */
 package net.sf.jncu.protocol.v2_0.io.win;
 
+import net.sf.jncu.fdil.NSOFArray;
+import net.sf.jncu.fdil.NSOFEncoder;
+import net.sf.jncu.fdil.NSOFPlainArray;
+import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -27,12 +33,6 @@ import java.util.List;
 
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import net.sf.jncu.fdil.NSOFArray;
-import net.sf.jncu.fdil.NSOFEncoder;
-import net.sf.jncu.fdil.NSOFPlainArray;
-import net.sf.jncu.fdil.NSOFString;
-import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command returns an array of filters to the Newton. It's sent in response

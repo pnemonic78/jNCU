@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
+
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.OutputStream;
-
-import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command sends 1 character to the Newton for processing. The char is a 2

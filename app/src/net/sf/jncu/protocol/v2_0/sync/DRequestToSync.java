@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.protocol.v2_0.sync;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import net.sf.jncu.protocol.DockCommandBidi;
 import net.sf.jncu.protocol.DockCommandFromNewtonBlank;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This command is sent from the desktop when the desktop wants to start a sync

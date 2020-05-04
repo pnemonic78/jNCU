@@ -19,11 +19,11 @@
  */
 package net.sf.jncu.protocol.v2_0.query;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFObject;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Applies the specified function to each of the cursor's entries in turn and

@@ -19,8 +19,6 @@
  */
 package net.sf.jncu.protocol.app;
 
-import java.util.List;
-
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.CDPipeListener;
@@ -36,8 +34,8 @@ import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.newton.os.Store;
-import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.app.DPackageIDList;
 import net.sf.jncu.protocol.v1_0.data.DEntry;
@@ -64,6 +62,8 @@ import net.sf.jncu.protocol.v2_0.app.DPackageInfo;
 import net.sf.jncu.protocol.v2_0.app.PackageInfo;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceled2;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
+
+import java.util.List;
 
 /**
  * Test to backup from the Newton.

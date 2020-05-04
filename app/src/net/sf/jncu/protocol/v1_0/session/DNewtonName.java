@@ -19,14 +19,14 @@
  */
 package net.sf.jncu.protocol.v1_0.session;
 
+import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.newton.os.NewtonInfo;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-
-import net.sf.jncu.fdil.NSOFString;
-import net.sf.jncu.newton.os.NewtonInfo;
-import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * The name of the Newton.<br>

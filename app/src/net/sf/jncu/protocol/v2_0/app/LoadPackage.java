@@ -19,14 +19,6 @@
  */
 package net.sf.jncu.protocol.v2_0.app;
 
-import java.awt.Window;
-import java.io.File;
-
-import javax.swing.Icon;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.Preferences;
 import net.sf.jncu.cdil.CDPipe;
@@ -44,6 +36,14 @@ import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.jncu.swing.JNCUModuleDialog;
 import net.sf.swing.SwingUtils;
+
+import java.awt.Window;
+import java.io.File;
+
+import javax.swing.Icon;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * Load package module.

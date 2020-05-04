@@ -19,8 +19,6 @@
  */
 package net.sf.jncu.protocol.v2_0;
 
-import java.util.Map;
-
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.app.DAppNames;
@@ -126,6 +124,8 @@ import net.sf.jncu.protocol.v2_0.sync.DSoupsChanged;
 import net.sf.jncu.protocol.v2_0.sync.DSyncOptions;
 import net.sf.jncu.protocol.v2_0.sync.DSyncResults;
 import net.sf.jncu.protocol.v2_0.sync.DSynchronize;
+
+import java.util.Map;
 
 /**
  * Docking command factory.

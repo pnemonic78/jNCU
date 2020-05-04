@@ -19,10 +19,6 @@
  */
 package net.sf.jncu.protocol.sync;
 
-import java.io.File;
-
-import javax.swing.SwingUtilities;
-
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.cdil.CDStateListener;
@@ -33,8 +29,8 @@ import net.sf.jncu.cdil.mnp.MNPSerialPort;
 import net.sf.jncu.cdil.mnp.PacketLogger;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.Store;
-import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v1_0.session.DOperationCanceled;
@@ -45,6 +41,10 @@ import net.sf.jncu.protocol.v2_0.sync.BackupModule.BackupListener;
 import net.sf.jncu.protocol.v2_0.sync.DGetSyncOptions;
 import net.sf.jncu.protocol.v2_0.sync.DRequestToSync;
 import net.sf.jncu.protocol.v2_0.sync.DSynchronize;
+
+import java.io.File;
+
+import javax.swing.SwingUtilities;
 
 /**
  * Test to backup from the Newton.

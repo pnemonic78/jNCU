@@ -19,11 +19,11 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.protocol.BaseDockCommandToNewton;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * This command asks the Newton to call the specified function and return it's

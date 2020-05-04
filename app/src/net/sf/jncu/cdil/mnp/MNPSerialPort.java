@@ -19,6 +19,9 @@
  */
 package net.sf.jncu.cdil.mnp;
 
+import net.sf.jncu.io.NoSuchPortException;
+import net.sf.jncu.io.PortInUseException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,9 +29,6 @@ import java.util.TooManyListenersException;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
-
-import net.sf.jncu.io.NoSuchPortException;
-import net.sf.jncu.io.PortInUseException;
 
 /**
  * Wraps a serial port.

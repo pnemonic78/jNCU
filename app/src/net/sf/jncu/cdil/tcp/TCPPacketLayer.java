@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.cdil.tcp;
 
+import net.sf.jncu.cdil.CDPacketLayer;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import net.sf.jncu.cdil.CDPacketLayer;
 
 /**
  * Transfer Control Protocol (TCP) packet layer.

@@ -19,10 +19,6 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
-import java.util.concurrent.TimeoutException;
-
-import javax.crypto.Cipher;
-
 import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.CDPacket;
@@ -36,6 +32,10 @@ import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.query.DResult;
+
+import java.util.concurrent.TimeoutException;
+
+import javax.crypto.Cipher;
 
 /**
  * Manage the docking protocol.

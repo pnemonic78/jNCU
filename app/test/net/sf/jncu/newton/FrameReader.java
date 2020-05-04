@@ -19,13 +19,13 @@
  */
 package net.sf.jncu.newton;
 
+import net.sf.jncu.fdil.NSOFDecoder;
+import net.sf.jncu.fdil.NSOFObject;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import net.sf.jncu.fdil.NSOFDecoder;
-import net.sf.jncu.fdil.NSOFObject;
 
 /**
  * Read a NSOF frame.

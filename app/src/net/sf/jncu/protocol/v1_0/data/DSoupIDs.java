@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.protocol.v1_0.data;
 
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command is sent in response to a <tt>kDGetSoupIDs</tt> command. It

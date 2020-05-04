@@ -19,11 +19,11 @@
  */
 package net.sf.jncu.crypto;
 
-import javax.crypto.Cipher;
+import net.sf.junit.SFTestCase;
 
 import org.junit.Test;
 
-import net.sf.junit.SFTestCase;
+import javax.crypto.Cipher;
 
 /**
  * DES test case.

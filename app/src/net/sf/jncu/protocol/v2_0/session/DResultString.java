@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.protocol.BaseDockCommandToNewton;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Reports a desktop error to the Newton. The string is included since the

@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.sync;
 
+import net.sf.jncu.newton.os.NewtonInfo;
+import net.sf.jncu.newton.os.Store;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import net.sf.jncu.newton.os.NewtonInfo;
-import net.sf.jncu.newton.os.Store;
 
 /**
  * Archive file for backup from the Newton device, and restore to the Newton

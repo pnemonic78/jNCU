@@ -19,19 +19,19 @@
  */
 package net.sf.jncu.cdil.mnp;
 
-import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.concurrent.TimeoutException;
-
 import net.sf.jncu.cdil.CDPacketFilter;
 import net.sf.jncu.cdil.CDPacketLayer;
 import net.sf.jncu.cdil.CDPacketListener;
 import net.sf.lang.ControlCharacter;
 import net.sf.util.zip.CRC16;
 import net.sf.util.zip.ChecksumException;
+
+import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.concurrent.TimeoutException;
 
 /**
  * MNP packet layer.

@@ -19,6 +19,8 @@
  */
 package net.sf.jncu.crypto;
 
+import net.sf.jncu.util.NumberUtils;
+
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
@@ -32,8 +34,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
-
-import net.sf.jncu.util.NumberUtils;
 
 /**
  * Newton DES cryptography.

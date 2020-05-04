@@ -19,12 +19,6 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-
-import javax.swing.Icon;
-
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFInteger;
@@ -34,6 +28,12 @@ import net.sf.jncu.fdil.contrib.NSOFIcon;
 import net.sf.jncu.protocol.BaseDockCommandToNewton;
 import net.sf.jncu.util.NewtonDateUtils;
 import net.sf.swing.SwingUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+
+import javax.swing.Icon;
 
 /**
  * This command is sent in response to a <tt>kDGetFileInfo</tt> command. It

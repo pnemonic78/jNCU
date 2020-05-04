@@ -19,6 +19,12 @@
  */
 package net.sf.jncu.swing;
 
+import net.sf.jncu.JNCUResources;
+import net.sf.jncu.Settings;
+import net.sf.jncu.Settings.BackupName;
+import net.sf.jncu.cdil.mnp.MNPSerialPort;
+import net.sf.swing.text.DocumentLengthFilter;
+
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -39,12 +45,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JTabbedPane;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.DocumentFilter;
-
-import net.sf.jncu.JNCUResources;
-import net.sf.jncu.Settings;
-import net.sf.jncu.Settings.BackupName;
-import net.sf.jncu.cdil.mnp.MNPSerialPort;
-import net.sf.swing.text.DocumentLengthFilter;
 
 /**
  * jNCU settings dialog.

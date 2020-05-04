@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.cdil.mnp;
 
-import java.io.IOException;
-
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.CDState;
 import net.sf.jncu.cdil.CDStateListener;
+
+import java.io.IOException;
 
 /**
  * <code>

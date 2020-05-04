@@ -19,11 +19,6 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Random;
-
 import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFBoolean;
 import net.sf.jncu.fdil.NSOFEncoder;
@@ -32,6 +27,11 @@ import net.sf.jncu.fdil.NSOFInteger;
 import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.protocol.BaseDockCommandToNewton;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Random;
 
 /**
  * This command is used to negotiate the real protocol version. The protocol

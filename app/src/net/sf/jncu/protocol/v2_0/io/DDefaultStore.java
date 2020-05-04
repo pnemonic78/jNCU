@@ -19,13 +19,13 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.newton.os.Store;
 import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This command returns a store info frame describing the default store. This

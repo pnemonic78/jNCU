@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.protocol.v1_0.data;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This command is sent in response to a <tt>kDReturnEntry</tt> command. The

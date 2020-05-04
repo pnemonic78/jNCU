@@ -19,9 +19,9 @@
  */
 package net.sf.jncu.fdil;
 
-import org.junit.Test;
-
 import net.sf.junit.SFTestCase;
+
+import org.junit.Test;
 
 public class FDILMake extends SFTestCase {
 

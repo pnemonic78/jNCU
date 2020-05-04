@@ -19,11 +19,11 @@
  */
 package net.sf.jncu.protocol.v2_0.sync;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This command is sent whenever the user on the Newton has selected selective

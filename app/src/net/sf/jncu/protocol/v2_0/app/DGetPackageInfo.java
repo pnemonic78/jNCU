@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.protocol.v2_0.app;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.protocol.BaseDockCommandToNewton;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * The package info for the specified package is returned. See the

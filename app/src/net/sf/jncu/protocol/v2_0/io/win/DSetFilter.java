@@ -19,10 +19,10 @@
  */
 package net.sf.jncu.protocol.v2_0.io.win;
 
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+
 import java.io.IOException;
 import java.io.InputStream;
-
-import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command changes the current filter being used. A

@@ -3,10 +3,10 @@
  */
 package net.sf.jncu.swing;
 
+import net.sf.jncu.JNCUResources;
+
 import javax.swing.Icon;
 import javax.swing.WindowConstants;
-
-import net.sf.jncu.JNCUResources;
 
 /**
  * Test the dialog to monitor the progress of a module's operations.

@@ -19,6 +19,10 @@
  */
 package net.sf.jncu.fdil.contrib;
 
+import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.fdil.NSOFInteger;
+import net.sf.jncu.fdil.NSOFSmallRect;
+
 import java.awt.Image;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -26,10 +30,6 @@ import java.io.InputStream;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-
-import net.sf.jncu.fdil.NSOFFrame;
-import net.sf.jncu.fdil.NSOFInteger;
-import net.sf.jncu.fdil.NSOFSmallRect;
 
 /**
  * Decode the NTK icons.<br>

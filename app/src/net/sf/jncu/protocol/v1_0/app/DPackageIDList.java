@@ -19,13 +19,13 @@
  */
 package net.sf.jncu.protocol.v1_0.app;
 
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+import net.sf.jncu.protocol.v2_0.app.PackageInfo;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.sf.jncu.protocol.BaseDockCommandFromNewton;
-import net.sf.jncu.protocol.v2_0.app.PackageInfo;
 
 /**
  * This command sends a list of package frames to the desktop. For each package

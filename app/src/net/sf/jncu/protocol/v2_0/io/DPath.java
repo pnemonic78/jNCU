@@ -19,18 +19,18 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.protocol.BaseDockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.io.Device;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This command returns the initial strings for the folder pop-up in the

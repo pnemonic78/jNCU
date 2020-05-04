@@ -19,6 +19,9 @@
  */
 package net.sf.jncu.protocol.sync;
 
+import net.sf.jncu.JNCUResources;
+import net.sf.jncu.swing.JNCUDialog;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Window;
@@ -29,9 +32,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.border.EmptyBorder;
-
-import net.sf.jncu.JNCUResources;
-import net.sf.jncu.swing.JNCUDialog;
 
 /**
  * Backup progress dialog.

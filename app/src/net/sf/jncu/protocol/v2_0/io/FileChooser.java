@@ -19,15 +19,6 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
-import java.awt.Window;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.Preferences;
 import net.sf.jncu.cdil.CDPipe;
@@ -46,6 +37,15 @@ import net.sf.jncu.protocol.v2_0.sync.DRestoreFile;
 import net.sf.jncu.translate.TranslatorFactory;
 import net.sf.swing.AcceptAllFileFilter;
 import net.sf.swing.SwingUtils;
+
+import java.awt.Window;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * Data source for interacting with the Newton file browser.

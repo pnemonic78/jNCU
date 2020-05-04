@@ -19,8 +19,6 @@
  */
 package net.sf.jncu.cdil.mnp;
 
-import java.util.concurrent.TimeoutException;
-
 import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDILNotInitializedException;
 import net.sf.jncu.cdil.CDLayer;
@@ -33,6 +31,8 @@ import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.session.DRequestToDock;
 import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
 import net.sf.jncu.protocol.v2_0.session.DockingState;
+
+import java.util.concurrent.TimeoutException;
 
 public class EmptyPipe extends MNPPipe {
 

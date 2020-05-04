@@ -19,6 +19,9 @@
  */
 package net.sf.jncu.swing;
 
+import net.sf.jncu.JNCUResources;
+import net.sf.swing.SwingUtils;
+
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Window;
@@ -30,9 +33,6 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
-
-import net.sf.jncu.JNCUResources;
-import net.sf.swing.SwingUtils;
 
 /**
  * jNCU base dialog.

@@ -19,15 +19,6 @@
  */
 package net.sf.jncu.protocol.v1_0;
 
-import java.io.ByteArrayInputStream;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.sf.jncu.protocol.BaseDockCommand;
 import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommand;
@@ -79,6 +70,15 @@ import net.sf.jncu.protocol.v1_0.sync.DCurrentTime;
 import net.sf.jncu.protocol.v1_0.sync.DGetChangedIDs;
 import net.sf.jncu.protocol.v1_0.sync.DLastSyncTime;
 import net.sf.jncu.protocol.v1_0.sync.DReturnChangedEntry;
+
+import java.io.ByteArrayInputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Docking command factory.

@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.protocol.v1_0.data;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import net.sf.jncu.fdil.contrib.NSOFSoupName;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.protocol.BaseDockCommandToNewton;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * This command is used by restore to remove all entries from a soup before the

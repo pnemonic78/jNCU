@@ -19,11 +19,6 @@
  */
 package net.sf.jncu.protocol.sync;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
 import net.sf.jncu.cdil.mnp.TraceDecode;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFLargeBinary;
@@ -37,8 +32,8 @@ import net.sf.jncu.newton.os.ApplicationPackage;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.newton.os.Store;
-import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.app.DPackageIDList;
 import net.sf.jncu.protocol.v1_0.data.DEntry;
@@ -56,6 +51,11 @@ import net.sf.jncu.sync.ArchiveReader;
 import net.sf.jncu.sync.ArchiveWriter;
 
 import org.junit.Assert;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 public class BackupDecode extends TraceDecode implements DockCommandListener {
 

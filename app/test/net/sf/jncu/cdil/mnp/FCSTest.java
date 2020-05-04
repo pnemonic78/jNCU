@@ -19,10 +19,10 @@
  */
 package net.sf.jncu.cdil.mnp;
 
-import org.junit.Test;
-
 import net.sf.junit.SFTestCase;
 import net.sf.util.zip.CRC16;
+
+import org.junit.Test;
 
 public class FCSTest extends SFTestCase {
 

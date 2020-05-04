@@ -19,11 +19,11 @@
  */
 package net.sf.jncu.fdil.zip;
 
+import net.sf.jncu.fdil.NSOFLargeBinary;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-
-import net.sf.jncu.fdil.NSOFLargeBinary;
 
 /**
  * Base class for all compressors.

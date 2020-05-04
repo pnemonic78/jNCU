@@ -19,10 +19,10 @@
  */
 package net.sf.jncu.protocol;
 
+import net.sf.jncu.protocol.v1_0.app.DLoadPackage;
+
 import java.io.IOException;
 import java.io.InputStream;
-
-import net.sf.jncu.protocol.v1_0.app.DLoadPackage;
 
 /**
  * Docking command interface from Newton to desktop.

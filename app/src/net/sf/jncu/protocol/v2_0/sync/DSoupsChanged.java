@@ -19,11 +19,6 @@
  */
 package net.sf.jncu.protocol.v2_0.sync;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Set;
-import java.util.TreeSet;
-
 import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFFrame;
@@ -33,6 +28,11 @@ import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.protocol.BaseDockCommandToNewton;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * This command returns information about what was imported into the Newton.

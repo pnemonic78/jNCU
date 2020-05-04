@@ -19,11 +19,11 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import net.sf.jncu.fdil.contrib.NSOFSoupName;
 import net.sf.jncu.protocol.BaseDockCommandToNewton;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * This command creates a soup on the current store. It uses a registered

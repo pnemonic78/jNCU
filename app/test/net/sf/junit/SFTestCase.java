@@ -19,9 +19,9 @@
  */
 package net.sf.junit;
 
-import java.nio.CharBuffer;
-
 import junit.framework.TestCase;
+
+import java.nio.CharBuffer;
 
 /**
  * SourceForge test case.

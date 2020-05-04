@@ -19,15 +19,15 @@
  */
 package net.sf.jncu.protocol.v2_0.io.win;
 
-import java.awt.Window;
-import java.io.File;
-import java.util.Collection;
-
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.v2_0.io.DPath;
 import net.sf.jncu.protocol.v2_0.io.FileChooser;
+
+import java.awt.Window;
+import java.io.File;
+import java.util.Collection;
 
 /**
  * Data source for interacting with the Newton file browser for Windows

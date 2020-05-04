@@ -19,6 +19,16 @@
  */
 package net.sf.jncu.protocol.v2_0.sync;
 
+import net.sf.jncu.JNCUResources;
+import net.sf.jncu.fdil.NSOFArray;
+import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.newton.os.Soup;
+import net.sf.jncu.newton.os.Store;
+import net.sf.jncu.protocol.v2_0.app.AppName;
+import net.sf.jncu.swing.JNCUDialog;
+import net.sf.swing.CheckListCellRenderer;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Window;
@@ -44,16 +54,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
-
-import net.sf.jncu.JNCUResources;
-import net.sf.jncu.fdil.NSOFArray;
-import net.sf.jncu.fdil.NSOFObject;
-import net.sf.jncu.fdil.NSOFString;
-import net.sf.jncu.newton.os.Soup;
-import net.sf.jncu.newton.os.Store;
-import net.sf.jncu.protocol.v2_0.app.AppName;
-import net.sf.jncu.swing.JNCUDialog;
-import net.sf.swing.CheckListCellRenderer;
 
 /**
  * Backup options dialog.

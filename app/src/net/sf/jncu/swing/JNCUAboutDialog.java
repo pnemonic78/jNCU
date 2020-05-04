@@ -19,6 +19,8 @@
  */
 package net.sf.jncu.swing;
 
+import net.sf.jncu.JNCUResources;
+
 import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.awt.Desktop.Action;
@@ -36,8 +38,6 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.html.HTMLEditorKit;
-
-import net.sf.jncu.JNCUResources;
 
 /**
  * jNCU "about" dialog.

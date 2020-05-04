@@ -19,6 +19,13 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
+import net.sf.jncu.fdil.NSOFArray;
+import net.sf.jncu.fdil.NSOFEncoder;
+import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.fdil.NSOFPlainArray;
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
+import net.sf.jncu.protocol.v1_0.io.Device;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -27,13 +34,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.filechooser.FileFilter;
-
-import net.sf.jncu.fdil.NSOFArray;
-import net.sf.jncu.fdil.NSOFEncoder;
-import net.sf.jncu.fdil.NSOFObject;
-import net.sf.jncu.fdil.NSOFPlainArray;
-import net.sf.jncu.protocol.BaseDockCommandToNewton;
-import net.sf.jncu.protocol.v1_0.io.Device;
 
 /**
  * This command returns an array of information that's used to display a

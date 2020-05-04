@@ -19,10 +19,10 @@
  */
 package net.sf.jncu.fdil.zip;
 
+import net.sf.jncu.fdil.NSOFLargeBinary;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import net.sf.jncu.fdil.NSOFLargeBinary;
 
 /**
  * Compander and decompressor object factory.

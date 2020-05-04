@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.protocol.v1_0.session;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandBidi;
 import net.sf.jncu.protocol.DockCommandToNewtonBlank;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This command is sent to the Newton when the docking operation is complete.

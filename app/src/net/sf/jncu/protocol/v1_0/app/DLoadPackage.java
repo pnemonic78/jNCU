@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.protocol.v1_0.app;
 
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command will load a package into the Newton's RAM. The package data

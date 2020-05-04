@@ -19,12 +19,6 @@
  */
 package net.sf.jncu.protocol.io;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-
-import javax.swing.SwingUtilities;
-
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.cdil.CDPipeListener;
@@ -33,13 +27,19 @@ import net.sf.jncu.cdil.mnp.MNPPacket;
 import net.sf.jncu.cdil.mnp.MNPPacketLayer;
 import net.sf.jncu.cdil.mnp.MNPPipe;
 import net.sf.jncu.cdil.mnp.MNPSerialPort;
-import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v2_0.io.DKeyboardChar;
 import net.sf.jncu.protocol.v2_0.io.KeyboardInput;
 import net.sf.jncu.protocol.v2_0.io.KeyboardInputListener;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
+
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
+import javax.swing.SwingUtilities;
 
 public class KeyboardInputTester implements WindowListener, KeyboardInputListener, DockCommandListener, CDPipeListener<MNPPacket, MNPPacketLayer> {
 

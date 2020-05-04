@@ -19,10 +19,10 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
+
 import java.io.IOException;
 import java.io.OutputStream;
-
-import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command sends a string of characters to the Newton for processing. The

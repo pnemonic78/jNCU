@@ -19,6 +19,9 @@
  */
 package net.sf.jncu.fdil;
 
+import net.sf.jncu.dil.InvalidParameterException;
+import net.sf.jncu.fdil.zip.CompanderFactory;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,9 +31,6 @@ import java.sql.SQLException;
 
 import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialException;
-
-import net.sf.jncu.dil.InvalidParameterException;
-import net.sf.jncu.fdil.zip.CompanderFactory;
 
 /**
  * Newton Streamed Object Format - Large Binary Object.<br>

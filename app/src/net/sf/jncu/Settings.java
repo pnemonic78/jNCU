@@ -19,14 +19,14 @@
  */
 package net.sf.jncu;
 
+import net.sf.jncu.cdil.mnp.CommPorts;
+import net.sf.jncu.cdil.mnp.MNPSerialPort;
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
-
-import net.sf.jncu.cdil.mnp.CommPorts;
-import net.sf.jncu.cdil.mnp.MNPSerialPort;
 
 /**
  * Settings.

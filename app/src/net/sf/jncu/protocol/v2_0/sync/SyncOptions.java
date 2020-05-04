@@ -19,11 +19,6 @@
  */
 package net.sf.jncu.protocol.v2_0.sync;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.TreeSet;
-
 import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFBoolean;
 import net.sf.jncu.fdil.NSOFFrame;
@@ -32,6 +27,11 @@ import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFPlainArray;
 import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.newton.os.Store;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.TreeSet;
 
 /**
  * What information is to be synchronised?

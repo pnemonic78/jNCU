@@ -19,10 +19,10 @@
  */
 package net.sf.jncu.protocol.v1_0.app;
 
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+
 import java.io.IOException;
 import java.io.InputStream;
-
-import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command sends a package to the desktop. It's issued repeatedly in

@@ -19,14 +19,14 @@
  */
 package net.sf.jncu.cdil.mnp;
 
+import net.sf.jncu.cdil.PipeDisconnectedException;
+import net.sf.jncu.cdil.mnp.MNPPipe.MNPState;
+import net.sf.jncu.io.NullOutputStream;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import net.sf.jncu.cdil.PipeDisconnectedException;
-import net.sf.jncu.cdil.mnp.MNPPipe.MNPState;
-import net.sf.jncu.io.NullOutputStream;
 
 public class EmptyPacketLayer extends MNPSerialPacketLayer {
 

@@ -19,9 +19,9 @@
  */
 package net.sf.jncu.fdil.zip;
 
-import java.io.InputStream;
-
 import net.sf.jncu.newton.os.Store;
+
+import java.io.InputStream;
 
 /**
  * Lempel-Ziv relocation store decompressor.

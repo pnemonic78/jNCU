@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.protocol.v1_0.sync;
 
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
 import java.util.TreeSet;
-
-import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * This command is sent in response to a <tt>kDGetChangedIDs</tt> command. It

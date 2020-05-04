@@ -19,17 +19,17 @@
  */
 package net.sf.jncu.sync;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-
 import net.sf.jncu.newton.os.ApplicationPackage;
 import net.sf.jncu.newton.os.NewtonInfo;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.newton.os.Store;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 /**
  * Restore from an archive file to the Newton device.

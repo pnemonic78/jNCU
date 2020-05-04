@@ -19,10 +19,6 @@
  */
 package net.sf.jncu.cdil.mnp;
 
-import java.io.IOException;
-import java.util.TooManyListenersException;
-import java.util.concurrent.TimeoutException;
-
 import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDCommandLayer;
 import net.sf.jncu.cdil.CDILNotInitializedException;
@@ -37,6 +33,10 @@ import net.sf.jncu.io.PortInUseException;
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.v1_0.session.DDisconnect;
 import net.sf.jncu.protocol.v2_0.session.DockingState;
+
+import java.io.IOException;
+import java.util.TooManyListenersException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * MNP Serial pipe.

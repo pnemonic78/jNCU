@@ -19,6 +19,9 @@
  */
 package net.sf.jncu.cdil.mnp;
 
+import net.sf.jncu.io.NoSuchPortException;
+import net.sf.jncu.io.PortInUseException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -29,9 +32,6 @@ import java.io.PrintStream;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
-
-import net.sf.jncu.io.NoSuchPortException;
-import net.sf.jncu.io.PortInUseException;
 
 /**
  * Trace serial port traffic.

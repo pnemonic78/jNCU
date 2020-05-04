@@ -19,6 +19,8 @@
  */
 package net.sf.jncu.cdil;
 
+import net.sf.util.zip.ChecksumException;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,8 +30,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Timer;
 import java.util.concurrent.TimeoutException;
-
-import net.sf.util.zip.ChecksumException;
 
 /**
  * CD packet layer.

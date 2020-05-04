@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.cdil.mnp;
 
-import java.io.InputStream;
-
 import net.sf.jncu.cdil.CDLayer;
 import net.sf.jncu.cdil.PlatformException;
 import net.sf.jncu.cdil.ServiceNotSupportedException;
 import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
+
+import java.io.InputStream;
 
 public class TraceDecodePipe extends EmptyPipe {
 

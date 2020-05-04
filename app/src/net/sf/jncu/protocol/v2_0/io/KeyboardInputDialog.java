@@ -19,6 +19,9 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
+import net.sf.jncu.JNCUResources;
+import net.sf.jncu.swing.JNCUDialog;
+
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -42,9 +45,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
-import net.sf.jncu.JNCUResources;
-import net.sf.jncu.swing.JNCUDialog;
 
 /**
  * Keyboard input dialog.

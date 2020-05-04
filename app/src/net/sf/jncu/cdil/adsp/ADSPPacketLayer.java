@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.cdil.adsp;
 
+import net.sf.jncu.cdil.CDPacketLayer;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import net.sf.jncu.cdil.CDPacketLayer;
 
 /**
  * Apple Data Stream Protocol (ADSP) for AppleTalk packet layer.

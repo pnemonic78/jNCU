@@ -19,14 +19,14 @@
  */
 package net.sf.jncu.sync;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import net.sf.jncu.newton.os.ApplicationPackage;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.newton.os.Store;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Backup from the Newton device to an archive file.<br>

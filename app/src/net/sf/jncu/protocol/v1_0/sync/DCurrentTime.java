@@ -19,10 +19,10 @@
  */
 package net.sf.jncu.protocol.v1_0.sync;
 
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+
 import java.io.IOException;
 import java.io.InputStream;
-
-import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * The current time on the Newton.<br>

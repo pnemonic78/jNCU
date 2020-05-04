@@ -19,15 +19,6 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
-import java.awt.Window;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import javax.swing.Icon;
-
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.fdil.NSOFFrame;
@@ -45,6 +36,15 @@ import net.sf.jncu.protocol.v2_0.sync.DSoupsChanged;
 import net.sf.jncu.protocol.v2_0.sync.DSoupsChanged.SoupChanged;
 import net.sf.jncu.translate.Translator;
 import net.sf.jncu.translate.TranslatorFactory;
+
+import java.awt.Window;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+import javax.swing.Icon;
 
 /**
  * Import file module.

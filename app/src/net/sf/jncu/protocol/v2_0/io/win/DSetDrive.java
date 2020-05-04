@@ -19,13 +19,13 @@
  */
 package net.sf.jncu.protocol.v2_0.io.win;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This command asks the desktop to change the drive on the desktop and set the

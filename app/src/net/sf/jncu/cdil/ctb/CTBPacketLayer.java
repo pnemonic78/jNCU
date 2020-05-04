@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.cdil.ctb;
 
+import net.sf.jncu.cdil.CDPacketLayer;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import net.sf.jncu.cdil.CDPacketLayer;
 
 /**
  * Macintosh Communication Tool Serial packet layer.

@@ -19,10 +19,6 @@
  */
 package net.sf.jncu.newton;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-
 import net.sf.jncu.fdil.NSOFBinaryObject;
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFEncoder;
@@ -37,6 +33,10 @@ import net.sf.jncu.fdil.NSOFUnicodeCharacter;
 import net.sf.junit.SFTestCase;
 
 import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 /**
  * <pre>

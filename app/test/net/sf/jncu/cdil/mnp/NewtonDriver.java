@@ -19,27 +19,16 @@
  */
 package net.sf.jncu.cdil.mnp;
 
-import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
-import java.util.Timer;
-import java.util.concurrent.TimeoutException;
-
-import javax.crypto.Cipher;
-
-import jssc.SerialPort;
-import jssc.SerialPortException;
-
 import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDPing;
 import net.sf.jncu.crypto.DESNewton;
 import net.sf.jncu.fdil.NSOFEncoder;
 import net.sf.jncu.fdil.NSOFInteger;
 import net.sf.jncu.fdil.NSOFPlainArray;
-import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.BaseDockCommandToNewton;
 import net.sf.jncu.protocol.DockCommand;
 import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandListener;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v1_0.io.DGetStoreNames;
 import net.sf.jncu.protocol.v1_0.query.DGetInheritance;
@@ -59,6 +48,17 @@ import net.sf.jncu.protocol.v2_0.session.DWhichIcons;
 import net.sf.jncu.protocol.v2_0.session.DockingState;
 import net.sf.jncu.util.NewtonDateUtils;
 import net.sf.jncu.util.NumberUtils;
+
+import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.util.Timer;
+import java.util.concurrent.TimeoutException;
+
+import javax.crypto.Cipher;
+
+import jssc.SerialPort;
+import jssc.SerialPortException;
 
 /**
  * Pretend to be a Newton simulator.

@@ -19,16 +19,16 @@
  */
 package net.sf.jncu.protocol.app;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.Iterator;
-
-import org.junit.Test;
-
 import net.sf.jncu.cdil.mnp.MNPLinkTransferPacket;
 import net.sf.jncu.cdil.mnp.MNPPacketFactory;
 import net.sf.jncu.protocol.v1_0.app.DLoadPackage;
 import net.sf.junit.SFTestCase;
+
+import org.junit.Test;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.Iterator;
 
 /**
  * Package commands tester.

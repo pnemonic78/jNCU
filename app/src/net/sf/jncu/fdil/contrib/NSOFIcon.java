@@ -19,6 +19,15 @@
  */
 package net.sf.jncu.fdil.contrib;
 
+import net.sf.jncu.fdil.NSOFArray;
+import net.sf.jncu.fdil.NSOFFrame;
+import net.sf.jncu.fdil.NSOFImmediate;
+import net.sf.jncu.fdil.NSOFInteger;
+import net.sf.jncu.fdil.NSOFObject;
+import net.sf.jncu.fdil.NSOFPlainArray;
+import net.sf.jncu.fdil.NSOFSmallRect;
+import net.sf.jncu.fdil.NSOFSymbol;
+
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -29,15 +38,6 @@ import java.util.Set;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-
-import net.sf.jncu.fdil.NSOFArray;
-import net.sf.jncu.fdil.NSOFFrame;
-import net.sf.jncu.fdil.NSOFImmediate;
-import net.sf.jncu.fdil.NSOFInteger;
-import net.sf.jncu.fdil.NSOFObject;
-import net.sf.jncu.fdil.NSOFPlainArray;
-import net.sf.jncu.fdil.NSOFSmallRect;
-import net.sf.jncu.fdil.NSOFSymbol;
 
 /**
  * Newton Streamed Object Format - Icon object.

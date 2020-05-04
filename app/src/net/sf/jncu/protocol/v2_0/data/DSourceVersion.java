@@ -19,10 +19,10 @@
  */
 package net.sf.jncu.protocol.v2_0.data;
 
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
+
 import java.io.IOException;
 import java.io.OutputStream;
-
-import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * Tells the Newton the version that the subsequent data is from. For example,

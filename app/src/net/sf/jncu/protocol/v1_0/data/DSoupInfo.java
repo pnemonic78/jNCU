@@ -19,14 +19,14 @@
  */
 package net.sf.jncu.protocol.v1_0.data;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.protocol.DockCommandBidi;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This command is used to send a soup info frame. When received the info for

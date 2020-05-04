@@ -19,13 +19,13 @@
  */
 package net.sf.jncu.fdil.contrib;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.SymbolTooLongException;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Soup name.

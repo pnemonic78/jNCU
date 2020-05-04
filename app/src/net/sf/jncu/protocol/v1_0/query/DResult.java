@@ -19,14 +19,14 @@
  */
 package net.sf.jncu.protocol.v1_0.query;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import net.sf.jncu.newton.NewtonError;
 import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandBidi;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.DockCommandToNewtonLong;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This command is sent in response to any of the commands from the desktop that

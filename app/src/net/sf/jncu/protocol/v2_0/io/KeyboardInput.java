@@ -19,12 +19,6 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
-import java.awt.Window;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.util.Timer;
-
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.protocol.DockCommandFromNewton;
@@ -34,6 +28,12 @@ import net.sf.jncu.protocol.v2_0.IconModule;
 import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.jncu.swing.JNCUModuleDialog;
+
+import java.awt.Window;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.Timer;
 
 /**
  * Keyboard input for pass-through mode. <br>

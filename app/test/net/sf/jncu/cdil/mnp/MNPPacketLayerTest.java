@@ -19,15 +19,6 @@
  */
 package net.sf.jncu.cdil.mnp;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-
-import org.junit.Test;
-
 import net.sf.jncu.protocol.BaseDockCommand;
 import net.sf.jncu.protocol.BaseDockCommandToNewton;
 import net.sf.jncu.protocol.DockCommand;
@@ -35,6 +26,15 @@ import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 import net.sf.jncu.protocol.v2_0.session.DDesktopInfo;
 import net.sf.jncu.protocol.v2_0.session.DNewtonName;
 import net.sf.junit.SFTestCase;
+
+import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
 
 public class MNPPacketLayerTest extends SFTestCase {
 

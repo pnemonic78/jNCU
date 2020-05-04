@@ -19,15 +19,15 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
 import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFDecoder;
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This command tells the desktop that the user has changed the path. The

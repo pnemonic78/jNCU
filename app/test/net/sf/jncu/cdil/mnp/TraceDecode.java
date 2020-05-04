@@ -19,6 +19,14 @@
  */
 package net.sf.jncu.cdil.mnp;
 
+import net.sf.jncu.cdil.CDCommandLayer;
+import net.sf.jncu.cdil.CDLayer;
+import net.sf.jncu.cdil.CDState;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandListener;
+import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.swing.JNCUModuleDialog;
+
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileReader;
@@ -27,14 +35,6 @@ import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.Reader;
-
-import net.sf.jncu.cdil.CDCommandLayer;
-import net.sf.jncu.cdil.CDLayer;
-import net.sf.jncu.cdil.CDState;
-import net.sf.jncu.protocol.DockCommandListener;
-import net.sf.jncu.protocol.DockCommandFromNewton;
-import net.sf.jncu.protocol.DockCommandToNewton;
-import net.sf.jncu.swing.JNCUModuleDialog;
 
 /**
  * Decode trace dumps.

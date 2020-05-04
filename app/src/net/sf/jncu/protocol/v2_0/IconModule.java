@@ -19,14 +19,6 @@
  */
 package net.sf.jncu.protocol.v2_0;
 
-import java.awt.Window;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.swing.Icon;
-import javax.swing.SwingUtilities;
-
 import net.sf.jncu.JNCUApp;
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.cdil.CDPipe;
@@ -40,6 +32,14 @@ import net.sf.jncu.protocol.v2_0.session.DOperationCanceledAck;
 import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.jncu.swing.JNCUModuleDialog;
 import net.sf.jncu.swing.JNCUModuleDialog.ModuleProgressListener;
+
+import java.awt.Window;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.swing.Icon;
+import javax.swing.SwingUtilities;
 
 /**
  * Module that does some function when user clicks an icon.

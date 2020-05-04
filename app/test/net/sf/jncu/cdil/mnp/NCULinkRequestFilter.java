@@ -19,9 +19,9 @@
  */
 package net.sf.jncu.cdil.mnp;
 
-import java.io.OutputStream;
-
 import net.sf.jncu.io.ReplaceOutputStream;
+
+import java.io.OutputStream;
 
 /**
  * NCU serial packet filter.

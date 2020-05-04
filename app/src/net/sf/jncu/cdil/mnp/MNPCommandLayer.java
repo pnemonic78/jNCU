@@ -19,6 +19,9 @@
  */
 package net.sf.jncu.cdil.mnp;
 
+import net.sf.jncu.cdil.CDCommandLayer;
+import net.sf.jncu.protocol.DockCommandToNewton;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,9 +31,6 @@ import java.io.PipedOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
-
-import net.sf.jncu.cdil.CDCommandLayer;
-import net.sf.jncu.protocol.DockCommandToNewton;
 
 /**
  * MNP command layer.

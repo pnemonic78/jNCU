@@ -19,15 +19,6 @@
  */
 package net.sf.jncu.translate;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.SocketException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
-
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.data.ParserException;
@@ -69,6 +60,15 @@ import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.SoupEntry;
 import net.sf.jncu.util.NewtonDateUtils;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.SocketException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * iCalendar translator.

@@ -19,10 +19,10 @@
  */
 package net.sf.jncu.protocol.v2_1.session;
 
+import net.sf.jncu.protocol.BaseDockCommandToNewton;
+
 import java.io.IOException;
 import java.io.OutputStream;
-
-import net.sf.jncu.protocol.BaseDockCommandToNewton;
 
 /**
  * This command is sent to set the status text.

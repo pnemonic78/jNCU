@@ -19,11 +19,11 @@
  */
 package net.sf.jncu.translate;
 
-import java.io.InputStream;
-import java.util.Collection;
-
 import net.sf.jncu.newton.os.Soup;
 import net.sf.jncu.newton.os.SoupEntry;
+
+import java.io.InputStream;
+import java.util.Collection;
 
 /**
  * vCalendar translator.

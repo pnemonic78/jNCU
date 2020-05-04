@@ -19,14 +19,14 @@
  */
 package net.sf.jncu.cdil.mnp;
 
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-
 import net.sf.jncu.io.ReplaceInputStream;
 import net.sf.jncu.io.ReplaceOutputStream;
 import net.sf.junit.SFTestCase;
 
 import org.junit.Test;
+
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 
 public class NCULinkRequestFilterTest extends SFTestCase {
 

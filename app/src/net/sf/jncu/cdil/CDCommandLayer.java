@@ -19,6 +19,14 @@
  */
 package net.sf.jncu.cdil;
 
+import net.sf.jncu.protocol.BaseDockCommand;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommand;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandListener;
+import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.v2_0.DockCommandFactory;
+
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
@@ -29,14 +37,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Vector;
 import java.util.concurrent.TimeoutException;
-
-import net.sf.jncu.protocol.BaseDockCommand;
-import net.sf.jncu.protocol.BaseDockCommandFromNewton;
-import net.sf.jncu.protocol.DockCommandListener;
-import net.sf.jncu.protocol.DockCommand;
-import net.sf.jncu.protocol.DockCommandFromNewton;
-import net.sf.jncu.protocol.DockCommandToNewton;
-import net.sf.jncu.protocol.v2_0.DockCommandFactory;
 
 /**
  * CDIL command layer.

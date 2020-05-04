@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.protocol.v2_0.io.unix;
 
-import java.awt.Window;
-import java.util.Collection;
-
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.protocol.v2_0.io.FileChooser;
+
+import java.awt.Window;
+import java.util.Collection;
 
 /**
  * Data source for interacting with the Newton file browser for Unix and Linux

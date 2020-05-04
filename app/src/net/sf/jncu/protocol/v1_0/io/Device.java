@@ -19,10 +19,6 @@
  */
 package net.sf.jncu.protocol.v1_0.io;
 
-import java.io.File;
-
-import javax.swing.filechooser.FileSystemView;
-
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFImmediate;
 import net.sf.jncu.fdil.NSOFInteger;
@@ -30,6 +26,10 @@ import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.fdil.NSOFString;
 import net.sf.jncu.fdil.NSOFSymbol;
 import net.sf.swing.SwingUtils;
+
+import java.io.File;
+
+import javax.swing.filechooser.FileSystemView;
 
 /**
  * Device information.

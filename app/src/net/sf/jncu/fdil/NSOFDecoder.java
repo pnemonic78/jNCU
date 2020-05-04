@@ -19,16 +19,16 @@
  */
 package net.sf.jncu.fdil;
 
+import net.sf.jncu.fdil.contrib.NSOFInstructions;
+import net.sf.jncu.fdil.contrib.NSOFLiterals;
+import net.sf.jncu.fdil.contrib.NSOFRawBitmap;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidObjectException;
 import java.util.HashMap;
 import java.util.Map;
-
-import net.sf.jncu.fdil.contrib.NSOFInstructions;
-import net.sf.jncu.fdil.contrib.NSOFLiterals;
-import net.sf.jncu.fdil.contrib.NSOFRawBitmap;
 
 /**
  * Newton Streamed Object Format decoder.

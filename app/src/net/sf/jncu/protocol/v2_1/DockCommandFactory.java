@@ -19,11 +19,11 @@
  */
 package net.sf.jncu.protocol.v2_1;
 
-import java.util.Map;
-
 import net.sf.jncu.protocol.DockCommandFromNewton;
 import net.sf.jncu.protocol.DockCommandToNewton;
 import net.sf.jncu.protocol.v2_1.session.DSetStatusText;
+
+import java.util.Map;
 
 /**
  * Docking command factory.

@@ -19,6 +19,13 @@
  */
 package net.sf.jncu.swing;
 
+import net.sf.jncu.JNCUApp;
+import net.sf.jncu.JNCUController;
+import net.sf.jncu.JNCUResources;
+import net.sf.jncu.newton.os.NewtonInfo;
+import net.sf.jncu.protocol.v2_0.session.DWhichIcons;
+import net.sf.swing.SwingUtils;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -49,13 +56,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
-
-import net.sf.jncu.JNCUApp;
-import net.sf.jncu.JNCUController;
-import net.sf.jncu.JNCUResources;
-import net.sf.jncu.newton.os.NewtonInfo;
-import net.sf.jncu.protocol.v2_0.session.DWhichIcons;
-import net.sf.swing.SwingUtils;
 
 /**
  * jNCU main frame.

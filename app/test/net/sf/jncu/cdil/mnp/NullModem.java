@@ -19,17 +19,17 @@
  */
 package net.sf.jncu.cdil.mnp;
 
+import net.sf.jncu.io.NoSuchPortException;
+import net.sf.junit.SFTestCase;
+
+import org.junit.Test;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
-import org.junit.Test;
-
 import jssc.SerialPort;
-
-import net.sf.jncu.io.NoSuchPortException;
-import net.sf.junit.SFTestCase;
 
 /**
  * Use Virtual COM ports for testing. COM2 attaches to NCU. COM3 attaches to

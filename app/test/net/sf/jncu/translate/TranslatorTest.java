@@ -19,9 +19,6 @@
  */
 package net.sf.jncu.translate;
 
-import java.io.InputStream;
-import java.util.Collection;
-
 import net.sf.jncu.fdil.NSOFArray;
 import net.sf.jncu.fdil.NSOFFrame;
 import net.sf.jncu.fdil.NSOFInteger;
@@ -34,6 +31,9 @@ import net.sf.jncu.util.NewtonDateUtils;
 import net.sf.junit.SFTestCase;
 
 import org.junit.Test;
+
+import java.io.InputStream;
+import java.util.Collection;
 
 public class TranslatorTest extends SFTestCase {
 

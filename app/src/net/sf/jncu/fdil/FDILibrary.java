@@ -19,6 +19,11 @@
  */
 package net.sf.jncu.fdil;
 
+import net.sf.jncu.dil.DILReadProc;
+import net.sf.jncu.dil.DILWriteProc;
+import net.sf.jncu.dil.ReadingFromPipeException;
+import net.sf.jncu.dil.WritingToPipeException;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,11 +38,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
-import net.sf.jncu.dil.DILReadProc;
-import net.sf.jncu.dil.DILWriteProc;
-import net.sf.jncu.dil.ReadingFromPipeException;
-import net.sf.jncu.dil.WritingToPipeException;
 
 /**
  * <h1>FDIL Interface</h1> <br />

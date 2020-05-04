@@ -19,6 +19,10 @@
  */
 package net.sf.jncu.swing;
 
+import net.sf.jncu.JNCUResources;
+import net.sf.jncu.newton.os.NewtonInfo;
+import net.sf.jncu.util.NumberUtils;
+
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -31,10 +35,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import net.sf.jncu.JNCUResources;
-import net.sf.jncu.newton.os.NewtonInfo;
-import net.sf.jncu.util.NumberUtils;
 
 /**
  * jNCU Newton device information dialog.

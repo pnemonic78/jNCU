@@ -19,14 +19,14 @@
  */
 package net.sf.jncu.protocol.v1_0.query;
 
+import net.sf.jncu.fdil.NSOFString;
+import net.sf.jncu.fdil.NSOFSymbol;
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.TreeMap;
-
-import net.sf.jncu.fdil.NSOFString;
-import net.sf.jncu.fdil.NSOFSymbol;
-import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 
 /**
  * Inheritance. This is a response to a <tt>kDGetInheritance</tt> request.

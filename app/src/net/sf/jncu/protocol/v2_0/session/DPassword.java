@@ -19,13 +19,13 @@
  */
 package net.sf.jncu.protocol.v2_0.session;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import net.sf.jncu.protocol.BaseDockCommandFromNewton;
 import net.sf.jncu.protocol.BaseDockCommandToNewton;
 import net.sf.jncu.protocol.DockCommandToNewton;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * This command returns the key received in the <tt>kDInitiateDocking</tt>

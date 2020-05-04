@@ -19,18 +19,18 @@
  */
 package net.sf.jncu.cdil;
 
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandListener;
+import net.sf.jncu.protocol.DockCommandToNewton;
+import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
+import net.sf.jncu.protocol.v2_0.session.DockingState;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.Timer;
 import java.util.concurrent.TimeoutException;
-
-import net.sf.jncu.protocol.DockCommandListener;
-import net.sf.jncu.protocol.DockCommandFromNewton;
-import net.sf.jncu.protocol.DockCommandToNewton;
-import net.sf.jncu.protocol.v2_0.session.DockingProtocol;
-import net.sf.jncu.protocol.v2_0.session.DockingState;
 
 /**
  * CDIL pipe.

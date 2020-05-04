@@ -19,13 +19,13 @@
  */
 package net.sf.jncu.protocol.v1_0.session;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import net.sf.jncu.fdil.NSOFObject;
 import net.sf.jncu.protocol.DockCommandBidi;
 import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
 import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Test.

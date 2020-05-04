@@ -19,20 +19,6 @@
  */
 package net.sf.jncu;
 
-import java.awt.Frame;
-import java.awt.Window;
-import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.TimeoutException;
-
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
-import jssc.SerialPortException;
-
 import net.sf.jncu.Settings.BackupName;
 import net.sf.jncu.cdil.BadPipeStateException;
 import net.sf.jncu.cdil.CDILNotInitializedException;
@@ -75,6 +61,20 @@ import net.sf.jncu.protocol.v2_0.sync.DRestoreFile;
 import net.sf.jncu.swing.JNCUDeviceDialog;
 import net.sf.jncu.swing.JNCUFrame;
 import net.sf.jncu.swing.JNCUSettingsDialog;
+
+import java.awt.Frame;
+import java.awt.Window;
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeoutException;
+
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
+import jssc.SerialPortException;
 
 /**
  * jNCU main application.

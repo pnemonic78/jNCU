@@ -19,12 +19,12 @@
  */
 package net.sf.jncu.protocol.v2_0.io;
 
+import net.sf.jncu.protocol.BaseDockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandFromNewton;
+import net.sf.jncu.protocol.DockCommandToNewtonBlank;
+
 import java.io.IOException;
 import java.io.InputStream;
-
-import net.sf.jncu.protocol.BaseDockCommandFromNewton;
-import net.sf.jncu.protocol.DockCommandToNewtonBlank;
-import net.sf.jncu.protocol.DockCommandFromNewton;
 
 /**
  * This command is sent to enter keyboard pass-through mode. It can be followed

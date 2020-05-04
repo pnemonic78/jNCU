@@ -19,16 +19,16 @@
  */
 package net.sf.jncu.io;
 
-import java.io.BufferedInputStream;
-import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-
 import junit.framework.AssertionFailedError;
 
 import net.sf.junit.SFTestCase;
 
 import org.junit.Test;
+
+import java.io.BufferedInputStream;
+import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 
 public class BufferedPipeTest extends SFTestCase {
 

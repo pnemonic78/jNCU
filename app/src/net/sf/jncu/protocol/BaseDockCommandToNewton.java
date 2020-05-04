@@ -19,6 +19,8 @@
  */
 package net.sf.jncu.protocol;
 
+import net.sf.jncu.fdil.NSOFString;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,8 +28,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.SequenceInputStream;
 import java.util.Vector;
-
-import net.sf.jncu.fdil.NSOFString;
 
 /**
  * Docking command from desktop to Newton.

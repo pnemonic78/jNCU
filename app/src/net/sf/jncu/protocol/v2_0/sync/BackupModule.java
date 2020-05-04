@@ -19,19 +19,6 @@
  */
 package net.sf.jncu.protocol.v2_0.sync;
 
-import java.awt.Window;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.TreeSet;
-
-import javax.swing.Icon;
-import javax.swing.SwingUtilities;
-
 import net.sf.jncu.JNCUResources;
 import net.sf.jncu.cdil.CDPipe;
 import net.sf.jncu.fdil.NSOFArray;
@@ -63,6 +50,19 @@ import net.sf.jncu.protocol.v2_0.session.DOperationDone;
 import net.sf.jncu.sync.BackupException;
 import net.sf.jncu.sync.BackupHandler;
 import net.sf.jncu.sync.BackupWriter;
+
+import java.awt.Window;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TreeSet;
+
+import javax.swing.Icon;
+import javax.swing.SwingUtilities;
 
 /**
  * Backup module.
