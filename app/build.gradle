@@ -1,0 +1,29 @@
+apply plugin: 'application'
+
+application {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    sourceSets {
+        main {
+            resources.srcDirs = ['../res']
+            java.srcDirs = ['../src', '../res']
+        }
+        test {
+            java.srcDirs = ['../test']
+        }
+    }
+
+    mainClassName = 'net.sf.jncu.JNCUApp'
+}
+
+jar {
+    manifest {
+        attributes += ['Main-Class': 'net.sf.jncu.JNCUApp']
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: '../lib', include: ['*.jar'])
+}
