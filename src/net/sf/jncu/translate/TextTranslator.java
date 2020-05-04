@@ -59,7 +59,7 @@ import net.sf.jncu.fdil.NSOFSymbol;
  * <tr>
  * <td>title</td>
  * <td>Optional. A string or rich string displayed in the status bar of the
- * note. The user can change this by tapping the notesís icon.</td>
+ * note. The user can change this by tapping the notes‚Äôs icon.</td>
  * </tr>
  * <tr>
  * <td>data</td>
@@ -91,7 +91,7 @@ import net.sf.jncu.fdil.NSOFSymbol;
  * </tr>
  * </table>
  * For more information on the slots particular to paragraph views, see
- * ìParagraph Viewsî beginning on page 8-10 in Newton Programmerís Guide.
+ * ‚ÄúParagraph Views‚Äù beginning on page 8-10 in Newton Programmer‚Äôs Guide.
  * <p>
  * The polygon object frames have these slots:
  * <table>
@@ -181,7 +181,7 @@ import net.sf.jncu.fdil.NSOFSymbol;
  * </tr>
  * </table>
  * <br>
- * <em>Extracted from "Newton Programmerís Reference (For Newton 2.0)</em>
+ * <em>Extracted from "Newton ProgrammerÔøΩs Reference (For Newton 2.0)</em>
  * 
  * @author Moshe
  */
