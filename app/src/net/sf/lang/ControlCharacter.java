@@ -1,21 +1,21 @@
 /*
  * Source file of the jNCU project.
  * Copyright (c) 2010. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/MPL-1.1.html
  *
  * Contributors can be contacted by electronic mail via the project Web pages:
- * 
+ *
  * http://sourceforge.net/projects/jncu
- * 
+ *
  * http://jncu.sourceforge.net/
  *
  * Contributor(s):
  *   Moshe Waisberg
- * 
+ *
  */
 package net.sf.lang;
 
@@ -301,77 +301,143 @@ package net.sf.lang;
  * <td>^?</td>
  * <td>(Delete) (see: UNIX keyboard CTRL)</td>
  * </tr>
- *</table>
- * 
+ * </table>
+ *
  * @author moshew
  */
 public interface ControlCharacter {
 
-	/** Null byte. */
-	public static final char NUL = 0x0000;
-	/** Start of heading. */
-	public static final char SOH = 0x0001;
-	/** Start of text. */
-	public static final char STX = 0x0002;
-	/** End of text. */
-	public static final char ETX = 0x0003;
-	/** End of transmission. */
-	public static final char EOT = 0x0004;
-	/** Enquiry. */
-	public static final char ENQ = 0x0005;
-	/** Acknowledge. */
-	public static final char ACK = 0x0006;
-	/** Ring terminal bell. */
-	public static final char BEL = 0x0007;
-	/** Backspace. */
-	public static final char BS = 0x0008;
-	/** Horizontal tabulation. */
-	public static final char HT = 0x0009;
-	/** Line feed. */
-	public static final char LF = 0x000A;
-	/** Vertical tabulation. */
-	public static final char VT = 0x000B;
-	/** Form feed. */
-	public static final char FF = 0x000C;
-	/** Carriage return. */
-	public static final char CR = 0x000D;
-	/** Shift out. */
-	public static final char SO = 0x000E;
-	/** Shift in. */
-	public static final char SI = 0x000F;
-	/** Data link escape. */
-	public static final char DLE = 0x0010;
-	/** Device control 1 (XON). */
-	public static final char DC1 = 0x0011;
-	/** Device control 2. */
-	public static final char DC2 = 0x0012;
-	/** Device control 3 (XOFF). */
-	public static final char DC3 = 0x0013;
-	/** Device control 4. */
-	public static final char DC4 = 0x0014;
-	/** Negative acknowledge. */
-	public static final char NAK = 0x0015;
-	/** Synchronous idle. */
-	public static final char SYN = 0x0016;
-	/** End of transmission block. */
-	public static final char ETB = 0x0017;
-	/** Cancel. */
-	public static final char CAN = 0x0018;
-	/** End of medium. */
-	public static final char EM = 0x0019;
-	/** Substitute character. */
-	public static final char SUB = 0x001A;
-	/** Escape. */
-	public static final char ESC = 0x001B;
-	/** File separator, Information separator four. */
-	public static final char FS = 0x001C;
-	/** Group separator, Information separator three. */
-	public static final char GS = 0x001D;
-	/** Record separator, Information separator two. */
-	public static final char RS = 0x001E;
-	/** Unit separator, Information separator one. */
-	public static final char US = 0x001F;
-	/** Delete. */
-	public static final char DEL = 0x007F;
+    /**
+     * Null byte.
+     */
+    public static final char NUL = 0x0000;
+    /**
+     * Start of heading.
+     */
+    public static final char SOH = 0x0001;
+    /**
+     * Start of text.
+     */
+    public static final char STX = 0x0002;
+    /**
+     * End of text.
+     */
+    public static final char ETX = 0x0003;
+    /**
+     * End of transmission.
+     */
+    public static final char EOT = 0x0004;
+    /**
+     * Enquiry.
+     */
+    public static final char ENQ = 0x0005;
+    /**
+     * Acknowledge.
+     */
+    public static final char ACK = 0x0006;
+    /**
+     * Ring terminal bell.
+     */
+    public static final char BEL = 0x0007;
+    /**
+     * Backspace.
+     */
+    public static final char BS = 0x0008;
+    /**
+     * Horizontal tabulation.
+     */
+    public static final char HT = 0x0009;
+    /**
+     * Line feed.
+     */
+    public static final char LF = 0x000A;
+    /**
+     * Vertical tabulation.
+     */
+    public static final char VT = 0x000B;
+    /**
+     * Form feed.
+     */
+    public static final char FF = 0x000C;
+    /**
+     * Carriage return.
+     */
+    public static final char CR = 0x000D;
+    /**
+     * Shift out.
+     */
+    public static final char SO = 0x000E;
+    /**
+     * Shift in.
+     */
+    public static final char SI = 0x000F;
+    /**
+     * Data link escape.
+     */
+    public static final char DLE = 0x0010;
+    /**
+     * Device control 1 (XON).
+     */
+    public static final char DC1 = 0x0011;
+    /**
+     * Device control 2.
+     */
+    public static final char DC2 = 0x0012;
+    /**
+     * Device control 3 (XOFF).
+     */
+    public static final char DC3 = 0x0013;
+    /**
+     * Device control 4.
+     */
+    public static final char DC4 = 0x0014;
+    /**
+     * Negative acknowledge.
+     */
+    public static final char NAK = 0x0015;
+    /**
+     * Synchronous idle.
+     */
+    public static final char SYN = 0x0016;
+    /**
+     * End of transmission block.
+     */
+    public static final char ETB = 0x0017;
+    /**
+     * Cancel.
+     */
+    public static final char CAN = 0x0018;
+    /**
+     * End of medium.
+     */
+    public static final char EM = 0x0019;
+    /**
+     * Substitute character.
+     */
+    public static final char SUB = 0x001A;
+    /**
+     * Escape.
+     */
+    public static final char ESC = 0x001B;
+    /**
+     * File separator, Information separator four.
+     */
+    public static final char FS = 0x001C;
+    /**
+     * Group separator, Information separator three.
+     */
+    public static final char GS = 0x001D;
+    /**
+     * Record separator, Information separator two.
+     */
+    public static final char RS = 0x001E;
+    /**
+     * Unit separator, Information separator one.
+     */
+    public static final char US = 0x001F;
+    /**
+     * Delete.
+     */
+    public static final char DEL = 0x007F;
 
 }

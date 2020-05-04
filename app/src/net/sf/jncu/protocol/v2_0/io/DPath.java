@@ -1,21 +1,21 @@
 /*
  * Source file of the jNCU project.
  * Copyright (c) 2010. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/MPL-1.1.html
  *
  * Contributors can be contacted by electronic mail via the project Web pages:
- * 
+ *
  * http://sourceforge.net/projects/jncu
- * 
+ *
  * http://jncu.sourceforge.net/
  *
  * Contributor(s):
  *   Moshe Waisberg
- * 
+ *
  */
 package net.sf.jncu.protocol.v2_0.io;
 
@@ -60,71 +60,72 @@ import net.sf.jncu.protocol.v1_0.io.Device;
  * <p>
  * For Windows it might be: [{name: "c:\", type: 'folder}, {name: "business",
  * type: 'folder}]
- * 
+ *
  * <pre>
  * 'path'
  * length
  * folder array
  * </pre>
- * 
+ *
  * @author moshew
  */
 public class DPath extends BaseDockCommandToNewton {
 
-	/** <tt>kDPath</tt> */
-	public static final String COMMAND = "path";
+    /**
+     * <tt>kDPath</tt>
+     */
+    public static final String COMMAND = "path";
 
-	private File file;
+    private File file;
 
-	/**
-	 * Creates a new command.
-	 */
-	public DPath() {
-		super(COMMAND);
-	}
+    /**
+     * Creates a new command.
+     */
+    public DPath() {
+        super(COMMAND);
+    }
 
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		File file = getPath();
-		if (file != null) {
-			final List<Device> devices = new ArrayList<Device>();
-			Device device;
-			String path = file.getPath();
-			while (path != null) {
-				file = new File(path);
-				device = new Device(file);
-				devices.add(0, device);
-				path = file.getParent();
-			}
+    @Override
+    protected void writeCommandData(OutputStream data) throws IOException {
+        File file = getPath();
+        if (file != null) {
+            final List<Device> devices = new ArrayList<Device>();
+            Device device;
+            String path = file.getPath();
+            while (path != null) {
+                file = new File(path);
+                device = new Device(file);
+                devices.add(0, device);
+                path = file.getParent();
+            }
 
-			NSOFObject[] paths = new NSOFObject[devices.size()];
-			int i = 0;
-			for (Device dev : devices) {
-				paths[i++] = dev.toFrame();
-			}
-			NSOFArray arr = new NSOFPlainArray(paths);
-			NSOFEncoder encoder = new NSOFEncoder();
-			encoder.flatten(arr, data);
-		}
-	}
+            NSOFObject[] paths = new NSOFObject[devices.size()];
+            int i = 0;
+            for (Device dev : devices) {
+                paths[i++] = dev.toFrame();
+            }
+            NSOFArray arr = new NSOFPlainArray(paths);
+            NSOFEncoder encoder = new NSOFEncoder();
+            encoder.flatten(arr, data);
+        }
+    }
 
-	/**
-	 * Get the initial path.
-	 * 
-	 * @return the folder.
-	 */
-	public File getPath() {
-		return file;
-	}
+    /**
+     * Get the initial path.
+     *
+     * @return the folder.
+     */
+    public File getPath() {
+        return file;
+    }
 
-	/**
-	 * Set the initial path.
-	 * 
-	 * @param file
-	 *            the folder.
-	 */
-	public void setPath(File file) {
-		this.file = file;
-	}
+    /**
+     * Set the initial path.
+     *
+     * @param file the folder.
+     */
+    public void setPath(File file) {
+        this.file = file;
+    }
 
 }

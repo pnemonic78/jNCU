@@ -1,21 +1,21 @@
 /*
  * Source file of the jNCU project.
  * Copyright (c) 2010. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/MPL-1.1.html
  *
  * Contributors can be contacted by electronic mail via the project Web pages:
- * 
+ *
  * http://sourceforge.net/projects/jncu
- * 
+ *
  * http://jncu.sourceforge.net/
  *
  * Contributor(s):
  *   Moshe Waisberg
- * 
+ *
  */
 package net.sf.jncu.protocol.v2_0.io;
 
@@ -66,13 +66,14 @@ import net.sf.jncu.protocol.v1_0.io.Device;
  * this slot indicates that the item is an alias.<br>
  * A Windows alias could be a "shortcut", or a "NTFS symbolic link". A
  * Unix/Linux/Posix alias is a link (as created by the "ln" command).
- * 
+ *
  * <pre>
  * 'file'
  * length
  * file/folder array
  * </pre>
- * 
+ *
+ * @author moshew
  * @see Device#CDROM_DISK
  * @see Device#DESKTOP
  * @see Device#DISK
@@ -81,105 +82,104 @@ import net.sf.jncu.protocol.v1_0.io.Device;
  * @see Device#FOLDER
  * @see Device#HARD_DISK
  * @see Device#NET_DRIVE
- * @author moshew
  */
 public class DFilesAndFolders extends BaseDockCommandToNewton {
 
-	/** <tt>kDFilesAndFolders</tt> */
-	public static final String COMMAND = "file";
+    /**
+     * <tt>kDFilesAndFolders</tt>
+     */
+    public static final String COMMAND = "file";
 
-	private File folder;
-	private FileFilter filter;
-	private final List<Device> devices = new ArrayList<Device>();
+    private File folder;
+    private FileFilter filter;
+    private final List<Device> devices = new ArrayList<Device>();
 
-	/**
-	 * Creates a new command.
-	 */
-	public DFilesAndFolders() {
-		super(COMMAND);
-	}
+    /**
+     * Creates a new command.
+     */
+    public DFilesAndFolders() {
+        super(COMMAND);
+    }
 
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		NSOFObject[] paths = new NSOFObject[devices.size()];
-		int i = 0;
+    @Override
+    protected void writeCommandData(OutputStream data) throws IOException {
+        NSOFObject[] paths = new NSOFObject[devices.size()];
+        int i = 0;
 
-		for (Device dev : devices) {
-			paths[i++] = dev.toFrame();
-		}
+        for (Device dev : devices) {
+            paths[i++] = dev.toFrame();
+        }
 
-		NSOFArray arr = new NSOFPlainArray(paths);
-		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.flatten(arr, data);
-	}
+        NSOFArray arr = new NSOFPlainArray(paths);
+        NSOFEncoder encoder = new NSOFEncoder();
+        encoder.flatten(arr, data);
+    }
 
-	/**
-	 * Get the root folder.
-	 * 
-	 * @return the folder.
-	 */
-	public File getFolder() {
-		return folder;
-	}
+    /**
+     * Get the root folder.
+     *
+     * @return the folder.
+     */
+    public File getFolder() {
+        return folder;
+    }
 
-	/**
-	 * Set the root folder.
-	 * 
-	 * @param folder
-	 *            the folder.
-	 */
-	public void setFolder(File folder) {
-		File folderPrev = this.folder;
-		this.folder = folder;
-		if (folderPrev != folder)
-			populateDevices();
-	}
+    /**
+     * Set the root folder.
+     *
+     * @param folder the folder.
+     */
+    public void setFolder(File folder) {
+        File folderPrev = this.folder;
+        this.folder = folder;
+        if (folderPrev != folder)
+            populateDevices();
+    }
 
-	/**
-	 * Get the file filter.
-	 * 
-	 * @return the filter.
-	 */
-	public FileFilter getFilter() {
-		return filter;
-	}
+    /**
+     * Get the file filter.
+     *
+     * @return the filter.
+     */
+    public FileFilter getFilter() {
+        return filter;
+    }
 
-	/**
-	 * Set the file filter.
-	 * 
-	 * @param filter
-	 *            the filter.
-	 */
-	public void setFilter(FileFilter filter) {
-		FileFilter filterPrev = this.filter;
-		this.filter = filter;
-		if (filterPrev != filter)
-			populateDevices();
-	}
+    /**
+     * Set the file filter.
+     *
+     * @param filter the filter.
+     */
+    public void setFilter(FileFilter filter) {
+        FileFilter filterPrev = this.filter;
+        this.filter = filter;
+        if (filterPrev != filter)
+            populateDevices();
+    }
 
-	/**
-	 * Populate the list of devices.
-	 */
-	protected void populateDevices() {
-		devices.clear();
+    /**
+     * Populate the list of devices.
+     */
+    protected void populateDevices() {
+        devices.clear();
 
-		final File folder = getFolder();
-		if (folder == null)
-			return;
+        final File folder = getFolder();
+        if (folder == null)
+            return;
 
-		File[] files = folder.listFiles();
-		if ((files == null) || (files.length == 0))
-			return;
-		Arrays.sort(files);
+        File[] files = folder.listFiles();
+        if ((files == null) || (files.length == 0))
+            return;
+        Arrays.sort(files);
 
-		Device device;
-		for (File file : files) {
-			if (file.isHidden())
-				continue;
-			if ((filter != null) && !filter.accept(file))
-				continue;
-			device = new Device(file);
-			devices.add(device);
-		}
-	}
+        Device device;
+        for (File file : files) {
+            if (file.isHidden())
+                continue;
+            if ((filter != null) && !filter.accept(file))
+                continue;
+            device = new Device(file);
+            devices.add(device);
+        }
+    }
 }

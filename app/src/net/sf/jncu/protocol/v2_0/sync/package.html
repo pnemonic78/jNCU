@@ -1,297 +1,302 @@
 <html>
 <body>
-	Data restore and synchronise/synchronize.
+Data restore and synchronise/synchronize.
 
-	<h2>Restore originated on Newton</h2>
-	<br />Restore uses the file browsing interface described above. After
-	the user taps the restore button, the following commands are used.
-	<h4>Examples</h4>
-	<br />After the restore button is tapped:
-	<table>
-		<tr>
-			<th>Desktop</th>
-			<th>&#x2194;</th>
-			<th>Newton</th>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDRestoreFile</td>
-		</tr>
-		<tr>
-			<td>kDRes</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDGetRestoreOptions</td>
-		</tr>
-		<tr>
-			<td>kDRestoreOptions</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDRestoreOptions</td>
-		</tr>
-		<tr>
-			<td>kDSourceVersion</td>
-			<td>&#x2192;</td>
-		</tr>
-	</table>
-	<p />
-	Selective restore proceeds as a normal restore would except when it
-	wants to restore a package. In this case it does this:
-	<table>
-		<tr>
-			<th>Desktop</th>
-			<th>&#x2194;</th>
-			<th>Newton</th>
-		</tr>
-		<tr>
-			<td>kDRemovePackage</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDResult</td>
-		</tr>
-		<tr>
-			<td>kDRestorePackage</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDResult</td>
-		</tr>
-	</table>
-	<p />
-	If the user picks a full restore it proceeds like this:
-	<table>
-		<tr>
-			<th>Desktop</th>
-			<th>&#x2194;</th>
-			<th>Newton</th>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDRestoreFile</td>
-		</tr>
-		<tr>
-			<td>kDRes</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDRestoreAll</td>
-		</tr>
-		<tr>
-			<td>kDSourceVersion</td>
-			<td>&#x2192;</td>
-		</tr>
-	</table>
-	<p />
-	<h2>Synchronise</h2>
-	<br />
-	<h3>Sync and Selective Sync</h3>
-	<br />
-	<h4>Examples</h4>
-	After the session is started (see above) these commands would be sent.
-	<table>
-		<tr>
-			<th>Desktop</th>
-			<th>&#x2194;</th>
-			<th>Newton</th>
-			<th width=50%></th>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDRequestToSync</td>
-		</tr>
-		<tr>
-			<td>kDGetSyncOptions</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDSyncOptions</td>
-		</tr>
-		<tr>
-			<td>kDLastSyncTime</td>
-			<td>&#x2192;</td>
-			<td>// This ones fake just to get the Newton time</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDCurrentTime</td>
-		</tr>
-		<tr>
-			<td>kDSetCurrentStore</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDResult</td>
-		</tr>
-		<tr>
-			<td>kDLastSyncTime</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDCurrentTime</td>
-		</tr>
-		<tr>
-			<td colspan=4>The following would appear only if synchronising
-				system info:</td>
-		</tr>
-		<tr>
-			<td>kDGetPatches</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDPatches</td>
-		</tr>
-		<tr>
-			<td colspan=4>The following would appear only if synchronising
-				packages:</td>
-		</tr>
-		<tr>
-			<td>kDGetPackageIDs</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDPackageIDList</td>
-		</tr>
-		<tr>
-			<td>kDBackupPackages</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDPackage</td>
-		</tr>
-		<tr>
-			<td>kDBackupPackages</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDPackage</td>
-		</tr>
-		<tr>
-			<td>kDBackupPackages</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDResult</td>
-		</tr>
-		<tr>
-			<td colspan=4>Note that the above only synchronises 1.x style
-				packages on locked 1.x cards. To complete the package sync the
-				packages soup should also be synchronised.</td>
-		</tr>
-		<tr>
-			<td colspan=4><br />The sync would continue like this:</td>
-		</tr>
-		<tr>
-			<td>kDSetSoupGetInfo</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDSoupInfo</td>
-		</tr>
-		<tr>
-			<td>kDLastSyncTime</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDCurrentTime</td>
-		</tr>
-		<tr>
-			<td>kDGetSoupIDs</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDSoupIDs</td>
-		</tr>
-		<tr>
-			<td>kDGetChangedIDs</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDChangedIDs</td>
-		</tr>
-		<tr>
-			<td>kDDeleteEntries</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDResult</td>
-		</tr>
-		<tr>
-			<td>kDAddEntry</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDAddedID</td>
-		</tr>
-		<tr>
-			<td>kDReturnEntry</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>&#x2190;</td>
-			<td>kDEntry</td>
-		</tr>
-		<tr>
-			<td colspan=4>Repeat the above for each store and soup followed
-				by:</td>
-		</tr>
-		<tr>
-			<td>kDOperationComplete</td>
-			<td>&#x2192;</td>
-		</tr>
-		<tr>
-			<td colspan=4><br />Optionally the desktop could send this
-				instead of the operation complete:</td>
-		</tr>
-		<tr>
-			<td>kDSyncResults</td>
-			<td>&#x2192;</td>
-		</tr>
-	</table>
+<h2>Restore originated on Newton</h2>
+<br/>Restore uses the file browsing interface described above. After
+the user taps the restore button, the following commands are used.
+<h4>Examples</h4>
+<br/>After the restore button is tapped:
+<table>
+    <tr>
+        <th>Desktop</th>
+        <th>&#x2194;</th>
+        <th>Newton</th>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDRestoreFile</td>
+    </tr>
+    <tr>
+        <td>kDRes</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDGetRestoreOptions</td>
+    </tr>
+    <tr>
+        <td>kDRestoreOptions</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDRestoreOptions</td>
+    </tr>
+    <tr>
+        <td>kDSourceVersion</td>
+        <td>&#x2192;</td>
+    </tr>
+</table>
+<p/>
+Selective restore proceeds as a normal restore would except when it
+wants to restore a package. In this case it does this:
+<table>
+    <tr>
+        <th>Desktop</th>
+        <th>&#x2194;</th>
+        <th>Newton</th>
+    </tr>
+    <tr>
+        <td>kDRemovePackage</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDResult</td>
+    </tr>
+    <tr>
+        <td>kDRestorePackage</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDResult</td>
+    </tr>
+</table>
+<p/>
+If the user picks a full restore it proceeds like this:
+<table>
+    <tr>
+        <th>Desktop</th>
+        <th>&#x2194;</th>
+        <th>Newton</th>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDRestoreFile</td>
+    </tr>
+    <tr>
+        <td>kDRes</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDRestoreAll</td>
+    </tr>
+    <tr>
+        <td>kDSourceVersion</td>
+        <td>&#x2192;</td>
+    </tr>
+</table>
+<p/>
+<h2>Synchronise</h2>
+<br/>
+<h3>Sync and Selective Sync</h3>
+<br/>
+<h4>Examples</h4>
+After the session is started (see above) these commands would be sent.
+<table>
+    <tr>
+        <th>Desktop</th>
+        <th>&#x2194;</th>
+        <th>Newton</th>
+        <th width=50%></th>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDRequestToSync</td>
+    </tr>
+    <tr>
+        <td>kDGetSyncOptions</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDSyncOptions</td>
+    </tr>
+    <tr>
+        <td>kDLastSyncTime</td>
+        <td>&#x2192;</td>
+        <td>// This ones fake just to get the Newton time</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDCurrentTime</td>
+    </tr>
+    <tr>
+        <td>kDSetCurrentStore</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDResult</td>
+    </tr>
+    <tr>
+        <td>kDLastSyncTime</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDCurrentTime</td>
+    </tr>
+    <tr>
+        <td colspan=4>The following would appear only if synchronising
+            system info:
+        </td>
+    </tr>
+    <tr>
+        <td>kDGetPatches</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDPatches</td>
+    </tr>
+    <tr>
+        <td colspan=4>The following would appear only if synchronising
+            packages:
+        </td>
+    </tr>
+    <tr>
+        <td>kDGetPackageIDs</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDPackageIDList</td>
+    </tr>
+    <tr>
+        <td>kDBackupPackages</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDPackage</td>
+    </tr>
+    <tr>
+        <td>kDBackupPackages</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDPackage</td>
+    </tr>
+    <tr>
+        <td>kDBackupPackages</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDResult</td>
+    </tr>
+    <tr>
+        <td colspan=4>Note that the above only synchronises 1.x style
+            packages on locked 1.x cards. To complete the package sync the
+            packages soup should also be synchronised.
+        </td>
+    </tr>
+    <tr>
+        <td colspan=4><br/>The sync would continue like this:</td>
+    </tr>
+    <tr>
+        <td>kDSetSoupGetInfo</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDSoupInfo</td>
+    </tr>
+    <tr>
+        <td>kDLastSyncTime</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDCurrentTime</td>
+    </tr>
+    <tr>
+        <td>kDGetSoupIDs</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDSoupIDs</td>
+    </tr>
+    <tr>
+        <td>kDGetChangedIDs</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDChangedIDs</td>
+    </tr>
+    <tr>
+        <td>kDDeleteEntries</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDResult</td>
+    </tr>
+    <tr>
+        <td>kDAddEntry</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDAddedID</td>
+    </tr>
+    <tr>
+        <td>kDReturnEntry</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>&#x2190;</td>
+        <td>kDEntry</td>
+    </tr>
+    <tr>
+        <td colspan=4>Repeat the above for each store and soup followed
+            by:
+        </td>
+    </tr>
+    <tr>
+        <td>kDOperationComplete</td>
+        <td>&#x2192;</td>
+    </tr>
+    <tr>
+        <td colspan=4><br/>Optionally the desktop could send this
+            instead of the operation complete:
+        </td>
+    </tr>
+    <tr>
+        <td>kDSyncResults</td>
+        <td>&#x2192;</td>
+    </tr>
+</table>
 </body>
 </html>

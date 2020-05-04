@@ -1,21 +1,21 @@
 /*
  * Source file of the jNCU project.
  * Copyright (c) 2010. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/MPL-1.1.html
  *
  * Contributors can be contacted by electronic mail via the project Web pages:
- * 
+ *
  * http://sourceforge.net/projects/jncu
- * 
+ *
  * http://jncu.sourceforge.net/
  *
  * Contributor(s):
  *   Moshe Waisberg
- * 
+ *
  */
 package net.sf.jncu.protocol.v2_0.session;
 
@@ -69,7 +69,7 @@ import net.sf.jncu.protocol.BaseDockCommandToNewton;
  * </ul>
  * It won't allow connection with any other id. NCK 2.0, NTK and NPI use old
  * revisions of the protocol and aren't considered here.
- * 
+ *
  * <pre>
  * 'dinf'
  * length
@@ -80,7 +80,7 @@ import net.sf.jncu.protocol.BaseDockCommandToNewton;
  * allowSelectiveSync // 0 = no, 1 = yes
  * desktopApps ref
  * </pre>
- * 
+ *
  * @see #NBU
  * @see #NCU
  * @see #MACINTOSH
@@ -88,171 +88,170 @@ import net.sf.jncu.protocol.BaseDockCommandToNewton;
  */
 public class DDesktopInfo extends BaseDockCommandToNewton {
 
-	/** <tt>kDDesktopInfo</tt> */
-	public static final String COMMAND = "dinf";
+    /**
+     * <tt>kDDesktopInfo</tt>
+     */
+    public static final String COMMAND = "dinf";
 
-	/** The protocol version. Must be at least 10. */
-	public static final int PROTOCOL_VERSION = 10;
+    /**
+     * The protocol version. Must be at least 10.
+     */
+    public static final int PROTOCOL_VERSION = 10;
 
-	/**
-	 * Newton Backup Utility.<br>
-	 * <tt>kNBU</tt>
-	 */
-	public static final int NBU = 1;
-	/**
-	 * Newton Connection Utilities.<br>
-	 * <tt>kNCU</tt>
-	 */
-	public static final int NCU = 2;
+    /**
+     * Newton Backup Utility.<br>
+     * <tt>kNBU</tt>
+     */
+    public static final int NBU = 1;
+    /**
+     * Newton Connection Utilities.<br>
+     * <tt>kNCU</tt>
+     */
+    public static final int NCU = 2;
 
-	/**
-	 * Apple Macintosh desktop type.<br>
-	 * <tt>kMacintosh</tt> <br>
-	 * <tt>kMacDesktop</tt>
-	 */
-	public static final int MACINTOSH = 0;
-	/**
-	 * Microsoft Windows desktop type.<br>
-	 * <tt>kWindows</tt> <br>
-	 * <tt>kWindowsDesktop</tt>
-	 */
-	public static final int WINDOWS = 1;
+    /**
+     * Apple Macintosh desktop type.<br>
+     * <tt>kMacintosh</tt> <br>
+     * <tt>kMacDesktop</tt>
+     */
+    public static final int MACINTOSH = 0;
+    /**
+     * Microsoft Windows desktop type.<br>
+     * <tt>kWindows</tt> <br>
+     * <tt>kWindowsDesktop</tt>
+     */
+    public static final int WINDOWS = 1;
 
-	private int sessionType;
-	private int desktopType;
-	private boolean selectiveSync;
-	private long encryptedKey;
-	private NSOFArray desktopApps;
-	private static final Random rand = new Random();
+    private int sessionType;
+    private int desktopType;
+    private boolean selectiveSync;
+    private long encryptedKey;
+    private NSOFArray desktopApps;
+    private static final Random rand = new Random();
 
-	/**
-	 * Creates a new command.
-	 */
-	public DDesktopInfo() {
-		super(COMMAND);
-		setSessionType(DInitiateDocking.SESSION_SETTING_UP);
-		// FIXME Windows type doesn't support many commands.
-		setDesktopType((File.separatorChar == '\\') ? WINDOWS : MACINTOSH);
-		setSelectiveSync(true);
-		setEncryptedKey(rand.nextLong());
-		setDesktopApps(null);
-	}
+    /**
+     * Creates a new command.
+     */
+    public DDesktopInfo() {
+        super(COMMAND);
+        setSessionType(DInitiateDocking.SESSION_SETTING_UP);
+        // FIXME Windows type doesn't support many commands.
+        setDesktopType((File.separatorChar == '\\') ? WINDOWS : MACINTOSH);
+        setSelectiveSync(true);
+        setEncryptedKey(rand.nextLong());
+        setDesktopApps(null);
+    }
 
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		htonl(PROTOCOL_VERSION, data);
-		htonl(getDesktopType(), data);
-		htonl(getEncryptedKey(), data);
-		htonl(getSessionType(), data);
-		htonl(isSelectiveSync() ? TRUE : FALSE, data);
-		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.flatten(getDesktopApps(), data);
-	}
+    @Override
+    protected void writeCommandData(OutputStream data) throws IOException {
+        htonl(PROTOCOL_VERSION, data);
+        htonl(getDesktopType(), data);
+        htonl(getEncryptedKey(), data);
+        htonl(getSessionType(), data);
+        htonl(isSelectiveSync() ? TRUE : FALSE, data);
+        NSOFEncoder encoder = new NSOFEncoder();
+        encoder.flatten(getDesktopApps(), data);
+    }
 
-	/**
-	 * Get the session type.
-	 * 
-	 * @return the session type.
-	 */
-	public int getSessionType() {
-		return sessionType;
-	}
+    /**
+     * Get the session type.
+     *
+     * @return the session type.
+     */
+    public int getSessionType() {
+        return sessionType;
+    }
 
-	/**
-	 * Set the session type.
-	 * 
-	 * @param sessionType
-	 *            the session type.
-	 * @see DInitiateDocking
-	 */
-	public void setSessionType(int sessionType) {
-		this.sessionType = sessionType;
-	}
+    /**
+     * Set the session type.
+     *
+     * @param sessionType the session type.
+     * @see DInitiateDocking
+     */
+    public void setSessionType(int sessionType) {
+        this.sessionType = sessionType;
+    }
 
-	/**
-	 * Get the desktop type.
-	 * 
-	 * @return the desktop type.
-	 */
-	public int getDesktopType() {
-		return desktopType;
-	}
+    /**
+     * Get the desktop type.
+     *
+     * @return the desktop type.
+     */
+    public int getDesktopType() {
+        return desktopType;
+    }
 
-	/**
-	 * Set the desktop type.
-	 * 
-	 * @param desktopType
-	 *            the desktop type.
-	 */
-	private void setDesktopType(int desktopType) {
-		this.desktopType = desktopType;
-	}
+    /**
+     * Set the desktop type.
+     *
+     * @param desktopType the desktop type.
+     */
+    private void setDesktopType(int desktopType) {
+        this.desktopType = desktopType;
+    }
 
-	/**
-	 * Allow selective sync?
-	 * 
-	 * @return allow?
-	 */
-	public boolean isSelectiveSync() {
-		return selectiveSync;
-	}
+    /**
+     * Allow selective sync?
+     *
+     * @return allow?
+     */
+    public boolean isSelectiveSync() {
+        return selectiveSync;
+    }
 
-	/**
-	 * Set selective sync.
-	 * 
-	 * @param selectiveSync
-	 *            allow?
-	 */
-	public void setSelectiveSync(boolean selectiveSync) {
-		this.selectiveSync = selectiveSync;
-	}
+    /**
+     * Set selective sync.
+     *
+     * @param selectiveSync allow?
+     */
+    public void setSelectiveSync(boolean selectiveSync) {
+        this.selectiveSync = selectiveSync;
+    }
 
-	/**
-	 * Get the desktop applications.
-	 * 
-	 * @return the array of desktop applications.
-	 */
-	public NSOFArray getDesktopApps() {
-		if (desktopApps == null) {
-			NSOFFrame app = new NSOFFrame();
-			app.put("id", new NSOFInteger(NCU));
-			app.put("name", new NSOFString("jNewton Connection Utilities"));
-			app.put("version", new NSOFInteger(1));
-			app.put("doesAuto", NSOFBoolean.TRUE);
+    /**
+     * Get the desktop applications.
+     *
+     * @return the array of desktop applications.
+     */
+    public NSOFArray getDesktopApps() {
+        if (desktopApps == null) {
+            NSOFFrame app = new NSOFFrame();
+            app.put("id", new NSOFInteger(NCU));
+            app.put("name", new NSOFString("jNewton Connection Utilities"));
+            app.put("version", new NSOFInteger(1));
+            app.put("doesAuto", NSOFBoolean.TRUE);
 
-			this.desktopApps = new NSOFPlainArray(1);
-			desktopApps.set(0, app);
-		}
-		return desktopApps;
-	}
+            this.desktopApps = new NSOFPlainArray(1);
+            desktopApps.set(0, app);
+        }
+        return desktopApps;
+    }
 
-	/**
-	 * Set the desktop applications.
-	 * 
-	 * @param desktopApps
-	 *            the array of desktop applications.
-	 */
-	public void setDesktopApps(NSOFArray desktopApps) {
-		this.desktopApps = desktopApps;
-	}
+    /**
+     * Set the desktop applications.
+     *
+     * @param desktopApps the array of desktop applications.
+     */
+    public void setDesktopApps(NSOFArray desktopApps) {
+        this.desktopApps = desktopApps;
+    }
 
-	/**
-	 * Get the encrypted key.
-	 * 
-	 * @return the encrypted key.
-	 */
-	public long getEncryptedKey() {
-		return encryptedKey;
-	}
+    /**
+     * Get the encrypted key.
+     *
+     * @return the encrypted key.
+     */
+    public long getEncryptedKey() {
+        return encryptedKey;
+    }
 
-	/**
-	 * Set the encrypted key.
-	 * 
-	 * @param encryptedKey
-	 *            the encrypted key.
-	 */
-	public void setEncryptedKey(long encryptedKey) {
-		this.encryptedKey = encryptedKey;
-	}
+    /**
+     * Set the encrypted key.
+     *
+     * @param encryptedKey the encrypted key.
+     */
+    public void setEncryptedKey(long encryptedKey) {
+        this.encryptedKey = encryptedKey;
+    }
 
 }

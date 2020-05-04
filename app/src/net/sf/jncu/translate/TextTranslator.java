@@ -1,21 +1,21 @@
 /*
  * Source file of the jNCU project.
  * Copyright (c) 2010. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/MPL-1.1.html
  *
  * Contributors can be contacted by electronic mail via the project Web pages:
- * 
+ *
  * http://sourceforge.net/projects/jncu
- * 
+ *
  * http://jncu.sourceforge.net/
  *
  * Contributor(s):
  *   Moshe Waisberg
- * 
+ *
  */
 package net.sf.jncu.translate;
 
@@ -182,59 +182,81 @@ import net.sf.jncu.fdil.NSOFSymbol;
  * </table>
  * <br>
  * <em>Extracted from "Newton Programmer�s Reference (For Newton 2.0)</em>
- * 
+ *
  * @author Moshe
  */
 public abstract class TextTranslator extends Translator {
 
-	/**
-	 * Get the file filter description.
-	 * 
-	 * @return the description.
-	 */
-	public static String getFilterDescription() {
-		return "Text Document";
-	}
+    /**
+     * Get the file filter description.
+     *
+     * @return the description.
+     */
+    public static String getFilterDescription() {
+        return "Text Document";
+    }
 
-	/** NSOFSymbol: 'paperroll 'list 'checkList */
-	protected static final NSOFSymbol SLOT_CLASS = new NSOFSymbol("class");
-	/** NSOFString. */
-	protected static final NSOFSymbol SLOT_TITLE = new NSOFSymbol("title");
-	/** NSOFInteger. */
-	protected static final NSOFSymbol SLOT_TIME = new NSOFSymbol("timestamp");
-	/**
-	 * NSOFPlainArray of frames with SLOT_DATA_ slots. if (class == 'paperroll).
-	 */
-	protected static final NSOFSymbol SLOT_DATA = new NSOFSymbol("data");
-	/** NSOFPlainArray of frames. if (class == 'checkList). */
-	protected static final NSOFSymbol SLOT_TOPICS = new NSOFSymbol("topics");
+    /**
+     * NSOFSymbol: 'paperroll 'list 'checkList
+     */
+    protected static final NSOFSymbol SLOT_CLASS = new NSOFSymbol("class");
+    /**
+     * NSOFString.
+     */
+    protected static final NSOFSymbol SLOT_TITLE = new NSOFSymbol("title");
+    /**
+     * NSOFInteger.
+     */
+    protected static final NSOFSymbol SLOT_TIME = new NSOFSymbol("timestamp");
+    /**
+     * NSOFPlainArray of frames with SLOT_DATA_ slots. if (class == 'paperroll).
+     */
+    protected static final NSOFSymbol SLOT_DATA = new NSOFSymbol("data");
+    /**
+     * NSOFPlainArray of frames. if (class == 'checkList).
+     */
+    protected static final NSOFSymbol SLOT_TOPICS = new NSOFSymbol("topics");
 
-	protected static final NSOFSymbol SLOT_DATA_INK = new NSOFSymbol("ink");
-	/** NSOFString. */
-	protected static final NSOFSymbol SLOT_DATA_TEXT = new NSOFSymbol("text");
-	/** NSOFSmallRect. */
-	protected static final NSOFSymbol SLOT_DATA_BOUNDS = new NSOFSymbol("viewBounds");
-	/** NSOFSymbol: 'para */
-	protected static final NSOFSymbol SLOT_DATA_STATIONERY = new NSOFSymbol("viewStationery");
-	/** NSOFMagicPointer to a NSOFFrame. */
-	protected static final NSOFSymbol SLOT_DATA_PROTO = new NSOFSymbol("_proto");
+    protected static final NSOFSymbol SLOT_DATA_INK = new NSOFSymbol("ink");
+    /**
+     * NSOFString.
+     */
+    protected static final NSOFSymbol SLOT_DATA_TEXT = new NSOFSymbol("text");
+    /**
+     * NSOFSmallRect.
+     */
+    protected static final NSOFSymbol SLOT_DATA_BOUNDS = new NSOFSymbol("viewBounds");
+    /**
+     * NSOFSymbol: 'para
+     */
+    protected static final NSOFSymbol SLOT_DATA_STATIONERY = new NSOFSymbol("viewStationery");
+    /**
+     * NSOFMagicPointer to a NSOFFrame.
+     */
+    protected static final NSOFSymbol SLOT_DATA_PROTO = new NSOFSymbol("_proto");
 
-	/** "Outline". */
-	protected static final NSOFSymbol CLASS_LIST = new NSOFSymbol("list");
-	/** "Check list". */
-	protected static final NSOFSymbol CLASS_CHECKLIST = new NSOFSymbol("checkList");
-	/** "Note". */
-	protected static final NSOFSymbol CLASS_PAPER = new NSOFSymbol("paperroll");
+    /**
+     * "Outline".
+     */
+    protected static final NSOFSymbol CLASS_LIST = new NSOFSymbol("list");
+    /**
+     * "Check list".
+     */
+    protected static final NSOFSymbol CLASS_CHECKLIST = new NSOFSymbol("checkList");
+    /**
+     * "Note".
+     */
+    protected static final NSOFSymbol CLASS_PAPER = new NSOFSymbol("paperroll");
 
-	/**
-	 * Constructs a new translator.
-	 */
-	public TextTranslator() {
-		super();
-	}
+    /**
+     * Constructs a new translator.
+     */
+    public TextTranslator() {
+        super();
+    }
 
-	@Override
-	public String getApplicationName() {
-		return "Notes";
-	}
+    @Override
+    public String getApplicationName() {
+        return "Notes";
+    }
 }

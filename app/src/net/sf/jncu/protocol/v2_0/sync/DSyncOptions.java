@@ -1,21 +1,21 @@
 /*
  * Source file of the jNCU project.
  * Copyright (c) 2010. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/MPL-1.1.html
  *
  * Contributors can be contacted by electronic mail via the project Web pages:
- * 
+ *
  * http://sourceforge.net/projects/jncu
- * 
+ *
  * http://jncu.sourceforge.net/
  *
  * Contributor(s):
  *   Moshe Waisberg
- * 
+ *
  */
 package net.sf.jncu.protocol.v2_0.sync;
 
@@ -56,58 +56,59 @@ import net.sf.jncu.protocol.v2_0.DockCommandFromNewtonScript;
  * <p>
  * If the user specifies that packages should be synchronised the packages flag
  * will be true and the packages soup will be specified in the store frame(s).
- * 
+ *
  * <pre>
  * 'sopt'
  * length
  * frame of info
  * </pre>
- * 
+ *
  * @author moshew
  */
 public class DSyncOptions extends DockCommandFromNewtonScript<NSOFFrame> {
 
-	/** <tt>kDSyncOptions</tt> */
-	public static final String COMMAND = "sopt";
+    /**
+     * <tt>kDSyncOptions</tt>
+     */
+    public static final String COMMAND = "sopt";
 
-	private SyncOptions syncInfo;
+    private SyncOptions syncInfo;
 
-	/**
-	 * Creates a new command.
-	 */
-	public DSyncOptions() {
-		super(COMMAND);
-	}
+    /**
+     * Creates a new command.
+     */
+    public DSyncOptions() {
+        super(COMMAND);
+    }
 
-	@Override
-	protected void decodeCommandData(InputStream data) throws IOException {
-		super.decodeCommandData(data);
-		NSOFFrame frame = getResult();
-		SyncOptions info = null;
-		if (frame != null) {
-			info = new SyncOptions();
-			info.decodeFrame(frame);
-		}
-		setSyncInfo(info);
-	}
+    @Override
+    protected void decodeCommandData(InputStream data) throws IOException {
+        super.decodeCommandData(data);
+        NSOFFrame frame = getResult();
+        SyncOptions info = null;
+        if (frame != null) {
+            info = new SyncOptions();
+            info.decodeFrame(frame);
+        }
+        setSyncInfo(info);
+    }
 
-	/**
-	 * Get the sync info.
-	 * 
-	 * @return the info.
-	 */
-	public SyncOptions getSyncInfo() {
-		return syncInfo;
-	}
+    /**
+     * Get the sync info.
+     *
+     * @return the info.
+     */
+    public SyncOptions getSyncInfo() {
+        return syncInfo;
+    }
 
-	/**
-	 * Set the sync info.
-	 * 
-	 * @param syncInfo
-	 *            the info.
-	 */
-	protected void setSyncInfo(SyncOptions syncInfo) {
-		this.syncInfo = syncInfo;
-	}
+    /**
+     * Set the sync info.
+     *
+     * @param syncInfo the info.
+     */
+    protected void setSyncInfo(SyncOptions syncInfo) {
+        this.syncInfo = syncInfo;
+    }
 
 }

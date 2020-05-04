@@ -1,21 +1,21 @@
 /*
  * Source file of the jNCU project.
  * Copyright (c) 2010. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/MPL-1.1.html
  *
  * Contributors can be contacted by electronic mail via the project Web pages:
- * 
+ *
  * http://sourceforge.net/projects/jncu
- * 
+ *
  * http://jncu.sourceforge.net/
  *
  * Contributor(s):
  *   Moshe Waisberg
- * 
+ *
  */
 package net.sf.jncu.translate;
 
@@ -27,53 +27,53 @@ import net.sf.jncu.newton.os.SoupEntry;
 
 /**
  * Rich Text Format translator.
- * 
+ *
  * @author Moshe
  */
 public class RichTextTranslator extends TextTranslator {
 
-	private static final String[] EXT = { "rtf" };
+    private static final String[] EXT = {"rtf"};
 
-	/**
-	 * Get the file filter description.
-	 * 
-	 * @return the description.
-	 */
-	public static String getFilterDescription() {
-		return "Rich Text Document";
-	}
+    /**
+     * Get the file filter description.
+     *
+     * @return the description.
+     */
+    public static String getFilterDescription() {
+        return "Rich Text Document";
+    }
 
-	/**
-	 * Get the file filter extensions.
-	 * 
-	 * @return the array of extensions.
-	 */
-	public static String[] getFilterExtensions() {
-		return EXT;
-	}
+    /**
+     * Get the file filter extensions.
+     *
+     * @return the array of extensions.
+     */
+    public static String[] getFilterExtensions() {
+        return EXT;
+    }
 
-	/**
-	 * Constructs a new translator.
-	 */
-	public RichTextTranslator() {
-		super();
-	}
+    /**
+     * Constructs a new translator.
+     */
+    public RichTextTranslator() {
+        super();
+    }
 
-	@Override
-	public String getName() {
-		return "Rich Text";
-	}
+    @Override
+    public String getName() {
+        return "Rich Text";
+    }
 
-	@Override
-	public Collection<Soup> translateToNewton(InputStream in) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Collection<Soup> translateToNewton(InputStream in) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public InputStream translateFromNewton(SoupEntry entry) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public InputStream translateFromNewton(SoupEntry entry) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

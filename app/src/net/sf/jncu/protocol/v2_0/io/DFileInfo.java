@@ -1,21 +1,21 @@
 /*
  * Source file of the jNCU project.
  * Copyright (c) 2010. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/MPL-1.1.html
  *
  * Contributors can be contacted by electronic mail via the project Web pages:
- * 
+ *
  * http://sourceforge.net/projects/jncu
- * 
+ *
  * http://jncu.sourceforge.net/
  *
  * Contributor(s):
  *   Moshe Waisberg
- * 
+ *
  */
 package net.sf.jncu.protocol.v2_0.io;
 
@@ -54,106 +54,106 @@ import net.sf.swing.SwingUtils;
  * <tt>modified</tt> is the modification date of the file.<br>
  * <tt>icon</tt> is an icon to display. This is optional.<br>
  * <tt>path</tt> is the "user understandable" path description<br>
- * 
+ *
  * <pre>
  * 'finf'
  * length
  * frame of info
  * </pre>
- * 
+ *
  * @author moshew
  */
 public class DFileInfo extends BaseDockCommandToNewton {
 
-	/** <tt>kDFileInfo</tt> */
-	public static final String COMMAND = "finf";
+    /**
+     * <tt>kDFileInfo</tt>
+     */
+    public static final String COMMAND = "finf";
 
-	protected static final NSOFSymbol SLOT_KIND = new NSOFSymbol("kind");
-	protected static final NSOFSymbol SLOT_SIZE = new NSOFSymbol("size");
-	protected static final NSOFSymbol SLOT_CREATED = new NSOFSymbol("created");
-	protected static final NSOFSymbol SLOT_MODIFIED = new NSOFSymbol("modified");
-	protected static final NSOFSymbol SLOT_ICON = new NSOFSymbol("icon");
-	protected static final NSOFSymbol SLOT_ICONPRO = new NSOFSymbol("iconPro");
-	protected static final NSOFSymbol SLOT_PATH = new NSOFSymbol("path");
+    protected static final NSOFSymbol SLOT_KIND = new NSOFSymbol("kind");
+    protected static final NSOFSymbol SLOT_SIZE = new NSOFSymbol("size");
+    protected static final NSOFSymbol SLOT_CREATED = new NSOFSymbol("created");
+    protected static final NSOFSymbol SLOT_MODIFIED = new NSOFSymbol("modified");
+    protected static final NSOFSymbol SLOT_ICON = new NSOFSymbol("icon");
+    protected static final NSOFSymbol SLOT_ICONPRO = new NSOFSymbol("iconPro");
+    protected static final NSOFSymbol SLOT_PATH = new NSOFSymbol("path");
 
-	private File file;
+    private File file;
 
-	/**
-	 * Creates a new command.
-	 */
-	public DFileInfo() {
-		super(COMMAND);
-	}
+    /**
+     * Creates a new command.
+     */
+    public DFileInfo() {
+        super(COMMAND);
+    }
 
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.flatten(toFrame(), data);
-	}
+    @Override
+    protected void writeCommandData(OutputStream data) throws IOException {
+        NSOFEncoder encoder = new NSOFEncoder();
+        encoder.flatten(toFrame(), data);
+    }
 
-	/**
-	 * Get the file.
-	 * 
-	 * @return the file.
-	 */
-	public File getFile() {
-		return file;
-	}
+    /**
+     * Get the file.
+     *
+     * @return the file.
+     */
+    public File getFile() {
+        return file;
+    }
 
-	/**
-	 * Set the file.
-	 * 
-	 * @param file
-	 *            the file.
-	 */
-	public void setFile(File file) {
-		this.file = file;
-	}
+    /**
+     * Set the file.
+     *
+     * @param file the file.
+     */
+    public void setFile(File file) {
+        this.file = file;
+    }
 
-	/**
-	 * Get the file frame.
-	 * 
-	 * @return the frame.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
-	public NSOFFrame toFrame() throws IOException {
-		NSOFFrame frame = new NSOFFrame();
+    /**
+     * Get the file frame.
+     *
+     * @return the frame.
+     * @throws IOException if an I/O error occurs.
+     */
+    public NSOFFrame toFrame() throws IOException {
+        NSOFFrame frame = new NSOFFrame();
 
-		frame.put(SLOT_PATH, new NSOFString(file.getCanonicalPath()));
+        frame.put(SLOT_PATH, new NSOFString(file.getCanonicalPath()));
 
-		String description = SwingUtils.getFileSystemView().getSystemTypeDescription(file);
-		if (description == null)
-			description = "Unknown";
-		frame.put(SLOT_KIND, new NSOFString(description));
+        String description = SwingUtils.getFileSystemView().getSystemTypeDescription(file);
+        if (description == null)
+            description = "Unknown";
+        frame.put(SLOT_KIND, new NSOFString(description));
 
-		NSOFInteger mtime = NewtonDateUtils.toMinutes(file.lastModified());
-		frame.put(SLOT_CREATED, mtime);
-		frame.put(SLOT_MODIFIED, mtime);
+        NSOFInteger mtime = NewtonDateUtils.toMinutes(file.lastModified());
+        frame.put(SLOT_CREATED, mtime);
+        frame.put(SLOT_MODIFIED, mtime);
 
-		int size = (int) (file.length() & 0xFFFFFFFFL);
-		frame.put(SLOT_SIZE, new NSOFInteger(size));
+        int size = (int) (file.length() & 0xFFFFFFFFL);
+        frame.put(SLOT_SIZE, new NSOFInteger(size));
 
-		NSOFIcon icon = getIcon();
-		if (icon != null)
-			frame.put(SLOT_ICON, icon);
+        NSOFIcon icon = getIcon();
+        if (icon != null)
+            frame.put(SLOT_ICON, icon);
 
-		return frame;
-	}
+        return frame;
+    }
 
-	/**
-	 * Get the file icon.
-	 * 
-	 * @return the icon.
-	 */
-	protected NSOFIcon getIcon() {
-		Icon icon = SwingUtils.getFileSystemView().getSystemIcon(file);
-		if (icon == null) {
-			return null;
-		}
-		// Convert "Java Icon" to "Newton bitmap" or "Apple PICT image".
-		NSOFIcon bmp = new NSOFIcon();
-		bmp.fromIcon(icon);
-		return bmp;
-	}
+    /**
+     * Get the file icon.
+     *
+     * @return the icon.
+     */
+    protected NSOFIcon getIcon() {
+        Icon icon = SwingUtils.getFileSystemView().getSystemIcon(file);
+        if (icon == null) {
+            return null;
+        }
+        // Convert "Java Icon" to "Newton bitmap" or "Apple PICT image".
+        NSOFIcon bmp = new NSOFIcon();
+        bmp.fromIcon(icon);
+        return bmp;
+    }
 }

@@ -1,21 +1,21 @@
 /*
  * Source file of the jNCU project.
  * Copyright (c) 2010. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/MPL-1.1.html
  *
  * Contributors can be contacted by electronic mail via the project Web pages:
- * 
+ *
  * http://sourceforge.net/projects/jncu
- * 
+ *
  * http://jncu.sourceforge.net/
  *
  * Contributor(s):
  *   Moshe Waisberg
- * 
+ *
  */
 package net.sf.jncu.protocol.v2_0.data;
 
@@ -35,68 +35,68 @@ import net.sf.jncu.protocol.BaseDockCommandToNewton;
  * specified file. The list can include DataViz translators and tab templates.
  * The array should be in the order that the translators should be displayed in
  * the list.
- * 
+ *
  * <pre>
  * 'trnl'
  * length
  * array of strings
  * </pre>
- * 
+ *
  * @author moshew
  */
 public class DTranslatorList extends BaseDockCommandToNewton {
 
-	/** <tt>kDTranslatorList</tt> */
-	public static final String COMMAND = "trnl";
+    /**
+     * <tt>kDTranslatorList</tt>
+     */
+    public static final String COMMAND = "trnl";
 
-	private final List<String> translators = new ArrayList<String>();
+    private final List<String> translators = new ArrayList<String>();
 
-	/**
-	 * Constructs a new command.
-	 */
-	public DTranslatorList() {
-		super(COMMAND);
-	}
+    /**
+     * Constructs a new command.
+     */
+    public DTranslatorList() {
+        super(COMMAND);
+    }
 
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		NSOFString[] items = new NSOFString[translators.size()];
-		int i = 0;
-		for (String translator : translators) {
-			items[i++] = new NSOFString(translator);
-		}
-		NSOFPlainArray arr = new NSOFPlainArray(items);
-		NSOFEncoder encoder = new NSOFEncoder();
-		encoder.flatten(arr, data);
-	}
+    @Override
+    protected void writeCommandData(OutputStream data) throws IOException {
+        NSOFString[] items = new NSOFString[translators.size()];
+        int i = 0;
+        for (String translator : translators) {
+            items[i++] = new NSOFString(translator);
+        }
+        NSOFPlainArray arr = new NSOFPlainArray(items);
+        NSOFEncoder encoder = new NSOFEncoder();
+        encoder.flatten(arr, data);
+    }
 
-	/**
-	 * Get the translators.
-	 * 
-	 * @return the list of translators.
-	 */
-	public List<String> getTranslators() {
-		return translators;
-	}
+    /**
+     * Get the translators.
+     *
+     * @return the list of translators.
+     */
+    public List<String> getTranslators() {
+        return translators;
+    }
 
-	/**
-	 * Set the translators.
-	 * 
-	 * @param translators
-	 *            the list of translators.
-	 */
-	public void setTranslators(Collection<String> translators) {
-		this.translators.clear();
-		this.translators.addAll(translators);
-	}
+    /**
+     * Set the translators.
+     *
+     * @param translators the list of translators.
+     */
+    public void setTranslators(Collection<String> translators) {
+        this.translators.clear();
+        this.translators.addAll(translators);
+    }
 
-	/**
-	 * Add a translator.
-	 * 
-	 * @param translator
-	 *            the translator.
-	 */
-	public void addTranslator(String translator) {
-		translators.add(translator);
-	}
+    /**
+     * Add a translator.
+     *
+     * @param translator the translator.
+     */
+    public void addTranslator(String translator) {
+        translators.add(translator);
+    }
 }

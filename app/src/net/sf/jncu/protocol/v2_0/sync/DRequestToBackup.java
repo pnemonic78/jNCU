@@ -23,17 +23,17 @@ import net.sf.jncu.protocol.v2_0.session.DDesktopInfo;
  * <li>Newton does not send correct {@link DSyncOptions} command in response to
  * a {@link DGetSyncOptions} request;
  * </ol>
- * 
+ *
  * @author Moshe
  */
 public class DRequestToBackup extends DockCommandFromNewtonScript<NSOFImmediate> {
 
-	public static final String COMMAND = "ntic";
+    public static final String COMMAND = "ntic";
 
-	/**
-	 * Creates a new command.
-	 */
-	public DRequestToBackup() {
-		super(COMMAND);
-	}
+    /**
+     * Creates a new command.
+     */
+    public DRequestToBackup() {
+        super(COMMAND);
+    }
 }

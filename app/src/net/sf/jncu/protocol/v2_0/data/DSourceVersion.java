@@ -1,21 +1,21 @@
 /*
  * Source file of the jNCU project.
  * Copyright (c) 2010. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/MPL-1.1.html
  *
  * Contributors can be contacted by electronic mail via the project Web pages:
- * 
+ *
  * http://sourceforge.net/projects/jncu
- * 
+ *
  * http://jncu.sourceforge.net/
  *
  * Contributor(s):
  *   Moshe Waisberg
- * 
+ *
  */
 package net.sf.jncu.protocol.v2_0.data;
 
@@ -40,7 +40,7 @@ import net.sf.jncu.protocol.BaseDockCommandToNewton;
  * <tt>manufacturer</tt> and <tt>machinetype</tt> tell the Newton the type of
  * Newton that's the source of the data being restored. These are sent at the
  * beginning of a connection as part of the Newton name command.
- * 
+ *
  * <pre>
  * 'sver'
  * length
@@ -48,115 +48,114 @@ import net.sf.jncu.protocol.BaseDockCommandToNewton;
  * manufacturer
  * machineType
  * </pre>
- * 
+ *
  * @author moshew
  */
 public class DSourceVersion extends BaseDockCommandToNewton {
 
-	/** <tt>kDSourceVersion</tt> */
-	public static final String COMMAND = "sver";
+    /**
+     * <tt>kDSourceVersion</tt>
+     */
+    public static final String COMMAND = "sver";
 
-	/**
-	 * Source versions.<br>
-	 * <tt>eSourceVersion</tt>
-	 */
-	public static enum SourceVersion {
-		/**
-		 * Unknown version.<br>
-		 * <tt>eNone</tt>
-		 */
-		NONE,
-		/**
-		 * <tt>1.x</tt> data file.<br>
-		 * <tt>eOnePointXData</tt><br>
-		 * <tt>kOnePointXData</tt>
-		 */
-		ONE_POINT_X_DATA,
-		/**
-		 * <tt>2.x</tt> data file.<br>
-		 * <tt>eTwoPointXData</tt><br>
-		 * <tt>kTwoPointXData</tt>
-		 */
-		TWO_POINT_X_DATA
-	}
+    /**
+     * Source versions.<br>
+     * <tt>eSourceVersion</tt>
+     */
+    public static enum SourceVersion {
+        /**
+         * Unknown version.<br>
+         * <tt>eNone</tt>
+         */
+        NONE,
+        /**
+         * <tt>1.x</tt> data file.<br>
+         * <tt>eOnePointXData</tt><br>
+         * <tt>kOnePointXData</tt>
+         */
+        ONE_POINT_X_DATA,
+        /**
+         * <tt>2.x</tt> data file.<br>
+         * <tt>eTwoPointXData</tt><br>
+         * <tt>kTwoPointXData</tt>
+         */
+        TWO_POINT_X_DATA
+    }
 
-	private SourceVersion version;
-	private int manufacturerId;
-	private int machineType;
+    private SourceVersion version;
+    private int manufacturerId;
+    private int machineType;
 
-	/**
-	 * Creates a new command.
-	 */
-	public DSourceVersion() {
-		super(COMMAND);
-		setLength(12);
-	}
+    /**
+     * Creates a new command.
+     */
+    public DSourceVersion() {
+        super(COMMAND);
+        setLength(12);
+    }
 
-	/**
-	 * Get the version.
-	 * 
-	 * @return the version.
-	 */
-	public SourceVersion getVersion() {
-		return version;
-	}
+    /**
+     * Get the version.
+     *
+     * @return the version.
+     */
+    public SourceVersion getVersion() {
+        return version;
+    }
 
-	/**
-	 * Set the version.
-	 * 
-	 * @param version
-	 *            the version.
-	 */
-	public void setVersion(SourceVersion version) {
-		this.version = version;
-	}
+    /**
+     * Set the version.
+     *
+     * @param version the version.
+     */
+    public void setVersion(SourceVersion version) {
+        this.version = version;
+    }
 
-	/**
-	 * Get the manufacturer id.
-	 * <p>
-	 * An integer indicating the manufacturer of the Newton device.
-	 * 
-	 * @return the manufacturer id.
-	 */
-	public int getManufacturerId() {
-		return manufacturerId;
-	}
+    /**
+     * Get the manufacturer id.
+     * <p>
+     * An integer indicating the manufacturer of the Newton device.
+     *
+     * @return the manufacturer id.
+     */
+    public int getManufacturerId() {
+        return manufacturerId;
+    }
 
-	/**
-	 * Set the manufacturer id.
-	 * 
-	 * @param manufacturerId
-	 *            the manufacturer id.
-	 */
-	public void setManufacturerId(int manufacturerId) {
-		this.manufacturerId = manufacturerId;
-	}
+    /**
+     * Set the manufacturer id.
+     *
+     * @param manufacturerId the manufacturer id.
+     */
+    public void setManufacturerId(int manufacturerId) {
+        this.manufacturerId = manufacturerId;
+    }
 
-	/**
-	 * Get the machine type.
-	 * <p>
-	 * An integer indicating the hardware type this ROM was built for.
-	 * 
-	 * @return the machine type.
-	 */
-	public int getMachineType() {
-		return machineType;
-	}
+    /**
+     * Get the machine type.
+     * <p>
+     * An integer indicating the hardware type this ROM was built for.
+     *
+     * @return the machine type.
+     */
+    public int getMachineType() {
+        return machineType;
+    }
 
-	/**
-	 * Set the machine type.
-	 * 
-	 * @param machineType
-	 *            the machine type.
-	 */
-	public void setMachineType(int machineType) {
-		this.machineType = machineType;
-	}
+    /**
+     * Set the machine type.
+     *
+     * @param machineType the machine type.
+     */
+    public void setMachineType(int machineType) {
+        this.machineType = machineType;
+    }
 
-	@Override
-	protected void writeCommandData(OutputStream data) throws IOException {
-		htonl(getVersion().ordinal(), data);
-		htonl(getManufacturerId(), data);
-		htonl(getMachineType(), data);
-	}
+    @Override
+    protected void writeCommandData(OutputStream data) throws IOException {
+        htonl(getVersion().ordinal(), data);
+        htonl(getManufacturerId(), data);
+        htonl(getMachineType(), data);
+    }
 }

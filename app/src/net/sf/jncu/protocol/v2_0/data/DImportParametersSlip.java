@@ -1,21 +1,21 @@
 /*
  * Source file of the jNCU project.
  * Copyright (c) 2010. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/MPL-1.1.html
  *
  * Contributors can be contacted by electronic mail via the project Web pages:
- * 
+ *
  * http://sourceforge.net/projects/jncu
- * 
+ *
  * http://jncu.sourceforge.net/
  *
  * Contributor(s):
  *   Moshe Waisberg
- * 
+ *
  */
 package net.sf.jncu.protocol.v2_0.data;
 
@@ -46,8 +46,8 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  * &nbsp;&nbsp;},<br>
  * &nbsp;&nbsp;ConflictsInfo: {<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;Text: "string",  // Text string for labelpicker label<br>
- * &nbsp;&nbsp;&nbsp;&nbsp;LabelCommands: array of strings        // array of strings corresponding to available choices in picker list<br> 
- * &nbsp;&nbsp;},<br>                                                                                   
+ * &nbsp;&nbsp;&nbsp;&nbsp;LabelCommands: array of strings        // array of strings corresponding to available choices in picker list<br>
+ * &nbsp;&nbsp;},<br>
  * &nbsp;&nbsp;DatesInfo: {<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;Title: "string1", // Text string for title field above datedurationtextpicker<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;Text: "string2",  // Text string for datedurationtextpicker label<br>
@@ -59,25 +59,27 @@ import net.sf.jncu.protocol.v2_0.DockCommandToNewtonScript;
  * &nbsp;&nbsp;&nbsp;&nbsp;ImportParametersDoneScript: function object // function object to call after button is tapped<br>
  * &nbsp;&nbsp;}<br>
  * }</code>
- * 
+ *
  * <pre>
  * 'islp'
  * length
  * frame containing info to display
  * </pre>
- * 
+ *
  * @author moshew
  */
 public class DImportParametersSlip extends DockCommandToNewtonScript<NSOFFrame> {
 
-	/** <tt>kDImportParametersSlip</tt> */
-	public static final String COMMAND = "islp";
+    /**
+     * <tt>kDImportParametersSlip</tt>
+     */
+    public static final String COMMAND = "islp";
 
-	/**
-	 * Creates a new command.
-	 */
-	public DImportParametersSlip() {
-		super(COMMAND);
-	}
+    /**
+     * Creates a new command.
+     */
+    public DImportParametersSlip() {
+        super(COMMAND);
+    }
 
 }
