@@ -10,7 +10,7 @@ application {
             java.srcDirs = ['src', '../res']
         }
         test {
-            java.srcDirs = ['../test']
+            java.srcDirs = ['test']
         }
     }
 
